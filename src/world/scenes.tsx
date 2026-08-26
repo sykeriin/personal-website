@@ -5,6 +5,7 @@ import { projects } from '../data/content'
 import { readInkTheme } from '../three/theme'
 import { makeToonGradient } from '../three/toonGradient'
 import type { SceneKey } from './manifest'
+import { Figure } from './Figure'
 
 /**
  * One world, seen from different places. Every prop is assembled from code
@@ -91,6 +92,9 @@ function CoverScene({ mats }: { mats: Mats }) {
           </mesh>
         </group>
       </Drift>
+
+      {/* him, on the cover */}
+      <Figure pose="idle" position={[2.4, -0.3, 1.1]} height={1.7} rotation={[0, -0.35, 0]} />
 
       {/* panel shards drifting behind */}
       <Drift amount={0.1} speed={0.32} phase={1.4}>
@@ -182,6 +186,12 @@ function DeskScene({ mats, closing = false }: { mats: Mats; closing?: boolean })
           </group>
         </Drift>
       ) : null}
+      {closing ? (
+        <Figure pose="guitar" position={[-2.9, -0.35, 1.0]} height={1.35} rotation={[0, 0.4, 0]} />
+      ) : (
+        <Figure pose="sit" position={[1.9, -0.3, 1.2]} height={1.5} rotation={[0, -0.5, 0]} />
+      )}
+
       {/* back wall, so the room has a surface behind it to hold tone */}
       <mesh position={[0, 1.4, -4.2]} material={mats.paper}>
         <boxGeometry args={[14, 6, 0.2]} />
@@ -342,6 +352,7 @@ function CaseScene({ mats }: { mats: Mats }) {
   return (
     <>
       <Ground mats={mats} />
+      <Figure pose="guard" position={[-3.6, -0.3, 1.6]} height={1.7} rotation={[0, 0.5, 0]} />
       {projects.map((project, i) => {
         const t = (i - (projects.length - 1) / 2) / (projects.length - 1)
         const angle = t * 0.9
@@ -417,6 +428,7 @@ function TreeScene({ mats }: { mats: Mats }) {
   return (
     <>
       <Ground mats={mats} />
+      <Figure pose="point" position={[-2.9, -0.3, 1.4]} height={1.7} rotation={[0, 0.45, 0]} />
       <mesh position={[0, 0.2, 0]} material={mats.dim}>
         <cylinderGeometry args={[0.17, 0.36, 2.8, 14]} />
       </mesh>
