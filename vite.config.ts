@@ -41,6 +41,50 @@ function snapshotPlugin(): Plugin {
   }
 }
 
+/**
+ * Dev-only. Lets the mark generator page write its output into src/assets/ink
+ * so generated marks can be committed as ordinary reviewable files. Names are
+ * restricted to a flat allowlist pattern — no traversal.
+ */
+function assetWritePlugin(): Plugin {
+  const baseDir = path.resolve('src/assets/ink')
+  return {
+    name: 'inkwell-asset-write',
+    apply: 'serve',
+    configureServer(server) {
+      server.middlewares.use('/__asset', (req, res) => {
+        if (req.method !== 'POST') {
+          res.statusCode = 405
+          return res.end('POST only')
+        }
+        const raw = new URL(req.url ?? '/', 'http://x').searchParams.get('path') ?? ''
+        if (!/^[a-z0-9]+\/[a-z0-9][a-z0-9._-]*\.png$/i.test(raw)) {
+          res.statusCode = 400
+          return res.end('path must look like <folder>/<name>.png')
+        }
+        const file = path.join(baseDir, raw)
+        if (!file.startsWith(baseDir + path.sep)) {
+          res.statusCode = 400
+          return res.end('outside asset root')
+        }
+        const chunks: Buffer[] = []
+        req.on('data', (c: Buffer) => chunks.push(c))
+        req.on('end', () => {
+          const match = /^data:image\/png;base64,(.+)$/s.exec(Buffer.concat(chunks).toString('utf8'))
+          if (!match) {
+            res.statusCode = 400
+            return res.end('expected a png data URL')
+          }
+          fs.mkdirSync(path.dirname(file), { recursive: true })
+          fs.writeFileSync(file, Buffer.from(match[1], 'base64'))
+          res.setHeader('content-type', 'text/plain')
+          res.end(raw)
+        })
+      })
+    },
+  }
+}
+
 export default defineConfig({
-  plugins: [react(), snapshotPlugin()],
+  plugins: [react(), snapshotPlugin(), assetWritePlugin()],
 })

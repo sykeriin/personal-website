@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex" />
+    <title>Mark Factory — INKWELL</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 24px;
+        background: #f7f6f3;
+        color: #0b0b0c;
+        font-family: ui-monospace, monospace;
+        font-size: 12px;
+      }
+      #log {
+        white-space: pre-wrap;
+        line-height: 1.7;
+      }
+      h1 {
+        font-size: 14px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Mark factory</h1>
+    <p>Generates the ink mark library into src/assets/ink/marks. Dev only.</p>
+    <div id="log">starting…</div>
+    <script type="module">
+      import { generateMarks } from '/src/lab/marks.ts'
+      const el = document.getElementById('log')
+      const lines = []
+      const log = (l) => {
+        lines.push(l)
+        el.textContent = lines.join('\n')
+      }
+      el.textContent = ''
+      window.__marksDone = false
+      generateMarks(log)
+        .catch((e) => log('ERROR: ' + (e && e.stack ? e.stack : e)))
+        .finally(() => {
+          window.__marksDone = true
+          window.__marksLog = lines.join('\n')
+        })
+    </script>
+  </body>
+</html>
