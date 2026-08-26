@@ -87,4 +87,22 @@ function assetWritePlugin(): Plugin {
 
 export default defineConfig({
   plugins: [react(), snapshotPlugin(), assetWritePlugin()],
+  build: {
+    target: 'es2022',
+    // Default is 4096. Base64-inlining an alpha PNG inflates it ~33% AND buries
+    // it inside a JS chunk where it can no longer be cached on its own.
+    assetsInlineLimit: 1024,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          // three is ~170KB gzip and must never sit in the entry chunk, nor be
+          // invalidated every time a line of content changes.
+          if (id.includes('node_modules/three/')) return 'three'
+          if (id.includes('@react-three')) return 'r3f'
+          if (id.includes('node_modules/howler')) return 'audio'
+          return undefined
+        },
+      },
+    },
+  },
 })

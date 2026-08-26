@@ -40,6 +40,16 @@
   --indigo: #16233d;
   --indigo-soft: #2c3a58;
 
+  /* --- type ------------------------------------------------------------- */
+  /* Four faces. Display carries the wordmark; SFX is the only structurally 3D
+     face and lives inside the scene; body is a serif so the page reads as
+     print; mono is the telemetry voice, which matters for someone whose work
+     is CV pipelines and agents. */
+  --font-display: 'Dela Gothic One', Impact, 'Arial Black', sans-serif;
+  --font-sfx: 'Rampart One', 'Dela Gothic One', Impact, cursive;
+  --font-body: 'Newsreader Variable', Newsreader, Georgia, 'Times New Roman', serif;
+  --font-mono: 'Share Tech Mono', ui-monospace, 'SFMono-Regular', monospace;
+
   /* --- non-colour shader tokens ----------------------------------------- */
   /* Device px. Outer contour vs interior crease line weight. */
   --line-contour: 2.4;

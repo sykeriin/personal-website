@@ -1,59 +1,80 @@
-import { Link, Navigate, useParams } from 'react-router-dom'
-import { Hanko } from '../components/Hanko'
-import { MangaPanel } from '../components/ChapterHeader'
+import { Link, useParams } from 'react-router-dom'
+import { Beats, useBeats } from '../components/Beats'
+import { ChapterHead, Hanko, Panel, Turn } from '../components/chrome'
 import { projects } from '../data/content'
+import { useDocumentMeta } from '../hooks/useDocumentMeta'
+import { entryFor } from '../world/manifest'
 
 export function ProjectDetail() {
-  const { slug } = useParams()
+  const { slug = '' } = useParams()
   const project = projects.find((p) => p.slug === slug)
+  const entry = entryFor(`/projects/${slug}`)
+  useDocumentMeta(`${entry.title} — Durva Sharma`, entry.description)
+
+  // Hooks run before the miss branch — a bad slug must not change hook order.
+  const story = project ? project.story : []
+  const { index, showAll, setShowAll, go } = useBeats(story.length)
 
   if (!project) {
-    return <Navigate to="/projects" replace />
+    return (
+      <main className="chapter">
+        <ChapterHead eyebrow={entry.label} title="p. ??" page={entry.page} />
+        <p className="lede">
+          no project by that name. i&apos;ve only shipped five things worth writing about.
+        </p>
+        <Link className="cta" to="/projects">
+          see the five
+        </Link>
+        <Turn path="/projects" />
+      </main>
+    )
   }
+
+  const shown = showAll ? story : [story[index]]
 
   return (
     <main className="chapter">
-      <p className="manga-panel__meta" style={{ marginBottom: '0.75rem' }}>
-        <Link to="/projects" style={{ textDecoration: 'none' }}>
-          ← back to projects
-        </Link>
-        {' · '}
-        p. {project.page}
-      </p>
+      <ChapterHead eyebrow={entry.label} title={project.title} page={entry.page} />
 
-      <div className="battle-hero">
-        <div>
-          <div className="chapter-header__meta">project notes</div>
-          <h1>{project.title}</h1>
-          <p className="battle-hero__tag">{project.tagline}</p>
-          {project.url ? (
-            <a className="live-link" href={project.url} target="_blank" rel="noreferrer">
-              open live build
-            </a>
-          ) : null}
+      {project.award ? (
+        <div className="stamp-row">
+          <Hanko label={project.award} />
+          <p>{project.tagline}</p>
         </div>
-        {project.award ? <Hanko label={project.award} /> : null}
-      </div>
+      ) : (
+        <p className="panel__meta">{project.tagline}</p>
+      )}
 
-      <MangaPanel tilt={false}>
-        <p>
-          <strong>{project.blurb}</strong>
-        </p>
-        {project.story.map((para) => (
-          <p key={para.slice(0, 28)}>{para}</p>
+      <p className="lede">{project.blurb}</p>
+
+      <Panel>
+        {shown.map((paragraph) => (
+          <p key={paragraph}>{paragraph}</p>
         ))}
-        <div className="stack-stamps">
-          {project.stack.map((tech) => (
-            <span key={tech}>{tech}</span>
-          ))}
-        </div>
-      </MangaPanel>
+      </Panel>
 
-      <footer className="next-chapter">
-        <Link to="/projects">← all projects</Link>
-        <span className="next-chapter__page">p. {project.page}</span>
-        <Link to="/skill-tree">skill tree →</Link>
-      </footer>
+      <Beats
+        count={story.length}
+        index={index}
+        showAll={showAll}
+        onGo={go}
+        onShowAll={setShowAll}
+        label="beat"
+      />
+
+      <ul className="tags">
+        {project.stack.map((item) => (
+          <li key={item}>{item}</li>
+        ))}
+      </ul>
+
+      {project.url ? (
+        <a className="cta" href={project.url} target="_blank" rel="noreferrer">
+          open the live thing
+        </a>
+      ) : null}
+
+      <Turn path={`/projects/${project.slug}`} />
     </main>
   )
 }

@@ -1,55 +1,88 @@
-import { ChapterHeader, MangaPanel } from '../components/ChapterHeader'
-import { Hanko } from '../components/Hanko'
-import { NextChapter } from '../components/NextChapter'
-import { achievements, leadership, skills } from '../data/content'
+import { Link } from 'react-router-dom'
+import { ChapterHead, Hanko, Panel, Turn } from '../components/chrome'
+import { achievements, leadership, projects, skills } from '../data/content'
+import { useDocumentMeta } from '../hooks/useDocumentMeta'
+import { entryFor } from '../world/manifest'
+
+/** `React.js` in the skill list and `React` in a stack are the same thing. */
+function normalize(value: string) {
+  return value.toLowerCase().replace(/\.js$/, '').trim()
+}
+
+/**
+ * A skill is only interesting if it shipped. Anything that shows up in a
+ * project stack links straight to the project that used it, so the tree is a
+ * set of doors rather than a word cloud.
+ */
+const projectBySkill = new Map<string, string>()
+for (const project of projects) {
+  for (const item of project.stack) {
+    const key = normalize(item)
+    if (!projectBySkill.has(key)) projectBySkill.set(key, project.slug)
+  }
+}
 
 const groups = [
-  { title: 'Languages', items: skills.languages },
-  { title: 'AI / ML', items: skills.aiml },
-  { title: 'Frameworks', items: skills.frameworks },
-  { title: 'Infra', items: skills.infra },
+  { title: 'languages', items: skills.languages },
+  { title: 'ai / ml', items: skills.aiml },
+  { title: 'frameworks', items: skills.frameworks },
+  { title: 'infra', items: skills.infra },
 ]
 
 export function SkillTree() {
+  const entry = entryFor('/skill-tree')
+  useDocumentMeta(`${entry.title} — Durva Sharma`, entry.description)
+
   return (
     <main className="chapter">
-      <ChapterHeader title="Extra" subtitle="Skill Tree" />
+      <ChapterHead eyebrow={entry.label} title={entry.title} page={entry.page} />
 
-      <div className="skill-groups" style={{ marginBottom: '2rem' }}>
-        {groups.map((group, i) => (
-          <MangaPanel key={group.title} delay={i * 0.05}>
-            <h3>{group.title}</h3>
-            <div className="stack-stamps">
-              {group.items.map((item) => (
-                <span key={item}>{item}</span>
-              ))}
-            </div>
-          </MangaPanel>
+      <p className="lede">the ones with a link, i actually used on something.</p>
+
+      <div className="panel-grid">
+        {groups.map((group) => (
+          <Panel key={group.title}>
+            <h2>{group.title}</h2>
+            <ul className="tags">
+              {group.items.map((skill) => {
+                const slug = projectBySkill.get(normalize(skill))
+                return (
+                  <li key={skill}>
+                    {slug ? (
+                      <Link to={`/projects/${slug}`} title={`used this in ${slug}`}>
+                        {skill}
+                      </Link>
+                    ) : (
+                      skill
+                    )}
+                  </li>
+                )
+              })}
+            </ul>
+          </Panel>
         ))}
       </div>
 
-      <MangaPanel delay={0.1}>
-        <h3>Achievement hankos</h3>
-        {achievements.map((a, i) => (
-          <div className="achievement-row" key={`${a.stamp}-${a.label}`}>
-            <Hanko label={a.stamp} delay={0.05 * i} />
-            <p>{a.label}</p>
+      <Panel tone>
+        <h2>stamps i earned</h2>
+        {achievements.map((achievement) => (
+          <div className="stamp-row" key={achievement.label}>
+            <Hanko label={achievement.stamp} />
+            <p>{achievement.label}</p>
           </div>
         ))}
-      </MangaPanel>
+      </Panel>
 
-      <div style={{ height: '1rem' }} />
-
-      <MangaPanel delay={0.15}>
-        <h3>Side quests</h3>
-        <ul className="side-quests">
+      <Panel>
+        <h2>roots (side quests)</h2>
+        <ul>
           {leadership.map((item) => (
             <li key={item}>{item}</li>
           ))}
         </ul>
-      </MangaPanel>
+      </Panel>
 
-      <NextChapter path="/skill-tree" />
+      <Turn path="/skill-tree" />
     </main>
   )
 }

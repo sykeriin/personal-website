@@ -1,42 +1,44 @@
 import { Link } from 'react-router-dom'
-import { ChapterHeader } from '../components/ChapterHeader'
-import { Hanko } from '../components/Hanko'
-import { NextChapter } from '../components/NextChapter'
+import { ChapterHead, Hanko, Panel, Turn } from '../components/chrome'
 import { projects } from '../data/content'
-import { motion } from 'framer-motion'
+import { useDocumentMeta } from '../hooks/useDocumentMeta'
+import { entryFor } from '../world/manifest'
 
 export function Projects() {
+  const entry = entryFor('/projects')
+  useDocumentMeta(`${entry.title} — Durva Sharma`, entry.description)
+
   return (
     <main className="chapter">
-      <ChapterHeader title="Chapter 03" subtitle="Projects" />
-      <p style={{ marginTop: '-0.5rem', marginBottom: '1.5rem', maxWidth: '40rem' }}>
-        Stuff that actually left my laptop. Tap one for the longer version.
-      </p>
-      <div className="volume-list">
-        {projects.map((project, i) => (
-          <motion.div
-            key={project.slug}
-            initial={{ opacity: 0, x: -18 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: i * 0.05, duration: 0.4 }}
-          >
-            <Link className="volume-row" to={`/projects/${project.slug}`}>
-              <span className="volume-row__num">0{i + 1}</span>
-              <div>
-                <h2 className="volume-row__title">{project.title}</h2>
-                <p className="volume-row__tag">{project.tagline}</p>
-                {project.url ? <p className="volume-row__live">live demo</p> : null}
-              </div>
-              <div className="volume-row__right">
-                {project.award ? <Hanko label={project.award} delay={0.1 + i * 0.05} /> : null}
-                <span className="volume-row__page">p. {project.page}</span>
-              </div>
-            </Link>
-          </motion.div>
+      <ChapterHead eyebrow={entry.label} title={entry.title} page={entry.page} />
+
+      <p className="lede">stuff that actually left my laptop. pick one up.</p>
+
+      <div className="panel-grid">
+        {projects.map((project) => (
+          <Panel key={project.slug}>
+            <h2>
+              <Link to={`/projects/${project.slug}`}>{project.title}</Link>
+            </h2>
+            <p>{project.tagline}</p>
+            {project.award ? <Hanko label={project.award} /> : null}
+            <div className="panel__meta">p. {project.page}</div>
+          </Panel>
         ))}
       </div>
-      <NextChapter path="/projects" />
+
+      {/* Always rendered, never behind a click: the whole shelf at one glance. */}
+      <nav className="index-strip" aria-label="every project">
+        {projects.map((project, i) => (
+          <Link key={project.slug} to={`/projects/${project.slug}`}>
+            <span className="index-strip__num">{String(i + 1).padStart(2, '0')}</span>
+            <span>{project.title}</span>
+            <span className="index-strip__tag">{project.tagline}</span>
+          </Link>
+        ))}
+      </nav>
+
+      <Turn path="/projects" />
     </main>
   )
 }

@@ -1,9 +1,12 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App'
-import './styles/tokens.css'
-import './styles/layout.css'
-import './styles/pages.css'
+import { installResizeObserverShim } from './lab/resizeObserverShim'
+import './styles/fonts'
+import './styles/ink-tokens.css'
+import './styles/ink.css'
+
+if (import.meta.env.DEV) installResizeObserverShim()
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

@@ -1,42 +1,54 @@
-import { ChapterHeader, MangaPanel } from '../components/ChapterHeader'
-import { NextChapter } from '../components/NextChapter'
-import { PresenceNote } from '../components/PresenceNote'
+import { ChapterHead, MarginNote, Panel, Turn } from '../components/chrome'
 import { contactBits, funThings, site } from '../data/content'
+import { useDocumentMeta } from '../hooks/useDocumentMeta'
+import { usePresence } from '../hooks/usePresence'
+import { entryFor } from '../world/manifest'
 
 export function Contact() {
+  const entry = entryFor('/contact')
+  useDocumentMeta(`${entry.title} — Durva Sharma`, entry.description)
+  const { note } = usePresence()
+
   return (
-    <main className="chapter chapter--contact">
-      <ChapterHeader title="Last Page" subtitle="To Be Continued…" />
+    <main className="chapter">
+      <ChapterHead eyebrow={entry.label} title={entry.title} page={entry.page} />
 
-      <div className="contact-grid">
-        <MangaPanel>
-          <p>wanna build something weird, talk ai stuff, or trade muay thai tips? i'm around.</p>
-          <div className="contact-links">
-            {contactBits.map((bit) => (
-              <a
-                key={bit.label}
-                href={bit.href}
-                target={bit.href.startsWith('http') ? '_blank' : undefined}
-                rel="noreferrer"
-              >
-                <span>{bit.label}</span>
-                {bit.text}
-              </a>
-            ))}
-          </div>
-          <PresenceNote variant="inline" className="contact-day" />
-        </MangaPanel>
+      <p className="lede">
+        wanna build something weird, talk ai stuff, or trade muay thai tips? i&apos;m around.
+      </p>
 
-        <MangaPanel className="fun-panel" delay={0.08}>
-          <h3>off-panel</h3>
-          <p>{funThings}</p>
-          <p style={{ marginTop: '0.75rem', fontStyle: 'normal', opacity: 0.75 }}>
-            rn: {site.currentlyBuilding}
-          </p>
-        </MangaPanel>
-      </div>
+      <Panel>
+        <h2>where to find me</h2>
+        <ul>
+          {contactBits.map((bit) => {
+            // The address is plain visible text with a real mailto — nobody
+            // should have to click anything to read an email address.
+            const external = bit.href.startsWith('http')
+            return (
+              <li key={bit.label}>
+                <span className="panel__meta">{bit.label}</span>{' '}
+                <a
+                  href={bit.href}
+                  target={external ? '_blank' : undefined}
+                  rel={external ? 'noreferrer' : undefined}
+                >
+                  {bit.text}
+                </a>
+              </li>
+            )
+          })}
+        </ul>
+      </Panel>
 
-      <NextChapter path="/contact" />
+      <Panel tone>
+        <h2>off-panel</h2>
+        <p>{funThings}</p>
+        <p>rn: {site.currentlyBuilding}</p>
+      </Panel>
+
+      <MarginNote>{note}</MarginNote>
+
+      <Turn path="/contact" />
     </main>
   )
 }

@@ -46,6 +46,7 @@ uniform float uBands;
 uniform float uSolidStart;
 uniform float uToneFar;
 uniform float uToneStrength;
+uniform float uSlam;
 
 uniform vec3 uPaper;
 uniform vec3 uInk;
@@ -179,6 +180,32 @@ void main() {
   col = mix(col, uCrimson, crimsonMask);
   col = mix(col, inkCol, edge);
 
+  // THE SLAM. A route change is one gesture, and it costs a uniform rather than
+  // a remount: speed lines burst from centre while a crimson impact frame slams
+  // inward from the edges. Runs in the pass that is already executing.
+  if (uSlam > 0.001) {
+    vec2 screen = gl_FragCoord.xy / uResolution;
+    vec2 p = screen - 0.5;
+    p.x *= uResolution.x / max(uResolution.y, 1.0);
+
+    float burstR = length(p);
+    float burstA = atan(p.y, p.x);
+
+    // Irregular ray spacing, and a hole around the centre — uniform rays from a
+    // point read as sunburst clip-art rather than manga speed lines.
+    float spokes = burstA * 7.0 / 3.14159265;
+    float ray = smoothstep(0.34, 0.52, abs(fract(spokes + hash21(vec2(floor(spokes), 3.0))) - 0.5) * 2.0);
+    float reach = smoothstep(0.12, 0.66, burstR);
+    float lines = reach * ray;
+
+    // Two-frame impact frame biting in from the border.
+    float border = min(min(screen.x, 1.0 - screen.x), min(screen.y, 1.0 - screen.y));
+    float frame = 1.0 - smoothstep(0.0, 0.055 * uSlam, border);
+
+    float hit = clamp(max(lines * 0.9, frame), 0.0, 1.0) * uSlam;
+    col = mix(col, uCrimson, hit * 0.88);
+  }
+
   gl_FragColor = vec4(col, 1.0);
 }
 `
@@ -213,6 +240,7 @@ export function createInkCompositeShader() {
       uSolidStart: { value: 0.16 },
       uToneFar: { value: 0.55 },
       uToneStrength: { value: 0.85 },
+      uSlam: { value: 0 },
 
       uPaper: { value: new THREE.Color('#f7f6f3') },
       uInk: { value: new THREE.Color('#0b0b0c') },

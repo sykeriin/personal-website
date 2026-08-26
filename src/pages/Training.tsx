@@ -1,33 +1,41 @@
-import { ChapterHeader, MangaPanel } from '../components/ChapterHeader'
-import { NextChapter } from '../components/NextChapter'
+import { ChapterHead, Panel, Turn } from '../components/chrome'
 import { experiences } from '../data/content'
+import { useDocumentMeta } from '../hooks/useDocumentMeta'
+import { entryFor } from '../world/manifest'
 
 export function Training() {
+  const entry = entryFor('/training')
+  useDocumentMeta(`${entry.title} — Durva Sharma`, entry.description)
+
   return (
     <main className="chapter">
-      <ChapterHeader title="Chapter 02" subtitle="Training Arc" />
+      <ChapterHead eyebrow={entry.label} title={entry.title} page={entry.page} />
+
+      <p className="lede">where i actually learned things. mostly by breaking them first.</p>
+
       <div className="panel-grid">
-        {experiences.map((job, i) => (
-          <MangaPanel key={job.id} delay={i * 0.08}>
-            <div className="manga-panel__meta">
+        {experiences.map((job) => (
+          <Panel key={job.id}>
+            <div className="panel__meta">
               {job.period} · {job.role}
             </div>
             <h2>{job.org}</h2>
             <p>
               <strong>{job.headline}</strong>
             </p>
-            {job.story.map((para) => (
-              <p key={para.slice(0, 24)}>{para}</p>
+            {job.story.map((paragraph) => (
+              <p key={paragraph}>{paragraph}</p>
             ))}
             {job.url ? (
-              <a className="live-link" href={job.url} target="_blank" rel="noreferrer">
-                Visit {job.org}
+              <a className="cta" href={job.url} target="_blank" rel="noreferrer">
+                visit {job.org.toLowerCase()}
               </a>
             ) : null}
-          </MangaPanel>
+          </Panel>
         ))}
       </div>
-      <NextChapter path="/training" />
+
+      <Turn path="/training" />
     </main>
   )
 }

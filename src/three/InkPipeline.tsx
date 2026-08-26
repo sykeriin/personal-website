@@ -22,13 +22,15 @@ type Props = {
   palette?: InkPalette
   /** Frozen boil for prefers-reduced-motion: lines stay wobbly, they stop moving. */
   frozen?: boolean
+  /** 0..1 impact intensity for the route-change slam. Read every frame. */
+  slamRef?: { current: number }
 }
 
 /** Cleared to "facing camera, infinitely far" so silhouettes register against nothing. */
 const FAR_CLEAR = new THREE.Color(0, 0, 1)
 const prevClear = new THREE.Color()
 
-export function InkPipeline({ params, palette, frozen = false }: Props) {
+export function InkPipeline({ params, palette, frozen = false, slamRef }: Props) {
   const resolved = palette ?? readInkTheme().palette
   const gl = useThree((s) => s.gl)
   const scene = useThree((s) => s.scene)
@@ -140,6 +142,7 @@ export function InkPipeline({ params, palette, frozen = false }: Props) {
     gl.setClearColor(prevClear, prevAlpha)
 
     rig.inkPass.uniforms.uTime.value = frozen ? 0 : state.clock.elapsedTime
+    rig.inkPass.uniforms.uSlam.value = slamRef?.current ?? 0
     rig.composer.render(delta)
   }, 1)
 
