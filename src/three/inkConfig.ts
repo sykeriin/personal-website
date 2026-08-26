@@ -50,16 +50,3 @@ export const inkDefaults: InkParams = {
   toneFar: 0.55,
   toneStrength: 0.85,
 }
-
-/** Palette, mirroring src/styles/tokens.css. Read from CSS at runtime by theme.ts. */
-export const inkPalette = {
-  paper: '#f7f6f3',
-  paperDim: '#ebe8e2',
-  tone: '#c4c0b8',
-  ink: '#0b0b0c',
-  inkSoft: '#2a2a2a',
-  crimson: '#b01030',
-  indigo: '#16233d',
-}
-
-export type InkPalette = typeof inkPalette

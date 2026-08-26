@@ -1,0 +1,65 @@
+/*
+ * INKWELL v2 design tokens — the single source of truth for both the DOM and
+ * the WebGL layer. src/three/theme.ts reads these at runtime, so a colour is
+ * never written twice and the two layers cannot drift apart.
+ *
+ * This file replaces the v1 tokens.css. Nothing here is inherited from it.
+ *
+ * The discipline is one paper, one ink, one accent. A 3D renderer does not need
+ * more hues; it needs to know which bands to quantise into.
+ */
+
+:root {
+  /* --- paper ------------------------------------------------------------ */
+  /* Clear colour, ground albedo, lit cel band — and the rim light. Bare paper
+     IS the highlight, so white is never introduced as a separate value. */
+  --paper: #f7f6f3;
+  /* The terminator: ambient-lit faces, occluded paper, page reverse. */
+  --paper-dim: #ebe8e2;
+
+  /* --- ink -------------------------------------------------------------- */
+  /* Outer silhouette, text, core shadow. The heavy plate. */
+  --ink: #0b0b0c;
+  /* Interior line — creases and folds. Heavy outside, light inside is the
+     single biggest tell separating hand-inked from a CAD outline. */
+  --ink-soft: #2a2a2a;
+  /* Mid value for surfaces that should carry tone rather than read as paper.
+     Note: screentone DOTS are drawn in --ink; perceived grey comes from dot
+     coverage, exactly as real screentone works. */
+  --tone: #c4c0b8;
+
+  /* --- accent ----------------------------------------------------------- */
+  /* An unlit plate: crimson bypasses the light model entirely, the way a
+     two-colour manga cover was printed with a second ink. One per screen. */
+  --crimson: #b01030;
+
+  /* --- night ------------------------------------------------------------ */
+  /* A substitution, not an addition. Traditional aizuri-e prints pulled night
+     scenes entirely in indigo instead of black: the ink plate swaps, paper and
+     crimson are untouched, and the screen still shows only three colours. */
+  --indigo: #16233d;
+  --indigo-soft: #2c3a58;
+
+  /* --- non-colour shader tokens ----------------------------------------- */
+  /* Device px. Outer contour vs interior crease line weight. */
+  --line-contour: 2.4;
+  --line-interior: 1.2;
+  /* Dot pitch in CSS px — matches the DOM tone layer exactly so a CSS dot and
+     a shader dot land on the same grid and the page reads as one surface. */
+  --tone-freq: 8;
+  /* The classic screentone rotation. */
+  --tone-angle: 15deg;
+  /* Lines re-ink 10 times a second and hold. Sliding at 60 reads as a shader
+     effect; snapping reads as drawn. */
+  --ink-boil-hz: 10;
+}
+
+/*
+ * Night swaps the ink plate. Because theme.ts reads computed values, the 3D
+ * layer picks this up on the next frame with no extra wiring.
+ */
+:root[data-ink-mode='night'] {
+  --ink: #16233d;
+  --ink-soft: #2c3a58;
+  --paper: #e9e6df;
+}

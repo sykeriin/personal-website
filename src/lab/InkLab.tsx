@@ -3,7 +3,8 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { useEffect, useMemo, useState } from 'react'
 import * as THREE from 'three'
 import { InkPipeline } from '../three/InkPipeline'
-import { inkDefaults, inkPalette, type InkParams } from '../three/inkConfig'
+import { type InkParams } from '../three/inkConfig'
+import { readInkTheme, type InkPalette } from '../three/theme'
 import { makeToonGradient } from '../three/toonGradient'
 import { UniformPanel } from './UniformPanel'
 
@@ -73,25 +74,25 @@ function FrameProbe() {
   return null
 }
 
-function Subjects() {
+function Subjects({ palette }: { palette: InkPalette }) {
   const gradient = useMemo(() => makeToonGradient(3), [])
 
   const paper = useMemo(
-    () => new THREE.MeshToonMaterial({ color: inkPalette.paper, gradientMap: gradient }),
-    [gradient],
+    () => new THREE.MeshToonMaterial({ color: palette.paper, gradientMap: gradient }),
+    [gradient, palette.paper],
   )
   const dim = useMemo(
-    () => new THREE.MeshToonMaterial({ color: inkPalette.paperDim, gradientMap: gradient }),
-    [gradient],
+    () => new THREE.MeshToonMaterial({ color: palette.paperDim, gradientMap: gradient }),
+    [gradient, palette.paperDim],
   )
   // Mid-value ground so the floor carries screentone instead of reading as blank paper.
   const ground = useMemo(
-    () => new THREE.MeshToonMaterial({ color: inkPalette.tone, gradientMap: gradient }),
-    [gradient],
+    () => new THREE.MeshToonMaterial({ color: palette.tone, gradientMap: gradient }),
+    [gradient, palette.tone],
   )
   const crimson = useMemo(
-    () => new THREE.MeshToonMaterial({ color: inkPalette.crimson, gradientMap: gradient }),
-    [gradient],
+    () => new THREE.MeshToonMaterial({ color: palette.crimson, gradientMap: gradient }),
+    [gradient, palette.crimson],
   )
 
   return (
@@ -123,8 +124,18 @@ function Subjects() {
 }
 
 export function InkLab() {
-  const [params, setParams] = useState<InkParams>(inkDefaults)
+  const [night, setNight] = useState(false)
+  const [theme, setTheme] = useState(() => readInkTheme())
+  const [params, setParams] = useState<InkParams>(() => readInkTheme().params)
   const [frozen, setFrozen] = useState(false)
+
+  // Flipping the attribute swaps the ink plate in CSS; re-reading pushes it
+  // straight into the shader uniforms. Proves DOM and WebGL share one source.
+  useEffect(() => {
+    if (night) document.documentElement.dataset.inkMode = 'night'
+    else delete document.documentElement.dataset.inkMode
+    setTheme(readInkTheme())
+  }, [night])
 
   return (
     <>
@@ -141,23 +152,25 @@ export function InkLab() {
       >
         <ViewportSync />
         <FrameProbe />
-        <color attach="background" args={[inkPalette.paper]} />
+        <color attach="background" args={[theme.palette.paper]} />
         {/* Low ambient on purpose: surfaces have to fall across all three cel
             bands or the page has no value structure and reads as a white render. */}
         <ambientLight intensity={0.10} />
         <directionalLight position={[4, 6, 3]} intensity={1.5} />
         <directionalLight position={[-5, 1.5, -2]} intensity={0.12} />
-        <Subjects />
+        <Subjects palette={theme.palette} />
         <OrbitControls makeDefault target={[0, 0.1, 0]} />
-        <InkPipeline params={params} frozen={frozen} />
+        <InkPipeline params={params} palette={theme.palette} frozen={frozen} />
       </Canvas>
 
       <UniformPanel
         params={params}
         onChange={setParams}
-        onReset={() => setParams(inkDefaults)}
+        onReset={() => setParams(theme.params)}
         frozen={frozen}
         onFrozenChange={setFrozen}
+        night={night}
+        onNightChange={setNight}
       />
     </>
   )

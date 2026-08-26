@@ -35,9 +35,19 @@ type Props = {
   onReset: () => void
   frozen: boolean
   onFrozenChange: (v: boolean) => void
+  night: boolean
+  onNightChange: (v: boolean) => void
 }
 
-export function UniformPanel({ params, onChange, onReset, frozen, onFrozenChange }: Props) {
+export function UniformPanel({
+  params,
+  onChange,
+  onReset,
+  frozen,
+  onFrozenChange,
+  night,
+  onNightChange,
+}: Props) {
   const [open, setOpen] = useState(true)
 
   const row = (s: Spec) => (
@@ -74,6 +84,15 @@ export function UniformPanel({ params, onChange, onReset, frozen, onFrozenChange
               onChange={(e) => onFrozenChange(e.target.checked)}
             />
             freeze boil (reduced-motion state)
+          </label>
+
+          <label style={styles.check}>
+            <input
+              type="checkbox"
+              checked={night}
+              onChange={(e) => onNightChange(e.target.checked)}
+            />
+            night plate (indigo ink)
           </label>
 
           <div style={styles.group}>line</div>

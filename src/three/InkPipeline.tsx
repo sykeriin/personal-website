@@ -7,7 +7,8 @@ import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js'
 import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js'
 import { createGBufferMaterial } from './gbufferMaterial'
 import { createInkCompositeShader } from './shaders/inkComposite'
-import { inkPalette, type InkPalette, type InkParams } from './inkConfig'
+import { type InkParams } from './inkConfig'
+import { readInkTheme, type InkPalette } from './theme'
 
 type Rig = {
   gbuffer: THREE.WebGLRenderTarget
@@ -27,7 +28,8 @@ type Props = {
 const FAR_CLEAR = new THREE.Color(0, 0, 1)
 const prevClear = new THREE.Color()
 
-export function InkPipeline({ params, palette = inkPalette, frozen = false }: Props) {
+export function InkPipeline({ params, palette, frozen = false }: Props) {
+  const resolved = palette ?? readInkTheme().palette
   const gl = useThree((s) => s.gl)
   const scene = useThree((s) => s.scene)
   const camera = useThree((s) => s.camera)
@@ -110,11 +112,11 @@ export function InkPipeline({ params, palette = inkPalette, frozen = false }: Pr
   useEffect(() => {
     if (!rig) return
     const u = rig.inkPass.uniforms
-    u.uPaper.value.set(palette.paper)
-    u.uInk.value.set(palette.ink)
-    u.uInkSoft.value.set(palette.inkSoft)
-    u.uCrimson.value.set(palette.crimson)
-  }, [rig, palette])
+    u.uPaper.value.set(resolved.paper)
+    u.uInk.value.set(resolved.ink)
+    u.uInkSoft.value.set(resolved.inkSoft)
+    u.uCrimson.value.set(resolved.crimson)
+  }, [rig, resolved])
 
   // priority > 0 takes rendering over from R3F's default loop
   useFrame((state, delta) => {
