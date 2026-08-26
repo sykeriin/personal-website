@@ -56,11 +56,11 @@ a {
   text-underline-offset: 0.22em;
 }
 a:hover {
-  color: var(--crimson);
+  color: var(--accent);
 }
 
 :where(a, button, [tabindex]):focus-visible {
-  outline: 2.5px solid var(--crimson);
+  outline: 2.5px solid var(--accent);
   outline-offset: 3px;
 }
 
@@ -271,7 +271,7 @@ button {
   font-size: 0.72rem;
   letter-spacing: 0.26em;
   text-transform: uppercase;
-  color: var(--crimson);
+  color: var(--accent);
 }
 
 .chapter-head__title {
@@ -370,7 +370,7 @@ button {
   line-height: 1.35;
   max-width: 30ch;
   margin: 0;
-  border-left: 3px solid var(--crimson);
+  border-left: 3px solid var(--accent);
   padding-left: 1rem;
   text-wrap: balance;
 }
@@ -383,9 +383,9 @@ button {
   flex: none;
   width: 3.1rem;
   height: 3.1rem;
-  border: 2.5px solid var(--crimson);
+  border: 2.5px solid var(--accent);
   border-radius: 50%;
-  color: var(--crimson);
+  color: var(--accent);
   font-family: var(--font-mono);
   font-size: 0.62rem;
   letter-spacing: 0.04em;
@@ -393,7 +393,7 @@ button {
   line-height: 1.1;
   transform: rotate(-12deg);
   /* Placeholder until the carved seal asset lands; the real one is a scan. */
-  background: color-mix(in srgb, var(--crimson) 7%, transparent);
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
 }
 
 .stamp-row {
@@ -427,8 +427,8 @@ button {
   text-decoration: none;
 }
 .tags li:has(a):hover {
-  border-color: var(--crimson);
-  color: var(--crimson);
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 /* The recruiter's one-glance affordance. Never hidden behind an interaction. */
@@ -450,10 +450,10 @@ button {
   border-bottom: 1px solid rgba(11, 11, 12, 0.1);
 }
 .index-strip a:hover {
-  color: var(--crimson);
+  color: var(--accent);
 }
 .index-strip__num {
-  color: var(--crimson);
+  color: var(--accent);
 }
 .index-strip__tag {
   color: var(--ink-soft);
@@ -469,7 +469,7 @@ button {
   letter-spacing: 0.1em;
   text-transform: uppercase;
   text-decoration: none;
-  background: var(--crimson);
+  background: var(--accent);
   color: var(--paper);
   padding: 0.55rem 1.1rem;
   border: none;
@@ -510,8 +510,8 @@ button {
   padding: 0;
 }
 .beats__dot[aria-current='true'] {
-  background: var(--crimson);
-  border-color: var(--crimson);
+  background: var(--accent);
+  border-color: var(--accent);
 }
 .beats__btn {
   font-family: var(--font-mono);
@@ -547,7 +547,7 @@ button {
   text-decoration: none;
 }
 .turn a:hover {
-  color: var(--crimson);
+  color: var(--accent);
 }
 
 /* ------------------------------------------------------------ tier switch */

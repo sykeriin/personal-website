@@ -51,7 +51,7 @@ uniform float uSlam;
 uniform vec3 uPaper;
 uniform vec3 uInk;
 uniform vec3 uInkSoft;
-uniform vec3 uCrimson;
+uniform vec3 uAccent;
 
 varying vec2 vUv;
 
@@ -164,12 +164,18 @@ void main() {
   tone *= far;
   solid *= far;
 
-  // Crimson is an unlit accent plate — it bypasses the light model entirely,
-  // exactly how a two-colour manga cover was printed with a second ink.
-  // Normalised chroma so the mask is the same in every lit band; a raw channel
-  // difference would let the shading bands show through as pink.
-  float chroma = (beauty.r - max(beauty.g, beauty.b)) / max(beauty.r, 0.001);
-  float crimsonMask = smoothstep(0.35, 0.60, chroma);
+  // The accent is an unlit second plate: it bypasses the light model entirely,
+  // exactly how a two-colour manga page was printed with a second ink.
+  //
+  // Keyed on SATURATION, not on redness. Every other colour in the palette
+  // (paper, paper-dim, tone, ink) is near-neutral, so saturation discriminates
+  // the accent perfectly — and unlike a red-channel test it works whatever hue
+  // the chapter's plate happens to be. Normalising by the max channel keeps the
+  // mask identical across all three lit bands, so shading can't bleed through
+  // as a washed-out tint.
+  float hi = max(max(beauty.r, beauty.g), beauty.b);
+  float lo = min(min(beauty.r, beauty.g), beauty.b);
+  float accentMask = smoothstep(0.22, 0.45, (hi - lo) / max(hi, 0.001));
 
   // Dots are drawn in ink, not in a mid-grey: perceived value comes from dot
   // COVERAGE, the way real screentone works. Light dots on light paper is why
@@ -177,7 +183,7 @@ void main() {
   // tokens.css, which is already ink at low alpha.
   vec3 col = mix(uPaper, uInk, tone * uToneStrength);
   col = mix(col, uInk, solid);
-  col = mix(col, uCrimson, crimsonMask);
+  col = mix(col, uAccent, accentMask);
   col = mix(col, inkCol, edge);
 
   // THE SLAM. A route change is one gesture, and it costs a uniform rather than
@@ -203,7 +209,7 @@ void main() {
     float frame = 1.0 - smoothstep(0.0, 0.055 * uSlam, border);
 
     float hit = clamp(max(lines * 0.9, frame), 0.0, 1.0) * uSlam;
-    col = mix(col, uCrimson, hit * 0.88);
+    col = mix(col, uAccent, hit * 0.88);
   }
 
   gl_FragColor = vec4(col, 1.0);
@@ -245,7 +251,7 @@ export function createInkCompositeShader() {
       uPaper: { value: new THREE.Color('#f7f6f3') },
       uInk: { value: new THREE.Color('#0b0b0c') },
       uInkSoft: { value: new THREE.Color('#2a2a2a') },
-      uCrimson: { value: new THREE.Color('#b01030') },
+      uAccent: { value: new THREE.Color('#b01030') },
     },
     vertexShader,
     fragmentShader,

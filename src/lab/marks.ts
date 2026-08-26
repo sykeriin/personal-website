@@ -10,7 +10,22 @@ import * as brush from 'p5.brush/standalone'
  * --ink or --crimson, and so night mode retints them for free.
  */
 
-type Mark = { name: string; size: [number, number]; draw: () => void }
+type Mark = {
+  name: string
+  size: [number, number]
+  draw: () => void
+  /**
+   * 'alpha' — grayscale-as-alpha, tinted in code. For marks stamped onto things.
+   * 'plate' — opaque light-grey-on-paper. For backdrops, where the shader bands
+   *   the luminance into screentone, so a soft wash becomes organic tone
+   *   density instead of a flat field.
+   */
+  mode?: 'alpha' | 'plate'
+  /** plate only: how dark the wash is allowed to get. Above ~0.4 the backdrop
+      crosses into the solid-ink band and swallows the whole frame. */
+  depth?: number
+  folder?: string
+}
 
 const INK = '#0b0b0c'
 
@@ -59,7 +74,79 @@ function splatter(seedN: number, angleDeg: number, count: number) {
   }
 }
 
+/** A drifting field of water stains, the way tea soaks into a page. */
+function wash(seedN: number, blooms: number, w: number, h: number) {
+  seeded(seedN)
+  brush.noStroke()
+  brush.fillBleed(0.42, 'out')
+  brush.fillTexture(0.82, 0.72)
+  for (let i = 0; i < blooms; i++) {
+    const r = 90 + Math.random() * 260
+    brush.fill(INK, 26 + Math.random() * 34)
+    blob(Math.random() * w, Math.random() * h, r, 13, 0.4, 0.8)
+  }
+}
+
+/** Manga clouds are outlined shapes carrying tone, never volumetrics. */
+function cloudBank(seedN: number, count: number, w: number, h: number) {
+  seeded(seedN)
+  brush.noStroke()
+  brush.fillBleed(0.22, 'out')
+  brush.fillTexture(0.6, 0.5)
+  for (let i = 0; i < count; i++) {
+    const cx = (i + 0.5) * (w / count) + (Math.random() - 0.5) * 120
+    const cy = h * (0.25 + Math.random() * 0.4)
+    const r = 70 + Math.random() * 90
+    brush.fill(INK, 40 + Math.random() * 40)
+    for (let k = 0; k < 5; k++) {
+      blob(cx + (k - 2) * r * 0.55, cy + Math.sin(k) * r * 0.25, r * (0.6 + Math.random() * 0.5), 9, 0.3, 0.9)
+    }
+  }
+}
+
 const marks: Mark[] = [
+  {
+    name: 'bg-wash-01',
+    size: [1024, 640],
+    mode: 'plate',
+    depth: 0.46,
+    folder: 'bg',
+    draw: () => wash(501, 7, 1024, 640),
+  },
+  {
+    name: 'bg-wash-02',
+    size: [1024, 640],
+    mode: 'plate',
+    depth: 0.38,
+    folder: 'bg',
+    draw: () => wash(502, 5, 1024, 640),
+  },
+  {
+    name: 'bg-clouds-01',
+    size: [1024, 640],
+    mode: 'plate',
+    depth: 0.52,
+    folder: 'bg',
+    draw: () => cloudBank(503, 4, 1024, 640),
+  },
+  {
+    name: 'bg-mist-01',
+    size: [1024, 640],
+    mode: 'plate',
+    depth: 0.34,
+    folder: 'bg',
+    draw: () => {
+      seeded(504)
+      brush.noStroke()
+      brush.fillBleed(0.5, 'out')
+      brush.fillTexture(0.9, 0.85)
+      brush.fill(INK, 30)
+      blob(512, 470, 520, 17, 0.36, 0.9)
+      brush.fill(INK, 22)
+      blob(300, 240, 300, 13, 0.4, 0.9)
+    },
+  },
+
   { name: 'splat-01', size: [512, 512], draw: () => splatter(101, -28, 9) },
   { name: 'splat-02', size: [512, 512], draw: () => splatter(102, 14, 12) },
   { name: 'splat-03', size: [512, 512], draw: () => splatter(103, 62, 7) },
@@ -309,6 +396,52 @@ export async function renderContactSheet(): Promise<string> {
   return sheet.toDataURL('image/png')
 }
 
+/**
+ * Opaque plate: coverage becomes a light grey wash on paper. Capped so the
+ * backdrop stays in the paper/tone bands — cross into the solid-ink band and
+ * the wash stops being a background and starts being a black wall.
+ */
+function toPlatePng(source: HTMLCanvasElement, depth: number): string {
+  const w = source.width
+  const h = source.height
+  const out = document.createElement('canvas')
+  out.width = w
+  out.height = h
+  const ctx = out.getContext('2d')!
+  ctx.drawImage(source, 0, 0)
+  const img = ctx.getImageData(0, 0, w, h)
+  const d = img.data
+
+  // Normalise coverage to full range first. A bled wash lays down very little
+  // ink per pixel, so applying depth to the raw coverage yields a plate that is
+  // barely off-white and vanishes entirely once the shader bands it.
+  const coverage = new Float32Array(w * h)
+  let max = 0
+  for (let p = 0; p < w * h; p++) {
+    const i = p * 4
+    const lum = (d[i] * 0.299 + d[i + 1] * 0.587 + d[i + 2] * 0.114) / 255
+    const c = (d[i + 3] / 255) * (1 - lum)
+    coverage[p] = c
+    if (c > max) max = c
+  }
+  const scale = max > 0.001 ? 1 / max : 1
+
+  for (let p = 0; p < w * h; p++) {
+    const i = p * 4
+    // Lift the midtones. A bled wash concentrates almost all its coverage near
+    // zero, so a linear map leaves the plate sitting in the lit band where the
+    // shader renders it as blank paper and the wash may as well not exist.
+    const lifted = Math.pow(Math.min(1, coverage[p] * scale), 0.42)
+    const value = Math.round(255 * (1 - lifted * depth))
+    d[i] = value
+    d[i + 1] = value
+    d[i + 2] = value
+    d[i + 3] = 255
+  }
+  ctx.putImageData(img, 0, 0)
+  return out.toDataURL('image/jpeg', 0.82)
+}
+
 export async function generateMarks(log: (line: string) => void) {
   for (const mark of marks) {
     const canvas = document.createElement('canvas')
@@ -328,10 +461,16 @@ export async function generateMarks(log: (line: string) => void) {
     brush.pop()
     brush.render()
 
-    const url = toAlphaPng(canvas)
-    const res = await fetch(`/__asset?path=marks/${mark.name}.png`, { method: 'POST', body: url })
+    const url =
+      mark.mode === 'plate' ? toPlatePng(canvas, mark.depth ?? 0.3) : toAlphaPng(canvas)
+    const folder = mark.folder ?? 'marks'
+    const ext = mark.mode === 'plate' ? 'jpg' : 'png'
+    const res = await fetch(`/__asset?path=${folder}/${mark.name}.${ext}`, {
+      method: 'POST',
+      body: url,
+    })
     const kb = Math.round((url.length * 0.75) / 1024)
-    log(`${res.ok ? 'wrote' : 'FAILED'} marks/${mark.name}.png  ${mark.size.join('x')}  ~${kb}KB`)
+    log(`${res.ok ? 'wrote' : 'FAILED'} ${folder}/${mark.name}.${ext}  ${mark.size.join('x')}  ~${kb}KB`)
   }
 
   const sheet = await renderContactSheet()

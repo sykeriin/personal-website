@@ -58,9 +58,9 @@ function assetWritePlugin(): Plugin {
           return res.end('POST only')
         }
         const raw = new URL(req.url ?? '/', 'http://x').searchParams.get('path') ?? ''
-        if (!/^[a-z0-9]+\/[a-z0-9][a-z0-9._-]*\.png$/i.test(raw)) {
+        if (!/^[a-z0-9]+\/[a-z0-9][a-z0-9._-]*\.(png|jpg)$/i.test(raw)) {
           res.statusCode = 400
-          return res.end('path must look like <folder>/<name>.png')
+          return res.end('path must look like <folder>/<name>.(png|jpg)')
         }
         const file = path.join(baseDir, raw)
         if (!file.startsWith(baseDir + path.sep)) {
@@ -70,10 +70,12 @@ function assetWritePlugin(): Plugin {
         const chunks: Buffer[] = []
         req.on('data', (c: Buffer) => chunks.push(c))
         req.on('end', () => {
-          const match = /^data:image\/png;base64,(.+)$/s.exec(Buffer.concat(chunks).toString('utf8'))
+          const match = /^data:image\/(?:png|jpeg);base64,(.+)$/s.exec(
+            Buffer.concat(chunks).toString('utf8'),
+          )
           if (!match) {
             res.statusCode = 400
-            return res.end('expected a png data URL')
+            return res.end('expected a png or jpeg data URL')
           }
           fs.mkdirSync(path.dirname(file), { recursive: true })
           fs.writeFileSync(file, Buffer.from(match[1], 'base64'))

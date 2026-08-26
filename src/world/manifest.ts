@@ -32,6 +32,8 @@ export type RouteEntry = {
   scene: SceneKey
   /** Onomatopoeia planted in world space by the slam. */
   sfx: string
+  /** This chapter's second ink. One plate per screen, rotating per chapter. */
+  accent: string
   description: string
 }
 
@@ -56,6 +58,7 @@ const ROUTES: RouteEntry[] = [
     camera: { position: [1.5, 1.4, 7.6], target: [0, 0.15, 0] },
     scene: 'cover',
     sfx: 'THUD',
+    accent: '#b01030',
     description: 'cse at mahe. i build apps, agents, and half-broken pipelines until they behave.',
   },
   {
@@ -69,6 +72,7 @@ const ROUTES: RouteEntry[] = [
     camera: { position: [-1.2, 1.8, 7.4], target: [0, 0.35, -0.4] },
     scene: 'desk',
     sfx: 'HELLO',
+    accent: '#c07818',
     description: 'second year cse at mahe in bengaluru. what i am into, and what i do outside class.',
   },
   {
@@ -82,6 +86,7 @@ const ROUTES: RouteEntry[] = [
     camera: { position: [0.3, 2.2, 7.8], target: [0, 0.2, 0] },
     scene: 'workshop',
     sfx: 'CLANG',
+    accent: '#1f6f7a',
     description: 'petally internship, and leading opencv preprocessing on iaf runway debris detection.',
   },
   {
@@ -95,6 +100,7 @@ const ROUTES: RouteEntry[] = [
     camera: { position: [0, 1.15, 6.4], target: [0, 0.15, 0] },
     scene: 'case',
     sfx: 'BAM',
+    accent: '#b01030',
     description: 'five things that actually left the laptop — voice-first os, ota crypto, and more.',
   },
   {
@@ -108,6 +114,7 @@ const ROUTES: RouteEntry[] = [
     camera: { position: [0, 2.4, 9.2], target: [0, 1.6, 0] },
     scene: 'tree',
     sfx: 'ZING',
+    accent: '#35704a',
     description: 'languages, ai/ml, frameworks and infra — plus the stamps and the side quests.',
   },
   {
@@ -121,6 +128,7 @@ const ROUTES: RouteEntry[] = [
     camera: { position: [0.8, 1.6, 6.8], target: [0, 0.3, -0.3] },
     scene: 'desk-closing',
     sfx: 'SNAP',
+    accent: '#6a3d7c',
     description: 'wanna build something weird, talk ai stuff, or trade muay thai tips? i am around.',
   },
 ]
@@ -131,6 +139,15 @@ export const routes = ROUTES
 export const tabs = ROUTES.filter((r) => r.tab !== null)
 
 const byPath = new Map(ROUTES.map((r) => [r.path, r]))
+
+/** Each project carries its own plate, so the colour tells you where you are. */
+const PROJECT_ACCENTS: Record<string, string> = {
+  alter: '#6a3d7c', // voice, ethereal
+  chainguard: '#b01030', // it won first
+  verdant: '#35704a', // textiles, circular economy
+  cloudsense: '#c07818', // the invoice that hurts
+  roadsense: '#1f6f7a', // infrastructure
+}
 
 /** Template for /projects/:slug — the camera dives inside the chosen artifact. */
 function projectEntry(slug: string): RouteEntry {
@@ -146,6 +163,7 @@ function projectEntry(slug: string): RouteEntry {
     camera: { position: [0, 0.6, 3.4], target: [0, 0.3, 0] },
     scene: 'artifact',
     sfx: 'FWSH',
+    accent: PROJECT_ACCENTS[slug] ?? '#b01030',
     description: project ? `${project.tagline}. ${project.blurb}` : 'A project from Volume 02.',
   }
 }
@@ -160,6 +178,7 @@ export const notFound: RouteEntry = {
   camera: { position: [0, 0.8, 6.0], target: [0, 0.2, 0] },
   scene: 'void',
   sfx: 'HUH',
+  accent: '#b01030',
   description: "this page isn't in the volume.",
 }
 

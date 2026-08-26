@@ -29,9 +29,12 @@
   --tone: #c4c0b8;
 
   /* --- accent ----------------------------------------------------------- */
-  /* An unlit plate: crimson bypasses the light model entirely, the way a
-     two-colour manga cover was printed with a second ink. One per screen. */
+  /* The second ink. Manga volumes printed a different second colour per
+     chapter, so the accent ROTATES per route rather than being crimson
+     everywhere — variety without breaking the one-plate-per-screen rule.
+     Set at runtime from the route manifest; crimson is the identity default. */
   --crimson: #b01030;
+  --accent: #b01030;
 
   /* --- night ------------------------------------------------------------ */
   /* A substitution, not an addition. Traditional aizuri-e prints pulled night

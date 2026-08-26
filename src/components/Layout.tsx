@@ -6,6 +6,7 @@ import { TierSwitch } from './TierSwitch'
 import { SoundToggle } from '../audio/SoundToggle'
 import { useRenderTier, tierUsesWebGL } from '../hooks/useRenderTier'
 import { usePresence } from '../hooks/usePresence'
+import { entryFor } from '../world/manifest'
 
 /** three.js lives behind a dynamic import, so the paper tier never downloads it. */
 const WorldCanvas = lazy(() => import('../world/WorldCanvas'))
@@ -24,6 +25,13 @@ export function Layout() {
     if (late) document.documentElement.dataset.inkMode = 'night'
     else delete document.documentElement.dataset.inkMode
   }, [late])
+
+  // One plate per screen, but a different one per chapter. Setting the CSS
+  // variable drives the DOM and, because theme.ts reads computed styles, the
+  // shader's accent uniform follows on the next frame.
+  useEffect(() => {
+    document.documentElement.style.setProperty('--accent', entryFor(location.pathname).accent)
+  }, [location.pathname])
 
   // Without this, keyboard users land back at the top of the tab order after
   // every page turn and have to walk the whole nav again.

@@ -16,6 +16,8 @@ export type InkPalette = {
   ink: string
   inkSoft: string
   crimson: string
+  /** The chapter's second ink. Rotates per route; crimson is only its default. */
+  accent: string
   indigo: string
 }
 
@@ -31,6 +33,7 @@ const FALLBACK: InkPalette = {
   ink: '#0b0b0c',
   inkSoft: '#2a2a2a',
   crimson: '#b01030',
+  accent: '#b01030',
   indigo: '#16233d',
 }
 
@@ -66,6 +69,7 @@ export function readInkTheme(root?: HTMLElement): InkTheme {
       ink: text(style, '--ink', FALLBACK.ink),
       inkSoft: text(style, '--ink-soft', FALLBACK.inkSoft),
       crimson: text(style, '--crimson', FALLBACK.crimson),
+      accent: text(style, '--accent', FALLBACK.accent),
       indigo: text(style, '--indigo', FALLBACK.indigo),
     }),
     params: Object.freeze({

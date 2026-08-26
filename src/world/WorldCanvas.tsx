@@ -133,9 +133,17 @@ function Stage({
   tier: RenderTier
   reduceMotion: boolean
 }) {
-  const theme = useMemo(() => readInkTheme(), [])
+  const base = useMemo(() => readInkTheme(), [])
   const slam = useSlam(pathname, !reduceMotion)
   const entry = entryFor(pathname)
+
+  // The accent comes straight from the manifest rather than by re-reading the
+  // CSS variable. Layout sets that variable in an effect, which lands AFTER
+  // this render, so reading it here would always be one route behind.
+  const theme = useMemo(
+    () => ({ ...base, palette: { ...base.palette, accent: entry.accent } }),
+    [base, entry.accent],
+  )
 
   return (
     <>
@@ -154,7 +162,7 @@ function Stage({
       {import.meta.env.DEV ? <DevBridge /> : null}
 
       <Suspense fallback={null}>
-        <SceneFor sceneKey={entry.scene} pathname={pathname} />
+        <SceneFor sceneKey={entry.scene} pathname={pathname} palette={theme.palette} />
       </Suspense>
 
       {tierUsesPostProcessing(tier) ? (
