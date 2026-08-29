@@ -47,6 +47,7 @@ uniform float uSolidStart;
 uniform float uToneFar;
 uniform float uToneStrength;
 uniform float uSlam;
+uniform vec3 uBloom; // x, y in screen UV; z = radius in screen heights
 
 uniform vec3 uPaper;
 uniform vec3 uInk;
@@ -186,6 +187,35 @@ void main() {
   col = mix(col, uAccent, accentMask);
   col = mix(col, inkCol, edge);
 
+  // THE BLOOM. The page renders as a two-ink print, but where the visitor
+  // touches it, colour spreads like water into paper: inside the bloom the
+  // beauty pass's true colours show through, still banded and still inked, so
+  // it reads as the print coming alive rather than a spotlight.
+  if (uBloom.z > 0.003) {
+    vec2 screen = gl_FragCoord.xy / uResolution;
+    vec2 bp = screen - uBloom.xy;
+    bp.x *= uResolution.x / max(uResolution.y, 1.0);
+    float bd = length(bp);
+    // A wobbling edge, boiling at the same 10fps as the linework — a smooth
+    // circle reads as a flashlight, a creeping irregular one reads as wet ink.
+    bd += (vnoise(screen * 9.0 + boil * 0.5) - 0.5) * uBloom.z * 0.55;
+    float inside = 1.0 - smoothstep(uBloom.z * 0.45, uBloom.z, bd);
+
+    // Reveal the surface's HUE at print lightness, not its raw lit value —
+    // toon shading puts much of any object in dark bands, and blooming those
+    // in raw reads as a photograph developing, all murk. Normalising by the
+    // max channel recovers the ink's true colour; the quantised luminance adds
+    // back a whisper of banding so it still reads as printed.
+    vec3 hue = beauty / max(hi, 0.001);
+    vec3 colourCol = hue * mix(0.88, 1.0, q);
+    colourCol = mix(colourCol, uInk, tone * uToneStrength * 0.35);
+    colourCol = mix(colourCol, uInk, solid * 0.8);
+    colourCol = mix(colourCol, inkCol, edge);
+    // Only reveal where there is colour to reveal — neutral paper stays paper.
+    float sat = (hi - lo) / max(hi, 0.001);
+    col = mix(col, colourCol, inside * smoothstep(0.10, 0.32, sat));
+  }
+
   // THE SLAM. A route change is one gesture, and it costs a uniform rather than
   // a remount: speed lines burst from centre while a crimson impact frame slams
   // inward from the edges. Runs in the pass that is already executing.
@@ -247,6 +277,7 @@ export function createInkCompositeShader() {
       uToneFar: { value: 0.55 },
       uToneStrength: { value: 0.85 },
       uSlam: { value: 0 },
+      uBloom: { value: new THREE.Vector3(0.5, 0.5, 0) },
 
       uPaper: { value: new THREE.Color('#f7f6f3') },
       uInk: { value: new THREE.Color('#0b0b0c') },

@@ -5,6 +5,8 @@ import { InkPipeline } from '../three/InkPipeline'
 import { readInkTheme } from '../three/theme'
 import { tierUsesPostProcessing, type RenderTier } from '../hooks/useRenderTier'
 import { entryFor } from './manifest'
+import { bloom, trackPointer } from './bloom'
+import { useHotspots } from './hotspots'
 import { SceneFor } from './scenes'
 
 /**
@@ -21,6 +23,8 @@ type Props = {
   tier: RenderTier
   reduceMotion: boolean
   dpr: [number, number] | number
+  /** Explore mode: props become clickable. */
+  explore: boolean
   eventSource: React.RefObject<HTMLElement | null>
 }
 
@@ -128,10 +132,12 @@ function Stage({
   pathname,
   tier,
   reduceMotion,
+  explore,
 }: {
   pathname: string
   tier: RenderTier
   reduceMotion: boolean
+  explore: boolean
 }) {
   const base = useMemo(() => readInkTheme(), [])
   const slam = useSlam(pathname, !reduceMotion)
@@ -144,6 +150,18 @@ function Stage({
     () => ({ ...base, palette: { ...base.palette, accent: entry.accent } }),
     [base, entry.accent],
   )
+
+  // The bloom follows the pointer everywhere at a small radius so the visitor
+  // discovers the mechanic without being told; hovering something pickable
+  // widens it, and picking it up opens it right out.
+  const { hovered, active } = useHotspots()
+  useEffect(() => {
+    window.addEventListener('pointermove', trackPointer)
+    return () => window.removeEventListener('pointermove', trackPointer)
+  }, [])
+  useEffect(() => {
+    bloom.boost = active ? 0.55 : hovered ? 0.22 : 0
+  }, [hovered, active])
 
   return (
     <>
@@ -162,7 +180,12 @@ function Stage({
       {import.meta.env.DEV ? <DevBridge /> : null}
 
       <Suspense fallback={null}>
-        <SceneFor sceneKey={entry.scene} pathname={pathname} palette={theme.palette} />
+        <SceneFor
+          sceneKey={entry.scene}
+          pathname={pathname}
+          palette={theme.palette}
+          explore={explore}
+        />
       </Suspense>
 
       {tierUsesPostProcessing(tier) ? (
@@ -171,6 +194,7 @@ function Stage({
           palette={theme.palette}
           frozen={reduceMotion}
           slamRef={slam}
+          bloomRef={bloom}
         />
       ) : null}
     </>
@@ -182,6 +206,7 @@ export default function WorldCanvas({
   tier,
   reduceMotion,
   dpr,
+  explore,
   eventSource,
 }: Props) {
   return (
@@ -204,7 +229,12 @@ export default function WorldCanvas({
         {/* pathname is prop-drilled, never read from context: R3F renders
             through a separate reconciler, so react-router's context is not
             available inside the canvas. */}
-        <Stage pathname={pathname} tier={tier} reduceMotion={reduceMotion} />
+        <Stage
+          pathname={pathname}
+          tier={tier}
+          reduceMotion={reduceMotion}
+          explore={explore}
+        />
       </Canvas>
     </div>
   )

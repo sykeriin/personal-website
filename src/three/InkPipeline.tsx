@@ -24,13 +24,15 @@ type Props = {
   frozen?: boolean
   /** 0..1 impact intensity for the route-change slam. Read every frame. */
   slamRef?: { current: number }
+  /** Colour bloom target: screen UV + boost. Damped here, read every frame. */
+  bloomRef?: { x: number; y: number; boost: number }
 }
 
 /** Cleared to "facing camera, infinitely far" so silhouettes register against nothing. */
 const FAR_CLEAR = new THREE.Color(0, 0, 1)
 const prevClear = new THREE.Color()
 
-export function InkPipeline({ params, palette, frozen = false, slamRef }: Props) {
+export function InkPipeline({ params, palette, frozen = false, slamRef, bloomRef }: Props) {
   const resolved = palette ?? readInkTheme().palette
   const gl = useThree((s) => s.gl)
   const scene = useThree((s) => s.scene)
@@ -143,6 +145,18 @@ export function InkPipeline({ params, palette, frozen = false, slamRef }: Props)
 
     rig.inkPass.uniforms.uTime.value = frozen ? 0 : state.clock.elapsedTime
     rig.inkPass.uniforms.uSlam.value = slamRef?.current ?? 0
+
+    if (bloomRef) {
+      const target = rig.inkPass.uniforms.uBloom.value as THREE.Vector3
+      // Radius in screen heights: a small always-on halo teaches the mechanic;
+      // hover and pick-up widen it. Frozen (reduced motion) pins a generous
+      // static bloom instead of chasing the pointer.
+      const radius = frozen ? 0.5 : 0.07 + bloomRef.boost
+      const speed = 4.5
+      target.x = THREE.MathUtils.damp(target.x, frozen ? 0.5 : bloomRef.x, speed, delta)
+      target.y = THREE.MathUtils.damp(target.y, frozen ? 0.55 : bloomRef.y, speed, delta)
+      target.z = THREE.MathUtils.damp(target.z, radius, 3, delta)
+    }
     rig.composer.render(delta)
   }, 1)
 

@@ -177,7 +177,7 @@ button {
     background: var(--paper);
   }
   .edge-tabs a[aria-current='page'] {
-    background: var(--ink);
+    background: var(--accent);
     color: var(--paper);
   }
   .edge-tabs__brand {
@@ -212,7 +212,7 @@ button {
     white-space: nowrap;
   }
   .edge-tabs a[aria-current='page'] {
-    background: var(--ink);
+    background: var(--accent);
     color: var(--paper);
   }
   .edge-tabs__brand {
@@ -237,21 +237,34 @@ button {
   gap: 2.25rem;
 }
 
-/* In world mode the same markup becomes a bounded slab over the scene. The
-   PAGE never scrolls; a text card occasionally does, which is the honest
-   fallback for a short viewport. */
+/* In world mode the page reads like a story-mode game: the prose lives in a
+   dialogue bar along the bottom, the world plays out above it. The PAGE never
+   scrolls; the bar's inner column can, which is the honest fallback for long
+   text on a short viewport. */
 .shell[data-chrome='world'] .chapter {
   position: absolute;
-  left: clamp(1rem, 4vw, 3rem);
-  bottom: clamp(1rem, 4vw, 3rem);
-  width: min(34rem, calc(100% - 2rem));
-  max-height: min(78dvh, 46rem);
+  left: clamp(0.75rem, 2.5vw, 2rem);
+  right: clamp(0.75rem, 2.5vw, 2rem);
+  bottom: clamp(0.75rem, 2vw, 1.5rem);
+  width: auto;
+  max-height: min(38dvh, 21rem);
   overflow-y: auto;
-  padding: clamp(1.1rem, 3vw, 1.7rem);
-  gap: 1.25rem;
-  background: color-mix(in srgb, var(--paper) 93%, transparent);
+  padding: clamp(1rem, 2.5vw, 1.5rem) clamp(1.1rem, 3vw, 2rem);
+  gap: 0.9rem;
+  background: color-mix(in srgb, var(--paper) 94%, transparent);
   border: 3px solid var(--ink);
-  backdrop-filter: blur(1px);
+  box-shadow: 0.45rem 0.45rem 0 color-mix(in srgb, var(--accent) 30%, transparent);
+}
+
+/* Inside the bar, panels flow as columns like dialogue choices, not a stack. */
+.shell[data-chrome='world'] .chapter .panel-grid {
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+}
+.shell[data-chrome='world'] .chapter .panel {
+  padding: 0.7rem 0.9rem;
+}
+.shell[data-chrome='world'] .chapter .lede {
+  font-size: 1rem;
 }
 
 /* ---------------------------------------------------------- chapter head */
@@ -267,11 +280,15 @@ button {
 
 .chapter-head__eyebrow {
   grid-column: 1 / -1;
+  justify-self: start;
   font-family: var(--font-mono);
   font-size: 0.72rem;
   letter-spacing: 0.26em;
   text-transform: uppercase;
-  color: var(--accent);
+  background: var(--accent);
+  color: var(--paper);
+  padding: 0.22rem 0.7rem 0.18rem;
+  transform: skewX(-8deg) rotate(-0.6deg);
 }
 
 .chapter-head__title {
@@ -281,6 +298,9 @@ button {
   margin: 0;
   letter-spacing: -0.01em;
   text-wrap: balance;
+  /* misprint offset: the display face registers slightly off-plate, the way a
+     two-colour print misregisters. One shadow, no glow. */
+  text-shadow: 0.045em 0.045em 0 color-mix(in srgb, var(--accent) 55%, transparent);
 }
 
 .shell[data-chrome='world'] .chapter-head__title {
@@ -340,6 +360,10 @@ button {
 
 .panel h2,
 .panel h3 {
+  /* every panel heading carries a small plate tick, so the chapter's colour
+     shows up inside the prose, not just around it */
+  border-left: 5px solid var(--accent);
+  padding-left: 0.55rem;
   font-family: var(--font-display);
   font-size: 1.15rem;
   line-height: 1.2;
@@ -554,8 +578,8 @@ button {
 
 .tier-switch {
   position: fixed;
-  left: 0.6rem;
-  bottom: 0.6rem;
+  left: clamp(0.75rem, 2.5vw, 2rem);
+  bottom: 0.35rem;
   z-index: 45;
   display: flex;
   align-items: center;
@@ -577,9 +601,12 @@ button {
   color: var(--paper);
   background: var(--ink);
 }
+.shell[data-chrome='paper'] .tier-switch {
+  bottom: 0.6rem;
+}
 @media (max-width: 47.99rem) {
   .tier-switch {
-    bottom: 3.8rem;
+    bottom: 3.55rem;
   }
 }
 
@@ -592,5 +619,156 @@ button {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+/* ------------------------------------------------------------ explore mode */
+
+/*
+ * Explore hands the page over to the world: the prose slab collapses to its
+ * heading and the content arrives by clicking props instead. `read` stays the
+ * default, and everything hidden here is one toggle away — this is a second way
+ * through the same material, never the only way.
+ */
+.shell[data-mode='explore'] .chapter > *:not(.chapter-head):not(.turn):not(.hotspot-list) {
+  display: none;
+}
+
+.shell[data-mode='explore'] .chapter {
+  max-height: none;
+  overflow: visible;
+}
+
+.hotspot-list {
+  display: none;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+}
+.shell[data-mode='explore'] .hotspot-list {
+  display: flex;
+  position: fixed;
+  left: clamp(0.75rem, 2.5vw, 2rem);
+  right: clamp(0.75rem, 2.5vw, 2rem);
+  bottom: calc(min(38dvh, 21rem) + 1.6rem);
+  z-index: 45;
+  pointer-events: auto;
+}
+.hotspot-list button {
+  background: color-mix(in srgb, var(--paper) 92%, transparent);
+}
+.hotspot-list__hint {
+  color: var(--ink-soft);
+  margin-right: 0.4rem;
+}
+.hotspot-list button {
+  background: none;
+  border: 1.5px solid var(--ink);
+  color: inherit;
+  padding: 0.2rem 0.55rem;
+  font-family: inherit;
+  font-size: inherit;
+}
+.hotspot-list button:hover,
+.hotspot-list button[aria-pressed='true'] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--paper);
+}
+
+.reveal {
+  position: fixed;
+  left: clamp(0.75rem, 2.5vw, 2rem);
+  right: clamp(0.75rem, 2.5vw, 2rem);
+  bottom: clamp(0.75rem, 2vw, 1.5rem);
+  z-index: 50;
+  max-height: min(38dvh, 21rem);
+  overflow-y: auto;
+  padding: 1rem clamp(1.1rem, 3vw, 2rem) 1.2rem;
+  background: color-mix(in srgb, var(--paper) 95%, transparent);
+  border: 3px solid var(--ink);
+  border-top: 8px solid var(--accent);
+  box-shadow: 0.45rem 0.45rem 0 color-mix(in srgb, var(--accent) 30%, transparent);
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  pointer-events: auto;
+}
+.reveal:focus {
+  outline: none;
+}
+.reveal__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+}
+.reveal__eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.reveal__close {
+  background: none;
+  border: none;
+  font-size: 1.3rem;
+  line-height: 1;
+  padding: 0 0.2rem;
+  color: var(--ink-soft);
+}
+.reveal__close:hover {
+  color: var(--accent);
+}
+.reveal__title {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  line-height: 1.15;
+  margin: 0;
+}
+.reveal p {
+  margin: 0;
+  font-size: 0.98rem;
+}
+
+@media (max-width: 47.99rem) {
+  .reveal {
+    bottom: 3.6rem;
+    max-height: 46dvh;
+  }
+}
+
+.mode-switch {
+  position: fixed;
+  left: clamp(0.75rem, 2.5vw, 2rem);
+  bottom: auto;
+  top: 0.6rem;
+  z-index: 45;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  background: color-mix(in srgb, var(--paper) 92%, transparent);
+  border: 1.5px solid var(--ink);
+  padding: 0.25rem 0.5rem;
+}
+.mode-switch button {
+  background: none;
+  border: none;
+  color: var(--ink-soft);
+  padding: 0.1rem 0.3rem;
+}
+.mode-switch button[aria-pressed='true'] {
+  color: var(--paper);
+  background: var(--ink);
+}
+@media (max-width: 47.99rem) {
+  .mode-switch {
+    top: 0.5rem;
   }
 }

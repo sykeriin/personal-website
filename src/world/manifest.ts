@@ -55,10 +55,10 @@ const ROUTES: RouteEntry[] = [
     page: 'cover',
     tab: null,
     next: '/origin',
-    camera: { position: [1.5, 1.4, 7.6], target: [0, 0.15, 0] },
+    camera: { position: [1.6, 1.5, 7.8], target: [0.2, 0.55, 0] },
     scene: 'cover',
     sfx: 'THUD',
-    accent: '#b01030',
+    accent: '#d3103a',
     description: 'cse at mahe. i build apps, agents, and half-broken pipelines until they behave.',
   },
   {
@@ -69,10 +69,10 @@ const ROUTES: RouteEntry[] = [
     tab: '01 origin',
     prev: '/',
     next: '/training',
-    camera: { position: [-1.2, 1.8, 7.4], target: [0, 0.35, -0.4] },
+    camera: { position: [-1.0, 1.7, 7.2], target: [0.2, 0.5, -0.3] },
     scene: 'desk',
     sfx: 'HELLO',
-    accent: '#c07818',
+    accent: '#ef8b1d',
     description: 'second year cse at mahe in bengaluru. what i am into, and what i do outside class.',
   },
   {
@@ -83,10 +83,10 @@ const ROUTES: RouteEntry[] = [
     tab: '02 training',
     prev: '/origin',
     next: '/projects',
-    camera: { position: [0.3, 2.2, 7.8], target: [0, 0.2, 0] },
+    camera: { position: [0.2, 1.9, 8.0], target: [0, 0.6, 0] },
     scene: 'workshop',
     sfx: 'CLANG',
-    accent: '#1f6f7a',
+    accent: '#12a5b8',
     description: 'petally internship, and leading opencv preprocessing on iaf runway debris detection.',
   },
   {
@@ -97,10 +97,10 @@ const ROUTES: RouteEntry[] = [
     tab: '03 projects',
     prev: '/training',
     next: '/skill-tree',
-    camera: { position: [0, 1.15, 6.4], target: [0, 0.15, 0] },
+    camera: { position: [0, 1.2, 6.6], target: [0, 0.35, 0] },
     scene: 'case',
     sfx: 'BAM',
-    accent: '#b01030',
+    accent: '#d3103a',
     description: 'five things that actually left the laptop — voice-first os, ota crypto, and more.',
   },
   {
@@ -111,10 +111,10 @@ const ROUTES: RouteEntry[] = [
     tab: 'ex skills',
     prev: '/projects',
     next: '/contact',
-    camera: { position: [0, 2.4, 9.2], target: [0, 1.6, 0] },
+    camera: { position: [0.3, 2.6, 9.6], target: [0, 1.9, 0] },
     scene: 'tree',
     sfx: 'ZING',
-    accent: '#35704a',
+    accent: '#3fae5f',
     description: 'languages, ai/ml, frameworks and infra — plus the stamps and the side quests.',
   },
   {
@@ -125,10 +125,10 @@ const ROUTES: RouteEntry[] = [
     tab: 'end say hi',
     prev: '/skill-tree',
     next: '/',
-    camera: { position: [0.8, 1.6, 6.8], target: [0, 0.3, -0.3] },
+    camera: { position: [0.8, 1.5, 7.0], target: [0.1, 0.55, -0.2] },
     scene: 'desk-closing',
     sfx: 'SNAP',
-    accent: '#6a3d7c',
+    accent: '#8d4fc2',
     description: 'wanna build something weird, talk ai stuff, or trade muay thai tips? i am around.',
   },
 ]
@@ -142,11 +142,11 @@ const byPath = new Map(ROUTES.map((r) => [r.path, r]))
 
 /** Each project carries its own plate, so the colour tells you where you are. */
 const PROJECT_ACCENTS: Record<string, string> = {
-  alter: '#6a3d7c', // voice, ethereal
-  chainguard: '#b01030', // it won first
-  verdant: '#35704a', // textiles, circular economy
-  cloudsense: '#c07818', // the invoice that hurts
-  roadsense: '#1f6f7a', // infrastructure
+  alter: '#8d4fc2', // voice, ethereal
+  chainguard: '#d3103a', // it won first
+  verdant: '#3fae5f', // textiles, circular economy
+  cloudsense: '#ef8b1d', // the invoice that hurts
+  roadsense: '#12a5b8', // infrastructure
 }
 
 /** Template for /projects/:slug — the camera dives inside the chosen artifact. */
@@ -160,10 +160,10 @@ function projectEntry(slug: string): RouteEntry {
     tab: '03 projects',
     prev: '/projects',
     next: '/skill-tree',
-    camera: { position: [0, 0.6, 3.4], target: [0, 0.3, 0] },
+    camera: { position: [0.2, 0.8, 4.8], target: [0.2, 0.45, 0] },
     scene: 'artifact',
     sfx: 'FWSH',
-    accent: PROJECT_ACCENTS[slug] ?? '#b01030',
+    accent: PROJECT_ACCENTS[slug] ?? '#d3103a',
     description: project ? `${project.tagline}. ${project.blurb}` : 'A project from Volume 02.',
   }
 }

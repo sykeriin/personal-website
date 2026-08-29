@@ -1,0 +1,154 @@
+import { useSyncExternalStore } from 'react'
+import { achievements, experiences, origin, projects, skills, site, funThings } from '../data/content'
+
+/**
+ * Bridges the 3D world and the DOM. R3F renders through its own reconciler, so
+ * a click on a mesh cannot reach a DOM panel through React context — this is a
+ * tiny external store instead, which both trees can subscribe to.
+ *
+ * Deliberately not zustand: it is only transitively present via drei, and
+ * depending on a transitive dependency is fragile for ~30 lines of code.
+ */
+
+type State = { hovered: string | null; active: string | null }
+
+let state: State = { hovered: null, active: null }
+const listeners = new Set<() => void>()
+
+function set(next: Partial<State>) {
+  const merged = { ...state, ...next }
+  if (merged.hovered === state.hovered && merged.active === state.active) return
+  state = merged
+  listeners.forEach((listener) => listener())
+}
+
+export const hotspots = {
+  hover: (id: string | null) => set({ hovered: id }),
+  activate: (id: string | null) => set({ active: id, hovered: null }),
+  clear: () => set({ active: null, hovered: null }),
+}
+
+function subscribe(listener: () => void) {
+  listeners.add(listener)
+  return () => listeners.delete(listener)
+}
+
+/** getSnapshot must return a stable reference between changes or React loops. */
+function snapshot() {
+  return state
+}
+
+export function useHotspots(): State {
+  return useSyncExternalStore(subscribe, snapshot, snapshot)
+}
+
+/* ---------------------------------------------------------------- reveals */
+
+export type Reveal = {
+  id: string
+  eyebrow: string
+  title: string
+  body: string[]
+  tags?: string[]
+  link?: { to: string; label: string; external?: boolean }
+}
+
+function build(): Record<string, Reveal> {
+  const map: Record<string, Reveal> = {}
+
+  map['cover-book'] = {
+    id: 'cover-book',
+    eyebrow: 'Volume 02',
+    title: site.name,
+    body: [site.coverLine],
+    link: { to: '/origin', label: 'open it' },
+  }
+
+  origin.panels.forEach((panel, i) => {
+    map[`origin-${i}`] = {
+      id: `origin-${i}`,
+      eyebrow: 'Chapter 01',
+      title: panel.title,
+      body: [panel.body],
+    }
+  })
+
+  experiences.forEach((job) => {
+    map[`exp-${job.id}`] = {
+      id: `exp-${job.id}`,
+      eyebrow: `${job.period} · ${job.role}`,
+      title: job.org,
+      body: [job.headline, ...job.story],
+      link: job.url ? { to: job.url, label: `visit ${job.org.toLowerCase()}`, external: true } : undefined,
+    }
+  })
+
+  projects.forEach((project) => {
+    map[`proj-${project.slug}`] = {
+      id: `proj-${project.slug}`,
+      eyebrow: project.award ? `Chapter 03 · ${project.award}` : 'Chapter 03',
+      title: project.title,
+      body: [project.tagline, project.blurb],
+      tags: project.stack,
+      link: { to: `/projects/${project.slug}`, label: 'pick it up' },
+    }
+  })
+
+  const groups: Array<[string, string, string[]]> = [
+    ['languages', 'languages', skills.languages],
+    ['aiml', 'ai / ml', skills.aiml],
+    ['frameworks', 'frameworks', skills.frameworks],
+    ['infra', 'infra', skills.infra],
+  ]
+  groups.forEach(([key, title, items]) => {
+    map[`skill-${key}`] = {
+      id: `skill-${key}`,
+      eyebrow: 'Extra',
+      title,
+      body: [`${items.length} of them.`],
+      tags: items,
+    }
+  })
+
+  map['skill-stamps'] = {
+    id: 'skill-stamps',
+    eyebrow: 'Extra',
+    title: 'stamps i earned',
+    body: achievements.map((a) => `${a.stamp} — ${a.label}`),
+  }
+
+  map['contact-envelope'] = {
+    id: 'contact-envelope',
+    eyebrow: 'Last Page',
+    title: 'say hi',
+    body: [
+      "wanna build something weird, talk ai stuff, or trade muay thai tips? i'm around.",
+      site.email,
+    ],
+    link: { to: `mailto:${site.email}`, label: 'mail me', external: true },
+  }
+
+  map['contact-offpanel'] = {
+    id: 'contact-offpanel',
+    eyebrow: 'Last Page',
+    title: 'off-panel',
+    body: [funThings, `rn: ${site.currentlyBuilding}`],
+  }
+
+  return map
+}
+
+export const reveals = build()
+
+/** Which props are pickable on a given route. Drives the keyboard list too. */
+export function hotspotsForRoute(pathname: string): string[] {
+  if (pathname === '/') return ['cover-book']
+  if (pathname === '/origin') return origin.panels.map((_, i) => `origin-${i}`)
+  if (pathname === '/training') return experiences.map((job) => `exp-${job.id}`)
+  if (pathname === '/projects') return projects.map((project) => `proj-${project.slug}`)
+  if (pathname === '/skill-tree') {
+    return ['skill-languages', 'skill-aiml', 'skill-frameworks', 'skill-infra', 'skill-stamps']
+  }
+  if (pathname === '/contact') return ['contact-envelope', 'contact-offpanel']
+  return []
+}

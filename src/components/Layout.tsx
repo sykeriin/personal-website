@@ -6,7 +6,11 @@ import { TierSwitch } from './TierSwitch'
 import { SoundToggle } from '../audio/SoundToggle'
 import { useRenderTier, tierUsesWebGL } from '../hooks/useRenderTier'
 import { usePresence } from '../hooks/usePresence'
+import { useChromeMode } from '../hooks/useChromeMode'
 import { entryFor } from '../world/manifest'
+import { hotspots, hotspotsForRoute } from '../world/hotspots'
+import { HotspotList, RevealPanel } from './RevealPanel'
+import { ModeSwitch } from './ModeSwitch'
 
 /** three.js lives behind a dynamic import, so the paper tier never downloads it. */
 const WorldCanvas = lazy(() => import('../world/WorldCanvas'))
@@ -15,9 +19,13 @@ export function Layout() {
   const location = useLocation()
   const { tier, pinned, reduceMotion, dpr, setTier } = useRenderTier()
   const { late } = usePresence()
+  const [mode, setMode] = useChromeMode()
   const rootRef = useRef<HTMLDivElement>(null)
 
   const world = tierUsesWebGL(tier)
+  // Explore needs props to click, so it only exists where there is a world.
+  const explore = world && mode === 'explore'
+  const ids = hotspotsForRoute(location.pathname)
 
   // The visitor's local hour swaps the ink plate to indigo. theme.ts reads the
   // CSS variables, so the 3D layer follows on the next frame with no wiring.
@@ -38,10 +46,17 @@ export function Layout() {
   useEffect(() => {
     const heading = document.getElementById('chapter-title')
     heading?.focus({ preventScroll: true })
+    // A reveal belongs to the spread it was opened on.
+    hotspots.clear()
   }, [location.pathname])
 
   return (
-    <div className="shell" data-chrome={world ? 'world' : 'paper'} ref={rootRef}>
+    <div
+      className="shell"
+      data-chrome={world ? 'world' : 'paper'}
+      data-mode={explore ? 'explore' : 'read'}
+      ref={rootRef}
+    >
       <a className="skip-link" href="#chapter-title">
         skip to the words
       </a>
@@ -55,6 +70,7 @@ export function Layout() {
             tier={tier}
             reduceMotion={reduceMotion}
             dpr={dpr}
+            explore={explore}
             eventSource={rootRef}
           />
         </Suspense>
@@ -63,7 +79,11 @@ export function Layout() {
       <div className="ink-dom">
         <EdgeTabs />
         <Outlet />
+        {explore ? <HotspotList ids={ids} /> : null}
       </div>
+
+      {explore ? <RevealPanel /> : null}
+      {world ? <ModeSwitch mode={mode} onChange={setMode} /> : null}
 
       <TierSwitch tier={tier} pinned={pinned} onChange={setTier} />
       <SoundToggle route={location.pathname} enabled={!reduceMotion} />
