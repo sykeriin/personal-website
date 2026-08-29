@@ -81,7 +81,6 @@ export function HotspotList({ ids }: { ids: string[] }) {
 
   return (
     <nav className="hotspot-list" aria-label="Things you can pick up">
-      <span className="hotspot-list__hint">click things in the world, or:</span>
       {ids.map((id) => {
         const reveal = reveals[id]
         if (!reveal) return null
