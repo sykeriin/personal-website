@@ -46,9 +46,13 @@ export function Layout() {
   useEffect(() => {
     const heading = document.getElementById('chapter-title')
     heading?.focus({ preventScroll: true })
-    // A reveal belongs to the spread it was opened on.
+    // A reveal belongs to the spread it was opened on…
     hotspots.clear()
-  }, [location.pathname])
+    // …except a project you just picked up: arriving on its page in explore
+    // mode opens the story itself, so the pick-it-up click visibly lands.
+    const detail = /^\/projects\/([a-z0-9-]+)\/?$/i.exec(location.pathname)
+    if (detail && explore) hotspots.activate(`story-${detail[1]}`)
+  }, [location.pathname, explore])
 
   return (
     <div

@@ -84,6 +84,7 @@ function build(): Record<string, Reveal> {
   })
 
   projects.forEach((project) => {
+    // The case card: a teaser that picks the project up off its plinth.
     map[`proj-${project.slug}`] = {
       id: `proj-${project.slug}`,
       eyebrow: project.award ? `Chapter 03 · ${project.award}` : 'Chapter 03',
@@ -91,6 +92,19 @@ function build(): Record<string, Reveal> {
       body: [project.tagline, project.blurb],
       tags: project.stack,
       link: { to: `/projects/${project.slug}`, label: 'pick it up' },
+    }
+    // The story, once it is in your hands on /projects/:slug. Without this the
+    // detail page's reveal was the same teaser, whose link pointed at the page
+    // you were already on — a genuine dead end.
+    map[`story-${project.slug}`] = {
+      id: `story-${project.slug}`,
+      eyebrow: project.award ? `p. ${project.page} · ${project.award}` : `p. ${project.page}`,
+      title: project.title,
+      body: project.story,
+      tags: project.stack,
+      link: project.url
+        ? { to: project.url, label: 'open the live thing', external: true }
+        : { to: '/projects', label: 'put it back' },
     }
   })
 
@@ -146,6 +160,8 @@ export function hotspotsForRoute(pathname: string): string[] {
   if (pathname === '/origin') return origin.panels.map((_, i) => `origin-${i}`)
   if (pathname === '/training') return experiences.map((job) => `exp-${job.id}`)
   if (pathname === '/projects') return projects.map((project) => `proj-${project.slug}`)
+  const detail = /^\/projects\/([a-z0-9-]+)\/?$/i.exec(pathname)
+  if (detail) return [`story-${detail[1]}`]
   if (pathname === '/skill-tree') {
     return ['skill-languages', 'skill-aiml', 'skill-frameworks', 'skill-infra', 'skill-stamps']
   }

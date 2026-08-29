@@ -445,7 +445,7 @@ function ArtifactScene({
     <>
       <Backdrop name="bg-wash-02" tint={mats.accent.color} />
       <Ground mats={mats} />
-      <Hotspot id={`proj-${slug}`} enabled={explore}>
+      <Hotspot id={`story-${slug}`} enabled={explore}>
         <group ref={spin} position={[0.4, 0.35, 0]}>
           <InkShape shape={shape} depth={0.4} material={mats.accent} scale={2.6} />
         </group>

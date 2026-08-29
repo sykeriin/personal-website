@@ -191,7 +191,12 @@ void main() {
   // tokens.css, which is already ink at low alpha.
   vec3 col = mix(uPaper, uInk, tone * uToneStrength);
   col = mix(col, uInk, solid);
-  col = mix(col, uAccent, accentMask);
+  // The plate prints in tints and shades, the way a real second ink does —
+  // a flat single value erases the boundary between a coloured hero and a
+  // coloured sky (chainguard vanished into its own backdrop this way). The
+  // quantised luminance keeps it banded, so it still reads as printed.
+  vec3 plate = uAccent * mix(0.52, 1.18, q);
+  col = mix(col, plate, accentMask);
   col = mix(col, inkCol, edge);
 
   // THE BLOOM. The page renders as a two-ink print, but where the visitor
