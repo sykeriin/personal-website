@@ -8,13 +8,12 @@ import { makeToonGradient } from '../three/toonGradient'
 import type { SceneKey } from './manifest'
 import { Figure } from './Figure'
 import { Hotspot, InkShape } from './Ink'
+import { Envelope, Guitar, ScreenLines } from './props'
 import {
   bookCover,
   boltNut,
   chainLink,
   cloudPuff,
-  envelope,
-  guitarBody,
   inkDrop,
   laptop,
   leafCluster,
@@ -201,7 +200,6 @@ function DeskScene({ mats, explore }: { mats: Mats; explore: boolean }) {
       laptop: laptop(),
       mug: mug(),
       steam: mugSteam(),
-      guitar: guitarBody(),
       book: bookCover(),
     }),
     [],
@@ -223,16 +221,14 @@ function DeskScene({ mats, explore }: { mats: Mats; explore: boolean }) {
           <boxGeometry args={[0.14, 0.9, 2.0]} />
         </mesh>
 
-        {/* hi, i'm durva — the monitor, mid-build */}
+        {/* hi, i'm durva — the monitor, mid-build, code on screen */}
         <Hotspot id="origin-0" enabled={explore}>
-          <InkShape
-            shape={shapes.monitor}
-            depth={0.3}
-            material={mats.paper}
-            position={[-0.7, 0.45, -0.5]}
-            rotation={[0, 0.16, 0]}
-            scale={1.9}
-          />
+          <group position={[-0.7, 0.45, -0.5]} rotation={[0, 0.16, 0]}>
+            <InkShape shape={shapes.monitor} depth={0.3} material={mats.paper} scale={1.9} />
+            <group position={[0, 0.28, 0.18]} scale={1.35}>
+              <ScreenLines mats={mats} />
+            </group>
+          </group>
         </Hotspot>
 
         {/* what i'm into — the laptop beside it */}
@@ -268,16 +264,11 @@ function DeskScene({ mats, explore }: { mats: Mats; explore: boolean }) {
           </group>
         </Hotspot>
 
-        {/* outside class — the guitar against the desk */}
+        {/* outside class — the guitar leaning on the desk's end */}
         <Hotspot id="origin-3" enabled={explore}>
-          <InkShape
-            shape={shapes.guitar}
-            depth={0.42}
-            material={mats.accent}
-            position={[3.6, -0.72, 0.75]}
-            rotation={[0, 0.45, 0.2]}
-            scale={1.5}
-          />
+          <group position={[3.5, -0.35, 0.7]} rotation={[0.02, 0.3, 0.2]} scale={0.95}>
+            <Guitar mats={mats} body="accent" />
+          </group>
         </Hotspot>
 
         {/* the mug, set dressing — its steam rises on a slow drift */}
@@ -521,41 +512,25 @@ function TreeScene({ mats, explore }: { mats: Mats; explore: boolean }) {
 /* ---------------------------------------------------------------- closing */
 
 function ClosingScene({ mats, explore }: { mats: Mats; explore: boolean }) {
-  const shapes = useMemo(
-    () => ({ env: envelope(), seal: sealRing(), guitar: guitarBody() }),
-    [],
-  )
   return (
     <>
       <Backdrop name="bg-mist-01" tint={mats.accent.color} />
       <Ground mats={mats} />
 
-      {/* the letter, flap open, sealed in the chapter's ink */}
+      {/* the letter, flap open, half out of its envelope, facing the reader */}
       <Hotspot id="contact-envelope" enabled={explore}>
         <Drift amount={0.06} speed={0.5}>
-          <group position={[0.7, 0.5, 0]} rotation={[0.12, -0.25, -0.03]}>
-            <InkShape shape={shapes.env} depth={0.28} material={mats.paper} scale={2.5} />
-            <InkShape
-              shape={shapes.seal}
-              depth={0.05}
-              material={mats.accent}
-              position={[0, -0.25, 0.16]}
-              scale={0.5}
-            />
+          <group position={[0.9, 0.55, 0]} rotation={[0.08, -0.14, -0.02]} scale={1.55}>
+            <Envelope mats={mats} />
           </group>
         </Drift>
       </Hotspot>
 
-      {/* off-panel: the guitar, leaning where the gloves used to hang */}
+      {/* off-panel: the whole guitar, leaning into frame */}
       <Hotspot id="contact-offpanel" enabled={explore}>
-        <InkShape
-          shape={shapes.guitar}
-          depth={0.42}
-          material={mats.hueA}
-          position={[-2.6, -0.45, 0.7]}
-          rotation={[0, 0.4, 0.18]}
-          scale={1.7}
-        />
+        <group position={[-2.7, -0.15, 0.6]} rotation={[0.02, 0.18, 0.16]}>
+          <Guitar mats={mats} body="hueA" />
+        </group>
       </Hotspot>
 
       <Figure pose="guitar" position={[-4.0, -0.35, 1.3]} height={1.4} rotation={[0, 0.5, 0]} />
