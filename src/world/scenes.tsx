@@ -213,8 +213,8 @@ function DeskScene({ mats, explore }: { mats: Mats; explore: boolean }) {
 
       <group position={[0.4, -0.2, 0]} rotation={[0, -0.12, 0]}>
         {/* the desk island */}
-        <mesh position={[0, -0.5, 0]} material={mats.dim}>
-          <boxGeometry args={[5.2, 0.16, 2.3]} />
+        <mesh position={[0, -0.5, 0]} material={mats.paper}>
+          <boxGeometry args={[5.2, 0.22, 2.3]} />
         </mesh>
         <mesh position={[-2.1, -1.0, 0]} material={mats.dim}>
           <boxGeometry args={[0.14, 0.9, 2.0]} />
@@ -227,9 +227,10 @@ function DeskScene({ mats, explore }: { mats: Mats; explore: boolean }) {
         <Hotspot id="origin-0" enabled={explore}>
           <InkShape
             shape={shapes.monitor}
-            depth={0.14}
+            depth={0.3}
             material={mats.paper}
             position={[-0.7, 0.45, -0.5]}
+            rotation={[0, 0.16, 0]}
             scale={1.9}
           />
         </Hotspot>
@@ -240,8 +241,8 @@ function DeskScene({ mats, explore }: { mats: Mats; explore: boolean }) {
             shape={shapes.laptop}
             depth={0.5}
             material={mats.hueA}
-            position={[1.2, -0.18, 0.1]}
-            rotation={[0, -0.5, 0]}
+            position={[1.25, -0.18, 0.15]}
+            rotation={[0, -1.05, 0]}
             scale={0.95}
           />
         </Hotspot>
@@ -271,10 +272,10 @@ function DeskScene({ mats, explore }: { mats: Mats; explore: boolean }) {
         <Hotspot id="origin-3" enabled={explore}>
           <InkShape
             shape={shapes.guitar}
-            depth={0.22}
+            depth={0.42}
             material={mats.accent}
-            position={[2.9, -0.6, 0.6]}
-            rotation={[0, 0.35, 0.16]}
+            position={[3.6, -0.72, 0.75]}
+            rotation={[0, 0.45, 0.2]}
             scale={1.5}
           />
         </Hotspot>
@@ -282,7 +283,7 @@ function DeskScene({ mats, explore }: { mats: Mats; explore: boolean }) {
         {/* the mug, set dressing — its steam rises on a slow drift */}
         <InkShape
           shape={shapes.mug}
-          depth={0.3}
+          depth={0.55}
           material={mats.accent}
           position={[0.35, -0.22, 0.55]}
           scale={0.42}
@@ -290,7 +291,7 @@ function DeskScene({ mats, explore }: { mats: Mats; explore: boolean }) {
         <Drift amount={0.05} speed={0.7}>
           <InkShape
             shape={shapes.steam}
-            depth={0.02}
+            depth={0.04}
             material={mats.tone}
             position={[0.35, 0.35, 0.55]}
             scale={0.5}
@@ -319,7 +320,7 @@ function WorkshopScene({ mats, explore }: { mats: Mats; explore: boolean }) {
       <Hotspot id="exp-petally" enabled={explore}>
         <Drift amount={0.06} speed={0.5}>
           <group position={[-2.1, 0.5, 0]} rotation={[0, 0.35, -0.06]}>
-            <InkShape shape={shapes.phone} depth={0.16} material={mats.paper} scale={2.6} />
+            <InkShape shape={shapes.phone} depth={0.3} material={mats.paper} scale={2.6} />
             <InkShape
               shape={shapes.paw}
               depth={0.06}
@@ -347,7 +348,7 @@ function WorkshopScene({ mats, explore }: { mats: Mats; explore: boolean }) {
           </mesh>
           <InkShape
             shape={shapes.bolt}
-            depth={0.18}
+            depth={0.34}
             material={mats.hueA}
             position={[0.6, -0.5, 0.9]}
             rotation={[0.4, 0.3, 0.2]}
@@ -390,7 +391,7 @@ function CaseArtifact({ slug, mats }: { slug: string; mats: Mats }) {
         : slug === 'alter'
           ? mats.hueB
           : mats.paper
-  return <InkShape shape={shape} depth={0.2} material={material} scale={1.25} />
+  return <InkShape shape={shape} depth={0.34} material={material} scale={1.25} />
 }
 
 function CaseScene({ mats, explore }: { mats: Mats; explore: boolean }) {
@@ -446,7 +447,7 @@ function ArtifactScene({
       <Ground mats={mats} />
       <Hotspot id={`proj-${slug}`} enabled={explore}>
         <group ref={spin} position={[0.4, 0.35, 0]}>
-          <InkShape shape={shape} depth={0.24} material={mats.accent} scale={2.6} />
+          <InkShape shape={shape} depth={0.4} material={mats.accent} scale={2.6} />
         </group>
       </Hotspot>
     </>
@@ -477,14 +478,14 @@ function TreeScene({ mats, explore }: { mats: Mats; explore: boolean }) {
       <Backdrop name="bg-clouds-01" tint={mats.accent.color} />
       <Ground mats={mats} />
 
-      <InkShape shape={trunk} depth={0.34} material={mats.dim} position={[0, 0.9, 0]} scale={4.2} />
+      <InkShape shape={trunk} depth={0.55} material={mats.dim} position={[0, 0.9, 0]} scale={4.2} />
 
       {canopies.map((canopy, i) => (
         <Hotspot key={canopy.id} id={canopy.id} enabled={explore}>
           <Drift amount={0.05} speed={0.38} phase={i * 1.6}>
             <InkShape
               shape={cluster}
-              depth={0.16}
+              depth={0.34}
               material={mats[canopy.mat]}
               position={canopy.pos}
               scale={canopy.scale}
@@ -533,7 +534,7 @@ function ClosingScene({ mats, explore }: { mats: Mats; explore: boolean }) {
       <Hotspot id="contact-envelope" enabled={explore}>
         <Drift amount={0.06} speed={0.5}>
           <group position={[0.7, 0.5, 0]} rotation={[0.12, -0.25, -0.03]}>
-            <InkShape shape={shapes.env} depth={0.12} material={mats.paper} scale={2.5} />
+            <InkShape shape={shapes.env} depth={0.28} material={mats.paper} scale={2.5} />
             <InkShape
               shape={shapes.seal}
               depth={0.05}
@@ -549,7 +550,7 @@ function ClosingScene({ mats, explore }: { mats: Mats; explore: boolean }) {
       <Hotspot id="contact-offpanel" enabled={explore}>
         <InkShape
           shape={shapes.guitar}
-          depth={0.24}
+          depth={0.42}
           material={mats.hueA}
           position={[-2.6, -0.45, 0.7]}
           rotation={[0, 0.4, 0.18]}

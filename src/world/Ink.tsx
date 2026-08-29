@@ -24,12 +24,11 @@ export function InkShape({
   const geometry = useMemo(() => {
     const geo = new THREE.ExtrudeGeometry(shape, {
       depth,
-      bevelEnabled: true,
-      bevelThickness: 0.012,
-      bevelSize: 0.012,
-      bevelOffset: 0,
-      bevelSegments: 1,
-      curveSegments: 14,
+      // No bevel: on tight concave curves (a guitar waist, a hole rim) the
+      // bevel emits degenerate flipped triangles that render as black shards,
+      // and the crease detector already inks the square extrusion edge.
+      bevelEnabled: false,
+      curveSegments: 16,
     })
     geo.center()
     geo.computeVertexNormals()

@@ -75,6 +75,10 @@ float vnoise(vec2 p) {
 
 void main() {
   vec2 texel = 1.0 / uResolution;
+  // Reference height the look was tuned at. Offsets scale with resolution so
+  // a line is the same fraction of the screen on every display — otherwise
+  // high-res screens sample sub-threshold deltas and the ink disappears.
+  float rscale = uResolution.y / 950.0;
 
   // Boil: snap the noise offset to uBoilFps steps and HOLD. A line that slides
   // smoothly reads as a shader effect; one that snaps reads as drawn.
@@ -85,7 +89,7 @@ void main() {
   // physically meanders off the true silhouette. Costs zero extra taps.
   float w1 = vnoise(vUv * uWobbleScale + boil);
   float w2 = vnoise(vUv * uWobbleScale + boil + 19.7);
-  vec2 uv = vUv + (vec2(w1, w2) - 0.5) * uWobbleAmp * texel;
+  vec2 uv = vUv + (vec2(w1, w2) - 0.5) * uWobbleAmp * texel * rscale;
 
   vec4 gc = texture2D(tGBuffer, uv);
   vec3 Nc = gc.rgb;
@@ -93,7 +97,7 @@ void main() {
 
   // Near objects get fatter lines. Vary the tap offset, keep the tap count.
   float widthPx = uBaseWidth * (1.0 + uNearBoost * (1.0 - clamp(dc, 0.0, 1.0)));
-  vec2 off = texel * widthPx;
+  vec2 off = texel * widthPx * rscale;
 
   vec4 g1 = texture2D(tGBuffer, uv + vec2( off.x,  off.y));
   vec4 g2 = texture2D(tGBuffer, uv + vec2(-off.x, -off.y));
@@ -106,7 +110,10 @@ void main() {
 
   // Slope compensation. A plane at grazing angle has a huge depth gradient and
   // would otherwise flood solid black. Scaling by |N.z| cancels exactly that.
-  float slope = mix(1.0, max(0.15, abs(Nc.z)), uSlopeComp);
+  // Floor raised from 0.15: horizontal surfaces (desks, the ground) sit at
+  // grazing angle to a standing camera, and a lower floor suppressed their rim
+  // lines entirely — which is how a whole desk once went invisible.
+  float slope = mix(1.0, max(0.3, abs(Nc.z)), uSlopeComp);
   depthEdge *= slope;
 
   // Normal edge catches creases the depth term is blind to.
