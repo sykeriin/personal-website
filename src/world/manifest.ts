@@ -69,7 +69,7 @@ const ROUTES: RouteEntry[] = [
     scene: 'cover',
     sfx: 'THUD',
     accent: '#d3103a',
-    description: 'cse at mahe. i build apps, agents, and half-broken pipelines until they behave.',
+    description: 'cse at mit blr. i build apps, agents, and half-broken pipelines until they behave.',
   },
   {
     path: '/origin',
@@ -84,7 +84,7 @@ const ROUTES: RouteEntry[] = [
     scene: 'desk',
     sfx: 'HELLO',
     accent: '#ef8b1d',
-    description: 'second year cse at mahe in bengaluru. what i am into, and what i do outside class.',
+    description: 'second year cse at mit blr. what i am into, and what i do outside class.',
   },
   {
     path: '/training',

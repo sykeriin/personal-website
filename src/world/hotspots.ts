@@ -22,6 +22,9 @@ function set(next: Partial<State>) {
   listeners.forEach((listener) => listener())
 }
 
+/** Installed by Layout; lets meshes navigate. A no-op until the router mounts. */
+export const worldNav = { go: (_path: string) => {} }
+
 export const hotspots = {
   hover: (id: string | null) => set({ hovered: id }),
   activate: (id: string | null) => set({ active: id, hovered: null }),

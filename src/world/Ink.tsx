@@ -1,6 +1,6 @@
 import { useMemo, type ReactNode } from 'react'
 import * as THREE from 'three'
-import { hotspots, useHotspots } from './hotspots'
+import { hotspots, useHotspots, worldNav } from './hotspots'
 
 /**
  * A drawn silhouette extruded into a solid.
@@ -36,6 +36,37 @@ export function InkShape({
   }, [shape, depth])
 
   return <mesh geometry={geometry} material={material} {...rest} />
+}
+
+/**
+ * Makes a prop a DOOR: clicking it navigates, in every mode. Used for the two
+ * cover books — you enter a book by opening it, not by reading a tooltip.
+ */
+export function Door({ to, children }: { to: string; children: ReactNode }) {
+  const hover = (on: boolean) => {
+    document.body.style.cursor = on ? 'pointer' : ''
+  }
+  return (
+    <group
+      onPointerOver={(event) => {
+        event.stopPropagation()
+        hover(true)
+      }}
+      onPointerOut={(event) => {
+        event.stopPropagation()
+        hover(false)
+      }}
+      onClick={(event) => {
+        event.stopPropagation()
+        const target = event.nativeEvent.target as HTMLElement | null
+        if (target?.closest?.('a,button,input,.chapter,.edge-tabs,.reveal,.page-turn')) return
+        hover(false)
+        worldNav.go(to)
+      }}
+    >
+      {children}
+    </group>
+  )
 }
 
 /**

@@ -8,7 +8,7 @@ import { makeToonGradient } from '../three/toonGradient'
 import { sideAccent, type SceneKey } from './manifest'
 import { Figure } from './Figure'
 import { FractalPlane } from './Fractal'
-import { Hotspot, InkShape } from './Ink'
+import { Door, Hotspot, InkShape } from './Ink'
 import { Envelope, Guitar, ScreenLines } from './props'
 import {
   Amp,
@@ -160,7 +160,7 @@ function BackdropPlane({ url, tint }: { url: string; tint?: THREE.Color }) {
 
 /* ------------------------------------------------------------------ cover */
 
-function CoverScene({ mats, explore }: { mats: Mats; explore: boolean }) {
+function CoverScene({ mats }: { mats: Mats }) {
   const seal = useMemo(() => sealRing(), [])
   return (
     <>
@@ -168,7 +168,7 @@ function CoverScene({ mats, explore }: { mats: Mats; explore: boolean }) {
       <Ground mats={mats} />
 
       {/* Cover A: the tech story, right side up. */}
-      <Hotspot id="cover-tech" enabled={explore}>
+      <Door to="/origin">
         <Drift amount={0.05} speed={0.45}>
           <group rotation={[0.08, -0.42, 0.02]} position={[-1.5, 0.35, 0.2]}>
             <mesh position={[0.03, 0, 0]} material={mats.paper}>
@@ -196,11 +196,11 @@ function CoverScene({ mats, explore }: { mats: Mats; explore: boolean }) {
             />
           </group>
         </Drift>
-      </Hotspot>
+      </Door>
 
       {/* Cover B: the creative story — upside down, exactly as a tête-bêche
           volume prints the second front. The visitor's first "wait, what?" */}
-      <Hotspot id="cover-creative" enabled={explore}>
+      <Door to="/studio">
         <Drift amount={0.05} speed={0.4} phase={1.9}>
           <group rotation={[0.08, 0.38, Math.PI]} position={[1.9, 0.42, 0.1]}>
             <mesh position={[0.03, 0, 0]} material={mats.paper}>
@@ -220,7 +220,7 @@ function CoverScene({ mats, explore }: { mats: Mats; explore: boolean }) {
             </mesh>
           </group>
         </Drift>
-      </Hotspot>
+      </Door>
 
       <Figure pose="idle" position={[-3.6, -0.3, 1.6]} height={1.7} rotation={[0, 0.4, 0]} />
     </>
@@ -882,7 +882,7 @@ export function SceneFor({
 
   switch (sceneKey) {
     case 'cover':
-      return <CoverScene mats={mats} explore={explore} />
+      return <CoverScene mats={mats} />
     case 'desk':
       return <DeskScene mats={mats} explore={explore} />
     case 'desk-closing':

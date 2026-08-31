@@ -1041,3 +1041,47 @@ button {
 .tags__on a {
   color: var(--paper);
 }
+
+/* -------------------------------------------------------------- page turns */
+
+/* The just-keep-reading affordance: big chevrons at the screen edges. */
+.page-turn {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 44;
+  display: grid;
+  place-content: center;
+  width: 2.7rem;
+  height: 3.6rem;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  line-height: 1;
+  text-decoration: none;
+  color: var(--ink);
+  background: color-mix(in srgb, var(--paper) 90%, transparent);
+  border: 2px solid var(--ink);
+  transition: background 120ms, color 120ms, transform 120ms;
+}
+.page-turn--prev {
+  left: 0.6rem;
+}
+.page-turn--next {
+  right: 3.9rem;
+}
+.page-turn:hover {
+  background: var(--accent);
+  color: var(--paper);
+  transform: translateY(-50%) scale(1.06);
+}
+@media (max-width: 47.99rem) {
+  .page-turn--prev {
+    left: 0.35rem;
+  }
+  .page-turn--next {
+    right: 0.35rem;
+  }
+  .page-turn {
+    top: 44%;
+  }
+}

@@ -25,6 +25,9 @@ export function ChapterType({
   const entry = entryFor(pathname)
   const group = useRef<THREE.Group>(null)
   const settled = useRef(0)
+  // The cover carries no chapter type: the two books are the title, and the
+  // giant name was fighting them for the same space.
+  const skip = pathname === '/'
 
   const anchor = useMemo(() => {
     const [tx, ty, tz] = entry.camera.target
@@ -44,6 +47,7 @@ export function ChapterType({
   })
 
   // Key by pathname so the settle re-runs on every turn.
+  if (skip) return null
   return (
     <group
       key={pathname}

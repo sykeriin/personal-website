@@ -1,5 +1,5 @@
 import { Suspense, lazy, useEffect, useRef } from 'react'
-import { Outlet, useLocation } from 'react-router-dom'
+import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { EdgeTabs } from './EdgeTabs'
 import { InkFilters } from './InkFilters'
 import { TierSwitch } from './TierSwitch'
@@ -8,16 +8,17 @@ import { useRenderTier, tierUsesWebGL } from '../hooks/useRenderTier'
 import { usePresence } from '../hooks/usePresence'
 import { useChromeMode } from '../hooks/useChromeMode'
 import { entryFor } from '../world/manifest'
-import { hotspots, hotspotsForRoute } from '../world/hotspots'
+import { hotspots, hotspotsForRoute, worldNav } from '../world/hotspots'
+import { PageTurns } from './PageTurns'
 import { HotspotList, RevealPanel } from './RevealPanel'
 import { ModeSwitch } from './ModeSwitch'
-import { SocialStrip } from './SocialStrip'
 
 /** three.js lives behind a dynamic import, so the paper tier never downloads it. */
 const WorldCanvas = lazy(() => import('../world/WorldCanvas'))
 
 export function Layout() {
   const location = useLocation()
+  const navigate = useNavigate()
   const { tier, pinned, reduceMotion, dpr, setTier } = useRenderTier()
   const { late } = usePresence()
   const [mode, setMode] = useChromeMode()
@@ -30,6 +31,15 @@ export function Layout() {
   // Explore needs props to click, so it only exists where there is a world.
   const explore = world && mode === 'explore' && !domFirst
   const ids = hotspotsForRoute(location.pathname)
+
+  // The world's meshes navigate through this valve — the canvas renders in a
+  // separate reconciler where router hooks don't exist.
+  useEffect(() => {
+    worldNav.go = (path: string) => navigate(path)
+    return () => {
+      worldNav.go = () => {}
+    }
+  }, [navigate])
 
   // The visitor's local hour swaps the ink plate to indigo. theme.ts reads the
   // CSS variables, so the 3D layer follows on the next frame with no wiring.
@@ -92,8 +102,8 @@ export function Layout() {
 
       {explore ? <RevealPanel /> : null}
       {world && !domFirst ? <ModeSwitch mode={mode} onChange={setMode} /> : null}
-      <SocialStrip />
 
+      <PageTurns />
       <TierSwitch tier={tier} pinned={pinned} onChange={setTier} />
       <SoundToggle route={location.pathname} enabled={!reduceMotion} />
     </div>

@@ -29,7 +29,7 @@ export const site = {
   github: 'https://github.com/sykeriin',
   coverHook: 'year two. still messing around.',
   coverLine:
-    "cse at mahe. i build apps, agents, and half-broken pipelines until they behave. sometimes they do. sometimes i learn why they didn't.",
+    "cse at mit blr. i build apps, agents, and half-broken pipelines until they behave. sometimes they do. sometimes i learn why they didn't.",
   currentlyBuilding: 'petally internship, voice os experiments, sleep (eventually)',
 }
 
@@ -88,7 +88,7 @@ export const origin = {
   panels: [
     {
       title: 'hi, i’m durva',
-      body: "second year cse at mahe in bengaluru. i like making things people can actually use. an app someone opens. a model that finds junk on a runway. a hackathon demo that doesn't die mid-pitch.",
+      body: "second year cse at mit blr. i like making things people can actually use. an app someone opens. a model that finds junk on a runway. a hackathon demo that doesn't die mid-pitch.",
     },
     {
       title: 'what i’m into',
@@ -96,7 +96,7 @@ export const origin = {
     },
     {
       title: 'school',
-      body: 'b.tech cse, mahe bengaluru. around may 2029. year two feels less like surviving orientation and more like “wait, i can build stuff now.”',
+      body: 'b.tech cse, mit bengaluru. around may 2029. year two feels less like surviving orientation and more like “wait, i can build stuff now.”',
     },
     {
       title: 'outside class',
@@ -326,12 +326,14 @@ export const funThings =
 export const socials = {
   github: 'https://github.com/sykeriin',
   linkedin: 'https://www.linkedin.com/in/durva-s/',
-  twitter: '',
-  instagram: '',
+  twitter: 'https://x.com/dsrkiv',
+  instagram: 'https://instagram.com/dsrkiv',
 } as const
 
 export const contactBits = [
   { label: 'mail', href: `mailto:durva.s170@gmail.com`, text: 'durva.s170@gmail.com' },
   { label: 'linkedin', href: 'https://www.linkedin.com/in/durva-s/', text: 'linkedin.com/in/durva-s' },
   { label: 'github', href: 'https://github.com/sykeriin', text: 'github.com/sykeriin' },
+  { label: 'x', href: 'https://x.com/dsrkiv', text: 'x.com/dsrkiv' },
+  { label: 'instagram', href: 'https://instagram.com/dsrkiv', text: 'instagram.com/dsrkiv' },
 ]
