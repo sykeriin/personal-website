@@ -1085,3 +1085,15 @@ button {
     top: 44%;
   }
 }
+
+/* A reveal that is a row of destinations (say hi). */
+.reveal__links {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+.reveal__links .cta {
+  padding: 0.4rem 0.7rem;
+  font-size: 0.72rem;
+}

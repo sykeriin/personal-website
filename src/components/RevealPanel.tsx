@@ -55,6 +55,15 @@ export function RevealPanel() {
           ))}
         </ul>
       ) : null}
+      {reveal.links ? (
+        <p className="reveal__links">
+          {reveal.links.map((entry) => (
+            <a key={entry.to} className="cta" href={entry.to} target="_blank" rel="noreferrer">
+              {entry.label}
+            </a>
+          ))}
+        </p>
+      ) : null}
       {reveal.link ? (
         reveal.link.external ? (
           <a className="cta" href={reveal.link.to} target="_blank" rel="noreferrer">

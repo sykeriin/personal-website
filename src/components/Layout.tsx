@@ -66,6 +66,8 @@ export function Layout() {
     // mode opens the story itself, so the pick-it-up click visibly lands.
     const detail = /^\/projects\/([a-z0-9-]+)\/?$/i.exec(location.pathname)
     if (detail && explore) hotspots.activate(`story-${detail[1]}`)
+    // The last page exists to be answered — the mailbox opens itself.
+    if (location.pathname === '/contact' && explore) hotspots.activate('contact-envelope')
   }, [location.pathname, explore])
 
   return (

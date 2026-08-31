@@ -1,5 +1,5 @@
 import { useSyncExternalStore } from 'react'
-import { achievements, creative, experiences, origin, projects, skills, site, funThings } from '../data/content'
+import { achievements, creative, experiences, origin, projects, skills, site, socials, funThings } from '../data/content'
 
 /**
  * Bridges the 3D world and the DOM. R3F renders through its own reconciler, so
@@ -54,6 +54,8 @@ export type Reveal = {
   body: string[]
   tags?: string[]
   link?: { to: string; label: string; external?: boolean }
+  /** A row of them, for reveals that ARE link collections (say hi). */
+  links?: Array<{ to: string; label: string; external?: boolean }>
 }
 
 function build(): Record<string, Reveal> {
@@ -158,10 +160,14 @@ function build(): Record<string, Reveal> {
     id: 'contact-envelope',
     eyebrow: 'Last Page',
     title: 'say hi',
-    body: [
-      "wanna build something weird, talk ai stuff, or trade muay thai tips? i'm around.",
-      site.email,
-    ],
+    body: ["wanna build something weird, talk ai stuff, or trade muay thai tips? i'm around."],
+    links: [
+      { to: `mailto:${site.email}`, label: 'mail me', external: true },
+      { to: socials.linkedin, label: 'linkedin', external: true },
+      { to: socials.github, label: 'github', external: true },
+      { to: socials.twitter, label: 'x', external: true },
+      { to: socials.instagram, label: 'instagram', external: true },
+    ].filter((entry) => entry.to && entry.to !== 'mailto:'),
     link: { to: `mailto:${site.email}`, label: 'mail me', external: true },
   }
 
