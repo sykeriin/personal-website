@@ -56,12 +56,20 @@ export type Reveal = {
 function build(): Record<string, Reveal> {
   const map: Record<string, Reveal> = {}
 
-  map['cover-book'] = {
-    id: 'cover-book',
-    eyebrow: 'Volume 02',
-    title: site.name,
+  map['cover-tech'] = {
+    id: 'cover-tech',
+    eyebrow: 'Volume 02 · cover a',
+    title: 'the tech side',
     body: [site.coverLine],
-    link: { to: '/origin', label: 'open it' },
+    link: { to: '/origin', label: 'open cover a' },
+  }
+
+  map['cover-creative'] = {
+    id: 'cover-creative',
+    eyebrow: 'Volume 02 · cover b',
+    title: 'the creative side',
+    body: ['flip the volume over: modelling, directing shoots and videos, designing the thing.'],
+    link: { to: '/studio', label: 'flip to cover b' },
   }
 
   origin.panels.forEach((panel, i) => {
@@ -167,7 +175,7 @@ export const reveals = build()
 
 /** Which props are pickable on a given route. Drives the keyboard list too. */
 export function hotspotsForRoute(pathname: string): string[] {
-  if (pathname === '/') return ['cover-book']
+  if (pathname === '/') return ['cover-tech', 'cover-creative']
   if (pathname === '/origin') return origin.panels.map((_, i) => `origin-${i}`)
   if (pathname === '/training') return experiences.map((job) => `exp-${job.id}`)
   if (pathname === '/projects') return projects.map((project) => `proj-${project.slug}`)

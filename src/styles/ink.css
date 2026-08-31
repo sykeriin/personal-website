@@ -777,3 +777,88 @@ button {
     top: 0.5rem;
   }
 }
+
+/* -------------------------------------------------------------- entry fork */
+
+/*
+ * The cover's one job. Each half is a front cover of the tête-bêche volume,
+ * claiming its side's colour at full surface — the fork is the hero, not a
+ * pair of links under the bio.
+ */
+.fork {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: 1rem;
+}
+
+.fork__side {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  min-height: clamp(11rem, 30dvh, 17rem);
+  padding: 1.2rem 1.3rem 1.1rem;
+  background: var(--fork);
+  color: var(--paper);
+  text-decoration: none;
+  border: 3px solid var(--ink);
+  box-shadow: 0.45rem 0.45rem 0 color-mix(in srgb, var(--fork) 35%, var(--ink));
+  transition: transform 140ms ease, box-shadow 140ms ease;
+}
+.fork__side:hover {
+  color: var(--paper);
+  transform: translate(-2px, -3px) rotate(-0.4deg);
+  box-shadow: 0.65rem 0.7rem 0 color-mix(in srgb, var(--fork) 35%, var(--ink));
+}
+.fork__side:nth-child(2):hover {
+  transform: translate(-2px, -3px) rotate(0.4deg);
+}
+
+.fork__label {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+.fork__title {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 4.5vw, 2.3rem);
+  line-height: 1.05;
+  text-wrap: balance;
+}
+.fork__blurb {
+  font-size: 0.98rem;
+  max-width: 26ch;
+  opacity: 0.92;
+}
+.fork__go {
+  margin-top: auto;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.fork__side:hover .fork__go {
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+}
+
+.fork__hint {
+  margin: 0;
+  color: var(--ink-soft);
+  font-style: italic;
+  max-width: 52ch;
+}
+
+/* In the world-mode dialogue bar the fork stays two-up and shrinks; the world
+   behind it is showing both books anyway. */
+.shell[data-chrome='world'] .fork__side {
+  min-height: 8.5rem;
+  padding: 0.9rem 1rem 0.85rem;
+}
+.shell[data-chrome='world'] .fork__title {
+  font-size: 1.25rem;
+}
+.shell[data-chrome='world'] .fork__blurb {
+  font-size: 0.88rem;
+}

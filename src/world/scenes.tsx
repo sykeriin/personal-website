@@ -5,8 +5,9 @@ import * as THREE from 'three'
 import { projects } from '../data/content'
 import type { InkPalette } from '../three/theme'
 import { makeToonGradient } from '../three/toonGradient'
-import type { SceneKey } from './manifest'
+import { sideAccent, type SceneKey } from './manifest'
 import { Figure } from './Figure'
+import { FractalPlane } from './Fractal'
 import { Hotspot, InkShape } from './Ink'
 import { Envelope, Guitar, ScreenLines } from './props'
 import {
@@ -85,6 +86,10 @@ function useInk(palette: InkPalette) {
       dim: make(palette.paperDim),
       tone: make(palette.tone),
       accent: make(accent),
+      // Lightened so the two-ink flatten prints cover B in the BRIGHT band —
+      // in monochrome the two covers differentiate by value, and the bloom
+      // still reveals the true magenta.
+      coverB: make(new THREE.Color(sideAccent.creative).lerp(new THREE.Color('#ffffff'), 0.45)),
       hueA: make(hueA),
       hueB: make(hueB),
     }
@@ -162,14 +167,13 @@ function CoverScene({ mats, explore }: { mats: Mats; explore: boolean }) {
       <Backdrop name="bg-wash-01" tint={mats.accent.color} />
       <Ground mats={mats} />
 
-      <Hotspot id="cover-book" enabled={explore}>
+      {/* Cover A: the tech story, right side up. */}
+      <Hotspot id="cover-tech" enabled={explore}>
         <Drift amount={0.05} speed={0.45}>
-          <group rotation={[0.08, -0.5, 0.02]} position={[0.6, 0.35, 0]} scale={1.15}>
+          <group rotation={[0.08, -0.42, 0.02]} position={[-1.5, 0.35, 0.2]}>
             <mesh position={[0.03, 0, 0]} material={mats.paper}>
               <boxGeometry args={[2.5, 3.5, 0.36]} />
             </mesh>
-            {/* the front cover carries the chapter colour — flat plate outside
-                the bloom, true hue inside it */}
             <mesh position={[0, 0, 0.21]} material={mats.accent}>
               <boxGeometry args={[2.62, 3.62, 0.07]} />
             </mesh>
@@ -179,7 +183,6 @@ function CoverScene({ mats, explore }: { mats: Mats; explore: boolean }) {
             <mesh position={[-1.31, 0, 0]} material={mats.dim}>
               <boxGeometry args={[0.08, 3.62, 0.48]} />
             </mesh>
-            {/* paper title block, like a tipped-in label */}
             <mesh position={[-0.1, 0.75, 0.27]} material={mats.paper}>
               <boxGeometry args={[1.9, 1.05, 0.05]} />
             </mesh>
@@ -195,7 +198,31 @@ function CoverScene({ mats, explore }: { mats: Mats; explore: boolean }) {
         </Drift>
       </Hotspot>
 
-      <Figure pose="idle" position={[-2.5, -0.3, 1.2]} height={1.7} rotation={[0, 0.35, 0]} />
+      {/* Cover B: the creative story — upside down, exactly as a tête-bêche
+          volume prints the second front. The visitor's first "wait, what?" */}
+      <Hotspot id="cover-creative" enabled={explore}>
+        <Drift amount={0.05} speed={0.4} phase={1.9}>
+          <group rotation={[0.08, 0.38, Math.PI]} position={[1.9, 0.42, 0.1]}>
+            <mesh position={[0.03, 0, 0]} material={mats.paper}>
+              <boxGeometry args={[2.5, 3.5, 0.36]} />
+            </mesh>
+            <mesh position={[0, 0, 0.21]} material={mats.coverB}>
+              <boxGeometry args={[2.62, 3.62, 0.07]} />
+            </mesh>
+            <mesh position={[0, 0, -0.2]} material={mats.dim}>
+              <boxGeometry args={[2.62, 3.62, 0.06]} />
+            </mesh>
+            <mesh position={[-1.31, 0, 0]} material={mats.dim}>
+              <boxGeometry args={[0.08, 3.62, 0.48]} />
+            </mesh>
+            <mesh position={[-0.1, 0.75, 0.27]} material={mats.paper}>
+              <boxGeometry args={[1.9, 1.05, 0.05]} />
+            </mesh>
+          </group>
+        </Drift>
+      </Hotspot>
+
+      <Figure pose="idle" position={[-3.6, -0.3, 1.6]} height={1.7} rotation={[0, 0.4, 0]} />
     </>
   )
 }
@@ -458,7 +485,7 @@ function ArtifactScene({
 
 /* ------------------------------------------------------------------- tree */
 
-function TreeScene({ mats, explore }: { mats: Mats; explore: boolean }) {
+function TreeScene({ mats, explore, frozen }: { mats: Mats; explore: boolean; frozen: boolean }) {
   const trunk = useMemo(() => trunkProfile(), [])
   const cluster = useMemo(() => leafCluster(), [])
   const seal = useMemo(() => sealRing(), [])
@@ -477,7 +504,7 @@ function TreeScene({ mats, explore }: { mats: Mats; explore: boolean }) {
 
   return (
     <>
-      <Backdrop name="bg-clouds-01" tint={mats.accent.color} />
+      <FractalPlane frozen={frozen} />
       <Ground mats={mats} />
 
       <InkShape shape={trunk} depth={0.55} material={mats.dim} position={[0, 0.9, 0]} scale={4.2} />
@@ -551,11 +578,12 @@ function ClosingScene({ mats, explore }: { mats: Mats; explore: boolean }) {
 
 /* ------------------------------------------------------------------- void */
 
-function VoidScene({ mats }: { mats: Mats }) {
+function VoidScene({ mats, frozen }: { mats: Mats; frozen: boolean }) {
   const drop = useMemo(() => inkDrop(), [])
   const burst = useMemo(() => speedBurst(), [])
   return (
     <>
+      <FractalPlane frozen={frozen} position={[0, 3, -14]} width={38} height={22} />
       <Ground mats={mats} />
       <Drift amount={0.1} speed={0.35}>
         <InkShape
@@ -783,11 +811,13 @@ export function SceneFor({
   pathname,
   palette,
   explore,
+  frozen,
 }: {
   sceneKey: SceneKey
   pathname: string
   palette: InkPalette
   explore: boolean
+  frozen: boolean
 }) {
   const mats = useInk(palette)
 
@@ -805,7 +835,7 @@ export function SceneFor({
     case 'artifact':
       return <ArtifactScene mats={mats} pathname={pathname} explore={explore} />
     case 'tree':
-      return <TreeScene mats={mats} explore={explore} />
+      return <TreeScene mats={mats} explore={explore} frozen={frozen} />
     case 'studio':
       return <StudioScene mats={mats} explore={explore} />
     case 'direction':
@@ -814,6 +844,6 @@ export function SceneFor({
       return <SessionScene mats={mats} explore={explore} />
     case 'void':
     default:
-      return <VoidScene mats={mats} />
+      return <VoidScene mats={mats} frozen={frozen} />
   }
 }

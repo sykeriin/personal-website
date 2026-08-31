@@ -8,6 +8,7 @@ import { entryFor } from './manifest'
 import { bloom, trackPointer } from './bloom'
 import { useHotspots } from './hotspots'
 import { SceneFor } from './scenes'
+import { SlamWord } from './SlamWord'
 
 /**
  * One Canvas for the whole site, mounted in the layout and never unmounted.
@@ -64,6 +65,11 @@ function CameraRig({ pathname, instant }: { pathname: string; instant: boolean }
     // establishing shot.
     if (first.current || instant) {
       camera.position.copy(desired)
+      // The cover gets an arrival: start low and close, let the damping carry
+      // us to the pose. Deep links skip it — they land where they aimed.
+      if (first.current && !instant && pathname === '/') {
+        camera.position.add(new THREE.Vector3(0.5, -0.35, 1.8))
+      }
       camera.lookAt(target)
       first.current = false
     }
@@ -209,7 +215,9 @@ function Stage({
           pathname={pathname}
           palette={theme.palette}
           explore={explore}
+          frozen={reduceMotion}
         />
+        <SlamWord pathname={pathname} ink={theme.palette.ink} reduceMotion={reduceMotion} />
       </Suspense>
 
       {tierUsesPostProcessing(tier) ? (

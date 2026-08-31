@@ -205,6 +205,9 @@ export function tabsFor(side: VolumeSide) {
   return ROUTES.filter((r) => r.tab !== null && (r.side === visible || r.side === 'shared'))
 }
 
+/** The identity colour of each cover, for the entry fork. */
+export const sideAccent = { tech: '#d3103a', creative: '#d81b7a' } as const
+
 const byPath = new Map(ROUTES.map((r) => [r.path, r]))
 
 /** Each project carries its own plate, so the colour tells you where you are. */
