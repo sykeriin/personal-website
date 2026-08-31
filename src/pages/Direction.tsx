@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { ChapterHead, Panel, Turn } from '../components/chrome'
 import { creative } from '../data/content'
 import { useDocumentMeta } from '../hooks/useDocumentMeta'
@@ -21,6 +22,11 @@ export function Direction() {
           <Panel key={panel.id}>
             <h2>{panel.title}</h2>
             <p>{panel.body}</p>
+            {'see' in panel ? (
+              <Link className="cta" to={panel.see.to}>
+                {panel.see.label}
+              </Link>
+            ) : null}
           </Panel>
         ))}
       </div>

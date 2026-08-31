@@ -342,8 +342,30 @@ function WorkshopScene({ mats, explore }: { mats: Mats; explore: boolean }) {
   )
   return (
     <>
-      <Backdrop name="bg-clouds-01" tint={mats.accent.color} />
+      {/* Untinted: the clouds print as halftone dots. Tinted, the accent
+          flatten turned the whole sky into one solid colour band. */}
+      <Backdrop name="bg-clouds-01" />
       <Ground mats={mats} />
+
+      {/* the airfield: control tower and hangars on the horizon */}
+      <group position={[-5.5, -1.15, -9]}>
+        <mesh position={[0, 1.7, 0]} material={mats.dim}>
+          <boxGeometry args={[0.7, 3.4, 0.7]} />
+        </mesh>
+        <mesh position={[0, 3.6, 0]} material={mats.paper}>
+          <boxGeometry args={[1.5, 0.8, 1.5]} />
+        </mesh>
+        <mesh position={[0, 4.15, 0]} material={mats.accent}>
+          <boxGeometry args={[0.1, 0.3, 0.1]} />
+        </mesh>
+      </group>
+      {[[-1.5, -11], [3.5, -12]].map(([x, z]) => (
+        <group key={x} position={[x, -1.15, z]}>
+          <mesh position={[0, 1.0, 0]} material={mats.tone}>
+            <cylinderGeometry args={[2.2, 2.2, 3.5, 20, 1, false, 0, Math.PI]} />
+          </mesh>
+        </group>
+      ))}
 
       {/* PetAlly: the phone held up big, a paw stamped on its screen */}
       <Hotspot id="exp-petally" enabled={explore}>

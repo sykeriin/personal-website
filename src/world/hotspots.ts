@@ -146,6 +146,7 @@ function build(): Record<string, Reveal> {
         eyebrow: `Cover B · ${data.title}`,
         title: panel.title,
         body: [panel.body],
+        link: 'see' in panel ? { ...panel.see } : undefined,
       }
     })
   }

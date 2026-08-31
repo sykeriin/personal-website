@@ -170,7 +170,7 @@ const ROUTES: RouteEntry[] = [
     page: 'p. B19',
     tab: 'b3 session',
     prev: '/direction',
-    next: '/prints',
+    next: '/contact',
     camera: { position: [-0.5, 1.3, 7.0], target: [0.2, 0.5, -0.3] },
     scene: 'session',
     sfx: 'STRUM',
@@ -183,8 +183,8 @@ const ROUTES: RouteEntry[] = [
     label: 'Cover B · Insert',
     title: 'Prints',
     page: 'p. B27',
-    tab: 'b4 prints',
-    prev: '/session',
+    tab: null,
+    prev: '/studio',
     next: '/contact',
     camera: { position: [0.4, 1.4, 7.2], target: [0, 0.9, -0.5] },
     scene: 'prints',
@@ -292,6 +292,9 @@ export function entryFor(pathname: string): RouteEntry {
 
   const match = /^\/projects\/([a-z0-9-]+)\/?$/i.exec(pathname)
   if (match) return projectEntry(match[1])
+
+  if (/^\/prints\/[a-z0-9-]+\/?$/i.test(pathname)) return byPath.get('/prints')!
+  if (/^\/notes\/[a-z0-9-]+\/?$/i.test(pathname)) return byPath.get('/notes')!
 
   return notFound
 }

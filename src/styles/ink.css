@@ -1032,3 +1032,12 @@ button {
   padding-left: 1rem;
   font-style: italic;
 }
+
+/* Active category chip on the prints page. */
+.tags__on {
+  background: var(--accent);
+  border-color: var(--accent) !important;
+}
+.tags__on a {
+  color: var(--paper);
+}

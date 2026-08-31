@@ -268,11 +268,13 @@ export const creative = {
         {
           id: 'modelling',
           title: 'i model',
+          see: { to: '/prints/modelling', label: 'see the shots' },
           body: "editorial and fashion stuff. i know what a photo needs from both sides of the lens, which turns out to be rare. yes it confuses the engineering crowd. no i'm not choosing.",
         },
         {
           id: 'shoots',
           title: 'i direct shoots',
+          see: { to: '/prints/shoots', label: 'stills from set' },
           body: "photoshoots and videos — concept, mood boards, shot lists, wrangling people on the day, the edit after. if you need someone who can hold a creative vision AND a schedule, that's the job i like most.",
         },
       ],
@@ -284,11 +286,13 @@ export const creative = {
         {
           id: 'webdesign',
           title: 'i design websites',
+          see: { to: '/projects', label: 'see what i built' },
           body: "ui/ux and art direction for the web. this site is the portfolio piece: i directed it like a shoot — art direction doc, palette rules, a shader instead of a lighting rig.",
         },
         {
           id: 'video',
           title: 'i direct videos',
+          see: { to: '/prints/video', label: 'frames from the edits' },
           body: 'short-form, launch videos, weird ideas people are scared to storyboard. bring me the idea while it is still embarrassing.',
         },
       ],

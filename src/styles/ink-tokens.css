@@ -55,7 +55,7 @@
 
   /* --- non-colour shader tokens ----------------------------------------- */
   /* Device px. Outer contour vs interior crease line weight. */
-  --line-contour: 2.4;
+  --line-contour: 3.2;
   --line-interior: 1.2;
   /* Dot pitch in CSS px — matches the DOM tone layer exactly so a CSS dot and
      a shader dot land on the same grid and the page reads as one surface. */

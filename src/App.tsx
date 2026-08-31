@@ -37,6 +37,7 @@ const router = createBrowserRouter([
       { path: 'direction', element: <Direction /> },
       { path: 'session', element: <Session /> },
       { path: 'prints', element: <Prints /> },
+      { path: 'prints/:cat', element: <Prints /> },
       { path: 'notes', element: <Notes /> },
       { path: 'notes/:slug', element: <NotePost /> },
       { path: 'contact', element: <Contact /> },
