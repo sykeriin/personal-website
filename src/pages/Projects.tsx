@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { GithubShelf } from '../components/GithubShelf'
 import { ChapterHead, Hanko, Panel, Turn } from '../components/chrome'
 import { projects } from '../data/content'
 import { useDocumentMeta } from '../hooks/useDocumentMeta'
@@ -37,6 +38,8 @@ export function Projects() {
           </Link>
         ))}
       </nav>
+
+      <GithubShelf />
 
       <Turn path="/projects" />
     </main>

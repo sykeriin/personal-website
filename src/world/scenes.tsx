@@ -804,6 +804,43 @@ function SessionScene({ mats, explore }: { mats: Mats; explore: boolean }) {
   )
 }
 
+
+/** The photo insert's room: a gallery wall of hung prints. The frames hold
+    tone until real photographs land in src/assets/photos/shoots. */
+function PrintsScene({ mats }: { mats: Mats }) {
+  const frames: Array<[number, number, number, number, 'tone' | 'accent' | 'hueA' | 'hueB']> = [
+    [-2.6, 1.9, 0.02, 1.05, 'tone'],
+    [-0.9, 1.6, -0.03, 1.35, 'accent'],
+    [0.9, 2.0, 0.04, 0.95, 'hueA'],
+    [2.5, 1.5, -0.02, 1.2, 'tone'],
+    [-1.8, 0.1, 0.03, 0.85, 'hueB'],
+    [1.7, 0.2, -0.04, 1.0, 'tone'],
+  ]
+  return (
+    <>
+      <Ground mats={mats} />
+      <mesh position={[0, 1.8, -3.4]} material={mats.paper}>
+        <boxGeometry args={[13, 7.5, 0.2]} />
+      </mesh>
+      {frames.map(([x, y, r, sc, pic]) => (
+        <group key={`${x},${y}`} position={[x, y, -3.25]} rotation={[0, 0, r]} scale={sc}>
+          <WallFrame mats={mats} picture={pic} w={1.15} h={1.5} />
+        </group>
+      ))}
+      {/* the bench you sit on to look */}
+      <mesh position={[0.2, -0.85, 1.6]} material={mats.dim}>
+        <boxGeometry args={[2.6, 0.14, 0.7]} />
+      </mesh>
+      {[-1, 1].map((side) => (
+        <mesh key={side} position={[0.2 + side * 1.1, -1.0, 1.6]} material={mats.dim}>
+          <boxGeometry args={[0.1, 0.34, 0.6]} />
+        </mesh>
+      ))}
+      <Figure pose="idle" position={[3.4, -0.3, 0.9]} height={1.7} rotation={[0, -0.4, 0]} />
+    </>
+  )
+}
+
 /* --------------------------------------------------------------- registry */
 
 export function SceneFor({
@@ -842,6 +879,8 @@ export function SceneFor({
       return <DirectionScene mats={mats} explore={explore} />
     case 'session':
       return <SessionScene mats={mats} explore={explore} />
+    case 'prints':
+      return <PrintsScene mats={mats} />
     case 'void':
     default:
       return <VoidScene mats={mats} frozen={frozen} />

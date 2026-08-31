@@ -53,6 +53,7 @@ export type SceneKey =
   | 'studio'
   | 'direction'
   | 'session'
+  | 'prints'
   | 'void'
 
 const ROUTES: RouteEntry[] = [
@@ -169,12 +170,42 @@ const ROUTES: RouteEntry[] = [
     page: 'p. B19',
     tab: 'b3 session',
     prev: '/direction',
-    next: '/contact',
+    next: '/prints',
     camera: { position: [-0.5, 1.3, 7.0], target: [0.2, 0.5, -0.3] },
     scene: 'session',
     sfx: 'STRUM',
     accent: '#5a48d6',
     description: 'guitar, late nights, and an open invite to make something together.',
+  },
+  {
+    path: '/prints',
+    side: 'creative',
+    label: 'Cover B · Insert',
+    title: 'Prints',
+    page: 'p. B27',
+    tab: 'b4 prints',
+    prev: '/session',
+    next: '/contact',
+    camera: { position: [0.4, 1.4, 7.2], target: [0, 0.9, -0.5] },
+    scene: 'prints',
+    sfx: 'FLIP',
+    accent: '#c2366b',
+    description: 'the photo insert — shoots he modelled in or directed.',
+  },
+  {
+    path: '/notes',
+    side: 'shared',
+    label: 'Margins',
+    title: 'Notes',
+    page: 'p. ‡',
+    tab: 'nb notes',
+    prev: '/',
+    next: '/contact',
+    camera: { position: [-1.0, 1.7, 7.2], target: [0.2, 0.5, -0.3] },
+    scene: 'desk',
+    sfx: 'SCRIBBLE',
+    accent: '#4a6d8c',
+    description: 'longer things: build logs, shoot write-ups, 2am thoughts.',
   },
   {
     path: '/contact',

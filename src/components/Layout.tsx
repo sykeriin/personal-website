@@ -11,6 +11,7 @@ import { entryFor } from '../world/manifest'
 import { hotspots, hotspotsForRoute } from '../world/hotspots'
 import { HotspotList, RevealPanel } from './RevealPanel'
 import { ModeSwitch } from './ModeSwitch'
+import { SocialStrip } from './SocialStrip'
 
 /** three.js lives behind a dynamic import, so the paper tier never downloads it. */
 const WorldCanvas = lazy(() => import('../world/WorldCanvas'))
@@ -23,8 +24,11 @@ export function Layout() {
   const rootRef = useRef<HTMLDivElement>(null)
 
   const world = tierUsesWebGL(tier)
+  // The gallery and the blog are DOM-first: their content IS the page, so
+  // explore mode (which hides the prose) would leave nothing to look at.
+  const domFirst = /^\/(prints|notes)/.test(location.pathname)
   // Explore needs props to click, so it only exists where there is a world.
-  const explore = world && mode === 'explore'
+  const explore = world && mode === 'explore' && !domFirst
   const ids = hotspotsForRoute(location.pathname)
 
   // The visitor's local hour swaps the ink plate to indigo. theme.ts reads the
@@ -87,7 +91,8 @@ export function Layout() {
       </div>
 
       {explore ? <RevealPanel /> : null}
-      {world ? <ModeSwitch mode={mode} onChange={setMode} /> : null}
+      {world && !domFirst ? <ModeSwitch mode={mode} onChange={setMode} /> : null}
+      <SocialStrip />
 
       <TierSwitch tier={tier} pinned={pinned} onChange={setTier} />
       <SoundToggle route={location.pathname} enabled={!reduceMotion} />

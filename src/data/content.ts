@@ -315,6 +315,17 @@ export const creative = {
 export const funThings =
   'muay thai, guitar, runs, hikes. when my brain is soup i hit pads or a trail until it un-soups a little.'
 
+/**
+ * Socials, one place. Empty string = not published yet; UI skips it. Twitter
+ * and Instagram light up the moment their URLs land here.
+ */
+export const socials = {
+  github: 'https://github.com/sykeriin',
+  linkedin: 'https://www.linkedin.com/in/durva-s/',
+  twitter: '',
+  instagram: '',
+} as const
+
 export const contactBits = [
   { label: 'mail', href: `mailto:durva.s170@gmail.com`, text: 'durva.s170@gmail.com' },
   { label: 'linkedin', href: 'https://www.linkedin.com/in/durva-s/', text: 'linkedin.com/in/durva-s' },

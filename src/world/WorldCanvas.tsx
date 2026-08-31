@@ -8,7 +8,7 @@ import { entryFor } from './manifest'
 import { bloom, trackPointer } from './bloom'
 import { useHotspots } from './hotspots'
 import { SceneFor } from './scenes'
-import { SlamWord } from './SlamWord'
+import { ChapterType } from './ChapterType'
 
 /**
  * One Canvas for the whole site, mounted in the layout and never unmounted.
@@ -217,7 +217,7 @@ function Stage({
           explore={explore}
           frozen={reduceMotion}
         />
-        <SlamWord pathname={pathname} ink={theme.palette.ink} reduceMotion={reduceMotion} />
+        <ChapterType pathname={pathname} reduceMotion={reduceMotion} />
       </Suspense>
 
       {tierUsesPostProcessing(tier) ? (
