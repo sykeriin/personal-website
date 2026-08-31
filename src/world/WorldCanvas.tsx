@@ -29,15 +29,32 @@ type Props = {
 }
 
 /** Damped camera. Driven purely by pathname, so an in-world click, a tab click,
-    browser Back and a pasted URL all produce identical motion. */
+    browser Back and a pasted URL all produce identical motion.
+
+    Crossing between the volume's two covers rolls the camera through a full
+    turn — the tête-bêche gesture: the book is being turned over in your hands.
+    The roll target only ever advances by exactly 2π, so it always settles
+    upright, and reduced motion skips the roll entirely. */
 function CameraRig({ pathname, instant }: { pathname: string; instant: boolean }) {
   const camera = useThree((s) => s.camera)
   const target = useMemo(() => new THREE.Vector3(), [])
   const desired = useMemo(() => new THREE.Vector3(), [])
   const look = useMemo(() => new THREE.Vector3(), [])
   const first = useRef(true)
+  const roll = useRef(0)
+  const rollTarget = useRef(0)
+  const lastSide = useRef<'tech' | 'creative' | null>(null)
 
-  const pose = entryFor(pathname).camera
+  const entry = entryFor(pathname)
+  const pose = entry.camera
+
+  useEffect(() => {
+    if (entry.side === 'shared') return
+    if (lastSide.current !== null && lastSide.current !== entry.side && !instant) {
+      rollTarget.current += Math.PI * 2
+    }
+    lastSide.current = entry.side
+  }, [entry.side, instant])
 
   useEffect(() => {
     desired.set(...pose.position)
@@ -57,6 +74,13 @@ function CameraRig({ pathname, instant }: { pathname: string; instant: boolean }
     camera.position.x = THREE.MathUtils.damp(camera.position.x, desired.x, 4, delta)
     camera.position.y = THREE.MathUtils.damp(camera.position.y, desired.y, 4, delta)
     camera.position.z = THREE.MathUtils.damp(camera.position.z, desired.z, 4, delta)
+
+    // The flip. Damped like the dolly so the whole move is one gesture; snapped
+    // once it lands so floating point can never leave the horizon tilted.
+    roll.current = THREE.MathUtils.damp(roll.current, rollTarget.current, 3.2, delta)
+    if (Math.abs(rollTarget.current - roll.current) < 0.002) roll.current = rollTarget.current
+    camera.up.set(Math.sin(roll.current), Math.cos(roll.current), 0)
+
     look.lerp(target, 1 - Math.exp(-4 * delta))
     camera.lookAt(look)
   })

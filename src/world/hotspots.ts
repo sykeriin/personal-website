@@ -1,5 +1,5 @@
 import { useSyncExternalStore } from 'react'
-import { achievements, experiences, origin, projects, skills, site, funThings } from '../data/content'
+import { achievements, creative, experiences, origin, projects, skills, site, funThings } from '../data/content'
 
 /**
  * Bridges the 3D world and the DOM. R3F renders through its own reconciler, so
@@ -131,6 +131,17 @@ function build(): Record<string, Reveal> {
     body: achievements.map((a) => `${a.stamp} — ${a.label}`),
   }
 
+  for (const [chapter, data] of Object.entries(creative.chapters)) {
+    data.panels.forEach((panel) => {
+      map[`${chapter}-${panel.id}`] = {
+        id: `${chapter}-${panel.id}`,
+        eyebrow: `Cover B · ${data.title}`,
+        title: panel.title,
+        body: [panel.body],
+      }
+    })
+  }
+
   map['contact-envelope'] = {
     id: 'contact-envelope',
     eyebrow: 'Last Page',
@@ -166,5 +177,8 @@ export function hotspotsForRoute(pathname: string): string[] {
     return ['skill-languages', 'skill-aiml', 'skill-frameworks', 'skill-infra', 'skill-stamps']
   }
   if (pathname === '/contact') return ['contact-envelope', 'contact-offpanel']
+  if (pathname === '/studio') return ['studio-modelling', 'studio-shoots']
+  if (pathname === '/direction') return ['direction-webdesign', 'direction-video']
+  if (pathname === '/session') return ['session-guitar', 'session-collab']
   return []
 }

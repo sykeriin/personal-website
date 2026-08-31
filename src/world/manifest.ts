@@ -15,8 +15,13 @@ export type CameraPose = {
   target: [number, number, number]
 }
 
+export type VolumeSide = 'tech' | 'creative' | 'shared'
+
 export type RouteEntry = {
   path: string
+  /** Which cover of the tête-bêche volume this page belongs to. The book has
+      two fronts; flipping it swaps the fore-edge tabs and the plate family. */
+  side: VolumeSide
   /** Chapter eyebrow, e.g. "Chapter 01". */
   label: string
   /** Chapter name, e.g. "Origin". */
@@ -45,11 +50,15 @@ export type SceneKey =
   | 'artifact'
   | 'tree'
   | 'desk-closing'
+  | 'studio'
+  | 'direction'
+  | 'session'
   | 'void'
 
 const ROUTES: RouteEntry[] = [
   {
     path: '/',
+    side: 'shared',
     label: 'Volume 02',
     title: 'Durva Sharma',
     page: 'cover',
@@ -63,6 +72,7 @@ const ROUTES: RouteEntry[] = [
   },
   {
     path: '/origin',
+    side: 'tech',
     label: 'Chapter 01',
     title: 'Origin',
     page: 'p. 03',
@@ -77,6 +87,7 @@ const ROUTES: RouteEntry[] = [
   },
   {
     path: '/training',
+    side: 'tech',
     label: 'Chapter 02',
     title: 'Training Arc',
     page: 'p. 11',
@@ -91,6 +102,7 @@ const ROUTES: RouteEntry[] = [
   },
   {
     path: '/projects',
+    side: 'tech',
     label: 'Chapter 03',
     title: 'Projects',
     page: 'p. 19',
@@ -105,6 +117,7 @@ const ROUTES: RouteEntry[] = [
   },
   {
     path: '/skill-tree',
+    side: 'tech',
     label: 'Extra',
     title: 'Skill Tree',
     page: 'p. 41',
@@ -117,8 +130,55 @@ const ROUTES: RouteEntry[] = [
     accent: '#3fae5f',
     description: 'languages, ai/ml, frameworks and infra — plus the stamps and the side quests.',
   },
+  // ------------------------------------------------------------ creative side
+  {
+    path: '/studio',
+    side: 'creative',
+    label: 'Cover B · 01',
+    title: 'Studio',
+    page: 'p. B03',
+    tab: 'b1 studio',
+    prev: '/',
+    next: '/direction',
+    camera: { position: [-0.8, 1.5, 7.6], target: [0.3, 0.7, -0.5] },
+    scene: 'studio',
+    sfx: 'FLASH',
+    accent: '#d81b7a',
+    description: 'the other cover: modelling, and directing photoshoots and videos.',
+  },
+  {
+    path: '/direction',
+    side: 'creative',
+    label: 'Cover B · 02',
+    title: 'Direction',
+    page: 'p. B11',
+    tab: 'b2 direction',
+    prev: '/studio',
+    next: '/session',
+    camera: { position: [0.6, 1.6, 7.4], target: [-0.2, 0.8, -0.6] },
+    scene: 'direction',
+    sfx: 'CUT',
+    accent: '#e39b16',
+    description: 'art direction for websites and video — ui/ux, storyboards, the whole vision.',
+  },
+  {
+    path: '/session',
+    side: 'creative',
+    label: 'Cover B · 03',
+    title: 'Session',
+    page: 'p. B19',
+    tab: 'b3 session',
+    prev: '/direction',
+    next: '/contact',
+    camera: { position: [-0.5, 1.3, 7.0], target: [0.2, 0.5, -0.3] },
+    scene: 'session',
+    sfx: 'STRUM',
+    accent: '#5a48d6',
+    description: 'guitar, late nights, and an open invite to make something together.',
+  },
   {
     path: '/contact',
+    side: 'shared',
     label: 'Last Page',
     title: 'To Be Continued…',
     page: 'p. 48',
@@ -135,8 +195,15 @@ const ROUTES: RouteEntry[] = [
 
 export const routes = ROUTES
 
-/** Fore-edge tabs, in reading order. The cover has no tab; the wordmark links home. */
-export const tabs = ROUTES.filter((r) => r.tab !== null)
+/**
+ * Fore-edge tabs for the side of the volume currently being read. A tête-bêche
+ * book shows a different fore-edge depending on which cover is up; shared pages
+ * (the middle, where the two stories meet) appear on both.
+ */
+export function tabsFor(side: VolumeSide) {
+  const visible = side === 'shared' ? 'tech' : side
+  return ROUTES.filter((r) => r.tab !== null && (r.side === visible || r.side === 'shared'))
+}
 
 const byPath = new Map(ROUTES.map((r) => [r.path, r]))
 
@@ -162,6 +229,7 @@ function projectEntry(slug: string): RouteEntry {
     next: '/skill-tree',
     camera: { position: [0.2, 0.8, 4.8], target: [0.2, 0.45, 0] },
     scene: 'artifact',
+    side: 'tech',
     sfx: 'FWSH',
     accent: PROJECT_ACCENTS[slug] ?? '#d3103a',
     description: project ? `${project.tagline}. ${project.blurb}` : 'A project from Volume 02.',
@@ -177,6 +245,7 @@ export const notFound: RouteEntry = {
   prev: '/',
   camera: { position: [0, 0.8, 6.0], target: [0, 0.2, 0] },
   scene: 'void',
+  side: 'shared',
   sfx: 'HUH',
   accent: '#b01030',
   description: "this page isn't in the volume.",

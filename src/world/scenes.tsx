@@ -10,6 +10,17 @@ import { Figure } from './Figure'
 import { Hotspot, InkShape } from './Ink'
 import { Envelope, Guitar, ScreenLines } from './props'
 import {
+  Amp,
+  BackdropSweep,
+  Clapperboard,
+  DirectorChair,
+  MicStand,
+  Softbox,
+  Storyboard,
+  TripodCamera,
+  WallFrame,
+} from './setDressing'
+import {
   bookCover,
   boltNut,
   chainLink,
@@ -568,6 +579,203 @@ function VoidScene({ mats }: { mats: Mats }) {
   )
 }
 
+
+/* ---------------------------------------------------------- creative side */
+
+/**
+ * Cover B. These three are SCENES in the staging sense: a room, layered depth
+ * (a flanking foreground prop, a midground subject, a wall with a life on it),
+ * and the figure doing the thing — not objects arranged on a floor.
+ */
+
+function StudioScene({ mats, explore }: { mats: Mats; explore: boolean }) {
+  return (
+    <>
+      <Ground mats={mats} />
+
+      {/* the seamless — the largest colour surface on the site, on purpose */}
+      <Hotspot id="studio-modelling" enabled={explore}>
+        <group position={[0.4, 0, -0.6]}>
+          <BackdropSweep mats={mats} />
+          {/* him, on it. the model half. */}
+          <Figure pose="idle" position={[0.3, -0.22, -0.7]} height={1.75} />
+        </group>
+      </Hotspot>
+
+      {/* the working side of the room */}
+      <group position={[-2.9, 0, 1.5]} rotation={[0, 0.5, 0]}>
+        <Softbox mats={mats} />
+      </group>
+      <Hotspot id="studio-shoots" enabled={explore}>
+        <group position={[2.5, 0, 2.0]} rotation={[0, -2.55, 0]}>
+          <TripodCamera mats={mats} />
+        </group>
+      </Hotspot>
+
+      {/* contact-sheet wall, camera left */}
+      <group position={[-4.7, 1.3, -1.0]} rotation={[0, Math.PI / 2, 0]}>
+        <mesh position={[0, 0.2, -0.1]} material={mats.paper}>
+          <boxGeometry args={[7, 6, 0.2]} />
+        </mesh>
+        {[-1.3, 0, 1.3].map((z, i) => (
+          <group key={z} position={[z, 0.35, 0.08]} rotation={[0, 0, i === 1 ? 0.03 : -0.02]}>
+            <WallFrame mats={mats} picture={i === 1 ? 'hueA' : 'tone'} w={0.85} h={1.15} />
+          </group>
+        ))}
+      </group>
+
+      {/* set clutter: apple box and a taped-down cable run */}
+      <mesh position={[1.5, -0.98, 0.7]} material={mats.paper}>
+        <boxGeometry args={[0.55, 0.34, 0.4]} />
+      </mesh>
+      {[0, 1, 2, 3].map((i) => (
+        <mesh
+          key={i}
+          position={[2.4 - i * 0.55, -1.12, 2.5 - i * 0.28]}
+          rotation={[-Math.PI / 2, 0, 0.5 + i * 0.35]}
+          material={mats.dim}
+        >
+          <boxGeometry args={[0.6, 0.05, 0.02]} />
+        </mesh>
+      ))}
+    </>
+  )
+}
+
+function DirectionScene({ mats, explore }: { mats: Mats; explore: boolean }) {
+  const laptopShape = useMemo(() => laptop(), [])
+  return (
+    <>
+      <Ground mats={mats} />
+
+      {/* the wall the plan lives on, with a plate-coloured feature panel */}
+      <mesh position={[0, 1.6, -3.6]} material={mats.paper}>
+        <boxGeometry args={[12, 7, 0.2]} />
+      </mesh>
+      <mesh position={[-0.2, 1.5, -3.45]} material={mats.accent}>
+        <boxGeometry args={[5.6, 3.6, 0.06]} />
+      </mesh>
+      <Hotspot id="direction-video" enabled={explore}>
+        <group position={[-0.2, 1.5, -3.3]}>
+          <Storyboard mats={mats} />
+        </group>
+      </Hotspot>
+
+      {/* the director's corner */}
+      <group position={[-2.6, -0.4, 0.6]} rotation={[0, 0.45, 0]}>
+        <DirectorChair mats={mats} />
+      </group>
+      <group position={[-1.55, -0.75, 1.3]} rotation={[0.1, 0.7, 0.55]}>
+        <Clapperboard mats={mats} />
+      </group>
+
+      {/* the design desk: laptop showing work-in-progress */}
+      <Hotspot id="direction-webdesign" enabled={explore}>
+        <group position={[2.5, -0.3, 0.4]} rotation={[0, -0.35, 0]}>
+          <mesh position={[0, -0.32, 0]} material={mats.dim}>
+            <boxGeometry args={[1.7, 0.08, 1.0]} />
+          </mesh>
+          {[-0.7, 0.7].map((x) => (
+            <mesh key={x} position={[x, -0.85, 0]} material={mats.dim}>
+              <boxGeometry args={[0.08, 1.0, 0.08]} />
+            </mesh>
+          ))}
+          <InkShape
+            shape={laptopShape}
+            depth={0.5}
+            material={mats.hueB}
+            position={[0, 0.05, 0]}
+            rotation={[0, -1.05, 0]}
+            scale={0.8}
+          />
+        </group>
+      </Hotspot>
+
+      {/* him, pitching the board */}
+      <Figure pose="point" position={[1.0, -0.3, -1.6]} height={1.7} rotation={[0, -0.4, 0]} />
+
+      <mesh position={[-1.8, -1.12, 0.8]} material={mats.tone}>
+        <cylinderGeometry args={[1.5, 1.5, 0.04, 24]} />
+      </mesh>
+    </>
+  )
+}
+
+function SessionScene({ mats, explore }: { mats: Mats; explore: boolean }) {
+  return (
+    <>
+      <Ground mats={mats} />
+
+      {/* the corner of the room where the amp lives */}
+      <mesh position={[0, 1.6, -3.8]} material={mats.paper}>
+        <boxGeometry args={[12, 7, 0.2]} />
+      </mesh>
+      <mesh position={[-4.9, 1.6, -0.4]} rotation={[0, Math.PI / 2, 0]} material={mats.dim}>
+        <boxGeometry args={[7, 7, 0.2]} />
+      </mesh>
+
+      {/* posters over the amp — gig-print colour, not framed politeness */}
+      <group position={[-1.7, 2.0, -3.65]} rotation={[0, 0, 0.03]}>
+        <WallFrame mats={mats} picture="accent" w={1.1} h={1.5} />
+      </group>
+      <group position={[0.4, 1.7, -3.65]} rotation={[0, 0, -0.04]}>
+        <WallFrame mats={mats} picture="hueA" w={0.9} h={1.2} />
+      </group>
+      <group position={[2.0, 2.1, -3.65]} rotation={[0, 0, 0.05]}>
+        <WallFrame mats={mats} picture="hueB" w={0.8} h={1.05} />
+      </group>
+
+      {/* the rug that holds the session together */}
+      <mesh position={[0.3, -1.11, 0.4]} material={mats.accent}>
+        <cylinderGeometry args={[2.3, 2.3, 0.04, 28]} />
+      </mesh>
+
+      <Hotspot id="session-guitar" enabled={explore}>
+        <group>
+          <group position={[-1.9, -0.62, -0.4]} rotation={[0, 0.35, 0]}>
+            <Amp mats={mats} />
+          </group>
+          {/* guitar resting on its stand, human-sized */}
+          <group position={[1.5, -0.55, 0.15]} rotation={[0.06, -0.3, 0.12]} scale={0.75}>
+            <Guitar mats={mats} body="accent" />
+            {[-1, 1].map((side) => (
+              <mesh
+                key={side}
+                position={[side * 0.3, -0.55, 0.25]}
+                rotation={[0.5, 0, side * 0.5]}
+                material={mats.dim}
+              >
+                <boxGeometry args={[0.05, 1.0, 0.05]} />
+              </mesh>
+            ))}
+          </group>
+          {/* the cable, lazily coiled amp-to-guitar */}
+          {[0, 1, 2, 3, 4].map((i) => (
+            <mesh
+              key={i}
+              position={[-1.4 + i * 0.5, -1.06, 0.35 + Math.sin(i * 1.8) * 0.3]}
+              rotation={[-Math.PI / 2, 0, i * 0.9]}
+              material={mats.dim}
+            >
+              <boxGeometry args={[0.55, 0.04, 0.02]} />
+            </mesh>
+          ))}
+        </group>
+      </Hotspot>
+
+      {/* the open mic — the "make something with me" invitation */}
+      <Hotspot id="session-collab" enabled={explore}>
+        <group position={[2.6, 0, 1.2]} rotation={[0, -0.4, 0]}>
+          <MicStand mats={mats} />
+        </group>
+      </Hotspot>
+
+      {/* him, mid-session */}
+      <Figure pose="guitar" position={[-0.35, -0.32, 1.15]} height={1.5} rotation={[0, -0.2, 0]} />
+    </>
+  )
+}
+
 /* --------------------------------------------------------------- registry */
 
 export function SceneFor({
@@ -598,6 +806,12 @@ export function SceneFor({
       return <ArtifactScene mats={mats} pathname={pathname} explore={explore} />
     case 'tree':
       return <TreeScene mats={mats} explore={explore} />
+    case 'studio':
+      return <StudioScene mats={mats} explore={explore} />
+    case 'direction':
+      return <DirectionScene mats={mats} explore={explore} />
+    case 'session':
+      return <SessionScene mats={mats} explore={explore} />
     case 'void':
     default:
       return <VoidScene mats={mats} />

@@ -151,6 +151,13 @@ button {
   text-decoration: none;
 }
 
+/* The tab that turns the book over. Printed in the plate so it reads as the
+   one tab that does something different. */
+.edge-tabs__flip {
+  color: var(--paper) !important;
+  background: var(--accent);
+}
+
 /* Desktop: the fore-edge of the book, down the right side. */
 @media (min-width: 48rem) {
   .edge-tabs {

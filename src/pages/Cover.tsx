@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { MarginNote, Panel, Turn } from '../components/chrome'
-import { site } from '../data/content'
+import { creative, site } from '../data/content'
 import { useDocumentMeta } from '../hooks/useDocumentMeta'
 import { usePresence } from '../hooks/usePresence'
 import { entryFor } from '../world/manifest'
@@ -29,9 +29,16 @@ export function Cover() {
       <p className="lede">{site.coverHook}</p>
       <p>{site.coverLine}</p>
 
-      <Link className="cta" to="/projects">
-        see the projects
-      </Link>
+      {/* Tête-bêche fork: the volume has two fronts, so the cover offers both. */}
+      <p className="lede">{creative.hook}</p>
+      <p>
+        <Link className="cta" to="/origin">
+          the tech side →
+        </Link>{' '}
+        <Link className="cta" to="/studio">
+          the creative side →
+        </Link>
+      </p>
 
       <Panel tone>
         <div className="panel__meta">currently building</div>

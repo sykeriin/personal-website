@@ -6,6 +6,9 @@ import { Training } from './pages/Training'
 import { Projects } from './pages/Projects'
 import { ProjectDetail } from './pages/ProjectDetail'
 import { SkillTree } from './pages/SkillTree'
+import { Studio } from './pages/Studio'
+import { Direction } from './pages/Direction'
+import { Session } from './pages/Session'
 import { Contact } from './pages/Contact'
 import { NotFound } from './pages/NotFound'
 
@@ -28,6 +31,9 @@ const router = createBrowserRouter([
       { path: 'projects', element: <Projects /> },
       { path: 'projects/:slug', element: <ProjectDetail /> },
       { path: 'skill-tree', element: <SkillTree /> },
+      { path: 'studio', element: <Studio /> },
+      { path: 'direction', element: <Direction /> },
+      { path: 'session', element: <Session /> },
       { path: 'contact', element: <Contact /> },
       // v1 shipped these paths publicly; keep them resolving.
       { path: 'battles', element: <Navigate to="/projects" replace /> },

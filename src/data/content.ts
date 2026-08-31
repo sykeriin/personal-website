@@ -253,6 +253,65 @@ export const leadership = [
   'Founded the MUN club at Deens Academy (and somehow ran it)',
 ]
 
+/**
+ * The creative half of the volume. He said it directly: "not only am I a tech
+ * person, I also model … I direct shoots, videos for people … I can do UI/UX."
+ * The tech side and this side are two covers of the same book.
+ */
+export const creative = {
+  hook: 'same person, other cover. i also get in front of cameras, and behind them.',
+  chapters: {
+    studio: {
+      title: 'Studio',
+      lede: 'the half of me that works in frames instead of functions.',
+      panels: [
+        {
+          id: 'modelling',
+          title: 'i model',
+          body: "editorial and fashion stuff. i know what a photo needs from both sides of the lens, which turns out to be rare. yes it confuses the engineering crowd. no i'm not choosing.",
+        },
+        {
+          id: 'shoots',
+          title: 'i direct shoots',
+          body: "photoshoots and videos — concept, mood boards, shot lists, wrangling people on the day, the edit after. if you need someone who can hold a creative vision AND a schedule, that's the job i like most.",
+        },
+      ],
+    },
+    direction: {
+      title: 'Direction',
+      lede: 'design is deciding what the thing is before anyone builds it.',
+      panels: [
+        {
+          id: 'webdesign',
+          title: 'i design websites',
+          body: "ui/ux and art direction for the web. this site is the portfolio piece: i directed it like a shoot — art direction doc, palette rules, a shader instead of a lighting rig.",
+        },
+        {
+          id: 'video',
+          title: 'i direct videos',
+          body: 'short-form, launch videos, weird ideas people are scared to storyboard. bring me the idea while it is still embarrassing.',
+        },
+      ],
+    },
+    session: {
+      title: 'Session',
+      lede: 'the guitar is the other 2am machine.',
+      panels: [
+        {
+          id: 'guitar',
+          title: 'i play guitar',
+          body: "mostly at night, mostly for me. it's the one build that never ships and that's the point.",
+        },
+        {
+          id: 'collab',
+          title: 'make something with me',
+          body: "photoshoots, videos, websites, weird hybrids of all three. i like collaborating with people who care about the craft. the envelope on the last page works for this side too.",
+        },
+      ],
+    },
+  },
+} as const
+
 export const funThings =
   'muay thai, guitar, runs, hikes. when my brain is soup i hit pads or a trail until it un-soups a little.'
 
