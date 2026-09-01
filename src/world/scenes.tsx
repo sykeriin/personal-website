@@ -10,6 +10,7 @@ import { Figure } from './Figure'
 import { FractalPlane } from './Fractal'
 import { Book } from './BookCover'
 import { Door, Hotspot, InkShape } from './Ink'
+import { useHotspots } from './hotspots'
 import { Envelope, Guitar, ScreenLines } from './props'
 import {
   Amp,
@@ -34,13 +35,11 @@ import {
   mug,
   mugSteam,
   pawPrint,
-  phoneSlab,
   roadSign,
   sealRing,
   speedBurst,
   spool,
   trunkProfile,
-  viewfinder,
   waveform,
 } from './shapes'
 
@@ -171,7 +170,7 @@ function CoverScene({ mats }: { mats: Mats }) {
       {/* Cover A: the tech story, right side up. */}
       <Door to="/origin">
         <Drift amount={0.05} speed={0.45}>
-          <group rotation={[0.08, -0.42, 0.02]} position={[-1.35, 0.1, 0.2]} scale={0.76}>
+          <group rotation={[0.08, -0.42, 0.02]} position={[-1.2, -0.18, 0.2]} scale={0.55}>
             <Book
               mats={mats}
               cover={mats.accent}
@@ -196,7 +195,7 @@ function CoverScene({ mats }: { mats: Mats }) {
           volume prints the second front. The visitor's first "wait, what?" */}
       <Door to="/studio">
         <Drift amount={0.05} speed={0.4} phase={1.9}>
-          <group rotation={[0.08, 0.38, Math.PI]} position={[1.75, 0.16, 0.1]} scale={0.76}>
+          <group rotation={[0.08, 0.38, Math.PI]} position={[1.55, -0.12, 0.1]} scale={0.55}>
             <Book
               mats={mats}
               cover={mats.coverB}
@@ -321,89 +320,143 @@ function DeskScene({ mats, explore }: { mats: Mats; explore: boolean }) {
 
 /* --------------------------------------------------------------- workshop */
 
-function WorkshopScene({ mats, explore }: { mats: Mats; explore: boolean }) {
-  const shapes = useMemo(
-    () => ({ phone: phoneSlab(), paw: pawPrint(), bolt: boltNut(), finder: viewfinder() }),
-    [],
+/**
+ * The Training Arc is a muay thai gym. Each experience hangs as a heavy bag:
+ * hit one (click) and it opens — and swings, because a bag that doesn't move
+ * when struck is a wall. His figure stands in guard, mid-session.
+ */
+function HeavyBag({
+  mats,
+  active,
+  sticker,
+}: {
+  mats: Mats
+  active: boolean
+  sticker?: ReactNode
+}) {
+  const swing = useRef<THREE.Group>(null)
+  const hitAt = useRef<number | null>(null)
+  const wasActive = useRef(false)
+
+  useFrame((state) => {
+    if (active && !wasActive.current) hitAt.current = state.clock.elapsedTime
+    wasActive.current = active
+    if (!swing.current) return
+    if (hitAt.current === null) return
+    const t = state.clock.elapsedTime - hitAt.current
+    // A damped pendulum, hit hard: one big swing, settling in ~3 seconds.
+    swing.current.rotation.z = Math.sin(t * 6.4) * 0.42 * Math.exp(-t * 1.5)
+    swing.current.rotation.x = Math.sin(t * 4.9 + 0.7) * 0.14 * Math.exp(-t * 1.7)
+  })
+
+  return (
+    <group ref={swing}>
+      {/* strap from the beam */}
+      <mesh position={[0, -0.3, 0]} material={mats.dim}>
+        <cylinderGeometry args={[0.035, 0.035, 0.6, 8]} />
+      </mesh>
+      {/* the bag */}
+      <mesh position={[0, -1.35, 0]} material={mats.tone}>
+        <capsuleGeometry args={[0.42, 1.15, 6, 18]} />
+      </mesh>
+      {/* top and bottom caps in ink-dark leather */}
+      <mesh position={[0, -0.72, 0]} material={mats.dim}>
+        <cylinderGeometry args={[0.43, 0.4, 0.22, 18]} />
+      </mesh>
+      <mesh position={[0, -1.98, 0]} material={mats.dim}>
+        <cylinderGeometry args={[0.4, 0.43, 0.22, 18]} />
+      </mesh>
+      {/* the plate band — each bag carries its chapter's colour */}
+      <mesh position={[0, -1.2, 0]} material={mats.accent}>
+        <cylinderGeometry args={[0.435, 0.435, 0.3, 18]} />
+      </mesh>
+      {sticker}
+    </group>
   )
+}
+
+function WorkshopScene({ mats, explore }: { mats: Mats; explore: boolean }) {
+  const paw = useMemo(() => pawPrint(), [])
+  const bolt = useMemo(() => boltNut(), [])
+  const { active } = useHotspots()
+
   return (
     <>
-      {/* Untinted: the clouds print as halftone dots. Tinted, the accent
-          flatten turned the whole sky into one solid colour band. */}
-      <Backdrop name="bg-clouds-01" />
       <Ground mats={mats} />
 
-      {/* the airfield: control tower and hangars on the horizon */}
-      <group position={[-5.5, -1.15, -9]}>
-        <mesh position={[0, 1.7, 0]} material={mats.dim}>
-          <boxGeometry args={[0.7, 3.4, 0.7]} />
+      {/* the gym: back wall, wall pads, floor mat */}
+      <mesh position={[0, 1.8, -3.8]} material={mats.paper}>
+        <boxGeometry args={[13, 7.5, 0.2]} />
+      </mesh>
+      {[-4.4, -3.1, -1.8].map((x) => (
+        <mesh key={x} position={[x, 1.15, -3.65]} material={mats.accent}>
+          <boxGeometry args={[1.1, 2.4, 0.12]} />
         </mesh>
-        <mesh position={[0, 3.6, 0]} material={mats.paper}>
-          <boxGeometry args={[1.5, 0.8, 1.5]} />
+      ))}
+      <mesh position={[0.6, -1.09, 0.2]} rotation={[0, 0.06, 0]} material={mats.accent}>
+        <boxGeometry args={[7.2, 0.08, 4.6]} />
+      </mesh>
+      <mesh position={[0.6, -1.05, 0.2]} rotation={[0, 0.06, 0]} material={mats.tone}>
+        <boxGeometry args={[6.4, 0.08, 3.9]} />
+      </mesh>
+
+      {/* the rig the bags hang from */}
+      <mesh position={[0.8, 2.62, -0.4]} material={mats.dim}>
+        <boxGeometry args={[5.6, 0.2, 0.26]} />
+      </mesh>
+      {[-1.9, 3.5].map((x) => (
+        <mesh key={x} position={[x, 0.75, -0.4]} material={mats.dim}>
+          <boxGeometry args={[0.18, 3.95, 0.18]} />
         </mesh>
-        <mesh position={[0, 4.15, 0]} material={mats.accent}>
-          <boxGeometry args={[0.1, 0.3, 0.1]} />
-        </mesh>
-      </group>
-      {[[-1.5, -11], [3.5, -12]].map(([x, z]) => (
-        <group key={x} position={[x, -1.15, z]}>
-          <mesh position={[0, 1.0, 0]} material={mats.tone}>
-            <cylinderGeometry args={[2.2, 2.2, 3.5, 20, 1, false, 0, Math.PI]} />
-          </mesh>
-        </group>
       ))}
 
-      {/* PetAlly: the phone held up big, a paw stamped on its screen */}
+      {/* one bag per experience: hit it to open it */}
       <Hotspot id="exp-petally" enabled={explore}>
-        <Drift amount={0.06} speed={0.5}>
-          <group position={[-2.1, 0.5, 0]} rotation={[0, 0.35, -0.06]}>
-            <InkShape shape={shapes.phone} depth={0.3} material={mats.paper} scale={2.6} />
-            <InkShape
-              shape={shapes.paw}
-              depth={0.06}
-              material={mats.accent}
-              position={[0, 0.1, 0.16]}
-              scale={1.1}
-            />
-          </group>
-        </Drift>
-      </Hotspot>
-
-      {/* HAWKEYE: the runway wedge, the bolt that shouldn't be there, and the
-          viewfinder that finds it */}
-      <Hotspot id="exp-hawkeye" enabled={explore}>
-        <group position={[2.2, -0.4, 0.2]} rotation={[0, -0.3, 0]}>
-          <mesh rotation={[-Math.PI / 2, 0, 0.06]} position={[0, -0.7, 0]} material={mats.tone}>
-            <planeGeometry args={[3.4, 5.5]} />
-          </mesh>
-          <mesh
-            position={[0, -0.68, 0.6]}
-            rotation={[-Math.PI / 2, 0, 0.06]}
-            material={mats.paper}
-          >
-            <planeGeometry args={[0.18, 1.2]} />
-          </mesh>
-          <InkShape
-            shape={shapes.bolt}
-            depth={0.34}
-            material={mats.hueA}
-            position={[0.6, -0.5, 0.9]}
-            rotation={[0.4, 0.3, 0.2]}
-            scale={0.55}
+        <group position={[-0.4, 2.5, -0.4]}>
+          <HeavyBag
+            mats={mats}
+            active={active === 'exp-petally'}
+            sticker={
+              <InkShape
+                shape={paw}
+                depth={0.03}
+                material={mats.paper}
+                position={[0, -1.55, 0.42]}
+                scale={0.42}
+              />
+            }
           />
-          <Drift amount={0.07} speed={0.6} phase={1}>
-            <InkShape
-              shape={shapes.finder}
-              depth={0.05}
-              material={mats.accent}
-              position={[0.6, 0.75, 0.9]}
-              scale={1.35}
-            />
-          </Drift>
+        </group>
+      </Hotspot>
+      <Hotspot id="exp-hawkeye" enabled={explore}>
+        <group position={[2.0, 2.5, -0.4]}>
+          <HeavyBag
+            mats={mats}
+            active={active === 'exp-hawkeye'}
+            sticker={
+              <InkShape
+                shape={bolt}
+                depth={0.04}
+                material={mats.paper}
+                position={[0, -1.55, 0.44]}
+                rotation={[0, 0, 0.4]}
+                scale={0.4}
+              />
+            }
+          />
         </group>
       </Hotspot>
 
-      <Figure pose="idle" position={[-4.2, -0.3, 1.4]} height={1.65} rotation={[0, 0.5, 0]} />
+      {/* him, in guard, mid-session */}
+      <Figure pose="guard" position={[-2.6, -0.28, 1.3]} height={1.7} rotation={[0, 0.55, 0]} />
+
+      {/* corner clutter: water bottle and a kick pad against the post */}
+      <mesh position={[-2.15, -0.88, -0.1]} material={mats.hueA}>
+        <cylinderGeometry args={[0.09, 0.09, 0.42, 12]} />
+      </mesh>
+      <mesh position={[3.75, -0.62, 0.3]} rotation={[0.15, 0.3, -0.35]} material={mats.hueB}>
+        <boxGeometry args={[0.5, 1.05, 0.22]} />
+      </mesh>
     </>
   )
 }
