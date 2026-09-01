@@ -1192,7 +1192,7 @@ function BoardScene({ mats }: { mats: Mats }) {
       </mesh>
 
       {/* the nameplate, pinned top centre */}
-      <group position={[0, 2.75, -3.28]} rotation={[0, 0, -0.008]}>
+      <group position={[0, 3.85, -3.28]} rotation={[0, 0, -0.008]}>
         <mesh material={mats.paper}>
           <boxGeometry args={[2.6, 0.78, 0.06]} />
         </mesh>
