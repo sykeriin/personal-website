@@ -83,7 +83,12 @@ void main() {
 
   // Boil: snap the noise offset to uBoilFps steps and HOLD. A line that slides
   // smoothly reads as a shader effect; one that snaps reads as drawn.
-  float tq = floor(uTime * max(uBoilFps, 0.0001));
+  // The seed CYCLES rather than growing: raw elapsed time drove the offsets
+  // to ~1e5 within minutes, where fract() loses float precision, the noise
+  // degenerates, and the dry-brush term quietly erased every line on screen
+  // ("the lines disappear the longer i keep it open"). The boil re-inks with
+  // discrete snaps anyway, so a 1024-step cycle is imperceptible.
+  float tq = mod(floor(uTime * max(uBoilFps, 0.0001)), 1024.0);
   vec2 boil = vec2(tq * 91.7, tq * 47.3);
 
   // Domain-warp the sample position before any taps, so the detected edge

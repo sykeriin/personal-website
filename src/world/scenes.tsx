@@ -811,27 +811,42 @@ function ArtifactScene({
           <InkShape shape={shape} depth={0.4} material={mats.accent} scale={2.6} />
         </group>
       </Hotspot>
+      <Figure pose="point" position={[-2.6, -0.3, 1.3]} height={1.7} rotation={[0, 0.5, 0]} />
     </>
   )
 }
 
-/* ------------------------------------------------------------------- tree */
-
+/**
+ * The skill tree, fruiting. Foliage is a dense crown of leaf clusters; the
+ * CLICKABLE things are fruit hanging from the boughs — four skill groups and
+ * one bigger prize fruit for the stamps. Fruit prints paper-bright with a
+ * heavy outline against the plate-green crown, so what you can pick is the
+ * brightest thing on the tree.
+ */
 function TreeScene({ mats, explore, frozen }: { mats: Mats; explore: boolean; frozen: boolean }) {
   const trunk = useMemo(() => trunkProfile(), [])
   const cluster = useMemo(() => leafCluster(), [])
-  const seal = useMemo(() => sealRing(), [])
 
-  const canopies: Array<{
-    id: string
-    pos: [number, number, number]
-    scale: number
-    mat: keyof Mats
-  }> = [
-    { id: 'skill-languages', pos: [-1.9, 2.5, 0.2], scale: 1.5, mat: 'paper' },
-    { id: 'skill-aiml', pos: [-0.4, 3.4, -0.2], scale: 1.9, mat: 'accent' },
-    { id: 'skill-frameworks', pos: [1.2, 3.0, 0.15], scale: 1.55, mat: 'hueA' },
-    { id: 'skill-infra', pos: [2.3, 2.2, -0.1], scale: 1.3, mat: 'hueB' },
+  const foliage: Array<[number, number, number, number, number, keyof Mats]> = [
+    [-2.5, 3.0, 0.2, 0.75, 0.3, 'accent'],
+    [-1.6, 3.7, -0.3, 0.95, -0.2, 'hueA'],
+    [-0.7, 4.15, 0.15, 0.8, 0.5, 'accent'],
+    [0.3, 4.3, -0.2, 1.0, -0.4, 'hueB'],
+    [1.3, 4.0, 0.25, 0.85, 0.15, 'accent'],
+    [2.2, 3.4, -0.15, 0.9, -0.5, 'hueA'],
+    [2.8, 2.7, 0.1, 0.7, 0.35, 'tone'],
+    [-3.0, 2.4, -0.1, 0.65, -0.3, 'tone'],
+    [0.0, 3.6, 0.4, 0.7, 0.8, 'hueB'],
+    [-1.0, 3.1, -0.4, 0.6, -0.7, 'accent'],
+    [1.9, 4.35, 0.0, 0.6, 0.6, 'accent'],
+  ]
+
+  const fruit: Array<{ id: string; x: number; y: number; z: number; r: number }> = [
+    { id: 'skill-languages', x: -2.3, y: 2.15, z: 0.35, r: 0.26 },
+    { id: 'skill-aiml', x: -0.9, y: 2.6, z: 0.45, r: 0.3 },
+    { id: 'skill-frameworks', x: 0.9, y: 2.75, z: 0.4, r: 0.28 },
+    { id: 'skill-infra', x: 2.3, y: 2.3, z: 0.3, r: 0.26 },
+    { id: 'skill-stamps', x: 0.05, y: 1.7, z: 0.55, r: 0.38 },
   ]
 
   return (
@@ -839,42 +854,62 @@ function TreeScene({ mats, explore, frozen }: { mats: Mats; explore: boolean; fr
       <FractalPlane frozen={frozen} />
       <Ground mats={mats} />
 
+      {/* trunk and boughs */}
       <InkShape shape={trunk} depth={0.55} material={mats.dim} position={[0, 0.9, 0]} scale={4.2} />
 
-      {canopies.map((canopy, i) => (
-        <Hotspot key={canopy.id} id={canopy.id} enabled={explore}>
-          <Drift amount={0.05} speed={0.38} phase={i * 1.6}>
-            <InkShape
-              shape={cluster}
-              depth={0.34}
-              material={mats[canopy.mat]}
-              position={canopy.pos}
-              scale={canopy.scale}
-            />
+      {/* the crown */}
+      {foliage.map(([x, y, z, sc, rot, mat]) => (
+        <Drift key={`${x},${y}`} amount={0.05} speed={0.35} phase={x * 2.1}>
+          <InkShape
+            shape={cluster}
+            depth={0.3}
+            material={mats[mat]}
+            position={[x, y, z]}
+            rotation={[0, 0, rot]}
+            scale={sc}
+          />
+        </Drift>
+      ))}
+
+      {/* the fruit: pick one */}
+      {fruit.map((f, i) => (
+        <Hotspot key={f.id} id={f.id} enabled={explore}>
+          <Drift amount={0.04} speed={0.45} phase={i * 1.7}>
+            <group position={[f.x, f.y, f.z]}>
+              {/* stem up into the crown */}
+              <mesh position={[0, f.r + 0.3, 0]} material={mats.dim}>
+                <cylinderGeometry args={[0.018, 0.018, 0.6, 6]} />
+              </mesh>
+              <mesh material={mats.paper}>
+                <sphereGeometry args={[f.r, 18, 14]} />
+              </mesh>
+              {/* one small leaf at the stem */}
+              <InkShape
+                shape={cluster}
+                depth={0.03}
+                material={mats.accent}
+                position={[0.12, f.r + 0.12, 0.05]}
+                rotation={[0, 0, -0.5]}
+                scale={0.14}
+              />
+            </group>
           </Drift>
         </Hotspot>
       ))}
 
-      {/* the ema plaque of stamps, hanging off the low bough */}
-      <Hotspot id="skill-stamps" enabled={explore}>
-        <group position={[3.1, 0.6, 0.4]}>
-          <mesh position={[0, 0.55, 0]} material={mats.dim}>
-            <boxGeometry args={[0.04, 1.0, 0.04]} />
-          </mesh>
-          <mesh material={mats.paper}>
-            <boxGeometry args={[1.05, 0.75, 0.07]} />
-          </mesh>
-          <InkShape
-            shape={seal}
-            depth={0.04}
-            material={mats.accent}
-            position={[0, 0, 0.07]}
-            scale={0.4}
-          />
-        </group>
-      </Hotspot>
+      {/* roots — the side quests */}
+      {[-1, 1].map((dir) => (
+        <mesh
+          key={dir}
+          position={[dir * 0.62, -1.02, 0.2]}
+          rotation={[0, 0, dir * 1.0]}
+          material={mats.dim}
+        >
+          <cylinderGeometry args={[0.05, 0.11, 1.2, 8]} />
+        </mesh>
+      ))}
 
-      <Figure pose="point" position={[-3.6, -0.3, 1.6]} height={1.7} rotation={[0, 0.45, 0]} />
+      <Figure pose="point" position={[-3.3, -0.3, 1.2]} height={1.7} rotation={[0, 0.45, 0]} />
     </>
   )
 }
