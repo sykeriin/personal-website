@@ -8,6 +8,7 @@ import { makeToonGradient } from '../three/toonGradient'
 import { sideAccent, type SceneKey } from './manifest'
 import { Figure } from './Figure'
 import { FractalPlane } from './Fractal'
+import { Book } from './BookCover'
 import { Door, Hotspot, InkShape } from './Ink'
 import { Envelope, Guitar, ScreenLines } from './props'
 import {
@@ -170,30 +171,23 @@ function CoverScene({ mats }: { mats: Mats }) {
       {/* Cover A: the tech story, right side up. */}
       <Door to="/origin">
         <Drift amount={0.05} speed={0.45}>
-          <group rotation={[0.08, -0.42, 0.02]} position={[-1.5, 0.35, 0.2]}>
-            <mesh position={[0.03, 0, 0]} material={mats.paper}>
-              <boxGeometry args={[2.5, 3.5, 0.36]} />
-            </mesh>
-            <mesh position={[0, 0, 0.21]} material={mats.accent}>
-              <boxGeometry args={[2.62, 3.62, 0.07]} />
-            </mesh>
-            <mesh position={[0, 0, -0.2]} material={mats.dim}>
-              <boxGeometry args={[2.62, 3.62, 0.06]} />
-            </mesh>
-            <mesh position={[-1.31, 0, 0]} material={mats.dim}>
-              <boxGeometry args={[0.08, 3.62, 0.48]} />
-            </mesh>
-            <mesh position={[-0.1, 0.75, 0.27]} material={mats.paper}>
-              <boxGeometry args={[1.9, 1.05, 0.05]} />
-            </mesh>
-            <InkShape
-              shape={seal}
-              depth={0.05}
-              material={mats.hueA}
-              position={[0.72, -1.15, 0.29]}
-              rotation={[0, 0, -0.22]}
-              scale={0.62}
-            />
+          <group rotation={[0.08, -0.42, 0.02]} position={[-1.35, 0.1, 0.2]} scale={0.76}>
+            <Book
+              mats={mats}
+              cover={mats.accent}
+              word="tech"
+              volume="vol. 02 · cover a"
+              obi="apps · agents · pipelines"
+            >
+              <InkShape
+                shape={seal}
+                depth={0.05}
+                material={mats.hueA}
+                position={[0.85, -1.5, 0.29]}
+                rotation={[0, 0, -0.22]}
+                scale={0.5}
+              />
+            </Book>
           </group>
         </Drift>
       </Door>
@@ -202,22 +196,14 @@ function CoverScene({ mats }: { mats: Mats }) {
           volume prints the second front. The visitor's first "wait, what?" */}
       <Door to="/studio">
         <Drift amount={0.05} speed={0.4} phase={1.9}>
-          <group rotation={[0.08, 0.38, Math.PI]} position={[1.9, 0.42, 0.1]}>
-            <mesh position={[0.03, 0, 0]} material={mats.paper}>
-              <boxGeometry args={[2.5, 3.5, 0.36]} />
-            </mesh>
-            <mesh position={[0, 0, 0.21]} material={mats.coverB}>
-              <boxGeometry args={[2.62, 3.62, 0.07]} />
-            </mesh>
-            <mesh position={[0, 0, -0.2]} material={mats.dim}>
-              <boxGeometry args={[2.62, 3.62, 0.06]} />
-            </mesh>
-            <mesh position={[-1.31, 0, 0]} material={mats.dim}>
-              <boxGeometry args={[0.08, 3.62, 0.48]} />
-            </mesh>
-            <mesh position={[-0.1, 0.75, 0.27]} material={mats.paper}>
-              <boxGeometry args={[1.9, 1.05, 0.05]} />
-            </mesh>
+          <group rotation={[0.08, 0.38, Math.PI]} position={[1.75, 0.16, 0.1]} scale={0.76}>
+            <Book
+              mats={mats}
+              cover={mats.coverB}
+              word="creative"
+              volume="vol. 02 · cover b"
+              obi="modelling · shoots · design"
+            />
           </group>
         </Drift>
       </Door>
