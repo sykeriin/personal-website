@@ -28,13 +28,33 @@ function build(now: Date): Presence {
 
   const late = hour >= 0 && hour < 5
 
+  const weekend = day === 'saturday' || day === 'sunday'
+
+  // The greeting knows the hour AND the day — a monday morning and a sunday
+  // morning are different rooms to walk into.
   let note: string
-  if (late) note = `it's ${clock} on a ${day}. why are you awake?`
-  else if (hour < 9) note = `up early on a ${day}. respect.`
-  else if (hour < 12) note = `${day} morning. good a time as any.`
-  else if (hour < 17) note = `ik you're looking at this on a ${day} afternoon. hehe`
-  else if (hour < 22) note = `${day} evening. i'm probably still debugging something.`
-  else note = `${clock} on a ${day}. i'm definitely still up too.`
+  if (late) {
+    note = weekend
+      ? `${clock} on a ${day} night. respect the dedication.`
+      : `it's ${clock} on a ${day}. why are you awake?`
+  } else if (hour < 9) {
+    if (day === 'monday') note = `monday, ${clock}. we go again.`
+    else note = weekend ? `up before nine on a ${day}? impressive.` : `up early on a ${day}. respect.`
+  } else if (hour < 12) {
+    if (day === 'friday') note = 'friday morning. nearly through.'
+    else if (day === 'sunday') note = 'sunday morning. the slow one.'
+    else note = `${day} morning. good a time as any.`
+  } else if (hour < 17) {
+    note = weekend
+      ? `a ${day} afternoon spent on portfolios? honoured, honestly.`
+      : `ik you're looking at this on a ${day} afternoon. hehe`
+  } else if (hour < 22) {
+    if (day === 'friday') note = 'friday evening. go be somewhere after this.'
+    else note = `${day} evening. i'm probably still debugging something.`
+  } else {
+    if (day === 'sunday') note = `sunday, ${clock}. tomorrow's problem can wait.`
+    else note = `${clock} on a ${day}. i'm definitely still up too.`
+  }
 
   return { note, hour, late, day }
 }

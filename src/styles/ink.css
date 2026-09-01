@@ -1110,3 +1110,164 @@ button {
 .shell[data-chrome='world'] .chapter--board {
   display: none;
 }
+
+/* ------------------------------------------------------------------- entry */
+
+/*
+ * The first-visit entrance. Ink blooms, the name lands, three choices. Once
+ * per visitor, never on deep links, interactive in half a second.
+ */
+.entry {
+  position: fixed;
+  inset: 0;
+  z-index: 850;
+  display: grid;
+  place-items: center;
+  background: var(--paper);
+  overflow: hidden;
+  transition: opacity 340ms ease;
+}
+.entry--leaving {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.entry__splat {
+  position: absolute;
+  width: min(72vmin, 640px);
+  aspect-ratio: 1;
+  background: var(--accent);
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  animation: entry-splat 480ms cubic-bezier(0.2, 1.4, 0.4, 1) both;
+}
+@keyframes entry-splat {
+  from {
+    transform: scale(0.2) rotate(-18deg);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+.entry__stack {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.7rem;
+  text-align: center;
+  padding: 1rem;
+}
+
+.entry__eyebrow {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  animation: entry-rise 400ms 350ms ease both;
+}
+.entry__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(2.8rem, 9vw, 5.5rem);
+  line-height: 0.98;
+  color: var(--paper);
+  -webkit-text-stroke: 2.5px var(--ink);
+  paint-order: stroke fill;
+  text-shadow: 0.18rem 0.22rem 0 var(--ink);
+  animation: entry-slam 320ms 180ms cubic-bezier(0.2, 1.5, 0.4, 1) both;
+}
+.entry__q {
+  margin: 0.4rem 0 0;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 1.15rem;
+  animation: entry-rise 400ms 520ms ease both;
+}
+@keyframes entry-slam {
+  from {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+@keyframes entry-rise {
+  from {
+    transform: translateY(0.6rem);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.entry__choices {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-top: 0.6rem;
+  animation: entry-rise 400ms 650ms ease both;
+}
+.entry__choices button {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  align-items: center;
+  min-width: 9.5rem;
+  padding: 0.75rem 1rem;
+  background: var(--paper);
+  border: 2.5px solid var(--ink);
+  box-shadow: 0.3rem 0.3rem 0 color-mix(in srgb, var(--accent) 35%, var(--ink));
+  transition: transform 120ms, box-shadow 120ms;
+}
+.entry__choices button:hover {
+  transform: translate(-1px, -2px);
+  box-shadow: 0.42rem 0.46rem 0 color-mix(in srgb, var(--accent) 35%, var(--ink));
+}
+.entry__choices strong {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  letter-spacing: 0.02em;
+}
+.entry__choices span {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--ink-soft);
+}
+
+.entry__skip {
+  margin-top: 0.4rem;
+  background: none;
+  border: none;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  color: var(--ink-soft);
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+  animation: entry-rise 400ms 750ms ease both;
+}
+.entry__skip:hover {
+  color: var(--accent);
+}
+
+/* Reduced motion: everything is simply there. */
+.entry--still .entry__splat,
+.entry--still .entry__title,
+.entry--still .entry__eyebrow,
+.entry--still .entry__q,
+.entry--still .entry__choices,
+.entry--still .entry__skip {
+  animation: none;
+}

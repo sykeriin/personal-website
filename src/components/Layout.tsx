@@ -1,4 +1,4 @@
-import { Suspense, lazy, useEffect, useRef } from 'react'
+import { Suspense, lazy, useEffect, useRef, useState } from 'react'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { EdgeTabs } from './EdgeTabs'
 import { InkFilters } from './InkFilters'
@@ -11,6 +11,7 @@ import { entryFor } from '../world/manifest'
 import { hotspots, worldNav } from '../world/hotspots'
 import { PageTurns } from './PageTurns'
 import { RevealPanel } from './RevealPanel'
+import { EntryGate, hasEntered } from './EntryGate'
 import { ModeSwitch } from './ModeSwitch'
 
 /** three.js lives behind a dynamic import, so the paper tier never downloads it. */
@@ -23,6 +24,10 @@ export function Layout() {
   const { late } = usePresence()
   const [mode, setMode] = useChromeMode()
   const rootRef = useRef<HTMLDivElement>(null)
+  // The entrance shows once per visitor, only at the front door.
+  const [entered, setEntered] = useState(
+    () => hasEntered() || window.location.pathname !== '/',
+  )
 
   const world = tierUsesWebGL(tier)
   // The gallery and the blog are DOM-first: their content IS the page, so
@@ -115,6 +120,16 @@ export function Layout() {
       {world && !domFirst ? <ModeSwitch mode={mode} onChange={setMode} /> : null}
 
       <PageTurns />
+      {!entered ? (
+        <EntryGate
+          reduceMotion={reduceMotion}
+          onPick={(choice) => {
+            setTier(choice)
+            setEntered(true)
+          }}
+        />
+      ) : null}
+
       <TierSwitch tier={tier} pinned={pinned} onChange={setTier} />
       <SoundToggle route={location.pathname} enabled={!reduceMotion} />
     </div>

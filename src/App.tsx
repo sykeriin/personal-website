@@ -15,11 +15,11 @@ import { Contact } from './pages/Contact'
 import { NotFound } from './pages/NotFound'
 
 /**
- * No intro gate. v1 held the entire router behind a 2.4s modal on every
- * session, deep links included — and layering a 3D warm-up behind that would
- * have stacked two loading gates in front of every visitor. The opening now
- * happens in-world on the cover instead, so the animation builds the interface
- * rather than covering it.
+ * The entrance (EntryGate) is once-per-visitor, front door only, and
+ * interactive in half a second — deliberately unlike v1's gate, which held
+ * the whole router behind a 2.4s modal on every session, deep links included.
+ * Deep links never see it; Esc skips it; the choice it asks doubles as the
+ * render-tier prompt.
  */
 const router = createBrowserRouter([
   {

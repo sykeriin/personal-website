@@ -1177,94 +1177,86 @@ function PrintsScene({ mats }: { mats: Mats }) {
 /* ------------------------------------------------------------------ board */
 
 /**
- * The blog as a bulletin board: every post is a card pinned to the cork,
- * clickable straight through to the post. New markdown file = new card, no
- * scene changes — the board reads the same source as the page.
+ * The blog IS the board: cork edge to edge, no room around it. Every post is
+ * a card pinned straight to the viewport, clickable through to the post. A
+ * new markdown file is a new card — the board reads the same source as the
+ * page.
  */
 function BoardScene({ mats }: { mats: Mats }) {
-  const pinned = notes.slice(0, 8)
+  const pinned = notes.slice(0, 9)
   return (
     <>
-      <Ground mats={mats} />
-
-      {/* wall and the board on it */}
-      <mesh position={[0, 1.8, -3.4]} material={mats.paper}>
-        <boxGeometry args={[13, 7.5, 0.2]} />
+      {/* cork past every edge of the frame */}
+      <mesh position={[0, 1.1, -3.4]} material={mats.tone}>
+        <boxGeometry args={[17, 10, 0.15]} />
       </mesh>
-      <group position={[0.1, 1.35, -3.2]}>
-        <mesh position={[0, 0, -0.05]} material={mats.dim}>
-          <boxGeometry args={[6.9, 4.0, 0.1]} />
-        </mesh>
-        <mesh material={mats.tone}>
-          <boxGeometry args={[6.6, 3.7, 0.08]} />
-        </mesh>
 
-        {/* the header plaque, screwed onto the cork's top rail */}
-        <group position={[0, 1.5, 0.1]}>
-          <mesh material={mats.dim}>
-            <boxGeometry args={[2.3, 0.62, 0.12]} />
+      {/* the nameplate, pinned top centre */}
+      <group position={[0, 2.75, -3.28]} rotation={[0, 0, -0.008]}>
+        <mesh material={mats.paper}>
+          <boxGeometry args={[2.6, 0.78, 0.06]} />
+        </mesh>
+        <Text
+          font={delaWoff}
+          fontSize={0.5}
+          color="#0b0b0c"
+          anchorX="center"
+          anchorY="middle"
+          position={[0, -0.02, 0.05]}
+          letterSpacing={0.04}
+        >
+          blog
+        </Text>
+        {[-1.15, 1.15].map((x) => (
+          <mesh key={x} position={[x, 0.28, 0.05]} material={mats.accent}>
+            <sphereGeometry args={[0.05, 10, 8]} />
           </mesh>
-          <Text
-            font={delaWoff}
-            fontSize={0.4}
-            color="#0b0b0c"
-            anchorX="center"
-            anchorY="middle"
-            position={[0, -0.02, 0.08]}
-            letterSpacing={0.04}
-          >
-            blog
-          </Text>
-        </group>
-
-        {pinned.map((note, i) => {
-          const col = i % 3
-          const row = Math.floor(i / 3)
-          const x = (col - 1) * 2.05 + (row % 2 ? 0.35 : -0.2)
-          const y = 0.95 - row * 1.35
-          const tilt = [0.05, -0.04, 0.03, -0.06][i % 4]
-          return (
-            <Door key={note.slug} to={`/notes/${note.slug}`}>
-              <group position={[x, y, 0.09]} rotation={[0, 0, tilt]}>
-                <mesh material={mats.paper}>
-                  <boxGeometry args={[1.8, 1.05, 0.03]} />
-                </mesh>
-                <mesh position={[0, 0.5, 0.05]} material={mats.accent}>
-                  <sphereGeometry args={[0.05, 10, 8]} />
-                </mesh>
-                <Text
-                  font={monoWoff}
-                  fontSize={0.135}
-                  color="#0b0b0c"
-                  anchorX="center"
-                  anchorY="middle"
-                  position={[0, 0.08, 0.03]}
-                  maxWidth={1.55}
-                  textAlign="center"
-                  lineHeight={1.25}
-                >
-                  {note.title}
-                </Text>
-                <Text
-                  font={monoWoff}
-                  fontSize={0.09}
-                  color="#6b6862"
-                  anchorX="center"
-                  anchorY="middle"
-                  position={[0, -0.36, 0.03]}
-                  letterSpacing={0.08}
-                >
-                  {note.date}
-                </Text>
-              </group>
-            </Door>
-          )
-        })}
-
+        ))}
       </group>
 
-      {/* him, deciding what to pin next */}
-      <Figure pose="idle" position={[-3.4, -0.3, 0.8]} height={1.7} rotation={[0, 0.45, 0]} />
+      {pinned.map((note, i) => {
+        const col = i % 3
+        const row = Math.floor(i / 3)
+        const x = (col - 1) * 3.5 + (row % 2 ? 0.5 : -0.3)
+        const y = 1.55 - row * 2.0
+        const tilt = [0.045, -0.035, 0.025, -0.05][i % 4]
+        return (
+          <Door key={note.slug} to={`/notes/${note.slug}`}>
+            <group position={[x, y, -3.22]} rotation={[0, 0, tilt]}>
+              <mesh material={mats.paper}>
+                <boxGeometry args={[2.9, 1.7, 0.04]} />
+              </mesh>
+              <mesh position={[0, 0.8, 0.07]} material={mats.accent}>
+                <sphereGeometry args={[0.075, 10, 8]} />
+              </mesh>
+              <Text
+                font={monoWoff}
+                fontSize={0.21}
+                color="#0b0b0c"
+                anchorX="center"
+                anchorY="middle"
+                position={[0, 0.14, 0.04]}
+                maxWidth={2.5}
+                textAlign="center"
+                lineHeight={1.3}
+              >
+                {note.title}
+              </Text>
+              <Text
+                font={monoWoff}
+                fontSize={0.14}
+                color="#6b6862"
+                anchorX="center"
+                anchorY="middle"
+                position={[0, -0.58, 0.04]}
+                letterSpacing={0.08}
+              >
+                {`${note.date} · read →`}
+              </Text>
+            </group>
+          </Door>
+        )
+      })}
     </>
   )
 }

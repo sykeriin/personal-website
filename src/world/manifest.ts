@@ -202,7 +202,7 @@ const ROUTES: RouteEntry[] = [
     tab: 'blog',
     prev: '/',
     next: '/contact',
-    camera: { position: [-1.0, 1.7, 7.2], target: [0.2, 0.5, -0.3] },
+    camera: { position: [0, 1.1, 5.6], target: [0, 1.1, -3.2] },
     scene: 'board',
     sfx: 'SCRIBBLE',
     accent: '#4a6d8c',
