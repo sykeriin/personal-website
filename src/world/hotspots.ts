@@ -156,6 +156,17 @@ function build(): Record<string, Reveal> {
     })
   }
 
+  // The mantle: only the finishes worth engraving. Top-10s stay in the
+  // skill-tree stamps; the trophy is podium-or-better.
+  map['shelf-trophy'] = {
+    id: 'shelf-trophy',
+    eyebrow: 'Chapter 03 · the mantle',
+    title: 'hackathons, podium only',
+    body: achievements
+      .filter((a) => /^(1ST|2ND|3RD|TOP [2-5])$/.test(a.stamp))
+      .map((a) => `${a.stamp} — ${a.label}`),
+  }
+
   map['contact-envelope'] = {
     id: 'contact-envelope',
     eyebrow: 'Last Page',
@@ -188,7 +199,9 @@ export function hotspotsForRoute(pathname: string): string[] {
   if (pathname === '/') return ['cover-tech', 'cover-creative']
   if (pathname === '/origin') return origin.panels.map((_, i) => `origin-${i}`)
   if (pathname === '/training') return experiences.map((job) => `exp-${job.id}`)
-  if (pathname === '/projects') return projects.map((project) => `proj-${project.slug}`)
+  if (pathname === '/projects') {
+    return [...projects.map((project) => `proj-${project.slug}`), 'shelf-trophy']
+  }
   const detail = /^\/projects\/([a-z0-9-]+)\/?$/i.exec(pathname)
   if (detail) return [`story-${detail[1]}`]
   if (pathname === '/skill-tree') {

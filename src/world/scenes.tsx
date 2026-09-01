@@ -1,14 +1,14 @@
-import { useTexture } from '@react-three/drei'
+import { Text, useTexture } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
 import { useMemo, useRef, type ReactNode } from 'react'
 import * as THREE from 'three'
-import { projects } from '../data/content'
 import type { InkPalette } from '../three/theme'
 import { makeToonGradient } from '../three/toonGradient'
-import { sideAccent, type SceneKey } from './manifest'
+import { PROJECT_ACCENTS, sideAccent, type SceneKey } from './manifest'
 import { Figure } from './Figure'
 import { FractalPlane } from './Fractal'
 import { Book } from './BookCover'
+import monoWoff from '@fontsource/share-tech-mono/files/share-tech-mono-latin-400-normal.woff?url'
 import { Door, Hotspot, InkShape } from './Ink'
 import { useHotspots } from './hotspots'
 import { Envelope, Guitar, ScreenLines } from './props'
@@ -25,7 +25,6 @@ import {
 } from './setDressing'
 import {
   bookCover,
-  boltNut,
   chainLink,
   cloudPuff,
   inkDrop,
@@ -34,6 +33,7 @@ import {
   monitor,
   mug,
   mugSteam,
+  fighterJet,
   pawPrint,
   roadSign,
   sealRing,
@@ -351,22 +351,18 @@ function HeavyBag({
 
   return (
     <group ref={swing}>
-      {/* strap from the beam */}
       <mesh position={[0, -0.3, 0]} material={mats.dim}>
         <cylinderGeometry args={[0.035, 0.035, 0.6, 8]} />
       </mesh>
-      {/* the bag */}
       <mesh position={[0, -1.35, 0]} material={mats.tone}>
         <capsuleGeometry args={[0.42, 1.15, 6, 18]} />
       </mesh>
-      {/* top and bottom caps in ink-dark leather */}
       <mesh position={[0, -0.72, 0]} material={mats.dim}>
         <cylinderGeometry args={[0.43, 0.4, 0.22, 18]} />
       </mesh>
       <mesh position={[0, -1.98, 0]} material={mats.dim}>
         <cylinderGeometry args={[0.4, 0.43, 0.22, 18]} />
       </mesh>
-      {/* the plate band — each bag carries its chapter's colour */}
       <mesh position={[0, -1.2, 0]} material={mats.accent}>
         <cylinderGeometry args={[0.435, 0.435, 0.3, 18]} />
       </mesh>
@@ -377,7 +373,7 @@ function HeavyBag({
 
 function WorkshopScene({ mats, explore }: { mats: Mats; explore: boolean }) {
   const paw = useMemo(() => pawPrint(), [])
-  const bolt = useMemo(() => boltNut(), [])
+  const jet = useMemo(() => fighterJet(), [])
   const { active } = useHotspots()
 
   return (
@@ -420,7 +416,7 @@ function WorkshopScene({ mats, explore }: { mats: Mats; explore: boolean }) {
               <InkShape
                 shape={paw}
                 depth={0.03}
-                material={mats.paper}
+                material={mats.hueA}
                 position={[0, -1.55, 0.42]}
                 scale={0.42}
               />
@@ -435,17 +431,52 @@ function WorkshopScene({ mats, explore }: { mats: Mats; explore: boolean }) {
             active={active === 'exp-hawkeye'}
             sticker={
               <InkShape
-                shape={bolt}
+                shape={jet}
                 depth={0.04}
-                material={mats.paper}
-                position={[0, -1.55, 0.44]}
-                rotation={[0, 0, 0.4]}
-                scale={0.4}
+                material={mats.hueB}
+                position={[0, -1.55, 0.46]}
+                rotation={[0, 0, 0.18]}
+                scale={0.34}
               />
             }
           />
         </group>
       </Hotspot>
+
+      {/* the window onto the airfield: the IAF runway this chapter is about,
+          with a jet climbing past mid-takeoff */}
+      <group position={[3.9, 2.4, -3.68]}>
+        <mesh material={mats.dim}>
+          <boxGeometry args={[2.7, 1.75, 0.1]} />
+        </mesh>
+        <mesh position={[0, 0, 0.04]} material={mats.paper}>
+          <boxGeometry args={[2.45, 1.5, 0.04]} />
+        </mesh>
+        <mesh position={[0.1, -0.52, 0.08]} rotation={[0, 0, -0.04]} material={mats.tone}>
+          <boxGeometry args={[2.3, 0.3, 0.02]} />
+        </mesh>
+        {[-0.7, 0, 0.7].map((x) => (
+          <mesh key={x} position={[x + 0.1, -0.52, 0.1]} material={mats.paper}>
+            <boxGeometry args={[0.3, 0.05, 0.01]} />
+          </mesh>
+        ))}
+        <Drift amount={0.05} speed={0.7}>
+          <group position={[-0.25, 0.22, 0.12]} rotation={[0, 0, 0.34]} scale={0.62}>
+            <InkShape shape={jet} depth={0.05} material={mats.dim} />
+            <mesh position={[-0.28, 0.12, 0.04]} material={mats.accent}>
+              <boxGeometry args={[0.16, 0.07, 0.02]} />
+            </mesh>
+            <mesh position={[0.15, -0.02, 0.05]} rotation={[0, 0, -0.06]} material={mats.tone}>
+              <boxGeometry args={[0.62, 0.05, 0.02]} />
+            </mesh>
+            {[0.75, 1.05, 1.3].map((x, i) => (
+              <mesh key={x} position={[x, -0.14 - i * 0.05, 0.02]} material={mats.paper}>
+                <boxGeometry args={[0.22 - i * 0.05, 0.05, 0.01]} />
+              </mesh>
+            ))}
+          </group>
+        </Drift>
+      </group>
 
       {/* him, in guard, mid-session */}
       <Figure pose="guard" position={[-2.6, -0.28, 1.3]} height={1.7} rotation={[0, 0.55, 0]} />
@@ -461,59 +492,234 @@ function WorkshopScene({ mats, explore }: { mats: Mats; explore: boolean }) {
   )
 }
 
-/* ------------------------------------------------------------------- case */
+/* ------------------------------------------------------------------ shelf */
 
+/** A filler book on the shelf: spine out, plate-family colours. */
+function Spine({
+  mats,
+  material,
+  h,
+  lean = 0,
+}: {
+  mats: Mats
+  material: THREE.MeshToonMaterial
+  h: number
+  lean?: number
+}) {
+  return (
+    <group rotation={[0, 0, lean]}>
+      <mesh position={[0, h / 2, 0]} material={material}>
+        <boxGeometry args={[0.16, h, 0.62]} />
+      </mesh>
+      <mesh position={[0, h - 0.09, 0]} material={mats.paper}>
+        <boxGeometry args={[0.17, 0.05, 0.63]} />
+      </mesh>
+      <mesh position={[0, 0.12, 0]} material={mats.paper}>
+        <boxGeometry args={[0.17, 0.05, 0.63]} />
+      </mesh>
+    </group>
+  )
+}
+
+/** A project as a volume: its plate colour, its name down the spine. */
+function ProjectBook({
+  mats,
+  material,
+  title,
+  h,
+  lean = 0,
+}: {
+  mats: Mats
+  material: THREE.MeshToonMaterial
+  title: string
+  h: number
+  lean?: number
+}) {
+  return (
+    <group rotation={[0, 0, lean]}>
+      <mesh position={[0, h / 2, 0]} material={material}>
+        <boxGeometry args={[0.3, h, 0.7]} />
+      </mesh>
+      {/* head and tail bands */}
+      <mesh position={[0, h - 0.07, 0]} material={mats.paper}>
+        <boxGeometry args={[0.31, 0.06, 0.71]} />
+      </mesh>
+      <mesh position={[0, 0.1, 0]} material={mats.paper}>
+        <boxGeometry args={[0.31, 0.06, 0.71]} />
+      </mesh>
+      {/* the name, reading down the spine */}
+      <Text
+        font={monoWoff}
+        fontSize={0.11}
+        color="#f7f6f3"
+        anchorX="center"
+        anchorY="middle"
+        position={[0, h / 2, 0.36]}
+        rotation={[0, 0, -Math.PI / 2]}
+        letterSpacing={0.08}
+        maxWidth={h - 0.3}
+      >
+        {title}
+      </Text>
+    </group>
+  )
+}
+
+/** The first-place cup — tap it for the podium list. */
+function Trophy({ mats }: { mats: Mats }) {
+  return (
+    <group>
+      <mesh position={[0, 0.09, 0]} material={mats.dim}>
+        <boxGeometry args={[0.5, 0.18, 0.5]} />
+      </mesh>
+      <mesh position={[0, 0.28, 0]} material={mats.accent}>
+        <cylinderGeometry args={[0.06, 0.09, 0.22, 12]} />
+      </mesh>
+      <mesh position={[0, 0.62, 0]} material={mats.accent}>
+        <cylinderGeometry args={[0.3, 0.14, 0.52, 16]} />
+      </mesh>
+      {[-1, 1].map((side) => (
+        <mesh
+          key={side}
+          position={[side * 0.36, 0.68, 0]}
+          rotation={[Math.PI / 2, 0, 0]}
+          material={mats.accent}
+        >
+          <torusGeometry args={[0.12, 0.035, 8, 16]} />
+        </mesh>
+      ))}
+      <mesh position={[0, 0.2, 0.26]} material={mats.paper}>
+        <boxGeometry args={[0.3, 0.1, 0.02]} />
+      </mesh>
+    </group>
+  )
+}
+
+/**
+ * The projects live on a bookshelf — every project is a BOOK in its own plate
+ * colour with its name down the spine; tap one to take it off the shelf. The
+ * trophy is the mantle: podium finishes only.
+ */
+function CaseScene({ mats, explore }: { mats: Mats; explore: boolean }) {
+  const bookMats = useMemo(() => {
+    const gradient = makeToonGradient(3)
+    return Object.fromEntries(
+      Object.entries(PROJECT_ACCENTS).map(([slug, hex]) => [
+        slug,
+        new THREE.MeshToonMaterial({ color: hex, gradientMap: gradient }),
+      ]),
+    ) as Record<string, THREE.MeshToonMaterial>
+  }, [])
+
+  const shelfBooks: Array<{ slug: string; title: string; h: number; x: number; lean?: number }> = [
+    { slug: 'alter', title: 'alter', h: 1.3, x: -2.0 },
+    { slug: 'chainguard', title: 'chainguard', h: 1.45, x: -1.62, lean: 0.0 },
+    { slug: 'verdant', title: 'verdant', h: 1.2, x: -1.28, lean: -0.12 },
+  ]
+  const lowerBooks: Array<{ slug: string; title: string; h: number; x: number; lean?: number }> = [
+    { slug: 'cloudsense', title: 'cloudsense', h: 1.35, x: -0.6 },
+    { slug: 'roadsense', title: 'roadsense', h: 1.25, x: -0.22, lean: 0.1 },
+  ]
+
+  return (
+    <>
+      <Ground mats={mats} />
+
+      {/* the room the shelf lives in */}
+      <mesh position={[0, 1.8, -2.6]} material={mats.paper}>
+        <boxGeometry args={[13, 7.5, 0.2]} />
+      </mesh>
+
+      <group position={[0.2, -0.27, -1.7]} scale={0.8}>
+        {/* the bookcase */}
+        <mesh position={[0, 1.05, -0.35]} material={mats.dim}>
+          <boxGeometry args={[5.4, 4.5, 0.1]} />
+        </mesh>
+        {[-2.7, 2.7].map((x) => (
+          <mesh key={x} position={[x, 1.05, 0]} material={mats.dim}>
+            <boxGeometry args={[0.14, 4.5, 0.85]} />
+          </mesh>
+        ))}
+        {[-1.1, 0.62, 2.34].map((y) => (
+          <mesh key={y} position={[0, y, 0]} material={mats.dim}>
+            <boxGeometry args={[5.4, 0.12, 0.85]} />
+          </mesh>
+        ))}
+
+        {/* top shelf: three volumes and some company */}
+        {shelfBooks.map((book) => (
+          <Hotspot key={book.slug} id={`proj-${book.slug}`} enabled={explore}>
+            <group position={[book.x, 0.68, 0]}>
+              <ProjectBook
+                mats={mats}
+                material={bookMats[book.slug]}
+                title={book.title}
+                h={book.h}
+                lean={book.lean}
+              />
+            </group>
+          </Hotspot>
+        ))}
+        <group position={[-0.85, 0.68, 0]}>
+          <Spine mats={mats} material={mats.tone} h={1.0} lean={-0.16} />
+        </group>
+        <group position={[-0.55, 0.68, 0]}>
+          <Spine mats={mats} material={mats.dim} h={1.1} />
+        </group>
+
+        {/* the mantle: the cup, podium finishes only */}
+        <Hotspot id="shelf-trophy" enabled={explore}>
+          <group position={[1.5, 0.68, 0]} scale={1.2}>
+            <Trophy mats={mats} />
+          </group>
+        </Hotspot>
+
+        {/* bottom shelf: two volumes leaning into fillers */}
+        {lowerBooks.map((book) => (
+          <Hotspot key={book.slug} id={`proj-${book.slug}`} enabled={explore}>
+            <group position={[book.x, -1.04, 0]}>
+              <ProjectBook
+                mats={mats}
+                material={bookMats[book.slug]}
+                title={book.title}
+                h={book.h}
+                lean={book.lean}
+              />
+            </group>
+          </Hotspot>
+        ))}
+        {[
+          [-2.3, 1.2, 0],
+          [-2.05, 1.35, 0],
+          [0.55, 1.05, -0.14],
+          [0.85, 0.9, 0],
+          [1.6, 1.15, 0.12],
+          [2.3, 1.0, 0],
+        ].map(([x, h, lean]) => (
+          <group key={x} position={[x, -1.04, 0]}>
+            <Spine
+              mats={mats}
+              material={[mats.tone, mats.dim, mats.hueA, mats.hueB][Math.abs(Math.round(x * 7)) % 4]}
+              h={h}
+              lean={lean}
+            />
+          </group>
+        ))}
+      </group>
+
+      {/* him, browsing */}
+      <Figure pose="point" position={[-3.6, -0.3, 0.9]} height={1.7} rotation={[0, 0.5, 0]} />
+    </>
+  )
+}
+
+/** Which drawn silhouette each project holds up on its own page. */
 const ARTIFACT_SHAPES: Record<string, () => THREE.Shape> = {
   alter: waveform,
   chainguard: chainLink,
   verdant: spool,
   cloudsense: cloudPuff,
   roadsense: roadSign,
-}
-
-function CaseArtifact({ slug, mats }: { slug: string; mats: Mats }) {
-  const shape = useMemo(() => (ARTIFACT_SHAPES[slug] ?? inkDrop)(), [slug])
-  const material =
-    slug === 'chainguard'
-      ? mats.accent
-      : slug === 'verdant'
-        ? mats.hueA
-        : slug === 'alter'
-          ? mats.hueB
-          : mats.paper
-  return <InkShape shape={shape} depth={0.34} material={material} scale={1.25} />
-}
-
-function CaseScene({ mats, explore }: { mats: Mats; explore: boolean }) {
-  // An arc, not a row: left/right stays unambiguous but it doesn't read as a list.
-  const RADIUS = 5.6
-  return (
-    <>
-      <Backdrop name="bg-wash-02" tint={mats.accent.color} />
-      <Ground mats={mats} />
-      {projects.map((project, i) => {
-        const t = (i - (projects.length - 1) / 2) / (projects.length - 1)
-        const angle = t * 0.85
-        const x = Math.sin(angle) * RADIUS
-        const z = -Math.cos(angle) * RADIUS + RADIUS - 1.4
-        return (
-          <Hotspot key={project.slug} id={`proj-${project.slug}`} enabled={explore}>
-            <group position={[x, 0, z]} rotation={[0, -angle, 0]}>
-              <mesh position={[0, -0.95, 0]} material={mats.dim}>
-                <boxGeometry args={[1.0, 0.34, 1.0]} />
-              </mesh>
-              <Drift amount={0.05} speed={0.5} phase={i * 1.3}>
-                <group position={[0, 0.12, 0]}>
-                  <CaseArtifact slug={project.slug} mats={mats} />
-                </group>
-              </Drift>
-            </group>
-          </Hotspot>
-        )
-      })}
-      <Figure pose="guard" position={[-4.4, -0.3, 1.8]} height={1.7} rotation={[0, 0.5, 0]} />
-    </>
-  )
 }
 
 function ArtifactScene({

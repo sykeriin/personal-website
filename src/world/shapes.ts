@@ -697,6 +697,7 @@ export function inkDrop(): THREE.Shape {
 /* ------------------------------------------------------------------ registry */
 
 export const SHAPES = {
+  fighterJet,
   guitarBody,
   mug,
   monitor,
@@ -721,3 +722,21 @@ export const SHAPES = {
 } as const
 
 export type ShapeName = keyof typeof SHAPES
+
+/** Fighter jet, side profile: nose cone, canopy bump, swept fin, engine tail.
+    Reads at small size — it exists to be glimpsed through a window. */
+export function fighterJet(): THREE.Shape {
+  const s = new THREE.Shape()
+  s.moveTo(-1.0, 0.02)
+  s.lineTo(-0.55, 0.09)
+  s.bezierCurveTo(-0.45, 0.1, -0.38, 0.24, -0.18, 0.13)
+  s.lineTo(0.5, 0.12)
+  s.lineTo(0.72, 0.52)
+  s.lineTo(0.86, 0.52)
+  s.lineTo(0.84, 0.1)
+  s.lineTo(1.0, 0.08)
+  s.lineTo(1.0, -0.07)
+  s.lineTo(-0.5, -0.1)
+  s.closePath()
+  return s
+}
