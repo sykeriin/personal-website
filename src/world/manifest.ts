@@ -65,7 +65,7 @@ const ROUTES: RouteEntry[] = [
     page: 'cover',
     tab: null,
     next: '/origin',
-    camera: { position: [1.1, 1.35, 6.2], target: [0.2, 0.6, 0] },
+    camera: { position: [0.85, 1.3, 7.0], target: [0.15, 0.55, 0] },
     scene: 'cover',
     sfx: 'THUD',
     accent: '#d3103a',

@@ -93,10 +93,6 @@ export function Prints() {
         <div className="panel panel--tone">
           <h2>this signature is at the printers</h2>
           <p>{PENDING[cat ?? ''] ?? 'photos from real work go here.'}</p>
-          <p>
-            (durva: drop jpgs into <code>src/assets/photos/{cat ?? 'modelling'}/</code> and
-            they appear. that is the entire publishing flow.)
-          </p>
         </div>
       ) : showAll ? (
         <div className="gallery gallery--sheet">

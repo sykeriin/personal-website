@@ -211,7 +211,7 @@ function CoverScene({ mats }: { mats: Mats }) {
         </Drift>
       </Door>
 
-      <Figure pose="idle" position={[-3.6, -0.3, 1.6]} height={1.7} rotation={[0, 0.4, 0]} />
+      <Figure pose="idle" position={[-3.05, -0.3, 1.4]} height={1.7} rotation={[0, 0.4, 0]} />
     </>
   )
 }
