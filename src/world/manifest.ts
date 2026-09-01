@@ -54,6 +54,7 @@ export type SceneKey =
   | 'direction'
   | 'session'
   | 'prints'
+  | 'board'
   | 'void'
 
 const ROUTES: RouteEntry[] = [
@@ -196,13 +197,13 @@ const ROUTES: RouteEntry[] = [
     path: '/notes',
     side: 'shared',
     label: 'Margins',
-    title: 'Notes',
+    title: 'Blog',
     page: 'p. ‡',
-    tab: 'nb notes',
+    tab: 'blog',
     prev: '/',
     next: '/contact',
     camera: { position: [-1.0, 1.7, 7.2], target: [0.2, 0.5, -0.3] },
-    scene: 'desk',
+    scene: 'board',
     sfx: 'SCRIBBLE',
     accent: '#4a6d8c',
     description: 'longer things: build logs, shoot write-ups, 2am thoughts.',

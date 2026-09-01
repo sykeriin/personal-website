@@ -32,6 +32,17 @@ export function Layout() {
   const explore = world && mode === 'explore' && !domFirst
   const ids = hotspotsForRoute(location.pathname)
 
+  // Remember which cover is being read, so the fork stands that book upright.
+  useEffect(() => {
+    const side = entryFor(location.pathname).side
+    if (side === 'shared') return
+    try {
+      localStorage.setItem('inkwell-side', side)
+    } catch {
+      /* private mode */
+    }
+  }, [location.pathname])
+
   // The world's meshes navigate through this valve — the canvas renders in a
   // separate reconciler where router hooks don't exist.
   useEffect(() => {

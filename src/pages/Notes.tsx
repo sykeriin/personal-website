@@ -43,7 +43,7 @@ export function NotePost() {
   const entry = entryFor('/notes')
 
   useDocumentMeta(
-    note ? `${note.title} — Durva Sharma` : 'note not found — Durva Sharma',
+    note ? `${note.title} — Durva Sharma` : 'post not found — Durva Sharma',
     note ? `a note from ${note.date}` : entry.description,
   )
 
@@ -55,7 +55,7 @@ export function NotePost() {
   if (!note) {
     return (
       <main className="chapter">
-        <ChapterHead eyebrow="Notes" title="p. ??" page="p. ??" />
+        <ChapterHead eyebrow="Blog" title="p. ??" page="p. ??" />
         <p>no note by that name.</p>
         <Link className="cta" to="/notes">
           back to the notes
@@ -66,7 +66,7 @@ export function NotePost() {
 
   return (
     <main className="chapter">
-      <ChapterHead eyebrow={`Notes · ${note.date}`} title={note.title} page="" />
+      <ChapterHead eyebrow={`Blog · ${note.date}`} title={note.title} page="" />
       {/* Repo-authored markdown, sanitized anyway — belt and braces. */}
       <article className="note" dangerouslySetInnerHTML={{ __html: html }} />
       <Link className="cta" to="/notes">

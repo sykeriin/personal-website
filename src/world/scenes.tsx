@@ -4,6 +4,7 @@ import { useMemo, useRef, type ReactNode } from 'react'
 import * as THREE from 'three'
 import type { InkPalette } from '../three/theme'
 import { makeToonGradient } from '../three/toonGradient'
+import { notes } from '../content/notes'
 import { PROJECT_ACCENTS, sideAccent, type SceneKey } from './manifest'
 import { Figure } from './Figure'
 import { FractalPlane } from './Fractal'
@@ -166,6 +167,15 @@ function BackdropPlane({ url, tint }: { url: string; tint?: THREE.Color }) {
 
 function CoverScene({ mats }: { mats: Mats }) {
   const seal = useMemo(() => sealRing(), [])
+  // Whichever side you were last reading stands upright; the other lies the
+  // tête-bêche way, upside down, waiting for the flip. Fresh visitors get tech.
+  const upSide = useMemo<'tech' | 'creative'>(() => {
+    try {
+      return localStorage.getItem('inkwell-side') === 'creative' ? 'creative' : 'tech'
+    } catch {
+      return 'tech'
+    }
+  }, [])
   return (
     <>
       <Backdrop name="bg-wash-01" tint={mats.accent.color} />
@@ -174,7 +184,11 @@ function CoverScene({ mats }: { mats: Mats }) {
       {/* Cover A: the tech story, right side up. */}
       <Door to="/origin">
         <Drift amount={0.05} speed={0.45}>
-          <group rotation={[0.08, -0.42, 0.02]} position={[-1.3, 0.0, 0.2]} scale={0.7}>
+          <group
+            rotation={[0.08, -0.42, upSide === 'tech' ? 0.02 : Math.PI]}
+            position={[-1.55, 0.42, 0.2]}
+            scale={0.9}
+          >
             <Book
               mats={mats}
               cover={mats.accent}
@@ -199,7 +213,11 @@ function CoverScene({ mats }: { mats: Mats }) {
           volume prints the second front. The visitor's first "wait, what?" */}
       <Door to="/studio">
         <Drift amount={0.05} speed={0.4} phase={1.9}>
-          <group rotation={[0.08, 0.38, Math.PI]} position={[1.65, 0.05, 0.1]} scale={0.7}>
+          <group
+            rotation={[0.08, 0.38, upSide === 'creative' ? 0.0 : Math.PI]}
+            position={[1.95, 0.47, 0.1]}
+            scale={0.9}
+          >
             <Book
               mats={mats}
               cover={mats.coverB}
@@ -1112,6 +1130,101 @@ function PrintsScene({ mats }: { mats: Mats }) {
   )
 }
 
+
+/* ------------------------------------------------------------------ board */
+
+/**
+ * The blog as a bulletin board: every post is a card pinned to the cork,
+ * clickable straight through to the post. New markdown file = new card, no
+ * scene changes — the board reads the same source as the page.
+ */
+function BoardScene({ mats }: { mats: Mats }) {
+  const pinned = notes.slice(0, 8)
+  return (
+    <>
+      <Ground mats={mats} />
+
+      {/* wall and the board on it */}
+      <mesh position={[0, 1.8, -3.4]} material={mats.paper}>
+        <boxGeometry args={[13, 7.5, 0.2]} />
+      </mesh>
+      <group position={[0.1, 1.35, -3.2]}>
+        <mesh position={[0, 0, -0.05]} material={mats.dim}>
+          <boxGeometry args={[6.9, 4.0, 0.1]} />
+        </mesh>
+        <mesh material={mats.tone}>
+          <boxGeometry args={[6.6, 3.7, 0.08]} />
+        </mesh>
+
+        {pinned.map((note, i) => {
+          const col = i % 3
+          const row = Math.floor(i / 3)
+          const x = (col - 1) * 2.05 + (row % 2 ? 0.35 : -0.2)
+          const y = 0.95 - row * 1.35
+          const tilt = [0.05, -0.04, 0.03, -0.06][i % 4]
+          return (
+            <Door key={note.slug} to={`/notes/${note.slug}`}>
+              <group position={[x, y, 0.09]} rotation={[0, 0, tilt]}>
+                <mesh material={mats.paper}>
+                  <boxGeometry args={[1.8, 1.05, 0.03]} />
+                </mesh>
+                <mesh position={[0, 0.5, 0.05]} material={mats.accent}>
+                  <sphereGeometry args={[0.05, 10, 8]} />
+                </mesh>
+                <Text
+                  font={monoWoff}
+                  fontSize={0.135}
+                  color="#0b0b0c"
+                  anchorX="center"
+                  anchorY="middle"
+                  position={[0, 0.08, 0.03]}
+                  maxWidth={1.55}
+                  textAlign="center"
+                  lineHeight={1.25}
+                >
+                  {note.title}
+                </Text>
+                <Text
+                  font={monoWoff}
+                  fontSize={0.09}
+                  color="#6b6862"
+                  anchorX="center"
+                  anchorY="middle"
+                  position={[0, -0.36, 0.03]}
+                  letterSpacing={0.08}
+                >
+                  {note.date}
+                </Text>
+              </group>
+            </Door>
+          )
+        })}
+
+        {/* scraps that make it a real board: a photo corner and a torn stub */}
+        <group position={[2.6, -0.9, 0.09]} rotation={[0, 0, -0.09]}>
+          <mesh material={mats.hueA}>
+            <boxGeometry args={[0.85, 0.95, 0.03]} />
+          </mesh>
+          <mesh position={[0, 0.44, 0.04]} material={mats.accent}>
+            <sphereGeometry args={[0.045, 10, 8]} />
+          </mesh>
+        </group>
+        <group position={[-2.7, -1.0, 0.09]} rotation={[0, 0, 0.12]}>
+          <mesh material={mats.paper}>
+            <boxGeometry args={[0.6, 0.5, 0.03]} />
+          </mesh>
+          <mesh position={[0, 0.2, 0.04]} material={mats.accent}>
+            <sphereGeometry args={[0.04, 10, 8]} />
+          </mesh>
+        </group>
+      </group>
+
+      {/* him, deciding what to pin next */}
+      <Figure pose="idle" position={[-3.4, -0.3, 0.8]} height={1.7} rotation={[0, 0.45, 0]} />
+    </>
+  )
+}
+
 /* --------------------------------------------------------------- registry */
 
 export function SceneFor({
@@ -1152,6 +1265,8 @@ export function SceneFor({
       return <SessionScene mats={mats} explore={explore} />
     case 'prints':
       return <PrintsScene mats={mats} />
+    case 'board':
+      return <BoardScene mats={mats} />
     case 'void':
     default:
       return <VoidScene mats={mats} frozen={frozen} />
