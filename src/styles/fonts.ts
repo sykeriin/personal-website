@@ -17,7 +17,8 @@
  * through troika inside the 3D layer, so it loads with that chunk instead of
  * blocking first paint.
  */
-import '@fontsource/dela-gothic-one/latin-400.css'
+import '@fontsource/anton/latin-400.css'
 import '@fontsource-variable/newsreader/wght.css'
 import '@fontsource-variable/newsreader/wght-italic.css'
-import '@fontsource/share-tech-mono/latin-400.css'
+import '@fontsource/space-mono/latin-400.css'
+import '@fontsource/space-mono/latin-700.css'

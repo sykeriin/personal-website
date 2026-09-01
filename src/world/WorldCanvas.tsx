@@ -4,7 +4,7 @@ import * as THREE from 'three'
 import { InkPipeline } from '../three/InkPipeline'
 import { readInkTheme } from '../three/theme'
 import { tierUsesPostProcessing, type RenderTier } from '../hooks/useRenderTier'
-import { entryFor } from './manifest'
+import { entryFor, sideAccent } from './manifest'
 import { bloom, trackPointer } from './bloom'
 import { useHotspots } from './hotspots'
 import { SceneFor } from './scenes'
@@ -177,8 +177,17 @@ function Stage({
   // CSS variable. Layout sets that variable in an effect, which lands AFTER
   // this render, so reading it here would always be one route behind.
   const theme = useMemo(
-    () => ({ ...base, palette: { ...base.palette, accent: entry.accent } }),
-    [base, entry.accent],
+    () => ({
+      ...base,
+      palette: {
+        ...base.palette,
+        accent: entry.accent,
+        // Only the fork carries a second plate; everywhere else B = A and the
+        // shader's selector is inert.
+        accentB: pathname === '/' ? sideAccent.creative : entry.accent,
+      },
+    }),
+    [base, entry.accent, pathname],
   )
 
   // The bloom follows the pointer everywhere at a small radius so the visitor

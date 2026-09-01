@@ -1,7 +1,7 @@
 import { Text } from '@react-three/drei'
 import * as THREE from 'three'
-import delaWoff from '@fontsource/dela-gothic-one/files/dela-gothic-one-latin-400-normal.woff?url'
-import monoWoff from '@fontsource/share-tech-mono/files/share-tech-mono-latin-400-normal.woff?url'
+import delaWoff from '@fontsource/anton/files/anton-latin-400-normal.woff?url'
+import monoWoff from '@fontsource/space-mono/files/space-mono-latin-400-normal.woff?url'
 
 /**
  * A designed cover, not a blank slab: title block with the name, the side's
@@ -90,7 +90,7 @@ export function Book({
       {/* the side's word, printed big straight on the plate */}
       <Text
         font={delaWoff}
-        fontSize={0.62}
+        fontSize={0.4}
         color={PAPER}
         anchorX="center"
         anchorY="middle"

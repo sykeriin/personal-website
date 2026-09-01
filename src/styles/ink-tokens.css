@@ -48,10 +48,10 @@
      face and lives inside the scene; body is a serif so the page reads as
      print; mono is the telemetry voice, which matters for someone whose work
      is CV pipelines and agents. */
-  --font-display: 'Dela Gothic One', Impact, 'Arial Black', sans-serif;
+  --font-display: 'Anton', Impact, 'Arial Black', sans-serif;
   --font-sfx: 'Rampart One', 'Dela Gothic One', Impact, cursive;
   --font-body: 'Newsreader Variable', Newsreader, Georgia, 'Times New Roman', serif;
-  --font-mono: 'Share Tech Mono', ui-monospace, 'SFMono-Regular', monospace;
+  --font-mono: 'Space Mono', ui-monospace, 'SFMono-Regular', monospace;
 
   /* --- non-colour shader tokens ----------------------------------------- */
   /* Device px. Outer contour vs interior crease line weight. */

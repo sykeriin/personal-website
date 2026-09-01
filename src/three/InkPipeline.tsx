@@ -120,6 +120,7 @@ export function InkPipeline({ params, palette, frozen = false, slamRef, bloomRef
     u.uInk.value.set(resolved.ink)
     u.uInkSoft.value.set(resolved.inkSoft)
     u.uAccent.value.set(resolved.accent)
+    u.uAccentB.value.set(resolved.accentB ?? resolved.accent)
   }, [rig, resolved])
 
   // priority > 0 takes rendering over from R3F's default loop

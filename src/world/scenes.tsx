@@ -8,7 +8,7 @@ import { PROJECT_ACCENTS, sideAccent, type SceneKey } from './manifest'
 import { Figure } from './Figure'
 import { FractalPlane } from './Fractal'
 import { Book } from './BookCover'
-import monoWoff from '@fontsource/share-tech-mono/files/share-tech-mono-latin-400-normal.woff?url'
+import monoWoff from '@fontsource/space-mono/files/space-mono-latin-400-normal.woff?url'
 import { Door, Hotspot, InkShape } from './Ink'
 import { useHotspots } from './hotspots'
 import { Envelope, Guitar, ScreenLines } from './props'
@@ -62,8 +62,10 @@ import {
 function useInk(palette: InkPalette) {
   const gradient = useMemo(() => makeToonGradient(3), [])
   return useMemo(() => {
+    // toneMapped false: the composite pass IS the look; ACES in the beauty
+    // pass only skews channel ratios, and the two-plate selector reads ratios.
     const make = (color: string | THREE.Color) =>
-      new THREE.MeshToonMaterial({ color, gradientMap: gradient })
+      new THREE.MeshToonMaterial({ color, gradientMap: gradient, toneMapped: false })
 
     // Companion hues for the chapter plate, derived rather than configured:
     // rotate the accent's hue either way and let the bloom reveal the family.
@@ -86,10 +88,9 @@ function useInk(palette: InkPalette) {
       dim: make(palette.paperDim),
       tone: make(palette.tone),
       accent: make(accent),
-      // Lightened so the two-ink flatten prints cover B in the BRIGHT band —
-      // in monochrome the two covers differentiate by value, and the bloom
-      // still reveals the true magenta.
-      coverB: make(new THREE.Color(sideAccent.creative).lerp(new THREE.Color('#ffffff'), 0.45)),
+      // Full-saturation magenta: the shader's second plate (fork-only) picks
+      // it up by blue fraction, so cover B prints in its own ink.
+      coverB: make(sideAccent.creative),
       hueA: make(hueA),
       hueB: make(hueB),
     }
@@ -147,7 +148,10 @@ function BackdropPlane({ url, tint }: { url: string; tint?: THREE.Color }) {
   const color = useMemo(() => {
     if (!tint) return new THREE.Color('#ffffff')
     const c = tint.clone()
-    c.lerp(new THREE.Color('#ffffff'), 0.3)
+    // Brighten by SCALING, never by lerping to white: a lerp raises the blue
+    // fraction and the crimson sky kept crossing the plate-B selector and
+    // printing magenta. Scaling preserves channel ratios exactly.
+    c.multiplyScalar(1.35)
     return c
   }, [tint])
   return (
@@ -170,7 +174,7 @@ function CoverScene({ mats }: { mats: Mats }) {
       {/* Cover A: the tech story, right side up. */}
       <Door to="/origin">
         <Drift amount={0.05} speed={0.45}>
-          <group rotation={[0.08, -0.42, 0.02]} position={[-1.2, -0.18, 0.2]} scale={0.55}>
+          <group rotation={[0.08, -0.42, 0.02]} position={[-1.3, 0.0, 0.2]} scale={0.7}>
             <Book
               mats={mats}
               cover={mats.accent}
@@ -195,7 +199,7 @@ function CoverScene({ mats }: { mats: Mats }) {
           volume prints the second front. The visitor's first "wait, what?" */}
       <Door to="/studio">
         <Drift amount={0.05} speed={0.4} phase={1.9}>
-          <group rotation={[0.08, 0.38, Math.PI]} position={[1.55, -0.12, 0.1]} scale={0.55}>
+          <group rotation={[0.08, 0.38, Math.PI]} position={[1.65, 0.05, 0.1]} scale={0.7}>
             <Book
               mats={mats}
               cover={mats.coverB}

@@ -53,6 +53,7 @@ uniform vec3 uPaper;
 uniform vec3 uInk;
 uniform vec3 uInkSoft;
 uniform vec3 uAccent;
+uniform vec3 uAccentB;
 
 varying vec2 vUv;
 
@@ -195,7 +196,15 @@ void main() {
   // a flat single value erases the boundary between a coloured hero and a
   // coloured sky (chainguard vanished into its own backdrop this way). The
   // quantised luminance keeps it banded, so it still reads as printed.
-  vec3 plate = uAccent * mix(0.52, 1.18, q);
+  // The fork is the one screen with TWO plates. A saturated pixel picks its
+  // plate by blue fraction — magenta carries far more blue than crimson, and
+  // the ratio survives every lighting band because light is multiplicative.
+  // Everywhere else uAccentB equals uAccent and this line is inert.
+  // 0.2 is calibrated in LINEAR space (the buffer is linear): magenta's blue
+  // fraction lands at ~0.29 there, crimson's at ~0.06, the whitened wash at
+  // ~0.14 — one threshold separates all three.
+  float useB = step(0.2, beauty.b / max(beauty.r, 0.001)) * step(beauty.g, beauty.r);
+  vec3 plate = mix(uAccent, uAccentB, useB) * mix(0.52, 1.18, q);
   col = mix(col, plate, accentMask);
   col = mix(col, inkCol, edge);
 
@@ -295,6 +304,7 @@ export function createInkCompositeShader() {
       uInk: { value: new THREE.Color('#0b0b0c') },
       uInkSoft: { value: new THREE.Color('#2a2a2a') },
       uAccent: { value: new THREE.Color('#b01030') },
+      uAccentB: { value: new THREE.Color('#b01030') },
     },
     vertexShader,
     fragmentShader,

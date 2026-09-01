@@ -3,7 +3,7 @@ import { useFrame } from '@react-three/fiber'
 import { useMemo, useRef } from 'react'
 import * as THREE from 'three'
 // troika renders woff (not woff2); fontsource ships both.
-import delaWoff from '@fontsource/dela-gothic-one/files/dela-gothic-one-latin-400-normal.woff?url'
+import delaWoff from '@fontsource/anton/files/anton-latin-400-normal.woff?url'
 import { entryFor } from './manifest'
 
 /**
