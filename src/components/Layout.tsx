@@ -8,9 +8,9 @@ import { useRenderTier, tierUsesWebGL } from '../hooks/useRenderTier'
 import { usePresence } from '../hooks/usePresence'
 import { useChromeMode } from '../hooks/useChromeMode'
 import { entryFor } from '../world/manifest'
-import { hotspots, hotspotsForRoute, worldNav } from '../world/hotspots'
+import { hotspots, worldNav } from '../world/hotspots'
 import { PageTurns } from './PageTurns'
-import { HotspotList, RevealPanel } from './RevealPanel'
+import { RevealPanel } from './RevealPanel'
 import { ModeSwitch } from './ModeSwitch'
 
 /** three.js lives behind a dynamic import, so the paper tier never downloads it. */
@@ -30,7 +30,6 @@ export function Layout() {
   const domFirst = /^\/(prints|notes)/.test(location.pathname)
   // Explore needs props to click, so it only exists where there is a world.
   const explore = world && mode === 'explore' && !domFirst
-  const ids = hotspotsForRoute(location.pathname)
 
   // Remember which cover is being read, so the fork stands that book upright.
   useEffect(() => {
@@ -110,7 +109,6 @@ export function Layout() {
       <div className="ink-dom">
         <EdgeTabs />
         <Outlet />
-        {explore ? <HotspotList ids={ids} /> : null}
       </div>
 
       {explore ? <RevealPanel /> : null}

@@ -1104,3 +1104,9 @@ button {
   padding: 0.4rem 0.7rem;
   font-size: 0.72rem;
 }
+
+/* The blog list IS the bulletin board in world mode; the bar would say it
+   twice. Post pages keep their bar — there the words are the content. */
+.shell[data-chrome='world'] .chapter--board {
+  display: none;
+}

@@ -624,6 +624,7 @@ function Trophy({ mats }: { mats: Mats }) {
  * trophy is the mantle: podium finishes only.
  */
 function CaseScene({ mats, explore }: { mats: Mats; explore: boolean }) {
+  const leafClusterShape = useMemo(() => leafCluster(), [])
   const bookMats = useMemo(() => {
     const gradient = makeToonGradient(3)
     return Object.fromEntries(
@@ -668,6 +669,47 @@ function CaseScene({ mats, explore }: { mats: Mats; explore: boolean }) {
             <boxGeometry args={[5.4, 0.12, 0.85]} />
           </mesh>
         ))}
+
+        {/* the crown: an art piece leaning on the very top, saying what
+            this case holds — display letters on a framed canvas */}
+        <group position={[0.1, 2.98, -0.12]} rotation={[-0.12, 0, 0.015]}>
+          <mesh material={mats.dim}>
+            <boxGeometry args={[2.9, 1.15, 0.07]} />
+          </mesh>
+          <mesh position={[0, 0, 0.045]} material={mats.accent}>
+            <boxGeometry args={[2.68, 0.95, 0.03]} />
+          </mesh>
+          <Text
+            font={delaWoff}
+            fontSize={0.52}
+            color="#f7f6f3"
+            anchorX="center"
+            anchorY="middle"
+            position={[0, -0.02, 0.08]}
+            letterSpacing={0.03}
+          >
+            projects
+          </Text>
+        </group>
+
+        {/* top-of-case company: a potted sprout and a wedge bookend */}
+        <group position={[-2.1, 2.4, 0]}>
+          <mesh position={[0, 0.14, 0]} material={mats.dim}>
+            <cylinderGeometry args={[0.16, 0.12, 0.28, 12]} />
+          </mesh>
+          <InkShape
+            shape={leafClusterShape}
+            depth={0.05}
+            material={mats.hueA}
+            position={[0, 0.5, 0]}
+            scale={0.34}
+          />
+        </group>
+        <group position={[2.15, 2.4, 0]} rotation={[0, 0.2, 0]}>
+          <mesh position={[0, 0.18, 0]} rotation={[0, 0, 0.5]} material={mats.tone}>
+            <boxGeometry args={[0.42, 0.42, 0.3]} />
+          </mesh>
+        </group>
 
         {/* top shelf: three volumes and some company */}
         {shelfBooks.map((book) => (

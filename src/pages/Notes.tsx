@@ -13,7 +13,7 @@ export function Notes() {
   useDocumentMeta(`${entry.title} — Durva Sharma`, entry.description)
 
   return (
-    <main className="chapter">
+    <main className="chapter chapter--board">
       <ChapterHead eyebrow={entry.label} title={entry.title} page={entry.page} />
       <p className="lede">longer things. build logs, shoot write-ups, 2am thoughts.</p>
 
