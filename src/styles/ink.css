@@ -299,7 +299,9 @@ button {
 }
 
 .chapter-head__title {
-  font-family: var(--font-display);
+  font-family: var(--font-serif);
+  font-weight: 620;
+  font-variation-settings: 'SOFT' 40;
   font-size: clamp(1.9rem, 6vw, 3.4rem);
   line-height: 1.02;
   margin: 0;
@@ -721,7 +723,8 @@ button {
   color: var(--accent);
 }
 .reveal__title {
-  font-family: var(--font-display);
+  font-family: var(--font-serif);
+  font-weight: 640;
   font-size: 1.35rem;
   line-height: 1.15;
   margin: 0;
@@ -821,7 +824,9 @@ button {
   opacity: 0.85;
 }
 .fork__title {
-  font-family: var(--font-display);
+  font-family: var(--font-serif);
+  font-weight: 560;
+  font-style: italic;
   font-size: clamp(1.5rem, 4.5vw, 2.3rem);
   line-height: 1.05;
   text-wrap: balance;
@@ -958,7 +963,8 @@ button {
   flex-wrap: wrap;
 }
 .shelf__head h2 {
-  font-family: var(--font-display);
+  font-family: var(--font-serif);
+  font-weight: 640;
   font-size: 1.1rem;
   margin: 0;
 }
@@ -1012,7 +1018,8 @@ button {
 .note h1,
 .note h2,
 .note h3 {
-  font-family: var(--font-display);
+  font-family: var(--font-serif);
+  font-weight: 620;
   line-height: 1.2;
 }
 .note pre {

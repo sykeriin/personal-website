@@ -27,7 +27,7 @@ export function ChapterType({
   const settled = useRef(0)
   // The cover carries no chapter type: the two books are the title, and the
   // giant name was fighting them for the same space.
-  const skip = pathname === '/'
+  const skip = pathname === '/' || pathname.startsWith('/notes')
 
   const anchor = useMemo(() => {
     const [tx, ty, tz] = entry.camera.target

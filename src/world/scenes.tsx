@@ -10,6 +10,7 @@ import { Figure } from './Figure'
 import { FractalPlane } from './Fractal'
 import { Book } from './BookCover'
 import monoWoff from '@fontsource/space-mono/files/space-mono-latin-400-normal.woff?url'
+import delaWoff from '@fontsource/anton/files/anton-latin-400-normal.woff?url'
 import { Door, Hotspot, InkShape } from './Ink'
 import { useHotspots } from './hotspots'
 import { Envelope, Guitar, ScreenLines } from './props'
@@ -1156,6 +1157,24 @@ function BoardScene({ mats }: { mats: Mats }) {
           <boxGeometry args={[6.6, 3.7, 0.08]} />
         </mesh>
 
+        {/* the header plaque, screwed onto the cork's top rail */}
+        <group position={[0, 1.5, 0.1]}>
+          <mesh material={mats.dim}>
+            <boxGeometry args={[2.3, 0.62, 0.12]} />
+          </mesh>
+          <Text
+            font={delaWoff}
+            fontSize={0.4}
+            color="#0b0b0c"
+            anchorX="center"
+            anchorY="middle"
+            position={[0, -0.02, 0.08]}
+            letterSpacing={0.04}
+          >
+            blog
+          </Text>
+        </group>
+
         {pinned.map((note, i) => {
           const col = i % 3
           const row = Math.floor(i / 3)
@@ -1200,23 +1219,6 @@ function BoardScene({ mats }: { mats: Mats }) {
           )
         })}
 
-        {/* scraps that make it a real board: a photo corner and a torn stub */}
-        <group position={[2.6, -0.9, 0.09]} rotation={[0, 0, -0.09]}>
-          <mesh material={mats.hueA}>
-            <boxGeometry args={[0.85, 0.95, 0.03]} />
-          </mesh>
-          <mesh position={[0, 0.44, 0.04]} material={mats.accent}>
-            <sphereGeometry args={[0.045, 10, 8]} />
-          </mesh>
-        </group>
-        <group position={[-2.7, -1.0, 0.09]} rotation={[0, 0, 0.12]}>
-          <mesh material={mats.paper}>
-            <boxGeometry args={[0.6, 0.5, 0.03]} />
-          </mesh>
-          <mesh position={[0, 0.2, 0.04]} material={mats.accent}>
-            <sphereGeometry args={[0.04, 10, 8]} />
-          </mesh>
-        </group>
       </group>
 
       {/* him, deciding what to pin next */}

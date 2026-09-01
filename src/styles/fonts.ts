@@ -18,6 +18,8 @@
  * blocking first paint.
  */
 import '@fontsource/anton/latin-400.css'
+import '@fontsource-variable/fraunces/wght.css'
+import '@fontsource-variable/fraunces/wght-italic.css'
 import '@fontsource-variable/newsreader/wght.css'
 import '@fontsource-variable/newsreader/wght-italic.css'
 import '@fontsource/space-mono/latin-400.css'

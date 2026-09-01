@@ -51,6 +51,9 @@
   --font-display: 'Anton', Impact, 'Arial Black', sans-serif;
   --font-sfx: 'Rampart One', 'Dela Gothic One', Impact, cursive;
   --font-body: 'Newsreader Variable', Newsreader, Georgia, 'Times New Roman', serif;
+  /* The editorial voice: chapter titles and headings. Anton keeps the poster
+     jobs (cover word, wall type); Fraunces carries the refined ones. */
+  --font-serif: 'Fraunces Variable', Fraunces, Georgia, serif;
   --font-mono: 'Space Mono', ui-monospace, 'SFMono-Regular', monospace;
 
   /* --- non-colour shader tokens ----------------------------------------- */
