@@ -27,11 +27,14 @@ export function ChapterType({
   const settled = useRef(0)
   // The cover carries no chapter type: the two books are the title, and the
   // giant name was fighting them for the same space.
-  const skip = pathname === '/' || pathname.startsWith('/notes')
+  // No wall type where the world already names itself: the cover's books,
+  // the board's plaque, and the tree that is unmistakably a skill tree.
+  const skip =
+    pathname === '/' || pathname.startsWith('/notes') || pathname === '/skill-tree'
 
   const anchor = useMemo(() => {
     const [tx, ty, tz] = entry.camera.target
-    return new THREE.Vector3(tx - 3.2, ty + 1.9, tz - 7.5)
+    return new THREE.Vector3(tx - 3.2, ty + 3.2, tz - 7.5)
   }, [entry.camera.target])
 
   // A quiet settle rather than a slam: the title eases up into place while the

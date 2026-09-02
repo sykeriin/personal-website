@@ -5,7 +5,7 @@ import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js'
 import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js'
-import { createGBufferMaterial } from './gbufferMaterial'
+import { createGBufferCutoutMaterial, createGBufferMaterial } from './gbufferMaterial'
 import { createInkCompositeShader } from './shaders/inkComposite'
 import { type InkParams } from './inkConfig'
 import { readInkTheme, type InkPalette } from './theme'
@@ -131,14 +131,42 @@ export function InkPipeline({ params, palette, frozen = false, slamRef, bloomRef
     gl.getClearColor(prevClear)
     const prevAlpha = gl.getClearAlpha()
 
-    rig.gmat.uniforms.uCamFar.value = (camera as THREE.PerspectiveCamera).far
+    const far = (camera as THREE.PerspectiveCamera).far
+    rig.gmat.uniforms.uCamFar.value = far
     scene.background = null
-    scene.overrideMaterial = rig.gmat
+
+    // Per-mesh swap instead of scene.overrideMaterial: cutout sprites (foliage,
+    // the drawn figure) must keep their alpha test in the prepass, or the ink
+    // outlines their quads as rectangles. Cutout materials are cached per mesh.
+    scene.traverse((obj) => {
+      const mesh = obj as THREE.Mesh
+      if (!mesh.isMesh) return
+      const src = mesh.material as THREE.Material & { map?: THREE.Texture | null }
+      mesh.userData.__inkSaved = src
+      if (src && src.alphaTest > 0 && src.map) {
+        let cut = mesh.userData.__inkCutout as THREE.ShaderMaterial | undefined
+        if (!cut || cut.uniforms.map.value !== src.map) {
+          cut = createGBufferCutoutMaterial(src.map, src.alphaTest)
+          mesh.userData.__inkCutout = cut
+        }
+        cut.uniforms.uCamFar.value = far
+        mesh.material = cut
+      } else {
+        mesh.material = rig.gmat
+      }
+    })
+
     gl.setRenderTarget(rig.gbuffer)
     gl.setClearColor(FAR_CLEAR, 1)
     gl.clear(true, true, false)
     gl.render(scene, camera)
 
+    scene.traverse((obj) => {
+      const mesh = obj as THREE.Mesh
+      if (!mesh.isMesh || !mesh.userData.__inkSaved) return
+      mesh.material = mesh.userData.__inkSaved
+      delete mesh.userData.__inkSaved
+    })
     scene.overrideMaterial = prevOverride
     scene.background = prevBackground
     gl.setRenderTarget(null)

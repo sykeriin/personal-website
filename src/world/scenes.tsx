@@ -816,6 +816,59 @@ function ArtifactScene({
   )
 }
 
+
+const FOLIAGE = Object.entries(
+  import.meta.glob('../assets/ink/marks/foliage-*.png', {
+    eager: true,
+    query: '?url',
+    import: 'default',
+  }) as Record<string, string>,
+)
+  .sort(([a], [b]) => a.localeCompare(b))
+  .map(([, url]) => url)
+
+/**
+ * A mass of brush-painted leaves (from the p5.brush mark factory), tinted to
+ * the plate family and alpha-TESTED so the ink pass outlines its ragged,
+ * painterly silhouette — foliage that reads as drawn, not extruded.
+ */
+function CanopySprite({
+  variant,
+  tint,
+  position,
+  scale = 1,
+  flip = false,
+  rotation = 0,
+}: {
+  variant: number
+  tint: THREE.Color
+  position: [number, number, number]
+  scale?: number
+  flip?: boolean
+  rotation?: number
+}) {
+  const url = FOLIAGE[variant % FOLIAGE.length]
+  const texture = useTexture(url)
+  const gradient = useMemo(() => makeToonGradient(3), [])
+  const material = useMemo(() => {
+    texture.colorSpace = THREE.SRGBColorSpace
+    texture.anisotropy = 4
+    return new THREE.MeshToonMaterial({
+      map: texture,
+      color: tint,
+      gradientMap: gradient,
+      alphaTest: 0.35,
+      side: THREE.DoubleSide,
+      toneMapped: false,
+    })
+  }, [texture, tint, gradient])
+  return (
+    <mesh position={position} rotation={[0, 0, rotation]} scale={[flip ? -scale : scale, scale, 1]} material={material}>
+      <planeGeometry args={[2, 2]} />
+    </mesh>
+  )
+}
+
 /**
  * The skill tree, fruiting. Foliage is a dense crown of leaf clusters; the
  * CLICKABLE things are fruit hanging from the boughs — four skill groups and
@@ -825,7 +878,6 @@ function ArtifactScene({
  */
 function TreeScene({ mats, explore, frozen }: { mats: Mats; explore: boolean; frozen: boolean }) {
   const trunk = useMemo(() => trunkProfile(), [])
-  const cluster = useMemo(() => leafCluster(), [])
 
   const foliage: Array<[number, number, number, number, number, keyof Mats]> = [
     [-2.5, 3.0, 0.2, 0.75, 0.3, 'accent'],
@@ -857,16 +909,16 @@ function TreeScene({ mats, explore, frozen }: { mats: Mats; explore: boolean; fr
       {/* trunk and boughs */}
       <InkShape shape={trunk} depth={0.55} material={mats.dim} position={[0, 0.9, 0]} scale={4.2} />
 
-      {/* the crown */}
-      {foliage.map(([x, y, z, sc, rot, mat]) => (
+      {/* the crown, painted with the brush marks */}
+      {foliage.map(([x, y, z, sc, rot, mat], i) => (
         <Drift key={`${x},${y}`} amount={0.05} speed={0.35} phase={x * 2.1}>
-          <InkShape
-            shape={cluster}
-            depth={0.3}
-            material={mats[mat]}
+          <CanopySprite
+            variant={i}
+            tint={mats[mat].color}
             position={[x, y, z]}
-            rotation={[0, 0, rot]}
-            scale={sc}
+            scale={sc * 1.6}
+            flip={i % 2 === 1}
+            rotation={rot * 0.4}
           />
         </Drift>
       ))}
@@ -883,14 +935,13 @@ function TreeScene({ mats, explore, frozen }: { mats: Mats; explore: boolean; fr
               <mesh material={mats.paper}>
                 <sphereGeometry args={[f.r, 18, 14]} />
               </mesh>
-              {/* one small leaf at the stem */}
-              <InkShape
-                shape={cluster}
-                depth={0.03}
-                material={mats.accent}
-                position={[0.12, f.r + 0.12, 0.05]}
-                rotation={[0, 0, -0.5]}
-                scale={0.14}
+              {/* one small painted leaf at the stem */}
+              <CanopySprite
+                variant={i}
+                tint={mats.accent.color}
+                position={[0.14, f.r + 0.14, 0.05]}
+                scale={0.22}
+                rotation={-0.4}
               />
             </group>
           </Drift>

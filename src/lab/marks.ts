@@ -104,7 +104,73 @@ function cloudBank(seedN: number, count: number, w: number, h: number) {
   }
 }
 
+
+/** One brushed leaf: a pointed oval laid down with bleed, at any angle. */
+function brushLeaf(x: number, y: number, len: number, wid: number, rot: number) {
+  const c = Math.cos(rot)
+  const n = Math.sin(rot)
+  const at = (dx: number, dy: number): [number, number] => [
+    x + dx * c - dy * n,
+    y + dx * n + dy * c,
+  ]
+  brush.beginShape(0.55)
+  brush.vertex(...at(-len / 2, 0))
+  brush.vertex(...at(-len * 0.1, -wid / 2))
+  brush.vertex(...at(len / 2, 0))
+  brush.vertex(...at(-len * 0.05, wid / 2))
+  brush.endShape(true)
+}
+
+/**
+ * A canopy mass: dozens of brushed leaves in a gaussian cluster, denser at
+ * the heart, with a few twig strokes underneath. The ragged silhouette is the
+ * point — the ink pass draws whatever edge this leaves.
+ */
+function canopy(seedN: number, w: number, h: number, count: number) {
+  seeded(seedN)
+  brush.noStroke()
+  brush.fillBleed(0.14, 'out')
+  brush.fillTexture(0.6, 0.45)
+  const cx = w / 2
+  const cy = h / 2
+
+  brush.set('HB', INK, 0.9)
+  for (let k = 0; k < 4; k++) {
+    const a = (k / 4) * Math.PI * 2 + Math.random()
+    brush.spline(
+      [
+        [cx, cy + 20, 0.7],
+        [cx + Math.cos(a) * w * 0.3, cy + Math.sin(a) * h * 0.28, 0.25],
+      ],
+      0.5,
+    )
+  }
+
+  brush.noStroke()
+  for (let i = 0; i < count; i++) {
+    const a = Math.random() * Math.PI * 2
+    const r = ((Math.random() + Math.random()) / 2) * w * 0.34
+    const x = cx + Math.cos(a) * r
+    const y = cy + Math.sin(a) * r * 0.72
+    const len = Math.min(w, h) * (0.07 + Math.random() * 0.09)
+    const wid = len * (0.36 + Math.random() * 0.24)
+    brush.fill(INK, 150 + Math.random() * 105)
+    brushLeaf(x, y, len, wid, Math.random() * Math.PI * 2)
+  }
+}
+
 const marks: Mark[] = [
+  {
+    name: 'foliage-01',
+    size: [512, 512],
+    draw: () => canopy(601, 512, 512, 190),
+  },
+  {
+    name: 'foliage-02',
+    size: [512, 512],
+    draw: () => canopy(602, 512, 512, 150),
+  },
+
   {
     name: 'bg-wash-01',
     size: [1024, 640],
