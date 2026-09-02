@@ -5,7 +5,11 @@ import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js'
 import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js'
-import { createGBufferCutoutMaterial, createGBufferMaterial } from './gbufferMaterial'
+import {
+  createGBufferCutoutMaterial,
+  createGBufferMaterial,
+  createGBufferStickerMaterial,
+} from './gbufferMaterial'
 import { createInkCompositeShader } from './shaders/inkComposite'
 import { type InkParams } from './inkConfig'
 import { readInkTheme, type InkPalette } from './theme'
@@ -135,39 +139,70 @@ export function InkPipeline({ params, palette, frozen = false, slamRef, bloomRef
     rig.gmat.uniforms.uCamFar.value = far
     scene.background = null
 
-    // Per-mesh swap instead of scene.overrideMaterial: cutout sprites (foliage,
-    // the drawn figure) must keep their alpha test in the prepass, or the ink
-    // outlines their quads as rectangles. Cutout materials are cached per mesh.
+    // Phase 1: everything except cutout sprites, via overrideMaterial (which
+    // never touches mesh.material — troika text stays untouched; assigning to
+    // its material property is what double-exposed the glyphs).
+    const cutouts: THREE.Mesh[] = []
     scene.traverse((obj) => {
       const mesh = obj as THREE.Mesh
-      if (!mesh.isMesh) return
-      const src = mesh.material as THREE.Material & { map?: THREE.Texture | null }
-      mesh.userData.__inkSaved = src
-      if (src && src.alphaTest > 0 && src.map) {
-        let cut = mesh.userData.__inkCutout as THREE.ShaderMaterial | undefined
-        if (!cut || cut.uniforms.map.value !== src.map) {
-          cut = createGBufferCutoutMaterial(src.map, src.alphaTest)
-          mesh.userData.__inkCutout = cut
-        }
-        cut.uniforms.uCamFar.value = far
-        mesh.material = cut
-      } else {
-        mesh.material = rig.gmat
+      if (mesh.isMesh && (mesh.userData.inkCutout || mesh.userData.inkSticker) && mesh.visible) {
+        cutouts.push(mesh)
+        mesh.visible = false
       }
     })
-
+    scene.overrideMaterial = rig.gmat
     gl.setRenderTarget(rig.gbuffer)
     gl.setClearColor(FAR_CLEAR, 1)
     gl.clear(true, true, false)
     gl.render(scene, camera)
-
-    scene.traverse((obj) => {
-      const mesh = obj as THREE.Mesh
-      if (!mesh.isMesh || !mesh.userData.__inkSaved) return
-      mesh.material = mesh.userData.__inkSaved
-      delete mesh.userData.__inkSaved
-    })
     scene.overrideMaterial = prevOverride
+
+    // Phase 2: cutouts alone, wearing cached cutout depth materials that keep
+    // their alpha test, into the same target without clearing.
+    if (cutouts.length > 0) {
+      const hidden: THREE.Object3D[] = []
+      scene.traverse((obj) => {
+        const mesh = obj as THREE.Mesh
+        if (mesh.isMesh && !mesh.userData.inkCutout && !mesh.userData.inkSticker && mesh.visible) {
+          hidden.push(mesh)
+          mesh.visible = false
+        }
+      })
+      for (const mesh of cutouts) {
+        mesh.visible = true
+        const src = mesh.material as THREE.Material & { map?: THREE.Texture | null }
+        mesh.userData.__inkSaved = src
+        if (mesh.userData.inkSticker) {
+          let stick = mesh.userData.__inkSticker as THREE.ShaderMaterial | undefined
+          if (!stick) {
+            stick = createGBufferStickerMaterial()
+            mesh.userData.__inkSticker = stick
+          }
+          stick.uniforms.uCamFar.value = far
+          mesh.material = stick
+        } else {
+          let cut = mesh.userData.__inkCutout as THREE.ShaderMaterial | undefined
+          if (!cut || cut.uniforms.map.value !== src.map) {
+            cut = createGBufferCutoutMaterial(src.map as THREE.Texture, src.alphaTest || 0.35)
+            mesh.userData.__inkCutout = cut
+          }
+          cut.uniforms.uCamFar.value = far
+          mesh.material = cut
+        }
+      }
+      const prevAuto = gl.autoClear
+      gl.autoClear = false
+      gl.render(scene, camera)
+      gl.autoClear = prevAuto
+      for (const mesh of cutouts) {
+        mesh.material = mesh.userData.__inkSaved
+        delete mesh.userData.__inkSaved
+      }
+      for (const obj of hidden) obj.visible = true
+    } else {
+      for (const mesh of cutouts) mesh.visible = true
+    }
+
     scene.background = prevBackground
     gl.setRenderTarget(null)
     gl.setClearColor(prevClear, prevAlpha)

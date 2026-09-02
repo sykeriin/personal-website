@@ -13,7 +13,7 @@ import monoWoff from '@fontsource/space-mono/files/space-mono-latin-400-normal.w
 import delaWoff from '@fontsource/anton/files/anton-latin-400-normal.woff?url'
 import { Door, Hotspot, InkShape } from './Ink'
 import { useHotspots } from './hotspots'
-import { Envelope, Guitar, ScreenLines } from './props'
+import { Guitar, ScreenLines } from './props'
 import {
   Amp,
   BackdropSweep,
@@ -26,7 +26,6 @@ import {
   WallFrame,
 } from './setDressing'
 import {
-  bookCover,
   chainLink,
   cloudPuff,
   inkDrop,
@@ -90,6 +89,10 @@ function useInk(palette: InkPalette) {
       dim: make(palette.paperDim),
       tone: make(palette.tone),
       accent: make(accent),
+      // Shades of the plate: darker and lighter saturated variants land in
+      // different value bands, so walls get tonal depth in the same ink.
+      accentDeep: make(accent.clone().multiplyScalar(0.45)),
+      accentSoft: make(accent.clone().lerp(new THREE.Color('#ffffff'), 0.38)),
       // Full-saturation magenta: the shader's second plate (fork-only) picks
       // it up by blue fraction, so cover B prints in its own ink.
       coverB: make(sideAccent.creative),
@@ -212,7 +215,7 @@ function CoverScene({ mats }: { mats: Mats }) {
 
       {/* Cover B: the creative story — upside down, exactly as a tête-bêche
           volume prints the second front. The visitor's first "wait, what?" */}
-      <Door to="/studio">
+      <Door to="/session">
         <Drift amount={0.05} speed={0.4} phase={1.9}>
           <group
             rotation={[0.08, 0.38, upSide === 'creative' ? 0.0 : Math.PI]}
@@ -237,8 +240,13 @@ function CoverScene({ mats }: { mats: Mats }) {
 
 /* ------------------------------------------------------------------- desk */
 
-/** The 2am desk, compact — one vignette, not a furniture catalogue. Each of
-    the four origin panels lives on the prop that suits it. */
+/**
+ * The origin room — and the world's own nav. Everything you can go to exists
+ * here as a thing in the room: the bookshelf goes to projects, the gym door to
+ * training, the bulletin board to the blog, and the tree outside the window to
+ * the skill tree. The desk is his: name on the laptop, tower underneath,
+ * keyboard, mouse, the mug still steaming.
+ */
 function DeskScene({ mats, explore }: { mats: Mats; explore: boolean }) {
   const shapes = useMemo(
     () => ({
@@ -246,97 +254,293 @@ function DeskScene({ mats, explore }: { mats: Mats; explore: boolean }) {
       laptop: laptop(),
       mug: mug(),
       steam: mugSteam(),
-      book: bookCover(),
     }),
     [],
   )
+  const spineMats = [mats.accent, mats.hueA, mats.hueB, mats.tone]
+
   return (
     <>
       <Backdrop name="bg-mist-01" tint={mats.accent.color} />
       <Ground mats={mats} />
 
-      <group position={[0.4, -0.2, 0]} rotation={[0, -0.12, 0]}>
-        {/* the desk island */}
-        <mesh position={[0, -0.5, 0]} material={mats.paper}>
+      {/* the room shell: the back wall carries the chapter colour, in shades */}
+      <mesh position={[0, 1.8, -3.8]} material={mats.accent}>
+        <boxGeometry args={[13.5, 7.5, 0.2]} />
+      </mesh>
+      <mesh position={[0, 3.6, -3.76]} material={mats.accentSoft}>
+        <boxGeometry args={[13.5, 1.9, 0.06]} />
+      </mesh>
+      <mesh position={[0, -0.72, -3.74]} material={mats.accentDeep}>
+        <boxGeometry args={[13.5, 0.95, 0.08]} />
+      </mesh>
+      <mesh position={[5.9, 1.8, -0.2]} rotation={[0, -Math.PI / 2, 0]} material={mats.dim}>
+        <boxGeometry args={[7.4, 7.5, 0.2]} />
+      </mesh>
+
+      {/* the gym door — training is through here */}
+      <Door to="/training">
+        <group position={[3.4, 0.42, -3.66]}>
+          <mesh material={mats.dim}>
+            <boxGeometry args={[1.56, 3.15, 0.14]} />
+          </mesh>
+          <mesh position={[0, -0.02, 0.05]} material={mats.accent}>
+            <boxGeometry args={[1.3, 2.9, 0.08]} />
+          </mesh>
+          <mesh position={[0.48, -0.12, 0.12]} material={mats.paper}>
+            <sphereGeometry args={[0.07, 10, 8]} />
+          </mesh>
+          <mesh position={[0, 1.85, 0.02]} material={mats.paper}>
+            <boxGeometry args={[1.0, 0.34, 0.06]} />
+          </mesh>
+          <Text
+            font={monoWoff}
+            fontSize={0.15}
+            color="#0b0b0c"
+            anchorX="center"
+            anchorY="middle"
+            position={[0, 1.85, 0.06]}
+            letterSpacing={0.08}
+          >
+            {'gym →'}
+          </Text>
+        </group>
+      </Door>
+
+      {/* the bookshelf — projects live on it */}
+      <Door to="/projects">
+        <group position={[-3.7, 0.35, -3.6]}>
+          {[-1.05, 1.05].map((x) => (
+            <mesh key={x} position={[x, 0, 0]} material={mats.dim}>
+              <boxGeometry args={[0.12, 2.7, 0.55]} />
+            </mesh>
+          ))}
+          {[-1.25, -0.45, 0.4, 1.25].map((y) => (
+            <mesh key={y} position={[0, y, 0]} material={mats.dim}>
+              <boxGeometry args={[2.1, 0.1, 0.55]} />
+            </mesh>
+          ))}
+          {[
+            [-0.75, -0.85, 0.62, 0],
+            [-0.5, -0.8, 0.72, 1],
+            [-0.22, -0.87, 0.58, 2],
+            [0.3, -0.82, 0.68, 3],
+            [0.62, -0.85, 0.62, 0],
+            [-0.7, 0.0, 0.72, 2],
+            [-0.42, -0.06, 0.6, 3],
+            [0.1, 0.02, 0.76, 1],
+            [0.48, -0.04, 0.64, 0],
+            [0.78, 0.0, 0.7, 2],
+            [-0.6, 0.85, 0.7, 1],
+            [-0.3, 0.8, 0.6, 0],
+            [0.25, 0.86, 0.72, 3],
+          ].map(([x, y, h, m], i) => (
+            <mesh key={i} position={[x, y + h / 2 - 0.15, 0]} material={spineMats[m]}>
+              <boxGeometry args={[0.16, h, 0.42]} />
+            </mesh>
+          ))}
+          <Text
+            font={monoWoff}
+            fontSize={0.13}
+            color="#0b0b0c"
+            anchorX="center"
+            anchorY="middle"
+            position={[0, 1.52, 0.3]}
+            letterSpacing={0.08}
+          >
+            {'projects →'}
+          </Text>
+        </group>
+      </Door>
+
+      {/* the window — the skill tree grows outside */}
+      <Door to="/skill-tree">
+        <group position={[0.1, 1.45, -3.66]}>
+          <mesh material={mats.dim}>
+            <boxGeometry args={[2.5, 1.9, 0.12]} />
+          </mesh>
+          <mesh position={[0, 0, 0.03]} material={mats.paper}>
+            <boxGeometry args={[2.26, 1.66, 0.05]} />
+          </mesh>
+          {/* the hill and the tree beyond the glass */}
+          <mesh position={[0.05, -0.55, 0.07]} material={mats.tone}>
+            <boxGeometry args={[2.2, 0.5, 0.02]} />
+          </mesh>
+          <mesh position={[0.35, -0.15, 0.08]} material={mats.dim}>
+            <cylinderGeometry args={[0.045, 0.075, 0.75, 8]} />
+          </mesh>
+          <CanopySprite
+            variant={0}
+            tint={mats.accent.color}
+            position={[0.35, 0.32, 0.1]}
+            scale={0.75}
+          />
+          <mesh position={[0.62, 0.05, 0.11]} scale={[1, 1.25, 1]} material={mats.hueA}>
+            <sphereGeometry args={[0.07, 10, 8]} />
+          </mesh>
+          {/* mullions */}
+          <mesh position={[0, 0, 0.09]} material={mats.dim}>
+            <boxGeometry args={[0.06, 1.66, 0.02]} />
+          </mesh>
+          <Text
+            font={monoWoff}
+            fontSize={0.12}
+            color="#0b0b0c"
+            anchorX="center"
+            anchorY="middle"
+            position={[0, -0.98, 0.1]}
+            letterSpacing={0.08}
+          >
+            {'skills, out back →'}
+          </Text>
+        </group>
+      </Door>
+
+      {/* the bulletin board on the side wall — the blog */}
+      <Door to="/notes">
+        <group position={[5.78, 1.45, -0.5]} rotation={[0, -Math.PI / 2, 0]}>
+          <mesh position={[0, 0, -0.04]} material={mats.dim}>
+            <boxGeometry args={[2.5, 1.85, 0.08]} />
+          </mesh>
+          <mesh material={mats.tone}>
+            <boxGeometry args={[2.3, 1.65, 0.08]} />
+          </mesh>
+          {[
+            [-0.6, 0.25, 0.05],
+            [0.55, 0.1, -0.06],
+          ].map(([x, y, r]) => (
+            <group key={x} position={[x, y, 0.07]} rotation={[0, 0, r]}>
+              <mesh material={mats.paper}>
+                <boxGeometry args={[0.85, 0.55, 0.03]} />
+              </mesh>
+              <mesh position={[0, 0.24, 0.03]} material={mats.accent}>
+                <sphereGeometry args={[0.035, 10, 8]} />
+              </mesh>
+            </group>
+          ))}
+          <Text
+            font={monoWoff}
+            fontSize={0.14}
+            color="#0b0b0c"
+            anchorX="center"
+            anchorY="middle"
+            position={[0, -0.62, 0.08]}
+            letterSpacing={0.08}
+          >
+            {'blog →'}
+          </Text>
+        </group>
+      </Door>
+
+      {/* his desk, standing height, fully equipped */}
+      <group position={[0.4, 0.05, 0]} rotation={[0, -0.12, 0]}>
+        <mesh position={[0, -0.22, 0]} material={mats.paper}>
           <boxGeometry args={[5.2, 0.22, 2.3]} />
         </mesh>
-        <mesh position={[-2.1, -1.0, 0]} material={mats.dim}>
-          <boxGeometry args={[0.14, 0.9, 2.0]} />
-        </mesh>
-        <mesh position={[2.1, -1.0, 0]} material={mats.dim}>
-          <boxGeometry args={[0.14, 0.9, 2.0]} />
-        </mesh>
+        {[-2.1, 2.1].map((x) => (
+          <mesh key={x} position={[x, -0.82, 0]} material={mats.dim}>
+            <boxGeometry args={[0.14, 1.0, 2.0]} />
+          </mesh>
+        ))}
 
-        {/* hi, i'm durva — the monitor, mid-build, code on screen */}
+        {/* hi, i'm durva — the monitor, mid-build */}
         <Hotspot id="origin-0" enabled={explore}>
-          <group position={[-0.7, 0.45, -0.5]} rotation={[0, 0.16, 0]}>
-            <InkShape shape={shapes.monitor} depth={0.3} material={mats.paper} scale={1.9} />
-            <group position={[0, 0.28, 0.18]} scale={1.35}>
+          <group position={[-0.7, 0.75, -0.5]} rotation={[0, 0.16, 0]}>
+            <InkShape shape={shapes.monitor} depth={0.3} material={mats.paper} scale={1.45} />
+            <group position={[0, 0.22, 0.18]} scale={1.05}>
               <ScreenLines mats={mats} />
             </group>
           </group>
         </Hotspot>
 
-        {/* what i'm into — the laptop beside it */}
-        <Hotspot id="origin-1" enabled={explore}>
-          <InkShape
-            shape={shapes.laptop}
-            depth={0.5}
-            material={mats.hueA}
-            position={[1.25, -0.18, 0.15]}
-            rotation={[0, -1.05, 0]}
-            scale={0.95}
-          />
-        </Hotspot>
+        {/* keyboard, mousepad, mouse */}
+        <mesh position={[-0.65, -0.07, 0.42]} rotation={[0, 0.04, 0]} material={mats.paper}>
+          <boxGeometry args={[1.5, 0.07, 0.48]} />
+        </mesh>
+        {[0.12, 0, -0.12].map((z) => (
+          <mesh key={z} position={[-0.65, -0.02, 0.42 + z]} material={mats.tone}>
+            <boxGeometry args={[1.36, 0.02, 0.07]} />
+          </mesh>
+        ))}
+        <mesh position={[0.72, -0.09, 0.42]} material={mats.tone}>
+          <boxGeometry args={[0.62, 0.03, 0.52]} />
+        </mesh>
+        <mesh position={[0.72, -0.03, 0.4]} material={mats.paper}>
+          <boxGeometry args={[0.17, 0.08, 0.28]} />
+        </mesh>
+        <mesh position={[0.72, 0.015, 0.33]} material={mats.accent}>
+          <boxGeometry args={[0.03, 0.02, 0.06]} />
+        </mesh>
 
-        {/* school — the pile of books */}
+        {/* what i'm into — the mug, still going */}
         <Hotspot id="origin-2" enabled={explore}>
-          <group position={[-2.0, -0.28, 0.55]}>
+          <group>
+            <mesh position={[1.35, 0.05, 0.42]} material={mats.accent}>
+              <cylinderGeometry args={[0.19, 0.16, 0.36, 20]} />
+            </mesh>
             <InkShape
-              shape={shapes.book}
-              depth={0.16}
-              material={mats.hueB}
-              rotation={[Math.PI / 2, 0, 0.15]}
-              scale={0.85}
-            />
-            <InkShape
-              shape={shapes.book}
-              depth={0.16}
-              material={mats.paper}
-              position={[0.05, 0.17, 0]}
-              rotation={[Math.PI / 2, 0, -0.1]}
-              scale={0.85}
+              shape={shapes.steam}
+              depth={0.04}
+              material={mats.tone}
+              position={[1.35, 0.55, 0.42]}
+              scale={0.5}
             />
           </group>
         </Hotspot>
 
-        {/* outside class — the guitar leaning on the desk's end */}
-        <Hotspot id="origin-3" enabled={explore}>
-          <group position={[3.5, -0.35, 0.7]} rotation={[0.02, 0.3, 0.2]} scale={0.95}>
-            <Guitar mats={mats} body="accent" />
+        {/* school — the laptop, with his name on the lid */}
+        <Hotspot id="origin-1" enabled={explore}>
+          <group position={[1.95, 0.12, -0.45]}>
+            <InkShape
+              shape={shapes.laptop}
+              depth={0.5}
+              material={mats.hueA}
+              rotation={[0, -1.05, 0]}
+              scale={0.85}
+            />
+            <Text
+              font={monoWoff}
+              fontSize={0.085}
+              color="#0b0b0c"
+              anchorX="center"
+              anchorY="middle"
+              position={[0.14, 0.22, 0.13]}
+              rotation={[-0.32, 0.52, 0.12]}
+              letterSpacing={0.06}
+            >
+              durva sharma
+            </Text>
           </group>
         </Hotspot>
 
-        {/* the mug, set dressing — its steam rises on a slow drift */}
-        <InkShape
-          shape={shapes.mug}
-          depth={0.55}
-          material={mats.accent}
-          position={[0.35, -0.22, 0.55]}
-          scale={0.42}
-        />
-        <Drift amount={0.05} speed={0.7}>
-          <InkShape
-            shape={shapes.steam}
-            depth={0.04}
-            material={mats.tone}
-            position={[0.35, 0.35, 0.55]}
-            scale={0.5}
-          />
-        </Drift>
+        {/* the tower, humming under the desk */}
+        <group position={[-1.55, -0.78, 0.1]}>
+          <mesh material={mats.dim}>
+            <boxGeometry args={[0.52, 1.05, 0.85]} />
+          </mesh>
+          <mesh position={[0, 0, 0.44]} material={mats.paper}>
+            <boxGeometry args={[0.44, 0.95, 0.03]} />
+          </mesh>
+          {[0.28, 0.16].map((y) => (
+            <mesh key={y} position={[0, y, 0.46]} material={mats.tone}>
+              <boxGeometry args={[0.3, 0.04, 0.01]} />
+            </mesh>
+          ))}
+          <mesh position={[0.12, 0.4, 0.46]} material={mats.accent}>
+            <cylinderGeometry args={[0.025, 0.025, 0.02, 10]} />
+          </mesh>
+        </group>
       </group>
 
-      <Figure pose="sit" position={[-3.1, -0.32, 1.1]} height={1.5} rotation={[0, 0.5, 0]} />
+      {/* outside class — the guitar against the desk's end */}
+      <Hotspot id="origin-3" enabled={explore}>
+        <group position={[3.6, -0.1, 0.85]} rotation={[0.02, 0.3, 0.18]} scale={0.95}>
+          <Guitar mats={mats} body="accent" />
+        </group>
+      </Hotspot>
+
+      {/* him, at the desk, larger than life used to be */}
+      <Figure pose="sit" position={[-1.6, -0.15, 1.5]} height={1.85} rotation={[0, 0.4, 0]} />
     </>
   )
 }
@@ -500,6 +704,32 @@ function WorkshopScene({ mats, explore }: { mats: Mats; explore: boolean }) {
           </group>
         </Drift>
       </group>
+
+      {/* the door home */}
+      <Door to="/origin">
+        <group position={[-4.7, 0.35, 0.9]} rotation={[0, 0.55, 0]}>
+          <mesh material={mats.dim}>
+            <boxGeometry args={[1.4, 2.9, 0.14]} />
+          </mesh>
+          <mesh position={[0, -0.02, 0.05]} material={mats.paper}>
+            <boxGeometry args={[1.16, 2.65, 0.08]} />
+          </mesh>
+          <mesh position={[0.42, -0.1, 0.11]} material={mats.accent}>
+            <sphereGeometry args={[0.06, 10, 8]} />
+          </mesh>
+          <Text
+            font={monoWoff}
+            fontSize={0.13}
+            color="#0b0b0c"
+            anchorX="center"
+            anchorY="middle"
+            position={[0, 1.15, 0.07]}
+            letterSpacing={0.06}
+          >
+            {'home →'}
+          </Text>
+        </group>
+      </Door>
 
       {/* him, in guard, mid-session */}
       <Figure pose="guard" position={[-2.6, -0.28, 1.3]} height={1.7} rotation={[0, 0.55, 0]} />
@@ -863,9 +1093,80 @@ function CanopySprite({
     })
   }, [texture, tint, gradient])
   return (
-    <mesh position={position} rotation={[0, 0, rotation]} scale={[flip ? -scale : scale, scale, 1]} material={material}>
+    <mesh
+      position={position}
+      rotation={[0, 0, rotation]}
+      scale={[flip ? -scale : scale, scale, 1]}
+      material={material}
+      userData={{ inkCutout: true }}
+    >
       <planeGeometry args={[2, 2]} />
     </mesh>
+  )
+}
+
+
+/**
+ * A dragon fruit: plump ovoid body with flame scales curling off it and a
+ * tuft on top. Dragon fruit famously grows on a cactus, not a tree — but this
+ * tree is fictional and fruits whatever it likes.
+ *
+ * Bodies are DUSTY pastels on purpose: their saturation sits under the
+ * two-ink flatten's threshold, so each fruit keeps its own colour instead of
+ * being remapped to the chapter plate — five fruits, five real colours, and
+ * the print system reads them as tinted paper.
+ */
+function DragonFruit({
+  body,
+  flame,
+  r = 0.26,
+}: {
+  body: string
+  flame: string
+  r?: number
+}) {
+  const bodyMat = useMemo(
+    () => new THREE.MeshToonMaterial({ color: body, gradientMap: makeToonGradient(3), toneMapped: false }),
+    [body],
+  )
+  const flameMat = useMemo(
+    () => new THREE.MeshToonMaterial({ color: flame, gradientMap: makeToonGradient(3), toneMapped: false }),
+    [flame],
+  )
+  const scales: Array<[number, number, number]> = [
+    [0.6, 0.4, 0.2],
+    [2.2, 0.15, -0.3],
+    [3.6, 0.5, 0.4],
+    [5.0, 0.2, -0.2],
+    [1.4, -0.35, 0.5],
+    [4.3, -0.3, -0.45],
+  ]
+  return (
+    <group>
+      <mesh material={bodyMat} scale={[1, 1.28, 1]} userData={{ inkSticker: true }}>
+        <sphereGeometry args={[r, 18, 14]} />
+      </mesh>
+      {scales.map(([a, v, tilt]) => (
+        <mesh
+          key={a}
+          material={flameMat}
+          position={[Math.cos(a) * r * 0.92, v * r * 1.28, Math.sin(a) * r * 0.92]}
+          rotation={[Math.sin(a) * 0.9 + tilt, 0, -Math.cos(a) * 0.9 + tilt]}
+          userData={{ inkSticker: true }}
+        >
+          <coneGeometry args={[r * 0.24, r * 0.85, 7]} />
+        </mesh>
+      ))}
+      {/* the tuft */}
+      <mesh
+        material={flameMat}
+        position={[0.04, r * 1.32, 0]}
+        rotation={[0.2, 0, -0.25]}
+        userData={{ inkSticker: true }}
+      >
+        <coneGeometry args={[r * 0.22, r * 0.7, 7]} />
+      </mesh>
+    </group>
   )
 }
 
@@ -891,14 +1192,31 @@ function TreeScene({ mats, explore, frozen }: { mats: Mats; explore: boolean; fr
     [0.0, 3.6, 0.4, 0.7, 0.8, 'hueB'],
     [-1.0, 3.1, -0.4, 0.6, -0.7, 'accent'],
     [1.9, 4.35, 0.0, 0.6, 0.6, 'accent'],
+    [-3.2, 2.5, 0.1, 0.8, 0.2, 'accent'],
+    [-2.0, 2.6, -0.2, 0.95, -0.3, 'hueB'],
+    [-0.6, 2.9, 0.3, 1.05, 0.4, 'hueA'],
+    [0.8, 3.0, -0.3, 1.0, -0.2, 'accent'],
+    [2.0, 2.7, 0.2, 0.9, 0.5, 'tone'],
+    [3.1, 2.35, -0.1, 0.75, -0.4, 'accent'],
+    [0.1, 2.55, 0.5, 0.85, 0.7, 'hueB'],
+    [-1.4, 2.35, 0.45, 0.7, -0.6, 'accent'],
+    [1.5, 2.3, 0.5, 0.75, 0.3, 'hueA'],
   ]
 
-  const fruit: Array<{ id: string; x: number; y: number; z: number; r: number }> = [
-    { id: 'skill-languages', x: -2.3, y: 2.15, z: 0.35, r: 0.26 },
-    { id: 'skill-aiml', x: -0.9, y: 2.6, z: 0.45, r: 0.3 },
-    { id: 'skill-frameworks', x: 0.9, y: 2.75, z: 0.4, r: 0.28 },
-    { id: 'skill-infra', x: 2.3, y: 2.3, z: 0.3, r: 0.26 },
-    { id: 'skill-stamps', x: 0.05, y: 1.7, z: 0.55, r: 0.38 },
+  const fruit: Array<{
+    id: string
+    x: number
+    y: number
+    z: number
+    r: number
+    body: string
+    flame: string
+  }> = [
+    { id: 'skill-languages', x: -2.7, y: 2.05, z: 0.7, r: 0.19, body: '#e84c7d', flame: '#a8d8a0' },
+    { id: 'skill-aiml', x: -1.35, y: 1.85, z: 0.8, r: 0.22, body: '#f0863a', flame: '#a8d8a0' },
+    { id: 'skill-frameworks', x: 1.3, y: 1.95, z: 0.8, r: 0.2, body: '#9d5cd6', flame: '#b8e0b0' },
+    { id: 'skill-infra', x: 2.6, y: 2.15, z: 0.65, r: 0.19, body: '#4a90d9', flame: '#a8d8a0' },
+    { id: 'skill-stamps', x: 0.0, y: 1.62, z: 0.9, r: 0.28, body: '#e8b13a', flame: '#b8e0b0' },
   ]
 
   return (
@@ -923,26 +1241,16 @@ function TreeScene({ mats, explore, frozen }: { mats: Mats; explore: boolean; fr
         </Drift>
       ))}
 
-      {/* the fruit: pick one */}
+      {/* the fruit: pick one. dragon fruit, because this tree can. */}
       {fruit.map((f, i) => (
         <Hotspot key={f.id} id={f.id} enabled={explore}>
           <Drift amount={0.04} speed={0.45} phase={i * 1.7}>
             <group position={[f.x, f.y, f.z]}>
-              {/* stem up into the crown */}
-              <mesh position={[0, f.r + 0.3, 0]} material={mats.dim}>
-                <cylinderGeometry args={[0.018, 0.018, 0.6, 6]} />
+              {/* stem reaching up into the crown */}
+              <mesh position={[0, f.r * 1.3 + 0.45, -0.1]} rotation={[0.12, 0, 0]} material={mats.dim}>
+                <cylinderGeometry args={[0.018, 0.018, 0.9, 6]} />
               </mesh>
-              <mesh material={mats.paper}>
-                <sphereGeometry args={[f.r, 18, 14]} />
-              </mesh>
-              {/* one small painted leaf at the stem */}
-              <CanopySprite
-                variant={i}
-                tint={mats.accent.color}
-                position={[0.14, f.r + 0.14, 0.05]}
-                scale={0.22}
-                rotation={-0.4}
-              />
+              <DragonFruit body={f.body} flame={f.flame} r={f.r} />
             </group>
           </Drift>
         </Hotspot>
@@ -960,36 +1268,157 @@ function TreeScene({ mats, explore, frozen }: { mats: Mats; explore: boolean; fr
         </mesh>
       ))}
 
-      <Figure pose="point" position={[-3.3, -0.3, 1.2]} height={1.7} rotation={[0, 0.45, 0]} />
+      {/* his desk, waiting back inside */}
+      <Door to="/origin">
+        <group position={[3.9, -0.55, 1.6]} rotation={[0, -0.5, 0]} scale={0.8}>
+          <mesh position={[0, 0.05, 0]} material={mats.paper}>
+            <boxGeometry args={[1.7, 0.12, 0.9]} />
+          </mesh>
+          {[-0.7, 0.7].map((x) => (
+            <mesh key={x} position={[x, -0.35, 0]} material={mats.dim}>
+              <boxGeometry args={[0.1, 0.7, 0.8]} />
+            </mesh>
+          ))}
+          <mesh position={[-0.1, 0.55, -0.15]} material={mats.paper}>
+            <boxGeometry args={[0.85, 0.6, 0.06]} />
+          </mesh>
+          <Text
+            font={monoWoff}
+            fontSize={0.12}
+            color="#0b0b0c"
+            anchorX="center"
+            anchorY="middle"
+            position={[0, -0.62, 0.5]}
+            letterSpacing={0.06}
+          >
+            {'back to the desk →'}
+          </Text>
+        </group>
+      </Door>
+
+      <Figure pose="point" position={[-3.4, -0.22, 1.2]} height={1.85} rotation={[0, 0.45, 0]} />
     </>
   )
 }
 
 /* ---------------------------------------------------------------- closing */
 
+/**
+ * The last page: his house at the end of the volume. The letter post out
+ * front is how you reach him (it opens the say-hi reveal with every link),
+ * and the skateboard dumped by the post is everything off-panel. The giant
+ * envelope and the second guitar retired — a home says "to be continued"
+ * better than props do.
+ */
 function ClosingScene({ mats, explore }: { mats: Mats; explore: boolean }) {
   return (
     <>
-      <Backdrop name="bg-mist-01" tint={mats.accent.color} />
+      <Backdrop name="bg-wash-02" tint={mats.accent.color} />
       <Ground mats={mats} />
 
-      {/* the letter, flap open, half out of its envelope, facing the reader */}
-      <Hotspot id="contact-envelope" enabled={explore}>
-        <Drift amount={0.06} speed={0.5}>
-          <group position={[0.9, 0.55, 0]} rotation={[0.08, -0.14, -0.02]} scale={1.55}>
-            <Envelope mats={mats} />
-          </group>
-        </Drift>
-      </Hotspot>
+      {/* the house */}
+      <group position={[1.7, 0, -1.6]} rotation={[0, -0.18, 0]}>
+        <mesh position={[0, 0.15, 0]} material={mats.paper}>
+          <boxGeometry args={[3.4, 2.6, 2.4]} />
+        </mesh>
+        {/* gable roof */}
+        <mesh position={[-0.95, 1.9, 0]} rotation={[0, 0, 0.62]} material={mats.accent}>
+          <boxGeometry args={[2.35, 0.16, 2.9]} />
+        </mesh>
+        <mesh position={[0.95, 1.9, 0]} rotation={[0, 0, -0.62]} material={mats.accent}>
+          <boxGeometry args={[2.35, 0.16, 2.9]} />
+        </mesh>
+        {/* chimney */}
+        <mesh position={[1.05, 2.35, -0.5]} material={mats.dim}>
+          <boxGeometry args={[0.34, 0.9, 0.34]} />
+        </mesh>
+        {/* door and window on the front */}
+        <mesh position={[-0.75, -0.45, 1.22]} material={mats.accent}>
+          <boxGeometry args={[0.85, 1.7, 0.08]} />
+        </mesh>
+        <mesh position={[-0.48, -0.5, 1.28]} material={mats.paper}>
+          <sphereGeometry args={[0.05, 10, 8]} />
+        </mesh>
+        <mesh position={[0.75, 0.35, 1.22]} material={mats.dim}>
+          <boxGeometry args={[1.0, 0.85, 0.08]} />
+        </mesh>
+        <mesh position={[0.75, 0.35, 1.26]} material={mats.paper}>
+          <boxGeometry args={[0.86, 0.72, 0.03]} />
+        </mesh>
+        <mesh position={[0.75, 0.35, 1.29]} material={mats.dim}>
+          <boxGeometry args={[0.05, 0.72, 0.02]} />
+        </mesh>
+        <mesh position={[0.75, 0.35, 1.29]} material={mats.dim}>
+          <boxGeometry args={[0.86, 0.05, 0.02]} />
+        </mesh>
+      </group>
 
-      {/* off-panel: the whole guitar, leaning into frame */}
-      <Hotspot id="contact-offpanel" enabled={explore}>
-        <group position={[-2.7, -0.15, 0.6]} rotation={[0.02, 0.18, 0.16]}>
-          <Guitar mats={mats} body="hueA" />
+      {/* the letter post — say hi lives in the box */}
+      <Hotspot id="contact-envelope" enabled={explore}>
+        <group position={[-1.7, 0, 0.9]} rotation={[0, 0.2, 0]}>
+          <mesh position={[0, -0.45, 0]} material={mats.dim}>
+            <boxGeometry args={[0.1, 1.4, 0.1]} />
+          </mesh>
+          <mesh position={[0, 0.35, 0]} material={mats.accent}>
+            <boxGeometry args={[0.55, 0.42, 0.8]} />
+          </mesh>
+          {/* rounded top */}
+          <mesh position={[0, 0.56, 0]} rotation={[Math.PI / 2, 0, 0]} material={mats.accent}>
+            <cylinderGeometry args={[0.27, 0.27, 0.8, 14, 1, false, 0, Math.PI]} />
+          </mesh>
+          {/* the flag, up: there is always something to say */}
+          <mesh position={[0.33, 0.52, 0.15]} rotation={[0, 0, 0.35]} material={mats.paper}>
+            <boxGeometry args={[0.06, 0.4, 0.05]} />
+          </mesh>
+          <mesh position={[0.38, 0.72, 0.15]} material={mats.paper}>
+            <boxGeometry args={[0.18, 0.14, 0.04]} />
+          </mesh>
+          {/* slot */}
+          <mesh position={[0, 0.35, 0.41]} material={mats.dim}>
+            <boxGeometry args={[0.34, 0.05, 0.02]} />
+          </mesh>
+          <Text
+            font={monoWoff}
+            fontSize={0.11}
+            color="#0b0b0c"
+            anchorX="center"
+            anchorY="middle"
+            position={[0, -0.05, 0.12]}
+            letterSpacing={0.06}
+          >
+            {'say hi →'}
+          </Text>
         </group>
       </Hotspot>
 
-      <Figure pose="guitar" position={[-4.0, -0.35, 1.3]} height={1.4} rotation={[0, 0.5, 0]} />
+      {/* the skateboard, dumped by the post — everything off-panel */}
+      <Hotspot id="contact-offpanel" enabled={explore}>
+        <group position={[-2.9, -1.02, 1.6]} rotation={[0.06, 0.9, 0.03]}>
+          <mesh material={mats.hueA}>
+            <boxGeometry args={[1.05, 0.05, 0.3]} />
+          </mesh>
+          {/* kicked tail and nose */}
+          <mesh position={[0.55, 0.05, 0]} rotation={[0, 0, -0.5]} material={mats.hueA}>
+            <boxGeometry args={[0.22, 0.05, 0.3]} />
+          </mesh>
+          <mesh position={[-0.55, 0.05, 0]} rotation={[0, 0, 0.5]} material={mats.hueA}>
+            <boxGeometry args={[0.22, 0.05, 0.3]} />
+          </mesh>
+          {[
+            [-0.32, 0.1],
+            [0.32, 0.1],
+            [-0.32, -0.1],
+            [0.32, -0.1],
+          ].map(([x, z]) => (
+            <mesh key={`${x},${z}`} position={[x, -0.08, z]} rotation={[Math.PI / 2, 0, 0]} material={mats.paper}>
+              <cylinderGeometry args={[0.06, 0.06, 0.06, 10]} />
+            </mesh>
+          ))}
+        </group>
+      </Hotspot>
+
+      {/* him, home */}
+      <Figure pose="idle" position={[-3.9, -0.2, 0.6]} height={1.85} rotation={[0, 0.4, 0]} />
     </>
   )
 }
@@ -1215,6 +1644,94 @@ function SessionScene({ mats, explore }: { mats: Mats; explore: boolean }) {
           <MicStand mats={mats} />
         </group>
       </Hotspot>
+
+      {/* doors deeper into the creative side */}
+      <Door to="/studio">
+        <group position={[2.9, 0.42, -3.66]}>
+          <mesh material={mats.dim}>
+            <boxGeometry args={[1.5, 3.05, 0.14]} />
+          </mesh>
+          <mesh position={[0, -0.02, 0.05]} material={mats.hueA}>
+            <boxGeometry args={[1.26, 2.8, 0.08]} />
+          </mesh>
+          <mesh position={[0.44, -0.1, 0.11]} material={mats.paper}>
+            <sphereGeometry args={[0.06, 10, 8]} />
+          </mesh>
+          <Text
+            font={monoWoff}
+            fontSize={0.13}
+            color="#0b0b0c"
+            anchorX="center"
+            anchorY="middle"
+            position={[0, 1.72, 0.09]}
+            letterSpacing={0.06}
+          >
+            {'studio →'}
+          </Text>
+        </group>
+      </Door>
+      <Door to="/direction">
+        <group position={[-4.86, 0.42, 0.9]} rotation={[0, Math.PI / 2, 0]}>
+          <mesh material={mats.dim}>
+            <boxGeometry args={[1.5, 3.05, 0.14]} />
+          </mesh>
+          <mesh position={[0, -0.02, 0.05]} material={mats.hueB}>
+            <boxGeometry args={[1.26, 2.8, 0.08]} />
+          </mesh>
+          <mesh position={[0.44, -0.1, 0.11]} material={mats.paper}>
+            <sphereGeometry args={[0.06, 10, 8]} />
+          </mesh>
+          <Text
+            font={monoWoff}
+            fontSize={0.13}
+            color="#0b0b0c"
+            anchorX="center"
+            anchorY="middle"
+            position={[0, 1.72, 0.09]}
+            letterSpacing={0.06}
+          >
+            {'direction →'}
+          </Text>
+        </group>
+      </Door>
+
+      {/* sofas, because sessions have listeners */}
+      {[
+        [2.4, 1.1, -0.5],
+        [-2.9, 0.4, 0.45],
+      ].map(([x, z, ry], i) => (
+        <group key={`${x},${z}`} position={[x, -0.68, z]} rotation={[0, ry, 0]}>
+          <mesh position={[0, 0.1, 0]} material={i === 0 ? mats.accent : mats.hueA}>
+            <boxGeometry args={[1.95, 0.5, 0.9]} />
+          </mesh>
+          <mesh position={[0, 0.55, -0.32]} material={i === 0 ? mats.accent : mats.hueA}>
+            <boxGeometry args={[1.95, 0.65, 0.26]} />
+          </mesh>
+          {[-0.85, 0.85].map((ax) => (
+            <mesh key={ax} position={[ax, 0.32, 0]} material={mats.dim}>
+              <boxGeometry args={[0.25, 0.62, 0.9]} />
+            </mesh>
+          ))}
+          {[-0.42, 0.42].map((cx) => (
+            <mesh key={cx} position={[cx, 0.42, 0.05]} material={mats.paper}>
+              <boxGeometry args={[0.75, 0.16, 0.7]} />
+            </mesh>
+          ))}
+        </group>
+      ))}
+
+      {/* the standing invitation, painted on the wall */}
+      <Text
+        font={delaWoff}
+        fontSize={0.44}
+        color="#0b0b0c"
+        anchorX="center"
+        anchorY="middle"
+        position={[-1.1, 2.75, -3.68]}
+        letterSpacing={0.01}
+      >
+        always open to chat
+      </Text>
 
       {/* him, mid-session */}
       <Figure pose="guitar" position={[-0.35, -0.32, 1.15]} height={1.5} rotation={[0, -0.2, 0]} />

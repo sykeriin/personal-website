@@ -74,7 +74,7 @@ function build(): Record<string, Reveal> {
     eyebrow: 'Volume 02 · cover b',
     title: 'the creative side',
     body: ['flip the volume over: modelling, directing shoots and videos, designing the thing.'],
-    link: { to: '/studio', label: 'flip to cover b' },
+    link: { to: '/session', label: 'flip to cover b' },
   }
 
   origin.panels.forEach((panel, i) => {

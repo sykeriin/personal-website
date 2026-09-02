@@ -48,7 +48,7 @@ export function Cover() {
         </Link>
         <Link
           className="fork__side"
-          to="/studio"
+          to="/session"
           style={{ '--fork': sideAccent.creative } as React.CSSProperties}
         >
           <span className="fork__label">cover b</span>

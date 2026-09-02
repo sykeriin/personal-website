@@ -101,6 +101,9 @@ void main() {
   vec3 Nc = gc.rgb;
   float dc = gc.a;
 
+  // A zero normal is the sticker flag: this pixel keeps its true colour.
+  float sticker = 1.0 - smoothstep(0.02, 0.12, length(Nc));
+
   // Near objects get fatter lines. Vary the tap offset, keep the tap count.
   float widthPx = uBaseWidth * (1.0 + uNearBoost * (1.0 - clamp(dc, 0.0, 1.0)));
   vec2 off = texel * widthPx * rscale;
@@ -122,10 +125,11 @@ void main() {
   float slope = mix(1.0, max(0.3, abs(Nc.z)), uSlopeComp);
   depthEdge *= slope;
 
-  // Normal edge catches creases the depth term is blind to.
+  // Normal edge catches creases the depth term is blind to. Gated off inside
+  // stickers, whose zero normals would otherwise read as one giant crease.
   float normalEdge = (1.0 - dot(Nc, g1.rgb)) + (1.0 - dot(Nc, g2.rgb))
                    + (1.0 - dot(Nc, g3.rgb)) + (1.0 - dot(Nc, g4.rgb));
-  normalEdge *= 0.25;
+  normalEdge *= 0.25 * (1.0 - sticker);
 
   float contour = depthEdge * uDepthGain;
   float crease  = normalEdge * uNormalGain;
@@ -211,6 +215,9 @@ void main() {
   float useB = step(0.2, beauty.b / max(beauty.r, 0.001)) * step(beauty.g, beauty.r);
   vec3 plate = mix(uAccent, uAccentB, useB) * mix(0.52, 1.18, q);
   col = mix(col, plate, accentMask);
+  // Stickers punch through the print with their true colour; the edge ink
+  // still draws over them, so they stay drawn rather than pasted.
+  col = mix(col, beauty, sticker);
   col = mix(col, inkCol, edge);
 
   // THE BLOOM. The page renders as a two-ink print, but where the visitor

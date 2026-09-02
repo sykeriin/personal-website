@@ -39,7 +39,7 @@ function DrawnFigure({ url, height, flip }: { url: string; height: number; flip:
   }, [texture])
 
   return (
-    <mesh scale={[flip ? -1 : 1, 1, 1]} castShadow>
+    <mesh scale={[flip ? -1 : 1, 1, 1]} castShadow userData={{ inkCutout: true }}>
       <planeGeometry args={[height * ASPECT, height]} />
       <meshToonMaterial map={texture} alphaTest={0.5} side={THREE.DoubleSide} />
     </mesh>

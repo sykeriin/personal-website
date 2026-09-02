@@ -18,7 +18,7 @@ export function EdgeTabs() {
   const tabs = tabsFor(reading)
   const flip =
     reading === 'tech'
-      ? { to: '/studio', label: '↻ the creative side' }
+      ? { to: '/session', label: '↻ the creative side' }
       : { to: '/origin', label: '↻ the tech side' }
 
   return (
