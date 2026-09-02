@@ -277,6 +277,9 @@ function DeskScene({ mats, explore }: { mats: Mats; explore: boolean }) {
       <mesh position={[5.9, 1.8, -0.2]} rotation={[0, -Math.PI / 2, 0]} material={mats.dim}>
         <boxGeometry args={[7.4, 7.5, 0.2]} />
       </mesh>
+      {/* the side wall faces away from the key light; without this it falls
+          into the solid-black band and swallows the bulletin board */}
+      <directionalLight position={[-4, 2.2, 2.5]} intensity={0.5} />
 
       {/* the gym door — training is through here */}
       <Door to="/training">
@@ -382,13 +385,17 @@ function DeskScene({ mats, explore }: { mats: Mats; explore: boolean }) {
           <mesh position={[0, 0, 0.09]} material={mats.dim}>
             <boxGeometry args={[0.06, 1.66, 0.02]} />
           </mesh>
+          {/* the sign rides above the frame — the monitor hides the sill */}
+          <mesh position={[0, 1.15, 0.02]} material={mats.paper}>
+            <boxGeometry args={[1.9, 0.32, 0.06]} />
+          </mesh>
           <Text
             font={monoWoff}
-            fontSize={0.12}
+            fontSize={0.13}
             color="#0b0b0c"
             anchorX="center"
             anchorY="middle"
-            position={[0, -0.98, 0.1]}
+            position={[0, 1.15, 0.06]}
             letterSpacing={0.08}
           >
             {'skills, out back →'}
@@ -1610,8 +1617,10 @@ function SessionScene({ mats, explore }: { mats: Mats; explore: boolean }) {
           <group position={[-1.9, -0.62, -0.4]} rotation={[0, 0.35, 0]}>
             <Amp mats={mats} />
           </group>
-          {/* guitar resting on its stand, human-sized */}
-          <group position={[1.5, -0.55, 0.15]} rotation={[0.06, -0.3, 0.12]} scale={0.75}>
+          {/* guitar resting on its stand, against the wall clear of the sofa —
+              the plate flattens every saturated colour, so only space keeps it
+              from merging into the cushions */}
+          <group position={[0.85, -0.55, -0.95]} rotation={[0.06, -0.15, 0.1]} scale={0.66}>
             <Guitar mats={mats} body="accent" />
             {[-1, 1].map((side) => (
               <mesh
@@ -1628,7 +1637,7 @@ function SessionScene({ mats, explore }: { mats: Mats; explore: boolean }) {
           {[0, 1, 2, 3, 4].map((i) => (
             <mesh
               key={i}
-              position={[-1.4 + i * 0.5, -1.06, 0.35 + Math.sin(i * 1.8) * 0.3]}
+              position={[-1.5 + i * 0.55, -1.06, -0.5 + Math.sin(i * 1.8) * 0.25]}
               rotation={[-Math.PI / 2, 0, i * 0.9]}
               material={mats.dim}
             >
@@ -1638,9 +1647,10 @@ function SessionScene({ mats, explore }: { mats: Mats; explore: boolean }) {
         </group>
       </Hotspot>
 
-      {/* the open mic — the "make something with me" invitation */}
+      {/* the open mic — the "make something with me" invitation. It stands on
+          the rug facing him, not inside the sofa. */}
       <Hotspot id="session-collab" enabled={explore}>
-        <group position={[2.6, 0, 1.2]} rotation={[0, -0.4, 0]}>
+        <group position={[1.05, 0, 2.0]} rotation={[0, -0.55, 0]}>
           <MicStand mats={mats} />
         </group>
       </Hotspot>
@@ -1657,6 +1667,9 @@ function SessionScene({ mats, explore }: { mats: Mats; explore: boolean }) {
           <mesh position={[0.44, -0.1, 0.11]} material={mats.paper}>
             <sphereGeometry args={[0.06, 10, 8]} />
           </mesh>
+          <mesh position={[0, 1.72, 0.05]} material={mats.paper}>
+            <boxGeometry args={[1.05, 0.3, 0.06]} />
+          </mesh>
           <Text
             font={monoWoff}
             fontSize={0.13}
@@ -1670,8 +1683,9 @@ function SessionScene({ mats, explore }: { mats: Mats; explore: boolean }) {
           </Text>
         </group>
       </Door>
+      {/* on the back wall too — the left wall never makes it into frame */}
       <Door to="/direction">
-        <group position={[-4.86, 0.42, 0.9]} rotation={[0, Math.PI / 2, 0]}>
+        <group position={[-3.6, 0.42, -3.66]}>
           <mesh material={mats.dim}>
             <boxGeometry args={[1.5, 3.05, 0.14]} />
           </mesh>
@@ -1680,6 +1694,9 @@ function SessionScene({ mats, explore }: { mats: Mats; explore: boolean }) {
           </mesh>
           <mesh position={[0.44, -0.1, 0.11]} material={mats.paper}>
             <sphereGeometry args={[0.06, 10, 8]} />
+          </mesh>
+          <mesh position={[0, 1.72, 0.05]} material={mats.paper}>
+            <boxGeometry args={[1.3, 0.3, 0.06]} />
           </mesh>
           <Text
             font={monoWoff}
@@ -1720,14 +1737,14 @@ function SessionScene({ mats, explore }: { mats: Mats; explore: boolean }) {
         </group>
       ))}
 
-      {/* the standing invitation, painted on the wall */}
+      {/* the standing invitation, painted on the wall above the posters */}
       <Text
         font={delaWoff}
         fontSize={0.44}
         color="#0b0b0c"
         anchorX="center"
         anchorY="middle"
-        position={[-1.1, 2.75, -3.68]}
+        position={[-1.1, 3.2, -3.68]}
         letterSpacing={0.01}
       >
         always open to chat
