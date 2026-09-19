@@ -54,6 +54,36 @@ function bookFocusPose(active: string | null): { position: [number, number, numb
   }
 }
 
+/** The design's reference frame: every camera pose in manifest.ts was composed
+    against a landscape aspect around 16:9 at fov 32. A fixed vertical fov on a
+    portrait phone or tablet shrinks the HORIZONTAL fov instead (they're related
+    by aspect), which is why the rooms read as an extreme, cropped close-up on
+    those screens instead of the same composition just taller. Solving for the
+    vertical fov that reproduces the reference horizontal fov at the current
+    aspect keeps the framing the poses were designed for; only genuinely wider
+    screens fall back to the base fov, since a wide screen is meant to reveal
+    more of the room rather than to be recomposed around. */
+const BASE_FOV = 32
+const BASE_ASPECT = 16 / 9
+const BASE_HALF_H_FOV = Math.atan(BASE_ASPECT * Math.tan((BASE_FOV * Math.PI) / 360))
+
+function ResponsiveCamera() {
+  const camera = useThree((s) => s.camera) as THREE.PerspectiveCamera
+  const size = useThree((s) => s.size)
+
+  useEffect(() => {
+    const aspect = size.width / size.height
+    const fov =
+      aspect >= BASE_ASPECT ? BASE_FOV : (360 * Math.atan(Math.tan(BASE_HALF_H_FOV) / aspect)) / Math.PI
+    if (Math.abs(camera.fov - fov) > 0.01) {
+      camera.fov = fov
+      camera.updateProjectionMatrix()
+    }
+  }, [camera, size.width, size.height])
+
+  return null
+}
+
 function CameraRig({ pathname, instant }: { pathname: string; instant: boolean }) {
   const camera = useThree((s) => s.camera)
   const target = useMemo(() => new THREE.Vector3(), [])
@@ -235,6 +265,7 @@ function Stage({
       <directionalLight position={[4.5, 5, 3.2]} intensity={1.7} />
       <directionalLight position={[-5, 1.5, -2]} intensity={0.1} />
 
+      <ResponsiveCamera />
       <CameraRig pathname={pathname} instant={reduceMotion} />
       {import.meta.env.DEV ? <DevBridge /> : null}
 
