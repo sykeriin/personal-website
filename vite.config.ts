@@ -101,7 +101,6 @@ export default defineConfig({
           // invalidated every time a line of content changes.
           if (id.includes('node_modules/three/')) return 'three'
           if (id.includes('@react-three')) return 'r3f'
-          if (id.includes('node_modules/howler')) return 'audio'
           return undefined
         },
       },

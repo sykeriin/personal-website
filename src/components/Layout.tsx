@@ -11,6 +11,7 @@ import { PageTurns } from './PageTurns'
 import { RevealPanel } from './RevealPanel'
 import { BookReader } from './BookReader'
 import { EntryGate, hasEntered } from './EntryGate'
+import { LoadIndicator } from './LoadIndicator'
 
 /** three.js lives behind a dynamic import, so the paper tier never downloads it. */
 const WorldCanvas = lazy(() => import('../world/WorldCanvas'))
@@ -109,6 +110,7 @@ export function Layout() {
           />
         </Suspense>
       ) : null}
+      {world ? <LoadIndicator /> : null}
 
       <div className="ink-dom">
         <EdgeTabs />

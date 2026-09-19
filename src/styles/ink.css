@@ -1362,3 +1362,41 @@ button {
 .entry--still .entry__skip {
   animation: none;
 }
+
+/* The load indicator: a small always-visible tell while textures are still
+   fetching, so a slow connection reads as "still drawing" not "broken." */
+.load-indicator {
+  position: fixed;
+  left: 1rem;
+  bottom: 1rem;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0.5rem 0.75rem;
+  background: color-mix(in srgb, var(--paper) 88%, transparent);
+  border: 1px solid var(--ink);
+  border-radius: 2px;
+  pointer-events: none;
+}
+
+.load-indicator__label {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.04em;
+  text-transform: lowercase;
+  color: var(--ink-soft);
+}
+
+.load-indicator__track {
+  width: 8rem;
+  height: 4px;
+  background: var(--paper-dim);
+  border: 1px solid var(--ink);
+}
+
+.load-indicator__bar {
+  height: 100%;
+  background: var(--accent);
+  transition: width 0.15s linear;
+}
