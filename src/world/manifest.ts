@@ -10,6 +10,11 @@ import { projects } from '../data/content'
  * cover, project details and the 404.
  */
 
+/**
+ * Poses are framed for a 32° lens (see WorldCanvas). A long lens flattens the
+ * rooms the way a manga background does — parallel walls stay nearly parallel,
+ * and a sofa at the edge of frame is not smeared into a trapezoid.
+ */
 export type CameraPose = {
   position: [number, number, number]
   target: [number, number, number]
@@ -66,11 +71,11 @@ const ROUTES: RouteEntry[] = [
     page: 'cover',
     tab: null,
     next: '/origin',
-    camera: { position: [0.85, 1.3, 7.0], target: [0.15, 0.55, 0] },
+    camera: { position: [1.09, 1.56, 9.38], target: [0.15, 0.55, 0] },
     scene: 'cover',
     sfx: 'THUD',
     accent: '#d3103a',
-    description: 'cse at mit blr. i build apps, agents, and half-broken pipelines until they behave.',
+    description: 'cse at mahe blr. i build apps, agents, and half-broken pipelines until they behave.',
   },
   {
     path: '/origin',
@@ -81,11 +86,11 @@ const ROUTES: RouteEntry[] = [
     tab: '01 origin',
     prev: '/',
     next: '/training',
-    camera: { position: [-1.0, 1.7, 7.2], target: [0.2, 0.5, -0.3] },
+    camera: { position: [-2.4, 2.0, 9.7], target: [0.4, 0.45, -0.3] },
     scene: 'desk',
     sfx: 'HELLO',
     accent: '#ef8b1d',
-    description: 'second year cse at mit blr. what i am into, and what i do outside class.',
+    description: 'second year cse at mahe blr. what i am into, and what i do outside class.',
   },
   {
     path: '/training',
@@ -96,7 +101,7 @@ const ROUTES: RouteEntry[] = [
     tab: '02 training',
     prev: '/origin',
     next: '/projects',
-    camera: { position: [0.2, 1.9, 8.0], target: [0, 0.6, 0] },
+    camera: { position: [0.27, 2.34, 10.72], target: [0, 0.6, 0] },
     scene: 'workshop',
     sfx: 'CLANG',
     accent: '#12a5b8',
@@ -111,7 +116,7 @@ const ROUTES: RouteEntry[] = [
     tab: '03 projects',
     prev: '/training',
     next: '/skill-tree',
-    camera: { position: [0, 1.2, 6.6], target: [0, 0.35, 0] },
+    camera: { position: [0, 1.49, 8.84], target: [0, 0.35, 0] },
     scene: 'case',
     sfx: 'BAM',
     accent: '#d3103a',
@@ -123,10 +128,10 @@ const ROUTES: RouteEntry[] = [
     label: 'Extra',
     title: 'Skill Tree',
     page: 'p. 41',
-    tab: 'ex skills',
+    tab: '04 skills',
     prev: '/projects',
     next: '/contact',
-    camera: { position: [0.3, 2.6, 9.6], target: [0, 1.9, 0] },
+    camera: { position: [0.4, 2.84, 12.86], target: [0, 1.9, 0] },
     scene: 'tree',
     sfx: 'ZING',
     accent: '#3fae5f',
@@ -142,7 +147,7 @@ const ROUTES: RouteEntry[] = [
     tab: 'b1 session',
     prev: '/',
     next: '/studio',
-    camera: { position: [-0.5, 1.3, 7.0], target: [0.2, 0.5, -0.3] },
+    camera: { position: [0, 1.7, 9.6], target: [0.2, 0.55, -0.3] },
     scene: 'session',
     sfx: 'STRUM',
     accent: '#5a48d6',
@@ -157,7 +162,7 @@ const ROUTES: RouteEntry[] = [
     tab: 'b2 studio',
     prev: '/session',
     next: '/direction',
-    camera: { position: [-0.8, 1.5, 7.6], target: [0.3, 0.7, -0.5] },
+    camera: { position: [-1.17, 1.77, 10.35], target: [0.3, 0.7, -0.5] },
     scene: 'studio',
     sfx: 'FLASH',
     accent: '#d81b7a',
@@ -172,11 +177,41 @@ const ROUTES: RouteEntry[] = [
     tab: 'b3 direction',
     prev: '/studio',
     next: '/contact',
-    camera: { position: [0.6, 1.6, 7.4], target: [-0.2, 0.8, -0.6] },
+    camera: { position: [0.87, 1.87, 10.12], target: [-0.2, 0.8, -0.6] },
     scene: 'direction',
     sfx: 'CUT',
     accent: '#e39b16',
     description: 'art direction for websites and video — ui/ux, storyboards, the whole vision.',
+  },
+  {
+    path: '/prints',
+    side: 'creative',
+    label: 'Cover B · Insert',
+    title: 'Prints',
+    page: 'p. B27',
+    tab: null,
+    prev: '/direction',
+    next: '/contact',
+    camera: { position: [0.54, 1.57, 9.82], target: [0, 0.9, -0.5] },
+    scene: 'prints',
+    sfx: 'FLIP',
+    accent: '#c2366b',
+    description: 'the photo insert — shoots he modelled in or directed.',
+  },
+  {
+    path: '/notes',
+    side: 'shared',
+    label: 'Margins',
+    title: 'Blog',
+    page: 'p. ‡',
+    tab: 'nb blog',
+    prev: '/skill-tree',
+    next: '/contact',
+    camera: { position: [0, 1.1, 8.59], target: [0, 1.1, -3.2] },
+    scene: 'board',
+    sfx: 'SCRIBBLE',
+    accent: '#4a6d8c',
+    description: 'longer things: build logs, shoot write-ups, 2am thoughts.',
   },
   {
     path: '/contact',
@@ -184,10 +219,10 @@ const ROUTES: RouteEntry[] = [
     label: 'Last Page',
     title: 'To Be Continued…',
     page: 'p. 48',
-    tab: 'end say hi',
+    tab: 'say hi',
     prev: '/skill-tree',
     next: '/',
-    camera: { position: [0.8, 1.5, 7.0], target: [0.1, 0.55, -0.2] },
+    camera: { position: [0.6, 0.05, 11.2], target: [0.6, 0.05, -0.2] },
     scene: 'desk-closing',
     sfx: 'SNAP',
     accent: '#8d4fc2',
@@ -219,6 +254,24 @@ export const PROJECT_ACCENTS: Record<string, string> = {
   verdant: '#3fae5f', // textiles, circular economy
   cloudsense: '#ef8b1d', // the invoice that hurts
   roadsense: '#12a5b8', // infrastructure
+  shadowbox: '#1a1a1e', // mechs, broadcast dark
+  arena: '#e8b13a', // scanned junk, arcade gold
+}
+
+/**
+ * The /projects bookcase's own transform, and each volume's local position
+ * on it — shared with CameraRig so a book-open hotspot can dolly the camera
+ * to that exact spine instead of just cutting closer on the whole shelf.
+ */
+export const CASE_GROUP = { position: [0.2, -0.27, -1.7] as [number, number, number], scale: 0.8 }
+export const PROJECT_BOOK_LOCAL: Record<string, { x: number; y: number }> = {
+  alter: { x: -2.0, y: 0.68 },
+  chainguard: { x: -1.62, y: 0.68 },
+  verdant: { x: -1.28, y: 0.68 },
+  cloudsense: { x: -0.6, y: -1.04 },
+  roadsense: { x: -0.22, y: -1.04 },
+  shadowbox: { x: 1.6, y: -1.04 },
+  arena: { x: 2.3, y: -1.04 },
 }
 
 /** Template for /projects/:slug — the camera dives inside the chosen artifact. */
@@ -232,7 +285,7 @@ function projectEntry(slug: string): RouteEntry {
     tab: '03 projects',
     prev: '/projects',
     next: '/skill-tree',
-    camera: { position: [0.2, 0.8, 4.8], target: [0.2, 0.45, 0] },
+    camera: { position: [0.2, 0.92, 6.43], target: [0.2, 0.45, 0] },
     scene: 'artifact',
     side: 'tech',
     sfx: 'FWSH',
@@ -248,7 +301,7 @@ export const notFound: RouteEntry = {
   page: 'p. ??',
   tab: null,
   prev: '/',
-  camera: { position: [0, 0.8, 6.0], target: [0, 0.2, 0] },
+  camera: { position: [0, 1, 8.04], target: [0, 0.2, 0] },
   scene: 'void',
   side: 'shared',
   sfx: 'HUH',

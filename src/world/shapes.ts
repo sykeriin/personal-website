@@ -740,3 +740,44 @@ export function fighterJet(): THREE.Shape {
   s.closePath()
   return s
 }
+
+/* -------------------------------------------------------------- off-panel */
+
+/**
+ * A skateboard deck, side profile: tail and nose both kick up off a flat
+ * midsection. That kicktail curve at both ends is the entire silhouette a
+ * skateboard needs — a plain plank reads as a shelf, not a board.
+ */
+export function skateboardDeck(): THREE.Shape {
+  const s = new THREE.Shape()
+  s.moveTo(-0.5, 0.02) // tail tip
+  s.quadraticCurveTo(-0.46, 0.13, -0.38, 0.14) // kick up
+  s.quadraticCurveTo(-0.28, 0.07, -0.18, 0.045) // ease into the flat
+  s.lineTo(0.18, 0.045) // the flat midsection, top edge
+  s.quadraticCurveTo(0.28, 0.07, 0.38, 0.14) // ease up into the nose kick
+  s.quadraticCurveTo(0.46, 0.13, 0.5, 0.02) // nose tip
+  s.quadraticCurveTo(0.47, -0.015, 0.4, -0.018) // underside, nose
+  s.lineTo(-0.4, -0.018) // underside, flat
+  s.quadraticCurveTo(-0.47, -0.015, -0.5, 0.02) // back to the tail tip
+  s.closePath()
+  return s
+}
+
+/**
+ * The same deck seen face-on — the popsicle outline. Rounded nose and tail,
+ * sides that pinch in very slightly at the waist. This is the view a board
+ * leaning on a wall actually shows you, and with the trucks and wheels on
+ * it, it is unmistakable from across a room.
+ */
+export function skateboardTop(): THREE.Shape {
+  const s = new THREE.Shape()
+  s.moveTo(-0.13, 0.34)
+  s.bezierCurveTo(-0.13, 0.47, -0.06, 0.5, 0, 0.5) // nose, left half
+  s.bezierCurveTo(0.06, 0.5, 0.13, 0.47, 0.13, 0.34) // nose, right half
+  s.bezierCurveTo(0.135, 0.15, 0.125, -0.15, 0.13, -0.34) // right side, faint waist
+  s.bezierCurveTo(0.13, -0.47, 0.06, -0.5, 0, -0.5) // tail, right half
+  s.bezierCurveTo(-0.06, -0.5, -0.13, -0.47, -0.13, -0.34) // tail, left half
+  s.bezierCurveTo(-0.125, -0.15, -0.135, 0.15, -0.13, 0.34) // left side
+  s.closePath()
+  return s
+}

@@ -67,7 +67,7 @@
   --tone-angle: 15deg;
   /* Lines re-ink 10 times a second and hold. Sliding at 60 reads as a shader
      effect; snapping reads as drawn. */
-  --ink-boil-hz: 10;
+  --ink-boil-hz: 0;
 }
 
 /*

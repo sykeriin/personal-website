@@ -29,7 +29,7 @@ export const site = {
   github: 'https://github.com/sykeriin',
   coverHook: 'year two. still messing around.',
   coverLine:
-    "cse at mit blr. i build apps, agents, and half-broken pipelines until they behave. sometimes they do. sometimes i learn why they didn't.",
+    "cse at mahe blr. i build apps, agents, and half-broken pipelines until they behave. sometimes they do. sometimes i learn why they didn't.",
   currentlyBuilding: 'petally internship, voice os experiments, sleep (eventually)',
 }
 
@@ -88,7 +88,7 @@ export const origin = {
   panels: [
     {
       title: 'hi, i’m durva',
-      body: "second year cse at mit blr. i like making things people can actually use. an app someone opens. a model that finds junk on a runway. a hackathon demo that doesn't die mid-pitch.",
+      body: "second year cse at mahe blr. i like making things people can actually use. an app someone opens. a model that finds junk on a runway. a hackathon demo that doesn't die mid-pitch.",
     },
     {
       title: 'what i’m into',
@@ -96,7 +96,7 @@ export const origin = {
     },
     {
       title: 'school',
-      body: 'b.tech cse, mit bengaluru. around may 2029. year two feels less like surviving orientation and more like “wait, i can build stuff now.”',
+      body: 'b.tech cse, mahe bengaluru. around may 2029. year two feels less like surviving orientation and more like “wait, i can build stuff now.”',
     },
     {
       title: 'outside class',
@@ -109,7 +109,7 @@ export const origin = {
 export const experiences: Experience[] = [
   {
     id: 'petally',
-    role: 'Software Development Intern',
+    role: 'Founding Software and AI Integration Engineer',
     org: 'PetAlly',
     period: '2026 - Present',
     headline: 'helping pet people find other pet people (and useful stuff nearby).',
@@ -123,10 +123,10 @@ export const experiences: Experience[] = [
     id: 'hawkeye',
     role: 'OpenCV Preprocessing Lead',
     org: 'HAWKEYE',
-    period: '2025 - 2026',
+    period: 'May 2026 - Present',
     headline: 'finding debris on iaf runways. from a moving vehicle. stressful in a cool way.',
     story: [
-      "worked with the indian air force on fod detection. yolov8 on a jetson orin nx. if the frames going in are trash, the model is just confidently wrong.",
+      "worked with the indian air force on fod detection. three raspberry pi camera feeds, three yolov26 models (yolov26n, yolov26n, yolov26m) running under a single-inference-engine scheduler that round-robins between them. if the frames going in are trash, the model is just confidently wrong.",
       "old motion pipeline was broken. i led opencv preprocessing, ripped it out, rebuilt a static-frame path: bilateral filter, clahe, crop the useless top, skip frames so the jetson doesn't melt.",
       "that's my favorite kind of problem. something stuck in the real world, and you get to unstick it.",
     ],
@@ -200,6 +200,34 @@ export const projects: Project[] = [
     stack: ['AWS Bedrock', 'Lambda', 'Multi-agent', 'NLP'],
     page: 37,
   },
+  {
+    slug: 'shadowbox',
+    title: 'Shadowbox',
+    tagline: 'live multiplayer shadowboxing, repainted as robots mid-swing',
+    blurb: 'two webcams, one arena, zero physics engine — the acting sells the hit.',
+    url: 'https://github.com/sykeriin/shadowbox',
+    story: [
+      "two people in separate rooms, fighting. their webcam feeds get live-rendered into mechs in a shared broadcast arena.",
+      "no punch detection, no hitboxes. a human calls the hits over keyboard, and the fighters sell it by actually staggering, actually falling. the ai just repaints the acting.",
+      "no compositing either — each fighter gets their own render session, kept in the same world by matching arena prompts instead of a merge step.",
+    ],
+    stack: ['Node.js', 'Reactor X2', 'WebSocket', 'WebAudio'],
+    page: 41,
+  },
+  {
+    slug: 'arena',
+    title: 'Arena',
+    tagline: 'a browser fps where your junk drawer is the armory',
+    blurb: 'scan a real object with your webcam, claude turns it into a weapon.',
+    url: 'https://github.com/Palak11245/dont-die-to-lays',
+    story: [
+      "two-player browser fps. point your webcam at some object lying around and claude's vision reads it into damage, fire rate, spread, knockback, colour, silhouette — nothing hand-authored per weapon.",
+      "destructible environments that stay broken. wasd, mouse, click, climb. room codes keep matches separate, and there's a single-player showcase build that runs the pixel analysis locally, no server needed.",
+      "built with a collaborator — the repo's still named after the joke that started it.",
+    ],
+    stack: ['Vite', 'Node.js', 'Claude API', 'Computer Vision', 'Three.js'],
+    page: 45,
+  },
 ]
 
 export const skills = {
@@ -216,6 +244,7 @@ export const skills = {
     'LangChain',
     'Gemma 4',
     'sherpa-onnx',
+    'YOLOv26',
   ],
   frameworks: [
     'Flutter',
@@ -225,6 +254,7 @@ export const skills = {
     'Playwright',
     'SQLAlchemy',
     'Riverpod',
+    'Three.js',
   ],
   infra: [
     'AWS',
@@ -247,8 +277,9 @@ export const achievements = [
 ]
 
 export const leadership = [
-  'Working committee: NeuraAI & MAHE Innovation Centre (2025-Present)',
+  'Vice President — NeuraAI & ALT+R (Fashion Club), MIT Bengaluru',
   "Visual assets for the Pro-Vice Chancellor's office, MAHE (2025-2026)",
+  'Sergeant at Arms — MAHE Bengaluru Toastmasters Club',
   'Volunteer: SuperComputing India (Dec 2025)',
   'Founded the MUN club at Deens Academy (and somehow ran it)',
 ]
@@ -317,7 +348,7 @@ export const creative = {
 } as const
 
 export const funThings =
-  'muay thai, guitar, runs, hikes. when my brain is soup i hit pads or a trail until it un-soups a little.'
+  'muay thai, guitar, runs, hikes, fashion tech, cosplay. when my brain is soup i hit pads or a trail until it un-soups a little.'
 
 /**
  * Socials, one place. Empty string = not published yet; UI skips it. Twitter
@@ -335,5 +366,4 @@ export const contactBits = [
   { label: 'linkedin', href: 'https://www.linkedin.com/in/durva-s/', text: 'linkedin.com/in/durva-s' },
   { label: 'github', href: 'https://github.com/sykeriin', text: 'github.com/sykeriin' },
   { label: 'x', href: 'https://x.com/dsrkiv', text: 'x.com/dsrkiv' },
-  { label: 'instagram', href: 'https://instagram.com/dsrkiv', text: 'instagram.com/dsrkiv' },
 ]

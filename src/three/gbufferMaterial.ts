@@ -95,3 +95,38 @@ export function createGBufferStickerMaterial() {
     `,
   })
 }
+
+/**
+ * Sticker + cutout, combined: discards on the mesh's own alpha map (so a
+ * drawn silhouette gets its outline, not a rectangle) AND writes the zero
+ * normal that marks it "true colour" to the composite. For textured cutouts
+ * that need to keep their own multi-hue art always — the character sprite —
+ * rather than flattening to the chapter plate the way foliage silhouettes do.
+ */
+export function createGBufferStickerCutoutMaterial(map: THREE.Texture, alphaTest: number) {
+  return new THREE.ShaderMaterial({
+    uniforms: { uCamFar: { value: 100 }, map: { value: map }, uCut: { value: alphaTest } },
+    side: THREE.DoubleSide,
+    vertexShader: /* glsl */ `
+      uniform float uCamFar;
+      varying float vD;
+      varying vec2 vUv;
+      void main() {
+        vec4 mv = modelViewMatrix * vec4(position, 1.0);
+        vD = clamp(-mv.z / uCamFar, 0.0, 1.0);
+        vUv = uv;
+        gl_Position = projectionMatrix * mv;
+      }
+    `,
+    fragmentShader: /* glsl */ `
+      uniform sampler2D map;
+      uniform float uCut;
+      varying float vD;
+      varying vec2 vUv;
+      void main() {
+        if (texture2D(map, vUv).a < uCut) discard;
+        gl_FragColor = vec4(0.0, 0.0, 0.0, vD);
+      }
+    `,
+  })
+}

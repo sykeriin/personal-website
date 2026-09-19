@@ -58,12 +58,14 @@ export function Book({
         <boxGeometry args={[0.08, 3.62, 0.48]} />
       </mesh>
 
-      {/* title block, tipped-in label */}
-      <mesh position={[-0.1, 1.05, 0.26]} material={mats.paper}>
+      {/* title block, tipped-in label — true colour, not the flattened tone
+          that made this unreadable outside the cursor's bloom */}
+      <mesh position={[-0.1, 1.05, 0.26]} material={mats.paper} userData={{ inkSticker: true }}>
         <boxGeometry args={[2.05, 0.95, 0.05]} />
       </mesh>
       <Text
         font={delaWoff}
+        sdfGlyphSize={128}
         fontSize={0.235}
         color={INK}
         anchorX="center"
@@ -77,12 +79,13 @@ export function Book({
       </Text>
       <Text
         font={monoWoff}
-        fontSize={0.115}
+        sdfGlyphSize={128}
+        fontSize={0.145}
         color={INK}
         anchorX="center"
         anchorY="middle"
         position={[-0.1, 0.87, 0.3]}
-        letterSpacing={0.12}
+        letterSpacing={0.1}
       >
         {volume}
       </Text>
@@ -90,6 +93,7 @@ export function Book({
       {/* the side's word, printed big straight on the plate */}
       <Text
         font={delaWoff}
+        sdfGlyphSize={128}
         fontSize={0.4}
         color={PAPER}
         anchorX="center"
@@ -109,6 +113,7 @@ export function Book({
       </mesh>
       <Text
         font={monoWoff}
+        sdfGlyphSize={128}
         fontSize={0.125}
         color={INK}
         anchorX="center"
@@ -122,12 +127,13 @@ export function Book({
       </Text>
       <Text
         font={monoWoff}
-        fontSize={0.1}
+        sdfGlyphSize={128}
+        fontSize={0.125}
         color={INK}
         anchorX="center"
         anchorY="middle"
         position={[-0.05, -1.24, 0.28]}
-        letterSpacing={0.14}
+        letterSpacing={0.12}
       >
         {'click to open →'}
       </Text>

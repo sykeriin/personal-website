@@ -14,7 +14,21 @@ import { entryFor, tabsFor } from '../world/manifest'
 export function EdgeTabs() {
   const location = useLocation()
   const side = entryFor(location.pathname).side
-  const reading = side === 'shared' ? 'tech' : side
+  // A shared page (blog, contact, ...) has no side of its own — it used to
+  // default to 'tech' outright, which snapped the fore-edge (and the flip
+  // link) back to tech even mid-way through reading the creative cover.
+  // Falling back to whichever side was last actually being read keeps the
+  // tabs where the visitor left them.
+  const reading =
+    side === 'shared'
+      ? (() => {
+          try {
+            return localStorage.getItem('inkwell-side') === 'creative' ? 'creative' : 'tech'
+          } catch {
+            return 'tech'
+          }
+        })()
+      : side
   const tabs = tabsFor(reading)
   const flip =
     reading === 'tech'

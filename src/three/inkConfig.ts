@@ -28,7 +28,9 @@ export type InkParams = {
 }
 
 export const inkDefaults: InkParams = {
-  boilFps: 10,
+  // 0: the linework holds still. The boil was cel-animation charm on paper and
+  // "buzzing" in practice — Durva asked for lines that stay constant.
+  boilFps: 0,
   wobbleAmp: 2.2,
   wobbleScale: 9,
   baseWidth: 1.6,

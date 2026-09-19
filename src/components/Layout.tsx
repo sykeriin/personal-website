@@ -3,16 +3,14 @@ import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { EdgeTabs } from './EdgeTabs'
 import { InkFilters } from './InkFilters'
 import { TierSwitch } from './TierSwitch'
-import { SoundToggle } from '../audio/SoundToggle'
 import { useRenderTier, tierUsesWebGL } from '../hooks/useRenderTier'
 import { usePresence } from '../hooks/usePresence'
-import { useChromeMode } from '../hooks/useChromeMode'
 import { entryFor } from '../world/manifest'
 import { hotspots, worldNav } from '../world/hotspots'
 import { PageTurns } from './PageTurns'
 import { RevealPanel } from './RevealPanel'
+import { BookReader } from './BookReader'
 import { EntryGate, hasEntered } from './EntryGate'
-import { ModeSwitch } from './ModeSwitch'
 
 /** three.js lives behind a dynamic import, so the paper tier never downloads it. */
 const WorldCanvas = lazy(() => import('../world/WorldCanvas'))
@@ -22,7 +20,6 @@ export function Layout() {
   const navigate = useNavigate()
   const { tier, pinned, reduceMotion, dpr, setTier } = useRenderTier()
   const { late } = usePresence()
-  const [mode, setMode] = useChromeMode()
   const rootRef = useRef<HTMLDivElement>(null)
   // The entrance shows once per visitor, only at the front door.
   const [entered, setEntered] = useState(
@@ -30,11 +27,12 @@ export function Layout() {
   )
 
   const world = tierUsesWebGL(tier)
-  // The gallery and the blog are DOM-first: their content IS the page, so
-  // explore mode (which hides the prose) would leave nothing to look at.
+  // The gallery and the blog are DOM-first: their content IS the page, and
+  // there is no in-world hotspot standing in for it.
   const domFirst = /^\/(prints|notes)/.test(location.pathname)
-  // Explore needs props to click, so it only exists where there is a world.
-  const explore = world && mode === 'explore' && !domFirst
+  // Explore is the only way through the world now: content is revealed by
+  // clicking props, not laid out in a slab over the scene.
+  const explore = world && !domFirst
 
   // Remember which cover is being read, so the fork stands that book upright.
   useEffect(() => {
@@ -81,8 +79,9 @@ export function Layout() {
     // mode opens the story itself, so the pick-it-up click visibly lands.
     const detail = /^\/projects\/([a-z0-9-]+)\/?$/i.exec(location.pathname)
     if (detail && explore) hotspots.activate(`story-${detail[1]}`)
-    // The last page exists to be answered — the mailbox opens itself.
-    if (location.pathname === '/contact' && explore) hotspots.activate('contact-envelope')
+    // The last page's whole job is "say hi" — no reason to make that a
+    // second click once someone has turned to it.
+    else if (location.pathname === '/contact' && explore) hotspots.activate('contact-envelope')
   }, [location.pathname, explore])
 
   return (
@@ -117,7 +116,7 @@ export function Layout() {
       </div>
 
       {explore ? <RevealPanel /> : null}
-      {world && !domFirst ? <ModeSwitch mode={mode} onChange={setMode} /> : null}
+      {explore ? <BookReader /> : null}
 
       <PageTurns />
       {!entered ? (
@@ -131,7 +130,6 @@ export function Layout() {
       ) : null}
 
       <TierSwitch tier={tier} pinned={pinned} onChange={setTier} />
-      <SoundToggle route={location.pathname} enabled={!reduceMotion} />
     </div>
   )
 }

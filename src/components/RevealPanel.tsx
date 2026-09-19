@@ -13,7 +13,10 @@ import { hotspots, reveals, useHotspots } from '../world/hotspots'
 export function RevealPanel() {
   const { active } = useHotspots()
   const panel = useRef<HTMLDivElement>(null)
-  const reveal = active ? reveals[active] : undefined
+  // Project books now open into their own full-page BookReader, which is
+  // the actual answer to "where do I read about this" — this panel would
+  // just be a second, smaller copy of the same text underneath it.
+  const reveal = active && !active.startsWith('proj-') ? reveals[active] : undefined
 
   useEffect(() => {
     if (reveal) panel.current?.focus()

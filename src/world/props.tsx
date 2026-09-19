@@ -93,35 +93,65 @@ export function Envelope({ mats }: { mats: PartMats }) {
  */
 export function Guitar({ mats, body = 'accent' }: { mats: PartMats; body?: keyof PartMats }) {
   const shape = useMemo(() => guitarBody(), [])
+  // "dim" turned out to be a pale desaturated tone (not a dark one as its
+  // name suggested) — fine for normal toon-shaded geometry, but as a true
+  // sticker colour it made the hardware wash out near-white. The neck,
+  // bridge and headstock read as guitar hardware only if they're actually
+  // dark, so they get a real near-black true colour instead.
+  const hardware = useMemo(
+    () => new THREE.MeshToonMaterial({ color: '#1c1a17', toneMapped: false }),
+    [],
+  )
   return (
     <group>
       <InkShape shape={shape} depth={0.34} material={mats[body]} scale={1.6} />
-      {/* bridge */}
-      <mesh position={[0, -0.52, 0.19]} material={mats.dim}>
+      {/* bridge — InkShape centres its extrusion, so the body's front face
+          sits at half its (scaled) depth, not at z=0; the bridge and the
+          strings below have to clear that or they render buried inside the
+          solid body instead of on top of it. */}
+      <mesh position={[0, -0.52, 0.278]} material={hardware} userData={{ inkSticker: true }}>
         <boxGeometry args={[0.34, 0.09, 0.05]} />
       </mesh>
-      {/* neck, up and slightly back */}
-      <group position={[0, 1.15, -0.02]} rotation={[0, 0, 0]}>
-        <mesh material={mats.dim}>
+      {/* neck. Every part below is marked as a sticker so it holds its true
+          flat colour regardless of light or viewing angle. This group used
+          to sit at z -0.02 — a full 0.3 behind the strings at z 0.282 — so
+          along the neck's whole length the strings floated way out in
+          front of it instead of lying against the fretboard. Pushed the
+          neck forward to just behind the strings instead. */}
+      <group position={[0, 1.15, 0.235]} rotation={[0, 0, 0]}>
+        <mesh material={hardware} userData={{ inkSticker: true }}>
           <boxGeometry args={[0.17, 1.5, 0.09]} />
         </mesh>
-        {/* headstock */}
-        <mesh position={[0, 0.85, 0]} rotation={[0, 0, 0.05]} material={mats.hueB}>
-          <boxGeometry args={[0.22, 0.42, 0.1]} />
+        {/* headstock — matched the neck's own hardware black before, so the
+            two melted into one undifferentiated black bar with no visible
+            break between them. Wood-toned like the body gives it a real
+            silhouette of its own, the way a classical guitar's head
+            actually reads lighter than its ebony fretboard. */}
+        <mesh position={[0, 0.85, 0]} rotation={[0, 0, 0.05]} material={mats[body]} userData={{ inkSticker: true }}>
+          <boxGeometry args={[0.24, 0.42, 0.1]} />
         </mesh>
-        {/* tuning pegs */}
-        {[0.78, 0.92].map((y) =>
+        {/* tuning pegs — widened further past the headstock's own edges and
+            enlarged so they read as knobs instead of disappearing into it */}
+        {[0.75, 0.94].map((y) =>
           [-1, 1].map((side) => (
-            <mesh key={`${y}${side}`} position={[side * 0.15, y, 0]} material={mats.paper}>
-              <boxGeometry args={[0.07, 0.05, 0.12]} />
+            <mesh key={`${y}${side}`} position={[side * 0.19, y, 0]} material={hardware} userData={{ inkSticker: true }}>
+              <boxGeometry args={[0.1, 0.06, 0.14]} />
             </mesh>
           )),
         )}
       </group>
-      {/* strings: from headstock over the hole to the bridge */}
+      {/* strings: from the tuning pegs (neck root y 1.15 + peg y up to 0.92,
+          so ~2.07) down to the bridge (y -0.52) — they were only reaching
+          y 1.345, stopping well short of the pegs and leaving the top of
+          each string floating loose instead of anchored to the headstock. */}
+      {/* Strings sat 0.038 proud of the body surface (z 0.31 vs the body's
+          own front face at z 0.272) — visually a real gap between the
+          strings and the wood once the sticker's true colour made both
+          surfaces sharp and easy to compare. Pulled down to just clear the
+          surface instead of floating off it. */}
       {[-0.045, 0, 0.045].map((x) => (
-        <mesh key={x} position={[x, 0.42, 0.2]} material={mats.paper}>
-          <boxGeometry args={[0.016, 1.85, 0.012]} />
+        <mesh key={x} position={[x, 0.76, 0.282]} material={mats.paper} userData={{ inkSticker: true }}>
+          <boxGeometry args={[0.016, 2.6, 0.012]} />
         </mesh>
       ))}
     </group>

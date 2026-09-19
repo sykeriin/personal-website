@@ -177,7 +177,6 @@ function build(): Record<string, Reveal> {
       { to: socials.linkedin, label: 'linkedin', external: true },
       { to: socials.github, label: 'github', external: true },
       { to: socials.twitter, label: 'x', external: true },
-      { to: socials.instagram, label: 'instagram', external: true },
     ].filter((entry) => entry.to && entry.to !== 'mailto:'),
     link: { to: `mailto:${site.email}`, label: 'mail me', external: true },
   }

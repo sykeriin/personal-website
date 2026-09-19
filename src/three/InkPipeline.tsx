@@ -8,6 +8,7 @@ import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js'
 import {
   createGBufferCutoutMaterial,
   createGBufferMaterial,
+  createGBufferStickerCutoutMaterial,
   createGBufferStickerMaterial,
 } from './gbufferMaterial'
 import { createInkCompositeShader } from './shaders/inkComposite'
@@ -143,10 +144,21 @@ export function InkPipeline({ params, palette, frozen = false, slamRef, bloomRef
     // never touches mesh.material — troika text stays untouched; assigning to
     // its material property is what double-exposed the glyphs).
     const cutouts: THREE.Mesh[] = []
+    const texts: THREE.Mesh[] = []
     scene.traverse((obj) => {
       const mesh = obj as THREE.Mesh
-      if (mesh.isMesh && (mesh.userData.inkCutout || mesh.userData.inkSticker) && mesh.visible) {
+      if (!mesh.isMesh || !mesh.visible) return
+      if (mesh.userData.inkCutout || mesh.userData.inkSticker) {
         cutouts.push(mesh)
+        mesh.visible = false
+        return
+      }
+      // Troika text: under the override material its glyph quad renders as a
+      // solid plane, and the edge pass then outlines that invisible rectangle
+      // — the "random boxes" beside every sign. Text is print, not geometry;
+      // it gets no ink of its own and simply sits on whatever is behind it.
+      if ((mesh.material as { isTroikaTextMaterial?: boolean }).isTroikaTextMaterial) {
+        texts.push(mesh)
         mesh.visible = false
       }
     })
@@ -156,6 +168,7 @@ export function InkPipeline({ params, palette, frozen = false, slamRef, bloomRef
     gl.clear(true, true, false)
     gl.render(scene, camera)
     scene.overrideMaterial = prevOverride
+    for (const mesh of texts) mesh.visible = true
 
     // Phase 2: cutouts alone, wearing cached cutout depth materials that keep
     // their alpha test, into the same target without clearing.
@@ -172,7 +185,17 @@ export function InkPipeline({ params, palette, frozen = false, slamRef, bloomRef
         mesh.visible = true
         const src = mesh.material as THREE.Material & { map?: THREE.Texture | null }
         mesh.userData.__inkSaved = src
-        if (mesh.userData.inkSticker) {
+        if (mesh.userData.inkSticker && (src as { map?: THREE.Texture | null }).map) {
+          // A textured cutout that must also stay true-colour always — the
+          // character sprite, whose whole point is its own multi-hue art.
+          let stick = mesh.userData.__inkStickerCutout as THREE.ShaderMaterial | undefined
+          if (!stick || stick.uniforms.map.value !== src.map) {
+            stick = createGBufferStickerCutoutMaterial(src.map as THREE.Texture, src.alphaTest || 0.35)
+            mesh.userData.__inkStickerCutout = stick
+          }
+          stick.uniforms.uCamFar.value = far
+          mesh.material = stick
+        } else if (mesh.userData.inkSticker) {
           let stick = mesh.userData.__inkSticker as THREE.ShaderMaterial | undefined
           if (!stick) {
             stick = createGBufferStickerMaterial()

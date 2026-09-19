@@ -4,11 +4,10 @@ import * as THREE from 'three'
 import { InkPipeline } from '../three/InkPipeline'
 import { readInkTheme } from '../three/theme'
 import { tierUsesPostProcessing, type RenderTier } from '../hooks/useRenderTier'
-import { entryFor, sideAccent } from './manifest'
+import { CASE_GROUP, PROJECT_BOOK_LOCAL, entryFor, sideAccent } from './manifest'
 import { bloom, trackPointer } from './bloom'
 import { useHotspots } from './hotspots'
 import { SceneFor } from './scenes'
-import { ChapterType } from './ChapterType'
 
 /**
  * One Canvas for the whole site, mounted in the layout and never unmounted.
@@ -36,6 +35,25 @@ type Props = {
     turn — the tête-bêche gesture: the book is being turned over in your hands.
     The roll target only ever advances by exactly 2π, so it always settles
     upright, and reduced motion skips the roll entirely. */
+/** A book on the /projects shelf, picked off it into your hands: the camera
+    dollies in close on that exact spine instead of holding the establishing
+    shot, so the opened pages actually fill the view instead of reading as a
+    small animation happening far away on a shelf. */
+function bookFocusPose(active: string | null): { position: [number, number, number]; target: [number, number, number] } | null {
+  if (!active || !active.startsWith('proj-')) return null
+  const slug = active.slice('proj-'.length)
+  const local = PROJECT_BOOK_LOCAL[slug]
+  if (!local) return null
+  const { position: groupPos, scale } = CASE_GROUP
+  const worldX = groupPos[0] + local.x * scale
+  const worldY = groupPos[1] + local.y * scale + 0.55
+  const worldZ = groupPos[2]
+  return {
+    position: [worldX, worldY, worldZ + 3.4],
+    target: [worldX, worldY, worldZ],
+  }
+}
+
 function CameraRig({ pathname, instant }: { pathname: string; instant: boolean }) {
   const camera = useThree((s) => s.camera)
   const target = useMemo(() => new THREE.Vector3(), [])
@@ -45,9 +63,11 @@ function CameraRig({ pathname, instant }: { pathname: string; instant: boolean }
   const roll = useRef(0)
   const rollTarget = useRef(0)
   const lastSide = useRef<'tech' | 'creative' | null>(null)
+  const { active } = useHotspots()
 
   const entry = entryFor(pathname)
-  const pose = entry.camera
+  const focus = pathname === '/projects' ? bookFocusPose(active) : null
+  const pose = focus ?? entry.camera
 
   useEffect(() => {
     if (entry.side === 'shared') return
@@ -226,7 +246,6 @@ function Stage({
           explore={explore}
           frozen={reduceMotion}
         />
-        <ChapterType pathname={pathname} reduceMotion={reduceMotion} />
       </Suspense>
 
       {tierUsesPostProcessing(tier) ? (
@@ -254,7 +273,7 @@ export default function WorldCanvas({
     <div className="ink-stage" aria-hidden="true">
       <Canvas
         dpr={dpr}
-        camera={{ position: [0, 1, 6], fov: 42, near: 0.1, far: 60 }}
+        camera={{ position: [0, 1, 6], fov: 32, near: 0.1, far: 60 }}
         gl={{
           antialias: false,
           alpha: false,
