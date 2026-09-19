@@ -64,6 +64,12 @@ function detectTier(): RenderTier {
   const cores = navigator.hardwareConcurrency ?? 4
   const coarse = window.matchMedia('(pointer: coarse)').matches
 
+  // A phone-sized screen COULD run the pipeline hardware-wise, but the world
+  // is designed to be walked around and read up close — on a phone that's
+  // cramped scrolling and pinch-zooming to find a hotspot, not a portfolio.
+  // Text is the actually-good experience there, so phones default to it; a
+  // tablet is roomy enough that the 3D read still works.
+  if (coarse && window.innerWidth < 768) return 'paper'
   // A phone can run the pipeline, just not at desktop resolution. Gate on the
   // hardware, never on viewport width.
   if (cores <= 4) return 'flat'
