@@ -19,11 +19,9 @@ export function ProjectDetail() {
     return (
       <main className="chapter">
         <ChapterHead eyebrow={entry.label} title="p. ??" page={entry.page} />
-        <p className="lede">
-          no project by that name. i&apos;ve only shipped five things worth writing about.
-        </p>
+        <p className="lede">no project by that name. here&apos;s what i&apos;ve actually shipped.</p>
         <Link className="cta" to="/projects">
-          see the five
+          see the list
         </Link>
         <Turn path="/projects" />
       </main>

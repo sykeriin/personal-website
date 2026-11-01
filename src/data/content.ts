@@ -228,6 +228,34 @@ export const projects: Project[] = [
     stack: ['Vite', 'Node.js', 'Claude API', 'Computer Vision', 'Three.js'],
     page: 45,
   },
+  {
+    slug: 'fly-drums',
+    title: 'Fly Drums',
+    tagline: 'a real fly brain playing a real drum kit',
+    blurb: 'the flyem connectome, trained on actual human drumming, hitting actual drums.',
+    url: 'https://github.com/sykeriin/fly-drums',
+    story: [
+      "not a toy neural net 'inspired by' a brain — the actual flyem/janelia male drosophila cns connectome. 165,122 traced neurons, over 10 million signed synapses, running as a leaky integrate-and-fire sim.",
+      "six real motor-neuron populations (foreleg, midleg, hindleg, wing, haltere, neck) get read as drum voices. it learns the way a fly actually learns smells — dopamine-gated depression at the kenyon-cell to mbon synapse — rewarded for matching real human drumming from magenta's groove midi dataset.",
+      "three.js on one side, every neuron plotted at its real measured position. a fly, actually drumming, on the other. yes, this is what i do for fun.",
+    ],
+    stack: ['Python', 'Three.js', 'Web Audio API', 'WebSocket', 'Connectomics'],
+    page: 49,
+  },
+  {
+    slug: 'scenario',
+    title: 'Scenario',
+    tagline: 'turn your life into clearable quests',
+    blurb: 'a gamified life os. local-first, offline, no accounts.',
+    url: 'https://github.com/sykeriin/scenario',
+    story: [
+      "break goals into scenarios, stages, quests. earn xp, build stats, watch a hunter rank go up instead of a todo list stay flat.",
+      "three skins on one progression engine — solo leveling, orv, founder os — pick whichever delusion gets you to actually do the thing.",
+      "runs entirely in the browser. no backend, no account, an optional ai co-pilot if you want one.",
+    ],
+    stack: ['React', 'Vite', 'PWA', 'Local-first'],
+    page: 53,
+  },
 ]
 
 export const skills = {
