@@ -256,6 +256,8 @@ export const PROJECT_ACCENTS: Record<string, string> = {
   roadsense: '#12a5b8', // infrastructure
   shadowbox: '#1a1a1e', // mechs, broadcast dark
   arena: '#e8b13a', // scanned junk, arcade gold
+  'fly-drums': '#1f6fb2', // neural circuits, electric blue
+  scenario: '#d8336b', // level-up energy, magenta
 }
 
 /**
@@ -272,6 +274,8 @@ export const PROJECT_BOOK_LOCAL: Record<string, { x: number; y: number }> = {
   roadsense: { x: -0.22, y: -1.04 },
   shadowbox: { x: 1.6, y: -1.04 },
   arena: { x: 2.3, y: -1.04 },
+  'fly-drums': { x: -0.05, y: 0.68 },
+  scenario: { x: 0.35, y: 0.68 },
 }
 
 /** Template for /projects/:slug — the camera dives inside the chosen artifact. */

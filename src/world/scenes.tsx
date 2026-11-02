@@ -1152,6 +1152,8 @@ function CaseScene({ mats, explore }: { mats: Mats; explore: boolean }) {
     { slug: 'alter', title: 'alter', h: 1.3, x: -2.0 },
     { slug: 'chainguard', title: 'chainguard', h: 1.45, x: -1.62, lean: 0.0 },
     { slug: 'verdant', title: 'verdant', h: 1.2, x: -1.28, lean: -0.12 },
+    { slug: 'fly-drums', title: 'fly drums', h: 1.1, x: -0.05 },
+    { slug: 'scenario', title: 'scenario', h: 1.2, x: 0.35, lean: -0.08 },
   ]
   const lowerBooks: Array<{ slug: string; title: string; h: number; x: number; lean?: number }> = [
     { slug: 'cloudsense', title: 'cloudsense', h: 1.35, x: -0.6 },
