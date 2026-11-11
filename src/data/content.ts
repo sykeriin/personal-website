@@ -489,20 +489,16 @@ export const projects: Project[] = [
     page: 53,
   },
   {
-    slug: 'federated-healthcare', title: 'Federated Healthcare',
-    tagline: 'train across clinics without pooling patient records',
-    blurb: 'a hackathon simulation of learning across constrained devices and networks.',
-    story: ['models collaboration between clinics using federated learning, svd compression, and simulated slow or unreliable connections.', 'uses heart-disease data with a synthetic fallback. this is a research simulation, not a clinically validated system.'],
-    stack: ['Python', 'Federated learning', 'SVD', 'Network simulation'],
-    page: 109, url: 'https://github.com/sykeriin/federated-healthcare',
+    slug: 'nidan-tdt', title: 'Nidan TDT',
+    tagline: 'a digital twin for distribution transformers',
+    blurb: 'a software twin that compares operating data against a thermal and ageing model.',
+    story: [
+      'built for PowerNext-AI 2026: import transformer readings and explore a 3D twin, health indicators, diagnosis, and maintenance advice.',
+      'uses an IEC 60076-7 thermal and ageing model, with simulated scenarios and a dashboard for replaying the data. generated data is labelled as simulated.',
+    ],
+    stack: ['Python', 'FastAPI', 'React', 'Digital twin'], page: 109,
   },
-  {
-    slug: 'anemi', title: 'Anemi',
-    tagline: 'a spinning wheel for what to do first',
-    blurb: 'a small decision-making experiment.',
-    story: ['a spinning wheel to help choose what to do first.', 'built with react and vite. a little browser project alongside the larger experiments.'],
-    stack: ['React', 'Vite'], page: 113, url: 'https://github.com/sykeriin/anemi',
-  },
+
 ]
 
 export const skills = {

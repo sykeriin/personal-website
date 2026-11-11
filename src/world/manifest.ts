@@ -262,8 +262,7 @@ export const PROJECT_ACCENTS: Record<string, string> = {
   "beliefscreen": "#286b98",
   "commons": "#9b3c59",
   "hike-m": "#5b56a0",
-  'federated-healthcare': '#247b79',
-  anemi: '#9b3c59',
+  'nidan-tdt': '#247b79',
   alter: '#8d4fc2', // voice, ethereal
   chainguard: '#d3103a', // it won first
   verdant: '#3fae5f', // textiles, circular economy

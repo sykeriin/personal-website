@@ -26,7 +26,7 @@ type Repo = {
   topics?: string[]
 }
 
-const CACHE_KEY = 'inkwell-gh-shelf-v2'
+const CACHE_KEY = 'inkwell-gh-shelf-v3'
 const CACHE_MS = 60 * 60 * 1000
 
 function username(): string | null {
@@ -70,7 +70,7 @@ export function GithubShelf() {
     })
       .then((res) => (res.ok ? (res.json() as Promise<Repo[]>) : Promise.reject(res.status)))
       .then((all) => {
-        const eligible = all.filter((repo) => !repo.fork && !['lifelong-ops-agent', 'sykeriin', 'personal-website'].includes(repo.name.toLowerCase()))
+        const eligible = all.filter((repo) => !repo.fork && !['lifelong-ops-agent', 'anemi', 'federated-healthcare', 'sykeriin', 'personal-website'].includes(repo.name.toLowerCase()))
         const tagged = eligible.filter((repo) => repo.topics?.includes('showcase'))
         const picked = (tagged.length > 0 ? tagged : eligible).slice(0, 4)
         setRepos(picked)
