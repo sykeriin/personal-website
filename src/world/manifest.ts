@@ -249,6 +249,21 @@ const byPath = new Map(ROUTES.map((r) => [r.path, r]))
 
 /** Each project carries its own plate, so the colour tells you where you are. */
 export const PROJECT_ACCENTS: Record<string, string> = {
+  "tread": "#286b98",
+  "skillfuzz": "#9b3c59",
+  "taintmem": "#5b56a0",
+  "bci-steadyvoice": "#247b79",
+  "earsim": "#a45e24",
+  "mondecay": "#286b98",
+  "vdrift": "#9b3c59",
+  "dpdp-guard": "#5b56a0",
+  "swapcert": "#247b79",
+  "intentcheck": "#a45e24",
+  "beliefscreen": "#286b98",
+  "commons": "#9b3c59",
+  "hike-m": "#5b56a0",
+  'federated-healthcare': '#247b79',
+  anemi: '#9b3c59',
   alter: '#8d4fc2', // voice, ethereal
   chainguard: '#d3103a', // it won first
   verdant: '#3fae5f', // textiles, circular economy
@@ -266,17 +281,16 @@ export const PROJECT_ACCENTS: Record<string, string> = {
  * to that exact spine instead of just cutting closer on the whole shelf.
  */
 export const CASE_GROUP = { position: [0.2, -0.27, -1.7] as [number, number, number], scale: 0.8 }
-export const PROJECT_BOOK_LOCAL: Record<string, { x: number; y: number }> = {
-  alter: { x: -2.0, y: 0.68 },
-  chainguard: { x: -1.62, y: 0.68 },
-  verdant: { x: -1.28, y: 0.68 },
-  cloudsense: { x: -0.6, y: -1.04 },
-  roadsense: { x: -0.22, y: -1.04 },
-  shadowbox: { x: 1.6, y: -1.04 },
-  arena: { x: 2.3, y: -1.04 },
-  'fly-drums': { x: -0.05, y: 0.68 },
-  scenario: { x: 0.35, y: 0.68 },
-}
+export const PROJECT_BOOKS = projects.map((project, index) => ({
+  ...project,
+  x: -2.3 + (index % 12) * 0.415,
+  y: index < 12 ? 0.68 : -1.04,
+  h: 1.2 + (index % 3) * 0.08,
+}))
+export const PROJECT_BOOK_LOCAL = Object.fromEntries(
+  PROJECT_BOOKS.map(({ slug, x, y }) => [slug, { x, y }]),
+)
+
 
 /** Template for /projects/:slug — the camera dives inside the chosen artifact. */
 function projectEntry(slug: string): RouteEntry {

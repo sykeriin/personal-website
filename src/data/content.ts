@@ -134,6 +134,238 @@ export const experiences: Experience[] = [
 ]
 
 export const projects: Project[] = [
+{
+    "slug": "tread",
+    "title": "Tread",
+    "tagline": "reuse llm cache when the prompt moves around",
+    "blurb": "content-addressed kv blocks, exact rope re-rotation, and selective recompute.",
+    "story": [
+        "reuses cached document chunks at new positions in a prompt, instead of requiring an identical prefix.",
+        "working engine and http server, with a laptop-scale benchmark. large-model timings and serving-engine comparisons have not been run."
+    ],
+    "stack": [
+        "Python",
+        "KV cache",
+        "RoPE",
+        "FastAPI"
+    ],
+    "page": 57,
+    "url": "https://github.com/sykeriin/tread"
+},
+{
+    "slug": "skillfuzz",
+    "title": "SkillFuzz",
+    "tagline": "find what an agent skill does under different conditions",
+    "blurb": "dynamic execution and version comparisons for agent skills.",
+    "story": [
+        "runs skills under varied tasks and environments, records their behaviour, and flags undeclared capability growth between versions.",
+        "sandbox, recorder, fuzzer, and attestation are implemented. the first evaluation found no measured advantage for coverage-guided search over random mutation."
+    ],
+    "stack": [
+        "Python",
+        "Linux",
+        "Sandboxing",
+        "Dynamic analysis"
+    ],
+    "page": 61,
+    "url": "https://github.com/sykeriin/SkillFuzz"
+},
+{
+    "slug": "taintmem",
+    "title": "TaintMem",
+    "tagline": "remember where an agent memory came from",
+    "blurb": "a research prototype for tracking trust through memory rewrites.",
+    "story": [
+        "tracks provenance and integrity labels through stored memories and rewrites, with policy gates and an audit trail.",
+        "tested with rule-based stand-ins. real-llm evaluations are still pending; this is not a proven defence against memory poisoning."
+    ],
+    "stack": [
+        "Python",
+        "SQLite",
+        "Provenance",
+        "Agent memory"
+    ],
+    "page": 65,
+    "url": "https://github.com/sykeriin/TaintMem"
+},
+{
+    "slug": "bci-steadyvoice",
+    "title": "SteadyVoice",
+    "tagline": "keep a speech decoder steady across days",
+    "blurb": "speech-bci recalibration with an adapter and a collapse guard.",
+    "story": [
+        "combines label-free adaptation with a guard that can roll back or request a small calibration when the decoder drifts.",
+        "evaluated on synthetic drifting data only. real neural recordings remain untested, and long gaps between sessions are a known weakness."
+    ],
+    "stack": [
+        "Python",
+        "GRU",
+        "CTC",
+        "BCI"
+    ],
+    "page": 69,
+    "url": "https://github.com/sykeriin/bci-steadyvoice"
+},
+{
+    "slug": "earsim",
+    "title": "earsim",
+    "tagline": "can scalp eeg tell us what an ear sensor would hear?",
+    "blurb": "physics-informed spatial extrapolation for wearable eeg layouts.",
+    "story": [
+        "uses a linear inverse and forward model to transfer scalp recordings to candidate electrode positions.",
+        "the experiments found a small benefit inside the scalp cap, but no benefit on real ear-eeg. zero-shot attention decoding from synthetic ear data failed."
+    ],
+    "stack": [
+        "Python",
+        "MNE",
+        "EEG",
+        "Signal processing"
+    ],
+    "page": 73,
+    "url": "https://github.com/sykeriin/earsim"
+},
+{
+    "slug": "mondecay",
+    "title": "MonDecay",
+    "tagline": "what does post-training do to model monitorability?",
+    "blurb": "an experiment harness for measuring changes in reasoning visibility.",
+    "story": [
+        "compares interventions such as shorter reasoning, distillation, and quantisation through dose-response experiments.",
+        "the harness is built and cpu-tested. no real experiment has been run yet, so there are no empirical monitorability results to claim."
+    ],
+    "stack": [
+        "Python",
+        "LLM evaluation",
+        "Post-training"
+    ],
+    "page": 77,
+    "url": "https://github.com/sykeriin/MonDecay"
+},
+{
+    "slug": "vdrift",
+    "title": "VersionDrift",
+    "tagline": "when an app updates, can an agent still find its way?",
+    "blurb": "task replay across gitea releases, with a semantic re-grounding layer.",
+    "story": [
+        "compares coordinate replay, dom matching, and reground across two releases and nine tasks.",
+        "coordinate replay broke across versions. simple dom matching recovered more tasks than reground; this small pilot does not show an advantage for the new method."
+    ],
+    "stack": [
+        "Python",
+        "UI automation",
+        "Gitea",
+        "Evaluation"
+    ],
+    "page": 81,
+    "url": "https://github.com/sykeriin/VDrift"
+},
+{
+    "slug": "dpdp-guard",
+    "title": "DPDP Guard",
+    "tagline": "consent, deletion requests, and an audit trail for agents",
+    "blurb": "a prototype privacy workflow for chatbots and ai agents.",
+    "story": [
+        "captures consent by purpose, masks personal data in logs, and routes rights requests into a ledger and erasure workflow. includes python and node clients plus a dashboard.",
+        "local integration checks cover the core workflows. deployment templates and the real-model intent fallback remain unverified; legal templates require review."
+    ],
+    "stack": [
+        "Python",
+        "FastAPI",
+        "PostgreSQL",
+        "Next.js"
+    ],
+    "page": 85,
+    "url": "https://github.com/sykeriin/dpdp-guard"
+},
+{
+    "slug": "swapcert",
+    "title": "swapcert",
+    "tagline": "measure the trade-off before swapping an agent model",
+    "blurb": "statistics and simulation tools for comparing model swaps.",
+    "story": [
+        "combines simulated rollouts with sampled real outcomes to estimate a change in task success and report uncertainty.",
+        "the statistics core and toy workflow are implemented. no real agent or tau2 experiment has run, and small samples can make intervals unreliable."
+    ],
+    "stack": [
+        "Python",
+        "Statistics",
+        "Simulation",
+        "Agent evaluation"
+    ],
+    "page": 89,
+    "url": "https://github.com/sykeriin/swapcert"
+},
+{
+    "slug": "intentcheck",
+    "title": "IntentCheck",
+    "tagline": "does an agent purchase match what you asked for?",
+    "blurb": "a simulated market and decision-integrity verifier for agent payments.",
+    "story": [
+        "checks proposed purchases against constraints and alternatives before a simulated payment is approved.",
+        "evaluations use scripted buyers and offline stand-ins. no real llm buyer has been evaluated, and the payment flow does not settle funds."
+    ],
+    "stack": [
+        "Python",
+        "Ed25519",
+        "Agent payments",
+        "Evaluation"
+    ],
+    "page": 93,
+    "url": "https://github.com/sykeriin/intentcheck"
+},
+{
+    "slug": "beliefscreen",
+    "title": "beliefscreen",
+    "tagline": "screen fine-tuning data before training",
+    "blurb": "a research pipeline testing whether belief-conflict scores predict misalignment.",
+    "story": [
+        "scores prompt-target pairs with a frozen model and includes filtering, fine-tuning, and evaluation tooling.",
+        "the first cpu pilot was negative: the scores did not separate secure from insecure code. misalignment experiments and gpu paths remain untested."
+    ],
+    "stack": [
+        "Python",
+        "LoRA",
+        "LLM evaluation"
+    ],
+    "page": 97,
+    "url": "https://github.com/sykeriin/beliefscreen"
+},
+{
+    "slug": "commons",
+    "title": "Commons",
+    "tagline": "a campus, with everyone in the right place",
+    "blurb": "classes, clubs, events, and administration with role-based access.",
+    "story": [
+        "react campus app with student, faculty, department, and admin workflows. includes timetables, enrolment, attendance, clubs, and event tickets.",
+        "web demo and firestore rules were tested. native projects are generated but untested on devices; production cloud-function integration is still pending."
+    ],
+    "stack": [
+        "React",
+        "Firebase",
+        "Capacitor",
+        "TypeScript"
+    ],
+    "page": 101,
+    "url": "https://github.com/sykeriin/commons"
+},
+{
+    "slug": "hike-m",
+    "title": "hike-m",
+    "tagline": "a little hiker, a very long walk",
+    "blurb": "a procedural walk through rainbow mountains to a mirror lake.",
+    "story": [
+        "terrain, weather, wildlife, and sound are generated in code and bundled into one html file.",
+        "the hiker walks automatically; you can take over, look around, and watch the scene move from dawn to a starry night."
+    ],
+    "stack": [
+        "Three.js",
+        "WebGL2",
+        "Procedural art",
+        "Web Audio"
+    ],
+    "page": 105,
+    "url": "https://github.com/sykeriin/hike-m"
+},
   {
     slug: 'alter',
     title: 'ALTER',
@@ -255,6 +487,21 @@ export const projects: Project[] = [
     ],
     stack: ['React', 'Vite', 'PWA', 'Local-first'],
     page: 53,
+  },
+  {
+    slug: 'federated-healthcare', title: 'Federated Healthcare',
+    tagline: 'train across clinics without pooling patient records',
+    blurb: 'a hackathon simulation of learning across constrained devices and networks.',
+    story: ['models collaboration between clinics using federated learning, svd compression, and simulated slow or unreliable connections.', 'uses heart-disease data with a synthetic fallback. this is a research simulation, not a clinically validated system.'],
+    stack: ['Python', 'Federated learning', 'SVD', 'Network simulation'],
+    page: 109, url: 'https://github.com/sykeriin/federated-healthcare',
+  },
+  {
+    slug: 'anemi', title: 'Anemi',
+    tagline: 'a spinning wheel for what to do first',
+    blurb: 'a small decision-making experiment.',
+    story: ['a spinning wheel to help choose what to do first.', 'built with react and vite. a little browser project alongside the larger experiments.'],
+    stack: ['React', 'Vite'], page: 113, url: 'https://github.com/sykeriin/anemi',
   },
 ]
 

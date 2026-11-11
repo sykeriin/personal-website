@@ -5,9 +5,9 @@ import * as THREE from 'three'
 import type { InkPalette } from '../three/theme'
 import { makeToonGradient } from '../three/toonGradient'
 import { notes } from '../content/notes'
-import { achievements, projects, socials } from '../data/content'
+import { achievements, socials } from '../data/content'
 import { usePresence } from '../hooks/usePresence'
-import { PROJECT_ACCENTS, sideAccent, type SceneKey } from './manifest'
+import { PROJECT_ACCENTS, PROJECT_BOOKS, sideAccent, type SceneKey } from './manifest'
 import { Figure } from './Figure'
 import { FractalPlane } from './Fractal'
 import { Book } from './BookCover'
@@ -918,33 +918,6 @@ function WorkshopScene({ mats, explore }: { mats: Mats; explore: boolean }) {
 
 /* ------------------------------------------------------------------ shelf */
 
-/** A filler book on the shelf: spine out, plate-family colours. */
-function Spine({
-  mats,
-  material,
-  h,
-  lean = 0,
-}: {
-  mats: Mats
-  material: THREE.MeshToonMaterial
-  h: number
-  lean?: number
-}) {
-  return (
-    <group rotation={[0, 0, lean]}>
-      <mesh position={[0, h / 2, 0]} material={material}>
-        <boxGeometry args={[0.16, h, 0.62]} />
-      </mesh>
-      <mesh position={[0, h - 0.09, 0]} material={mats.paper}>
-        <boxGeometry args={[0.17, 0.05, 0.63]} />
-      </mesh>
-      <mesh position={[0, 0.12, 0]} material={mats.paper}>
-        <boxGeometry args={[0.17, 0.05, 0.63]} />
-      </mesh>
-    </group>
-  )
-}
-
 /**
  * A project as a volume: its plate colour, its name down the spine. Pick it up
  * (the hotspot goes active) and it pops off the shelf and falls open — a page
@@ -1148,20 +1121,6 @@ function CaseScene({ mats, explore }: { mats: Mats; explore: boolean }) {
     ) as Record<string, THREE.MeshToonMaterial>
   }, [])
 
-  const shelfBooks: Array<{ slug: string; title: string; h: number; x: number; lean?: number }> = [
-    { slug: 'alter', title: 'alter', h: 1.3, x: -2.0 },
-    { slug: 'chainguard', title: 'chainguard', h: 1.45, x: -1.62, lean: 0.0 },
-    { slug: 'verdant', title: 'verdant', h: 1.2, x: -1.28, lean: -0.12 },
-    { slug: 'fly-drums', title: 'fly drums', h: 1.1, x: -0.05 },
-    { slug: 'scenario', title: 'scenario', h: 1.2, x: 0.35, lean: -0.08 },
-  ]
-  const lowerBooks: Array<{ slug: string; title: string; h: number; x: number; lean?: number }> = [
-    { slug: 'cloudsense', title: 'cloudsense', h: 1.35, x: -0.6 },
-    { slug: 'roadsense', title: 'roadsense', h: 1.25, x: -0.22, lean: 0.1 },
-    { slug: 'shadowbox', title: 'shadowbox', h: 1.15, x: 1.6, lean: 0.12 },
-    { slug: 'arena', title: 'arena', h: 1.0, x: 2.3 },
-  ]
-
   // Spread genuinely across the wall this time — the room is 13 units wide
   // (edges at ±6.5), and the case only occupies the middle third of that
   // (-1.96 to 2.36), so the last attempt's ±3-4 range still left most of
@@ -1272,73 +1231,22 @@ function CaseScene({ mats, explore }: { mats: Mats; explore: boolean }) {
             scale={0.34}
           />
         </group>
-        <group position={[2.15, 2.4, 0]} rotation={[0, 0.2, 0]}>
-          <mesh position={[0, 0.18, 0]} rotation={[0, 0, 0.5]} material={mats.tone}>
-            <boxGeometry args={[0.42, 0.42, 0.3]} />
-          </mesh>
-        </group>
-
-        {/* top shelf: three volumes and some company */}
-        {shelfBooks.map((book) => (
-          <Hotspot key={book.slug} id={`proj-${book.slug}`} enabled={explore}>
-            <group position={[book.x, 0.68, 0]}>
-              <ProjectBook
-                mats={mats}
-                material={bookMats[book.slug]}
-                title={book.title}
-                tagline={projects.find((p) => p.slug === book.slug)?.tagline}
-                h={book.h}
-                lean={book.lean}
-                active={active === `proj-${book.slug}`}
-              />
-            </group>
-          </Hotspot>
-        ))}
-        <group position={[-0.85, 0.68, 0]}>
-          <Spine mats={mats} material={mats.tone} h={1.0} lean={-0.16} />
-        </group>
-        <group position={[-0.55, 0.68, 0]}>
-          <Spine mats={mats} material={mats.dim} h={1.1} />
-        </group>
-
-        {/* the mantle: the cup, podium finishes only */}
         <Hotspot id="shelf-trophy" enabled={explore}>
-          <group position={[1.5, 0.68, 0]} scale={1.2}>
+          <group position={[2.15, 2.4, 0]} scale={0.7}>
             <Trophy mats={mats} />
           </group>
         </Hotspot>
 
-        {/* bottom shelf: two volumes leaning into fillers */}
-        {lowerBooks.map((book) => (
+        {PROJECT_BOOKS.map((book) => (
           <Hotspot key={book.slug} id={`proj-${book.slug}`} enabled={explore}>
-            <group position={[book.x, -1.04, 0]}>
-              <ProjectBook
-                mats={mats}
-                material={bookMats[book.slug]}
-                title={book.title}
-                tagline={projects.find((p) => p.slug === book.slug)?.tagline}
-                h={book.h}
-                lean={book.lean}
-                active={active === `proj-${book.slug}`}
-              />
+            <group position={[book.x, book.y, 0]}>
+              <ProjectBook mats={mats} material={bookMats[book.slug] ?? mats.accent}
+                title={book.title.toLowerCase()} tagline={book.tagline} h={book.h}
+                active={active === `proj-${book.slug}`} />
             </group>
           </Hotspot>
         ))}
-        {[
-          [-2.3, 1.2, 0],
-          [-2.05, 1.35, 0],
-          [0.55, 1.05, -0.14],
-          [0.85, 0.9, 0],
-        ].map(([x, h, lean]) => (
-          <group key={x} position={[x, -1.04, 0]}>
-            <Spine
-              mats={mats}
-              material={[mats.tone, mats.dim, mats.hueA, mats.hueB][Math.abs(Math.round(x * 7)) % 4]}
-              h={h}
-              lean={lean}
-            />
-          </group>
-        ))}
+
       </group>
 
       {/* him, browsing */}

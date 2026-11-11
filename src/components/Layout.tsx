@@ -11,6 +11,7 @@ import { PageTurns } from './PageTurns'
 import { RevealPanel } from './RevealPanel'
 import { BookReader } from './BookReader'
 import { EntryGate, hasEntered } from './EntryGate'
+import { ExploreHelp } from './ExploreHelp'
 import { LoadIndicator } from './LoadIndicator'
 
 /** three.js lives behind a dynamic import, so the paper tier never downloads it. */
@@ -121,6 +122,7 @@ export function Layout() {
       {explore ? <BookReader /> : null}
 
       <PageTurns />
+      {entered ? <ExploreHelp pathname={location.pathname} explore={explore} /> : null}
       {!entered ? (
         <EntryGate
           reduceMotion={reduceMotion}

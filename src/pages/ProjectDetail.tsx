@@ -68,7 +68,7 @@ export function ProjectDetail() {
 
       {project.url ? (
         <a className="cta" href={project.url} target="_blank" rel="noreferrer">
-          open the live thing
+          {project.url.includes('github.com/') ? 'see the code on github' : 'open the live thing'}
         </a>
       ) : null}
 

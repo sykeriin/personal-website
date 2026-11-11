@@ -1,0 +1,52 @@
+.explore-help {
+  position: fixed;
+  left: clamp(.75rem, 2.5vw, 2rem);
+  bottom: 3rem;
+  z-index: 46;
+  width: min(20rem, calc(100vw - 7rem));
+  pointer-events: auto;
+  font-family: var(--font-mono);
+  font-size: .75rem;
+  color: var(--ink);
+}
+.explore-help button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  min-height: 44px;
+  padding: .5rem .75rem;
+  border: 1px solid var(--ink);
+  background: var(--paper);
+}
+.explore-help button:focus-visible, .explore-help a:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+.explore-help__note {
+  padding: .8rem;
+  border: 1px solid var(--ink);
+  border-left: 4px solid var(--accent);
+  background: var(--paper);
+  line-height: 1.6;
+}
+.explore-help__label { text-transform: uppercase; letter-spacing: .09em; font-size: .65rem; }
+.explore-help__note p { margin: .5rem 0; }
+.explore-help__note a { text-decoration: underline; }
+.explore-help__browse { margin-bottom: .4rem; }
+.explore-help__restore { display: block; }
+.explore-help__books {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  max-height: min(50vh, 24rem);
+  overflow-y: auto;
+  background: var(--paper);
+  border: 1px solid var(--ink);
+  padding: .4rem;
+  gap: .3rem;
+}
+.explore-help__books button { text-align: left; overflow-wrap: anywhere; }
+.explore-help__books button:hover { background: var(--ink); color: var(--paper); }
+.shell[data-chrome='paper'] .explore-help { position: relative; bottom: auto; margin: 1rem 0 5rem; width: min(24rem, calc(100% - 2rem)); }
+@media (max-width: 47.99rem) {
+  .explore-help { bottom: 6.5rem; width: min(20rem, calc(100vw - 2rem)); }
+}

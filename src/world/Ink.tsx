@@ -59,7 +59,7 @@ export function Door({ to, children }: { to: string; children: ReactNode }) {
       onClick={(event) => {
         event.stopPropagation()
         const target = event.nativeEvent.target as HTMLElement | null
-        if (target?.closest?.('a,button,input,.chapter,.edge-tabs,.reveal,.page-turn')) return
+        if (target?.closest?.('a,button,input,.chapter,.edge-tabs,.explore-help,.book-reader,.reveal,.page-turn')) return
         hover(false)
         worldNav.go(to)
       }}
@@ -96,7 +96,7 @@ export function Hotspot({
 
   const fromOverlay = (event: { nativeEvent: Event }) => {
     const target = event.nativeEvent.target as HTMLElement | null
-    return Boolean(target?.closest?.('a,button,input,.chapter,.edge-tabs,.reveal'))
+    return Boolean(target?.closest?.('a,button,input,.chapter,.edge-tabs,.explore-help,.book-reader,.reveal'))
   }
 
   return (
