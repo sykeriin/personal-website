@@ -27,10 +27,10 @@ export const site = {
   email: 'durva.s170@gmail.com',
   linkedin: 'https://www.linkedin.com/in/durva-s/',
   github: 'https://github.com/sykeriin',
-  coverHook: 'year two. still messing around.',
+  coverHook: 'building the parts of ai systems that tend to break.',
   coverLine:
-    "cse at mahe blr. i build apps, agents, and half-broken pipelines until they behave. sometimes they do. sometimes i learn why they didn't.",
-  currentlyBuilding: 'petally internship, voice os experiments, sleep (eventually)',
+    "cse at manipal institute of technology, bengaluru. i build ai systems, learn by making projects, and keep exploring the questions that could lead me into research.",
+  currentlyBuilding: 'ai systems, agent security, inference, and research experiments',
 }
 
 export const sfxTags = ['BAM', 'CLANG', 'THWIP', 'ZING', 'GASP', 'SNAP'] as const
@@ -88,19 +88,19 @@ export const origin = {
   panels: [
     {
       title: 'hi, i’m durva',
-      body: "second year cse at mahe blr. i like making things people can actually use. an app someone opens. a model that finds junk on a runway. a hackathon demo that doesn't die mid-pitch.",
+      body: "i study computer science at manipal institute of technology, bengaluru. i learn by building: from agent tools and inference systems to a pipeline that spots debris on a runway.",
     },
     {
       title: 'what i’m into',
-      body: "ai and software, mostly. sometimes a paper rabbit hole. sometimes i just ship so my brain shuts up. i change my mind a lot. that's allowed.",
+      body: "ai research and the systems around it. i like reading a paper, rebuilding an idea, and finding out where it breaks. i'm still exploring what else in tech excites me.",
     },
     {
       title: 'school',
-      body: 'b.tech cse, mahe bengaluru. around may 2029. year two feels less like surviving orientation and more like “wait, i can build stuff now.”',
+      body: 'b.tech in computer science and engineering at manipal institute of technology, bengaluru. expected may 2029.',
     },
     {
       title: 'outside class',
-      body: "neuraai + innovation centre committees. random visual work for the pvc's office. volunteered at supercomputing india. founded a mun club in school because of course i did.",
+      body: "vice president at neuraai and working committee member at the mahe innovation centre. i also make visual work, play guitar, and train muay thai.",
     },
   ],
   pullQuote: 'i stay up because one more fix feels closer than sleep.',
@@ -111,12 +111,12 @@ export const experiences: Experience[] = [
     id: 'petally',
     role: 'Founding Software and AI Integration Engineer',
     org: 'PetAlly',
-    period: '2026 - Present',
-    headline: 'helping pet people find other pet people (and useful stuff nearby).',
+    period: 'Mar 2026 - Sep 2026',
+    headline: 'recommendations and ai features for a pet-owner community.',
     url: 'https://mypetally.com/',
     story: [
-      "interning at petally. community app for pet owners. recommendations, local services, that whole find-your-people thing.",
-      "lots of screens and flows and making sure it doesn't feel empty. nice building something someone might open after work.",
+      "built the recommendation system and integrated ai features across petally's website and mobile app, including a chatbot and pet mood journal.",
+      "developed pet-health tracking, engagement scoring, activity streaks and pawpoints rewards. contributed to app ui, the landing page, and aws ci/cd.",
     ],
   },
   {
@@ -124,10 +124,10 @@ export const experiences: Experience[] = [
     role: 'OpenCV Preprocessing Lead',
     org: 'HAWKEYE',
     period: 'May 2026 - Present',
-    headline: 'finding debris on iaf runways. from a moving vehicle. stressful in a cool way.',
+    headline: 'computer-vision preprocessing for an indian air force runway debris detection system.',
     story: [
-      "worked with the indian air force on fod detection. three raspberry pi camera feeds, three yolov26 models (yolov26n, yolov26n, yolov26m) running under a single-inference-engine scheduler that round-robins between them. if the frames going in are trash, the model is just confidently wrong.",
-      "old motion pipeline was broken. i led opencv preprocessing, ripped it out, rebuilt a static-frame path: bilateral filter, clahe, crop the useless top, skip frames so the jetson doesn't melt.",
+      "led the preprocessing pipeline for an indian air force runway foreign-object-debris detection project, integrating three raspberry pi camera feeds into a consistent stream for downstream detection.",
+      "built a modular preprocessing and visualisation workflow with bilateral denoising, clahe, region-of-interest cropping and frame skipping; structured the frontend for model integration and live feed inspection.",
       "that's my favorite kind of problem. something stuck in the real world, and you get to unstick it.",
     ],
   },
@@ -496,7 +496,7 @@ export const projects: Project[] = [
       'built for PowerNext-AI 2026: import transformer readings and explore a 3D twin, health indicators, diagnosis, and maintenance advice.',
       'uses an IEC 60076-7 thermal and ageing model, with simulated scenarios and a dashboard for replaying the data. generated data is labelled as simulated.',
     ],
-    stack: ['Python', 'FastAPI', 'React', 'Digital twin'], page: 109,
+    stack: ['Python', 'FastAPI', 'React', 'Digital twin'], award: '2ND', page: 109,
   },
 
 ]
@@ -508,6 +508,8 @@ export const skills = {
     'Agentic AI',
     'PyTorch',
     'OpenCV',
+    'PyTorch',
+    'Hugging Face Transformers',
     'YOLOv8',
     'scikit-learn',
     'Prophet',
@@ -521,6 +523,7 @@ export const skills = {
     'Flutter',
     'React.js',
     'FastAPI',
+    'Next.js',
     'Flask',
     'Playwright',
     'SQLAlchemy',
@@ -531,6 +534,8 @@ export const skills = {
     'AWS',
     'Docker',
     'PostgreSQL',
+    'SQLite',
+    'Linux',
     'Redis',
     'Supabase',
     'SQLCipher',
@@ -542,13 +547,15 @@ export const skills = {
 export const achievements = [
   { stamp: 'TOP 32', label: 'Zenith26. Top 32 / 1,000+ teams. 2026' },
   { stamp: '1ST', label: 'ChainGuard OTA. MAHE Mobility Hackathon 2026' },
+  { stamp: '2ND', label: 'PowerNext (CPRI) 2026' },
   { stamp: '2ND', label: 'UI/UX Sprint. Tech Solstice 2026' },
   { stamp: 'TOP 10', label: 'IQOO Hackathon. 2026' },
   { stamp: 'TOP 10', label: 'Point Blank CTF' },
 ]
 
 export const leadership = [
-  'Vice President — NeuraAI & ALT+R (Fashion Club), MIT Bengaluru',
+  'Vice President — NeuraAI, MIT Bengaluru',
+  'Working Committee — MAHE Innovation Centre',
   "Visual assets for the Pro-Vice Chancellor's office, MAHE (2025-2026)",
   'Sergeant at Arms — MAHE Bengaluru Toastmasters Club',
   'Volunteer: SuperComputing India (Dec 2025)',
@@ -619,7 +626,7 @@ export const creative = {
 } as const
 
 export const funThings =
-  'muay thai, guitar, runs, hikes, fashion tech, cosplay. when my brain is soup i hit pads or a trail until it un-soups a little.'
+  'muay thai, guitar, dance, fashion and visual design, poetry — and a long walk when i need to clear my head.'
 
 /**
  * Socials, one place. Empty string = not published yet; UI skips it. Twitter

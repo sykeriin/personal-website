@@ -105,7 +105,7 @@ const ROUTES: RouteEntry[] = [
     scene: 'workshop',
     sfx: 'CLANG',
     accent: '#12a5b8',
-    description: 'petally internship, and leading opencv preprocessing on iaf runway debris detection.',
+    description: 'petally software and ai work, and opencv preprocessing for runway debris detection.',
   },
   {
     path: '/projects',

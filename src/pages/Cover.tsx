@@ -43,7 +43,7 @@ export function Cover() {
         >
           <span className="fork__label">cover a</span>
           <span className="fork__title">the tech side</span>
-          <span className="fork__blurb">apps, agents, pipelines that eventually behave</span>
+          <span className="fork__blurb">ai systems, research experiments, and things built to work</span>
           <span className="fork__go">open it →</span>
         </Link>
         <Link

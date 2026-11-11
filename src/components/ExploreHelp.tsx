@@ -17,7 +17,7 @@ export function ExploreHelp({ pathname, explore }: { pathname: string; explore: 
   const [seen, setSeen] = useState(readSeen)
   const [showHelp, setShowHelp] = useState(false)
   const [browse, setBrowse] = useState(false)
-  const kind = !explore ? 'paper' : pathname === '/' ? 'entrance' : pathname === '/projects' ? 'books' : 'room'
+  const kind = pathname === '/' ? 'entrance' : !explore ? 'paper' : pathname === '/projects' ? 'books' : 'room'
 
   function remember(id: string) {
     setSeen((previous) => previous.includes(id) ? previous : [...previous, id])

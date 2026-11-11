@@ -13,7 +13,7 @@ export function Projects() {
     <main className="chapter">
       <ChapterHead eyebrow={entry.label} title={entry.title} page={entry.page} />
 
-      <p className="lede">stuff that actually left my laptop. pick one up.</p>
+      <p className="lede">ai systems, research experiments, and other things i built. pick one up.</p>
 
       <div className="panel-grid">
         {projects.map((project) => (
