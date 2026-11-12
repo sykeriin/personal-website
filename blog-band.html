@@ -145,7 +145,7 @@ const POSTS = [
 ];
 const HELLO = 'Welcome to my blog. Click the cassette tapes.';
 const POKES = [['wave', 'Hey.'], ['point', 'The tapes are on the shelf. Up there.'], ['walk', 'I also shoot, direct and write poems. It’s a lot.'], ['wave', 'Poke me again. I dare you.']];
-['idle','idle2','walk1','walk2','wave1','wave2','point','headphones','guard','guitar1','guitar2','dL','dR','dK','dance1','dance2','dance3','cross1','cross2','six1','six2','jump','sit'].forEach(p => { const im = new Image(); im.src = SPR(p); });
+['idle','idle2','walk1','walk2','wave1','wave2','point','headphones','guard','guitar1','guitar2','dL','dR','dK','dance1','dance2','dance3','cross1','cross2','six1','six2','jump','hand1','hand2','sit'].forEach(p => { const im = new Image(); im.src = SPR(p); });
 Object.entries({ ampBtn: 'Amp', boomBtn: 'Boombox', guitarBtn: 'Guitar', danceBtn: 'Dance floor', drumBtn: 'Drums' }).forEach(([id, t]) => { $(id).dataset.tip = t; });
 const live = POSTS.filter(p => !p.soon);
 
@@ -265,7 +265,7 @@ function drawBack() {
   const tuft = (x, y, k, seed) => { for (let b = 0; b < 9; b++) { const r = rnd(seed, b), lean = (b - 4) * 7 * k + (r - .5) * 8, hh = (34 + r * 30) * k, bx = x + (b - 4) * 3.2 * k; g.beginPath(); g.moveTo(bx - 2.4 * k, y); g.quadraticCurveTo(bx + lean * .25, y - hh * .6, bx + lean, y - hh); g.quadraticCurveTo(bx + lean * .3 + 2.2 * k, y - hh * .55, bx + 2.4 * k, y); g.closePath(); paint(g, lg(g, 0, y - hh, 0, y, [[0, '#f1f1ee'], [1, '#a4a4a0']]), .9, 'rgba(11,11,12,.75)'); } };
   if (!phone || true) for (const [tx, ty, tk, ts] of [[34, FL + 18, 1.2, 1], [392, FL + 14, 1, 2], [630, FL + 16, .9, 3], [1010, FL + 24, 1.1, 4], [1352, FL + 20, 1, 5], [1548, FL + 22, 1.2, 6], [250, yB > FL + 150 ? FL + 100 : FL + 60, 1.4, 7], [1180, FL + 118, 1.3, 8]]) { soft(g, tx, ty + 2, 34 * tk, 5, .24); tuft(g, tx, ty, tk * 1.55, ts); }
   /* guitar lead */
-  g.beginPath(); g.moveTo(gx - 64, 640); g.bezierCurveTo(gx - 120, 720, L.amp.x + L.amp.w + 90, 730, L.amp.x + L.amp.w - 6, 668); g.lineWidth = 2.4; g.strokeStyle = '#26262a'; g.stroke();
+  if (!guitarOut) { g.beginPath(); g.moveTo(gx - 64, 640); g.bezierCurveTo(gx - 120, 720, L.amp.x + L.amp.w + 90, 730, L.amp.x + L.amp.w - 6, 668); g.lineWidth = 2.4; g.strokeStyle = '#26262a'; g.stroke(); }
 }
 
 /* ---------- things that move or glow: drawn each frame while the room is busy ---------- */
@@ -356,7 +356,7 @@ function drawFx(t) {
   const g = fg; g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, W, H); camTransform(g);
   drawAmp(g, t); drawBoombox(g, t); drawKit(g);
   if (playing && !reduce) { g.fillStyle = INK; g.font = '800 26px Archivo'; for (let k = 0; k < 4; k++) { const a = ((t * .55 + k / 4) % 1), x = L.box.x + 70 + k * 80 + Math.sin(a * 6 + k) * 14, y = L.box.y - 30 - a * 150; g.globalAlpha = 1 - a; g.fillText(k % 2 ? '♫' : '♪', x, y); } g.globalAlpha = 1; }
-  if (state === 'guitar') { const bob = reduce ? 0 : Math.sin(t * 9) * .035; g.save(); g.translate(meX - 22, L.meB - L.meH * .47); g.rotate(1.18 - bob); g.scale(.95, .95); g.translate(-L.guitar, -592); drawGuitar(g, L.guitar); g.restore(); }
+  if (state === 'guitar') { const bob = reduce ? 0 : Math.sin(t * 9) * .035; g.save(); g.translate(meX - 22, L.meB - L.meH * .47); g.rotate(1.18 - bob); g.scale(.95, .95); g.translate(-L.guitar, -592); drawGuitar(g, L.guitar); g.restore(); { const jx = meX - 96, jy = 490, ax = L.amp.x + L.amp.w - 2, ay = L.amp.y + L.amp.h - 34; g.beginPath(); g.moveTo(jx, jy); g.bezierCurveTo(jx - 8, jy + 110, ax + 90, L.floor + 40, ax, ay); g.lineCap = 'round'; g.strokeStyle = '#0b0b0c'; g.lineWidth = 4.4; g.stroke(); g.strokeStyle = 'rgba(255,255,255,.22)'; g.lineWidth = 1.2; g.stroke(); oval(g, jx, jy, 5, 5); paint(g, CHROME(g, jx - 5, jy - 5, jx + 5, jy + 5), 1); oval(g, ax, ay, 5, 5); paint(g, CHROME(g, ax - 5, ay - 5, ax + 5, ay + 5), 1); } }
   if (state === 'guitar' && !reduce) { const cx = meX + 70, cy = 560; g.strokeStyle = RED; g.lineWidth = 3; g.lineCap = 'round'; for (let k = 0; k < 3; k++) { const a = ((t * 1.2 + k / 3) % 1); g.globalAlpha = 1 - a; g.beginPath(); g.arc(cx, cy, 30 + a * 90, -.7, .7); g.stroke(); } g.globalAlpha = 1; }
   if (state === 'dance' || discoOn) {
     const bx = L.me.dance, by = 190, sp = t * 1.4; line(g, [[bx, -20], [bx, by - 40]], 2, '#4b4b50'); oval(g, bx, by, 40, 40); paint(g, rg(g, bx - 12, by - 14, 3, 44, [[0, '#ffffff'], [.5, '#cfcfca'], [1, '#6d6d72']]), 1.8);
@@ -402,7 +402,7 @@ const sprite = $('sprite'), me = $('me'), bubble = $('bubble'); let sayTimer = 0
 let drumF = 'dL', shown = '', walking = false;
 const frameFor = t => { const k = reduce ? 0 : t;
   if (walking) return Math.floor(k * 8) % 2 ? 'walk1' : 'walk2';
-  if (state === 'dance') return ['dance1', 'cross1', 'cross2', 'cross1', 'cross2', 'dance2', 'six1', 'six2', 'six1', 'six2', 'jump', 'dance3', 'dance2', 'jump'][Math.floor(k * 5.5) % 14];
+  if (state === 'dance') return ['dance1', 'cross1', 'cross2', 'cross1', 'cross2', 'six1', 'six2', 'six1', 'six2', 'jump', 'hand1', 'hand1', 'hand2', 'hand2', 'hand1', 'jump', 'dance3'][Math.floor(k * 5) % 17];
   if (state === 'guitar') return playing ? (Math.floor(k * 9) % 2 ? 'guitar1' : 'guitar2') : 'guitar1';
   if (state === 'drums') return drumF;
   if (state === 'reading') return 'headphones';
@@ -458,7 +458,7 @@ addEventListener('keydown', e => { if (e.key === 'Escape') closeDeck(); });
 let pk = 0;
 $('poke').addEventListener('click', () => { if (state !== 'idle') return; const [pose, line] = POKES[pk++ % POKES.length]; me.classList.remove('hop'); void me.offsetWidth; me.classList.add('hop'); say(line, pose, 2800); });
 $('guitarBtn').addEventListener('click', async () => {
-  if (state !== 'idle') return; state = 'guitar'; guitarOut = true; drawBack(); $('guitarBtn').hidden = true; moveMe(L.me.guitar - 50); say('Okay. Listen.', 'guitar', 0); startLoop();
+  if (state !== 'idle') return; state = 'guitar'; guitarOut = true; drawBack(); $('guitarBtn').hidden = true; moveMe(L.me.guitar - 90); say('Okay. Listen.', 'guitar', 0); startLoop();
   await sleep(reduce ? 0 : 700); me.classList.add('strum'); playing = true; await sleep(reduce ? 0 : 5200); me.classList.remove('strum');
   guitarOut = false; playing = false; state = 'idle'; drawBack(); placeAll(); moveMe(L.me.idle); pan(690); say('That’s the one I know.', 'wave', 2600); startLoop(true);
 });
@@ -470,7 +470,7 @@ $('drumBtn').addEventListener('click', async () => {
 });
 $('danceBtn').addEventListener('click', async () => {
   if (state !== 'idle') return; state = 'dance'; moveMe(L.me.dance); say('Okay. One song.', 'wave', 0); playing = true; discoOn = true; startLoop(); await sleep(reduce ? 0 : 500); me.classList.add('dance');
-  await sleep(reduce ? 0 : 7600);
+  await sleep(reduce ? 0 : 8400);
   me.classList.remove('dance'); playing = false; discoOn = false; state = 'idle'; moveMe(L.me.idle); pan(690); say('Okay, that’s enough.', 'idle', 2400); startLoop(true);
 });
 $('ampBtn').addEventListener('click', () => { if (state !== 'idle') return; playing = !playing; say(playing ? 'Turned up. Hum only, sorry.' : 'Turned it down.', 'point', 2400); startLoop(!playing); });

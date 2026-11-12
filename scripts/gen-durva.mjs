@@ -56,7 +56,7 @@ function legs(g, p) {
 }
 function arms(g, p) {
   const sh = [[7.5, 19.5 + p.dy], [24.5, 19.5 + p.dy]];
-  [0, 1].forEach(i => { const side = i ? 1 : -1, r = (() => { const d = Math.hypot(p.h[i][0] - sh[i][0], p.h[i][1] - sh[i][1]), l = Math.min(6.6, Math.max(d / 2 * 1.05, 4)); return ik(sh[i], p.h[i], l, l, side, 1, 1.5); })(), mask = new Set();
+  [0, 1].forEach(i => { const side = i ? 1 : -1, r = (() => { const d = Math.hypot(p.h[i][0] - sh[i][0], p.h[i][1] - sh[i][1]), l = p.al || Math.min(6.6, Math.max(d / 2 * 1.05, 4)); return ik(sh[i], p.h[i], l, l, side, 1, 1.5); })(), mask = new Set();
     stampPath(mask, [sh[i], r.e, r.h], 1.75); const hx = Math.round(r.h[0]), hy = Math.round(r.h[1]); for (let y = hy - 1; y <= hy + 1; y++) for (let x = hx - 1; x <= hx + 1; x++) if (inb(x, y)) mask.add(x + ',' + y);
     layer(g, mask, SKIN, true);
     if (p.stick && p.stick[i]) { const s = p.stick[i], sx = hx + (i ? -1 : 1), tip = [[sx, hy - 1], [sx + (i ? -1 : 1), hy - 2], [sx + (i ? -2 : 2), hy - 3], [sx + (i ? -3 : 3), hy - 4], [sx + (i ? -4 : 4), hy - 5]].slice(0, s); for (const [x, y] of tip) if (inb(x, y)) g[y][x] = STICK; } });
@@ -65,7 +65,7 @@ function arms(g, p) {
 function make(p) {
   const g = blank(); p = { dy: 0, hy: 28, f: [[11, 46], [21, 46]], ...p };
   legs(g, p); body(g, p.dy, p.hp); arms(g, p); if (p.blink) blink(g, p.dy);
-  return g;
+  return p.flip ? g.slice().reverse() : g;
 }
 
 /* hands are in sprite pixels: x 0..31, y 0..47 */
@@ -85,6 +85,7 @@ const FRAMES = {
   dance3: { f: [[11, 44], [21, 46]], h: [[5, 27], [29, 12]] },
   cross1: { f: [[18, 46], [13, 45]], h: [[3, 25], [29, 20]] }, cross2: { f: [[19, 45], [14, 46]], h: [[3, 20], [29, 25]] },
   six1: { dy: 12, hy: 40, f: [[4, 46], [27, 46]], k: [[7, 43], [25, 43]], h: [[7, 45], [24, 38]] }, six2: { dy: 12, hy: 40, f: [[26, 46], [6, 46]], k: [[24, 43], [8, 43]], h: [[8, 38], [25, 45]] },
+  hand1: { flip: true, al: 10, f: [[7, 46], [25, 46]], h: [[9, 0], [23, 0]] }, hand2: { flip: true, al: 10, f: [[12, 46], [20, 46]], h: [[9, 0], [23, 0]] },
   jump: { f: [[11, 41], [21, 41]], h: [[2, 11], [30, 11]] },
   sit: { dy: 6, hy: 34, f: [[10, 46], [22, 46]], k: [[10, 40], [22, 40]], h: [[10, 34], [22, 34]] }
 };
