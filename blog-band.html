@@ -452,7 +452,7 @@ async function playTape(el, p) {
 }
 function openDeck(p) {
   const reel = '<svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18" fill="#f4f2ec"/><circle cx="20" cy="20" r="7" fill="#0b0b0c"/>' + [0, 1, 2].map(k => `<rect x="18.4" y="1.6" width="3.2" height="9" fill="#0b0b0c" transform="rotate(${k * 120} 20 20)"/>`).join('') + '</svg>';
-  $('jc').innerHTML = `<div class="reels">${reel}<span>Now playing</span>${reel}</div><h2>${esc(p.title)}</h2><p class="meta">${esc(p.date)} · ${esc(p.tag)}</p><div class="body">${p.body.map(t => `<p>${esc(t)}</p>`).join('')}</div><div class="ctl"><button id="eject" type="button">Eject the tape</button><a href="/blog.html">Quiet version</a></div>`;
+  $('jc').innerHTML = `<div class="reels">${reel}<span>Now playing</span>${reel}</div><h2>${esc(p.title)}</h2><p class="meta">${esc(p.date)}</p><div class="body">${p.body.map(t => `<p>${esc(t)}</p>`).join('')}</div><div class="ctl"><button id="eject" type="button">Eject the tape</button><a href="/blog.html">Quiet version</a></div>`;
   const d = $('deck'); d.classList.add('open'); d.setAttribute('aria-hidden', 'false'); d.scrollTop = 0; history.replaceState(null, '', '#/' + p.slug); $('eject').onclick = closeDeck; setTimeout(() => $('eject').focus({ preventScroll: true }), 600);
 }
 async function closeDeck() {
