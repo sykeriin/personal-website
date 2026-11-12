@@ -29,7 +29,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 #fx{pointer-events:none;z-index:6}
 .word{position:absolute;z-index:3;font-weight:900;font-stretch:112%;text-transform:uppercase;letter-spacing:-.06em;line-height:.82;color:var(--red);pointer-events:none}
 .me{position:absolute;z-index:4;transform-origin:50% 100%}
-.me img{display:block;width:100%;height:100%;image-rendering:pixelated;pointer-events:none;filter:drop-shadow(0 6px 6px rgba(11,11,12,.28)) contrast(1.04) saturate(.92)}
+.me img{display:none;width:100%;height:100%;image-rendering:pixelated;pointer-events:none;filter:drop-shadow(0 6px 6px rgba(11,11,12,.28)) contrast(1.04) saturate(.92)}
 .stage::before{content:'';position:absolute;inset:0;z-index:5;pointer-events:none;opacity:.35;mix-blend-mode:multiply;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .5 0 0 0 0 .5 0 0 0 .45 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
 .me button{position:absolute;inset:8% 24% 0}
 .me::after{content:'';position:absolute;left:12%;right:12%;bottom:-1%;height:5%;background:rgba(11,11,12,.2);border-radius:50%;z-index:-1}
@@ -142,7 +142,7 @@ const POSTS = [
 ];
 const HELLO = 'Hi. Put a tape in the boombox, grab the guitar, hit the drums, or dance.';
 const POKES = [['wave', 'Hey.'], ['point', 'The tapes are on the shelf. Up there.'], ['walk', 'I also shoot, direct and write poems. It’s a lot.'], ['wave', 'Poke me again. I dare you.']];
-['idle', 'point', 'guitar', 'walk', 'sit', 'wave', 'headphones', 'guard', 'drums', 'drums2'].forEach(p => { const im = new Image(); im.src = SPR(p); });
+
 const live = POSTS.filter(p => !p.soon);
 $('foot').textContent = `${live.length} tape recorded, ${POSTS.length - live.length} still blank.`;
 
@@ -175,7 +175,7 @@ const hatch = (g, x, y, w, h, step, col, ang = 1) => { g.save(); g.beginPath(); 
 function camTransform(g) { g.setTransform(dpr * cam.s, 0, 0, dpr * cam.s, dpr * cam.ox, dpr * cam.oy); }
 
 function drawGuitar(g, gx) {
-    rrect(g, gx - 8, 296, 16, 224, 2); paint(g, lg(g, gx - 8, 0, gx + 8, 0, [[0, '#6b4a33'], [.5, '#8a6445'], [1, '#5a3d29']]), 1.6); for (let k = 0; k < 14; k++) line(g, [[gx - 8, 330 + k * 14], [gx + 8, 330 + k * 14]], .8, '#c8c4b8');
+    rrect(g, gx - 9, 296, 18, 224, 2); paint(g, lg(g, gx - 9, 0, gx + 9, 0, [[0, '#2a1d16'], [.5, '#4a362a'], [1, '#22170f']]), 1.6); for (let k = 0; k < 14; k++) line(g, [[gx - 9, 322 + k * 14], [gx + 9, 322 + k * 14]], 1, '#d8d6cc'); for (const k of [2, 4, 6, 8]) { oval(g, gx, 322 + k * 14 - 7, 2.2, 2.2); g.fillStyle = '#efeadb'; g.fill(); }
     rrect(g, gx - 13, 250, 26, 52, 4); paint(g, '#151518', 1.6); for (let k = 0; k < 3; k++) { oval(g, gx - 18, 262 + k * 14, 4, 4); paint(g, CHROME(g, gx - 22, 0, gx - 14, 0), .8); oval(g, gx + 18, 262 + k * 14, 4, 4); paint(g, CHROME(g, gx + 14, 0, gx + 22, 0), .8); }
     g.beginPath(); g.moveTo(gx - 30, 508); g.bezierCurveTo(gx - 48, 508, gx - 54, 548, gx - 42, 572); g.bezierCurveTo(gx - 32, 592, gx - 64, 604, gx - 64, 638); g.bezierCurveTo(gx - 64, 682, gx + 64, 682, gx + 64, 638); g.bezierCurveTo(gx + 64, 604, gx + 32, 592, gx + 42, 572); g.bezierCurveTo(gx + 54, 548, gx + 48, 508, gx + 30, 508); g.closePath();
     paint(g, rg(g, gx - 22, 560, 6, 120, [[0, '#ff4a60'], [.45, '#e0122d'], [1, '#8d0a1d']]), 2);
@@ -183,6 +183,10 @@ function drawGuitar(g, gx) {
     g.beginPath(); g.moveTo(gx - 30, 508); g.bezierCurveTo(gx - 48, 508, gx - 54, 548, gx - 42, 572); g.bezierCurveTo(gx - 32, 592, gx - 64, 604, gx - 64, 638); g.bezierCurveTo(gx - 64, 682, gx + 64, 682, gx + 64, 638); g.bezierCurveTo(gx + 64, 604, gx + 32, 592, gx + 42, 572); g.bezierCurveTo(gx + 54, 548, gx + 48, 508, gx + 30, 508); g.closePath(); g.lineWidth = 1.2; g.strokeStyle = 'rgba(255,200,205,.5)'; g.stroke();
     g.beginPath(); g.moveTo(gx - 6, 590); g.bezierCurveTo(gx - 40, 596, gx - 52, 640, gx - 24, 664); g.bezierCurveTo(gx + 6, 672, gx + 30, 640, gx + 16, 606); g.closePath(); paint(g, '#f4f2ec', 1.2);
     rrect(g, gx - 22, 556, 44, 9, 2); paint(g, '#151518', 1); rrect(g, gx - 22, 580, 44, 9, 2); paint(g, '#151518', 1); rrect(g, gx - 22, 650, 44, 6, 2); paint(g, CHROME(g, gx - 22, 0, gx + 22, 0), 1); for (const [kx, ky] of [[gx + 26, 628], [gx + 36, 644]]) { oval(g, kx, ky, 6, 6); paint(g, '#151518', 1); }
+    /* strings: nut to bridge, wound ones thicker, with a dark shadow so they read on the red */
+    rrect(g, gx - 8, 298, 16, 4, 1); g.fillStyle = '#efeadb'; g.fill();
+    for (let i = 0; i < 6; i++) { const xa = gx - 5.5 + i * 2.2, xb = gx - 12 + i * 4.8, w = 2 - i * .22; line(g, [[xa + 1, 302], [xb + 1, 654]], w + .6, 'rgba(11,11,12,.45)'); line(g, [[xa, 302], [xb, 654]], w, i < 3 ? '#d9b26a' : '#f4f4ef'); }
+    rrect(g, gx - 14, 651, 28, 4, 1); paint(g, '#f4f4ef', .8);
 }
 
 /* the still room: wall, floor, window light, shelf, crate, stand, rug, floor tiles */
@@ -319,11 +323,80 @@ function drawKit(g) {
   for (const k in hit) hit[k] = Math.max(0, hit[k] - .08);
 }
 
+/* ---------- Durva, drawn: a small skeleton with two-bone arms and legs, so he can really hold the guitar and hit the kit ---------- */
+const SKIN = '#c99f7b', TEE = '#f3f0e9', JKT = '#1c1c20', PANTS = '#1a1a1e';
+const strikes = { l: { p: null, t: -9 }, r: { p: null, t: -9 }, k: { t: -9 } }; let hopT = -9, walking = false;
+const pieceAt = p => { const K = L.drum; return ({ snare: [K - 90, 566], hat: [K - 215, 494], tom: [K - 62, 452], crash: [K - 110, 346], floor: [K + 215, 556], tom2: [K + 92, 452], ride: [K + 280, 412] })[p]; };
+function ik(ax, ay, tx, ty, l1, l2, side, wx, wy) {
+  let dx = tx - ax, dy = ty - ay, d = Math.hypot(dx, dy) || 1; const mx = l1 + l2 - .5; if (d > mx) { dx *= mx / d; dy *= mx / d; d = mx; }
+  const a = (l1 * l1 - l2 * l2 + d * d) / (2 * d), h = Math.sqrt(Math.max(0, l1 * l1 - a * a)), bx = ax + dx * a / d, by = ay + dy * a / d, px = -dy / d * h, py = dx / d * h;
+  const e1 = [bx + px, by + py], e2 = [bx - px, by - py], sc = e => side * e[0] * wx + e[1] * wy;
+  return { e: sc(e1) < sc(e2) ? e2 : e1, h: [ax + dx, ay + dy] };
+}
+function limb(g, pts, w, col) { g.lineCap = g.lineJoin = 'round'; g.beginPath(); pts.forEach((p, i) => i ? g.lineTo(p[0], p[1]) : g.moveTo(p[0], p[1])); g.strokeStyle = LINE; g.lineWidth = w + 3.4; g.stroke(); g.strokeStyle = col; g.lineWidth = w; g.stroke(); }
+function figurePose(t) {
+  const s = state, now = performance.now(), q = { hip: -270, lh: [-57, -242], rh: [57, -242], lf: [-27, 0], rf: [27, 0], lk: null, rk: null, tilt: 0, ph: false, lean: 0, lift: 0, fist: false };
+  const hop = (now - hopT) / 420; if (hop >= 0 && hop < 1) q.lift = -Math.sin(hop * Math.PI) * 34;
+  if (s === 'guitar') { const pl = playing && !reduce ? Math.sin(t * 17) : 0; q.lh = [-166, -362]; q.rh = [40, -279 + pl * 13]; q.lf = [-40, 0]; q.rf = [40, 0]; q.tilt = reduce ? 0 : Math.sin(t * 5) * .035; }
+  else if (s === 'drums') {
+    q.hip = -80; q.lf = [-58, -2]; q.rf = [54, -2 - (now - strikes.k.t < 140 ? 16 : 0)]; q.lk = [-58, -128]; q.rk = [58, -128];
+    for (const side of ['l', 'r']) { const st = strikes[side], rest = side === 'l' ? [-92, -170] : [90, -176], age = now - st.t; let tg = rest; if (st.p) { const pc = pieceAt(st.p), tx = pc[0] - L.me.drum, ty = pc[1] - L.meB, u = Math.min(1, age / 260); tg = [tx + (rest[0] - tx) * Math.max(0, u - .35) * .8, ty + (rest[1] - ty) * Math.max(0, u - .2) * .55 - (u > .2 ? 0 : 0)]; } q[side + 'h'] = tg; }
+    q.tilt = reduce ? 0 : Math.sin(t * 7) * .03;
+  } else if (s === 'dance') {
+    const k = reduce ? 0 : t * 5.2, sw = Math.sin(k), cs = Math.cos(k);
+    q.hip = -270 + Math.abs(sw) * 14; q.lh = [-96 - cs * 24, -500 + sw * 70]; q.rh = [96 + cs * 24, -500 - sw * 70]; q.lf = [-34 + sw * 10, -Math.max(0, sw) * 22]; q.rf = [34 + sw * 10, -Math.max(0, -sw) * 22]; q.tilt = sw * .06; q.lean = sw * 14;
+  } else if (s === 'reading') { q.ph = true; q.rh = [40, -468]; q.tilt = reduce || !playing ? 0 : Math.sin(t * 3.4) * .05; q.hip = -270 + (reduce || !playing ? 0 : Math.abs(Math.sin(t * 3.4)) * 4); }
+  else {
+    if (curPose === 'wave') q.rh = [104 + (reduce ? 0 : Math.sin(t * 9) * 14), -548];
+    else if (curPose === 'point') q.lh = [-152, -496];
+    else if (curPose === 'headphones') { q.ph = true; q.rh = [40, -468]; }
+    else if (curPose === 'guard') { q.lh = [-34, -444]; q.rh = [34, -444]; q.fist = true; }
+  }
+  if (walking && !reduce) { const w = Math.sin(t * 13); q.lf = [-27, -Math.max(0, w) * 24]; q.rf = [27, -Math.max(0, -w) * 24]; q.lh = [-60 + w * 12, -246]; q.rh = [60 - w * 12, -246]; q.hip += -Math.abs(w) * 6; }
+  return q;
+}
+function drawFigure(g, t, part) {
+  const q = figurePose(t), X = meX + q.lean, Y = L.meB + q.lift, at = ([x, y]) => [X + x - q.lean * 0 * 1, Y + y], hipY = q.hip, shY = hipY - 152;
+  const sh = { l: [X - 52, Y + shY], r: [X + 52, Y + shY] }, hp = { l: [X - 21, Y + hipY], r: [X + 21, Y + hipY] };
+  if (part !== 'arms') {
+    soft(g, meX, L.meB + 6, 92, 13, .3);
+    /* legs */
+    for (const sd of ['l', 'r']) { const side = sd === 'l' ? -1 : 1, ft = at(q[sd + 'f']), kn = q[sd + 'k'] ? at(q[sd + 'k']) : (() => { const d = Math.hypot(ft[0] - hp[sd][0], ft[1] - 12 - hp[sd][1]); return ik(hp[sd][0], hp[sd][1], ft[0], ft[1] - 12, d * .505, d * .505, side, 1, 0).e; })();
+      limb(g, [hp[sd], kn, [ft[0], ft[1] - 12]], 40, PANTS); limb(g, [kn, [ft[0], ft[1] - 12]], 5, '#2d2d33');
+      g.save(); g.translate(ft[0] + side * 4, ft[1]); rrect(g, -25, -22, 50, 22, 11); paint(g, lg(g, 0, -22, 0, 0, [[0, '#ffffff'], [1, '#d6d3ca']]), 1.8); rrect(g, -25, -5, 50, 6, 3); paint(g, RED, 1.2); line(g, [[-8, -18], [8, -18]], 1.4, '#9a9a96'); g.restore(); }
+    /* torso: jacket, tee, belt */
+    g.beginPath(); g.moveTo(sh.l[0] - 8, sh.l[1] - 4); g.quadraticCurveTo(X, sh.l[1] - 14, sh.r[0] + 8, sh.r[1] - 4); g.lineTo(X + 44, Y + hipY + 8); g.quadraticCurveTo(X, Y + hipY + 18, X - 44, Y + hipY + 8); g.closePath(); paint(g, lg(g, X - 56, 0, X + 56, 0, [[0, '#35353b'], [.35, JKT], [1, '#101013']]), 2);
+    g.beginPath(); g.moveTo(X - 17, sh.l[1] - 6); g.lineTo(X + 17, sh.l[1] - 6); g.lineTo(X + 13, Y + hipY + 12); g.lineTo(X - 13, Y + hipY + 12); g.closePath(); paint(g, lg(g, 0, sh.l[1], 0, Y + hipY, [[0, '#ffffff'], [1, '#dcd8cc']]), 1.4);
+    line(g, [[X - 17, sh.l[1] - 6], [X, sh.l[1] + 30], [X + 17, sh.l[1] - 6]], 2, '#b7b3a8'); rrect(g, X - 44, Y + hipY - 4, 88, 12, 3); paint(g, '#0d0d0f', 1.4); rrect(g, X - 8, Y + hipY - 3, 16, 10, 2); paint(g, CHROME(g, X - 8, 0, X + 8, 0), .8);
+    /* neck and head */
+    g.save(); g.translate(X, Y + shY - 6); g.rotate(q.tilt);
+    rrect(g, -13, -28, 26, 30, 8); paint(g, lg(g, -13, 0, 13, 0, [[0, '#a98160'], [.5, SKIN], [1, '#a98160']]), 1.6);
+    g.translate(0, -62);
+    if (q.ph) { g.beginPath(); g.arc(0, -2, 38, Math.PI * 1.02, Math.PI * 1.98); g.lineWidth = 7; g.strokeStyle = '#17171a'; g.stroke(); }
+    oval(g, -31, 4, 6, 11); paint(g, SKIN, 1.4); oval(g, 31, 4, 6, 11); paint(g, SKIN, 1.4);
+    oval(g, 0, 0, 29, 36); paint(g, lg(g, -29, -10, 29, 20, [[0, '#dcb48f'], [.55, SKIN], [1, '#a37b59']]), 2);
+    g.beginPath(); g.moveTo(-26, 12); g.quadraticCurveTo(0, 44, 26, 12); g.quadraticCurveTo(0, 30, -26, 12); g.fillStyle = 'rgba(40,28,20,.32)'; g.fill();
+    g.beginPath(); g.moveTo(-31, -8); g.quadraticCurveTo(-34, -48, 0, -48); g.quadraticCurveTo(34, -48, 31, -8); g.quadraticCurveTo(26, -26, 12, -27); g.quadraticCurveTo(0, -20, -12, -27); g.quadraticCurveTo(-26, -26, -31, -8); g.closePath(); paint(g, '#15110f', 1.6);
+    for (const [hx, hy, hw, hh] of [[-22, -40, 6, 14], [-10, -48, 7, 16], [4, -50, 7, 17], [16, -46, 7, 15], [25, -37, 6, 12]]) { g.beginPath(); g.moveTo(hx - hw, hy + 6); g.lineTo(hx + 1, hy - hh); g.lineTo(hx + hw, hy + 6); g.closePath(); paint(g, '#15110f', 1.4); g.beginPath(); g.moveTo(hx - 2.5, hy - hh + 7); g.lineTo(hx + 1, hy - hh); g.lineTo(hx + 3.5, hy - hh + 7); g.closePath(); g.fillStyle = '#c9a940'; g.fill(); }
+    for (const sx of [-1, 1]) { line(g, [[sx * 7, -9], [sx * 19, -11]], 2.8, '#15110f'); oval(g, sx * 12.5, -2, 4.2, 2.8); g.fillStyle = '#15110f'; g.fill(); oval(g, sx * 13.5, -3, 1.1, 1); g.fillStyle = '#fff'; g.fill(); }
+    line(g, [[0, 1], [-2.4, 11], [2.2, 12]], 1.4, 'rgba(60,40,28,.6)'); line(g, [[-8, 22], [0, 24.5], [8, 22]], 2, '#6d3b2c');
+    if (q.ph) { for (const sx of [-1, 1]) { rrect(g, sx * 37 - 8, -10, 16, 30, 7); paint(g, lg(g, 0, -10, 0, 20, [[0, '#2b2b31'], [1, '#101013']]), 1.6); rrect(g, sx * 37 - 5, -4, 10, 18, 4); g.fillStyle = RED; g.fill(); } }
+    g.restore();
+  }
+  if (part !== 'body') {
+    for (const sd of ['l', 'r']) { const side = sd === 'l' ? -1 : 1, hd = at(q[sd + 'h']), r = ik(sh[sd][0] + side * 2, sh[sd][1] + 6, hd[0], hd[1], 95, 88, side, 1, 1.4), el = r.e, hh = r.h;
+      limb(g, [sh[sd], el, hh], 25, SKIN); const mid = [sh[sd][0] + (el[0] - sh[sd][0]) * .5, sh[sd][1] + (el[1] - sh[sd][1]) * .5]; limb(g, [sh[sd], mid], 31, TEE);
+      oval(g, hh[0], hh[1], q.fist ? 13 : 12, q.fist ? 13 : 11); paint(g, SKIN, 1.6); if (!q.fist) for (let k = -1; k <= 1; k++) line(g, [[hh[0] + k * 4, hh[1] + 3], [hh[0] + k * 4, hh[1] + 9]], 1, 'rgba(40,28,20,.5)'); }
+    if (state === 'drums') for (const sd of ['l', 'r']) { const st = strikes[sd], rest = sd === 'l' ? [-92, -170] : [90, -176], pc = st.p ? pieceAt(st.p) : null, age = performance.now() - st.t, u = Math.min(1, age / 260); const hx = meX + q[sd + 'h'][0], hy = L.meB + q[sd + 'h'][1]; line(g, [[hx, hy], [hx + (sd === 'l' ? 26 : -26), hy - 62 + (pc && u < .2 ? 30 : 0)]], 3.4, '#d9b27a'); line(g, [[hx, hy], [hx + (sd === 'l' ? 26 : -26), hy - 62 + (pc && u < .2 ? 30 : 0)]], 1.2, '#f4e4c4'); }
+  }
+}
+
 function drawFx(t) {
   const g = fg; g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, W, H); camTransform(g);
-  drawAmp(g, t); drawBoombox(g, t); drawKit(g);
+  drawAmp(g, t); drawBoombox(g, t);
+  if (state === 'drums') { drawFigure(g, t, 'body'); drawKit(g); drawFigure(g, t, 'arms'); } else { drawKit(g); drawFigure(g, t, 'body'); if (state !== 'guitar') drawFigure(g, t, 'arms'); }
   if (playing && !reduce) { g.fillStyle = INK; g.font = '800 26px Archivo'; for (let k = 0; k < 4; k++) { const a = ((t * .55 + k / 4) % 1), x = L.box.x + 70 + k * 80 + Math.sin(a * 6 + k) * 14, y = L.box.y - 30 - a * 150; g.globalAlpha = 1 - a; g.fillText(k % 2 ? '♫' : '♪', x, y); } g.globalAlpha = 1; }
-  if (state === 'guitar') { const bob = reduce ? 0 : Math.sin(t * 9) * .035; g.save(); g.translate(meX + 22, L.meB - L.meH * .47); g.rotate(-1.18 + bob); g.scale(.95, .95); g.translate(-L.guitar, -592); drawGuitar(g, L.guitar); g.restore(); }
+  if (state === 'guitar') { const bob = reduce ? 0 : Math.sin(t * 9) * .035; g.save(); g.translate(meX + 22, L.meB - L.meH * .55); g.rotate(-1.18 + bob); g.scale(.95, .95); g.translate(-L.guitar, -592); drawGuitar(g, L.guitar); g.restore(); drawFigure(g, t, 'arms'); }
   if (state === 'guitar' && !reduce) { const cx = L.me.guitar + 70, cy = 560; g.strokeStyle = RED; g.lineWidth = 3; g.lineCap = 'round'; for (let k = 0; k < 3; k++) { const a = ((t * 1.2 + k / 3) % 1); g.globalAlpha = 1 - a; g.beginPath(); g.arc(cx, cy, 30 + a * 90, -.7, .7); g.stroke(); } g.globalAlpha = 1; }
   if (state === 'dance' || discoOn) {
     const bx = L.me.dance, by = 190, sp = t * 1.4; line(g, [[bx, -20], [bx, by - 40]], 2, '#4b4b50'); oval(g, bx, by, 40, 40); paint(g, rg(g, bx - 12, by - 14, 3, 44, [[0, '#ffffff'], [.5, '#cfcfca'], [1, '#6d6d72']]), 1.8);
@@ -366,9 +439,9 @@ function moveCam(t2, ms) {
   const step = now => { const u = Math.min(1, (now - t0) / ms), e = u < .5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2; ['s', 'ox', 'oy'].forEach(k => cam[k] = from[k] + (t2[k] - from[k]) * e); drawBack(); placeAll(); if (u < 1) tween = requestAnimationFrame(step); }; tween = requestAnimationFrame(step);
 }
 const sprite = $('sprite'), me = $('me'), bubble = $('bubble'); let sayTimer = 0;
-const setPose = p => { curPose = p; sprite.src = SPR(p); };
+const setPose = p => { curPose = p; startLoop(true); };
 function say(text, pose, ms = 3200) { bubble.textContent = text; bubble.classList.remove('pop'); void bubble.offsetWidth; bubble.classList.add('pop'); bubble.style.opacity = 1; if (pose) setPose(pose); placeBubble(); clearTimeout(sayTimer); if (ms) sayTimer = setTimeout(() => { if (state === 'idle') { bubble.style.opacity = 0; setPose('idle'); } }, ms); }
-let walk = 0; const moveMe = x => { cancelAnimationFrame(walk); const x0 = meX, t0 = performance.now(); if (reduce) { meX = x; placeAll(); return; } const step = now => { const u = Math.min(1, (now - t0) / 650), e = u < .5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2; meX = x0 + (x - x0) * e; placeAll(); if (u < 1) walk = requestAnimationFrame(step); }; walk = requestAnimationFrame(step); };
+let walk = 0; const moveMe = x => { cancelAnimationFrame(walk); const x0 = meX, t0 = performance.now(); if (reduce) { meX = x; placeAll(); return; } walking = true; const step = now => { const u = Math.min(1, (now - t0) / 650), e = u < .5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2; meX = x0 + (x - x0) * e; placeAll(); if (u < 1) walk = requestAnimationFrame(step); else { walking = false; placeAll(); } }; walk = requestAnimationFrame(step); };
 
 /* ---------- the tapes ---------- */
 const rack = $('rack'); let flyer = null;
@@ -411,7 +484,7 @@ addEventListener('keydown', e => { if (e.key === 'Escape') closeDeck(); });
 
 /* ---------- poke, guitar, dance, boombox ---------- */
 let pk = 0;
-$('poke').addEventListener('click', () => { if (state !== 'idle') return; const [pose, line] = POKES[pk++ % POKES.length]; me.classList.remove('hop'); void me.offsetWidth; me.classList.add('hop'); say(line, pose, 2800); });
+$('poke').addEventListener('click', () => { if (state !== 'idle') return; const [pose, line] = POKES[pk++ % POKES.length]; hopT = performance.now(); startLoop(true); say(line, pose, 2800); });
 $('guitarBtn').addEventListener('click', async () => {
   if (state !== 'idle') return; state = 'guitar'; guitarOut = true; drawBack(); $('guitarBtn').hidden = true; moveMe(L.me.guitar + 90); say('Okay. Listen.', 'guitar', 0); startLoop();
   await sleep(reduce ? 0 : 700); me.classList.add('strum'); playing = true; await sleep(reduce ? 0 : 5200); me.classList.remove('strum');
@@ -420,12 +493,12 @@ $('guitarBtn').addEventListener('click', async () => {
 const PIECES = ['snare', 'hat', 'kick', 'tom', 'crash', 'floor', 'tom2', 'ride'];
 $('drumBtn').addEventListener('click', async () => {
   if (state !== 'idle') return; state = 'drums'; moveMe(L.me.drum); say('Okay. One fill.', 'sit', 0); startLoop(); await sleep(reduce ? 0 : 600);
-  for (let n = 0; n < (reduce ? 0 : 16); n++) { setPose(n % 2 ? 'drums2' : 'drums'); if (n % 2) { hit[PIECES[(n >> 1) % PIECES.length]] = 1; if (n % 4 === 1) hit.kick = 1; } await sleep(240); }
-  setPose('drums'); await sleep(reduce ? 0 : 500); state = 'idle'; moveMe(L.me.idle); pan(690); say('Right. The tapes.', 'point', 2400); startLoop(true);
+  const LP = ['snare', 'hat', 'tom', 'crash'], RP = ['tom2', 'floor', 'ride', 'snare']; for (let n = 0; n < (reduce ? 0 : 20); n++) { const side = n % 2 ? 'r' : 'l', pc = (side === 'l' ? LP : RP)[(n >> 1) % 4]; strikes[side] = { p: pc, t: performance.now() }; hit[pc] = 1; if (n % 4 === 1) { hit.kick = 1; strikes.k.t = performance.now(); } await sleep(230); }
+  await sleep(reduce ? 0 : 500); state = 'idle'; moveMe(L.me.idle); pan(690); say('Right. The tapes.', 'point', 2400); startLoop(true);
 });
 $('danceBtn').addEventListener('click', async () => {
   if (state !== 'idle') return; state = 'dance'; moveMe(L.me.dance); say('Okay. One song.', 'wave', 0); playing = true; discoOn = true; startLoop(); await sleep(reduce ? 0 : 500); me.classList.add('dance');
-  const poses = ['wave', 'walk', 'point', 'headphones', 'wave', 'guard']; for (let n = 0; n < (reduce ? 0 : 20); n++) { setPose(poses[n % poses.length]); await sleep(300); }
+  await sleep(reduce ? 0 : 6000);
   me.classList.remove('dance'); playing = false; discoOn = false; state = 'idle'; moveMe(L.me.idle); pan(690); say('Okay, that’s enough.', 'idle', 2400); startLoop(true);
 });
 $('ampBtn').addEventListener('click', () => { if (state !== 'idle') return; playing = !playing; say(playing ? 'Turned up. Hum only, sorry.' : 'Turned it down.', 'point', 2400); startLoop(!playing); });
