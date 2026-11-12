@@ -109,7 +109,7 @@ export const origin = {
 export const experiences: Experience[] = [
   {
     id: 'petally',
-    role: 'Founding Software and AI Integration Engineer',
+    role: 'Web and App Development Intern',
     org: 'PetAlly',
     period: 'Mar 2026 - Sep 2026',
     headline: 'recommendations and ai features for a pet-owner community.',
