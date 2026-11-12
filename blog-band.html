@@ -26,7 +26,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .stage{position:relative;height:100svh;min-height:560px;overflow:hidden}
 .stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
 #fx{pointer-events:none;z-index:6}
-.word{position:absolute;z-index:3;font-weight:900;font-stretch:112%;text-transform:uppercase;letter-spacing:-.06em;line-height:.82;transform:skewX(-9deg);transform-origin:0 100%;color:var(--red);pointer-events:none}
+.word{position:absolute;z-index:3;font-weight:900;font-stretch:112%;text-transform:uppercase;letter-spacing:-.06em;line-height:.82;color:var(--red);pointer-events:none}
 .me{position:absolute;z-index:4;transform-origin:50% 100%}
 .me img{display:block;width:100%;height:100%;image-rendering:pixelated;pointer-events:none}
 .me button{position:absolute;inset:8% 24% 0}
@@ -37,8 +37,8 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 @keyframes hop{40%{transform:translateY(-6%)}75%{transform:translateY(0) scaleY(.96)}}
 @keyframes strum{50%{transform:translateY(1.5%) rotate(-1deg)}}
 @keyframes dance{25%{transform:translateY(-4%) rotate(-3deg)}75%{transform:translateY(-4%) rotate(3deg)}}
-.bubble{position:absolute;z-index:30;width:max-content;max-width:15rem;background:#fff;border:3px solid var(--ink);padding:.5rem .75rem;font-family:var(--px);font-size:1rem;line-height:1.3;box-shadow:4px 4px 0 var(--ink);transform-origin:0 100%;pointer-events:none} /* taste-skill-ignore: the speech bubble floats over the scene */
-.bubble::after{content:"";position:absolute;left:18px;bottom:-14px;width:14px;height:14px;background:#fff;border-right:3px solid var(--ink);border-bottom:3px solid var(--ink);transform:skewX(35deg)}
+.bubble{position:absolute;z-index:30;width:max-content;max-width:16rem;background:#fff;color:var(--ink);border-radius:12px;padding:.6rem .85rem;font-weight:600;font-size:.95rem;line-height:1.35;box-shadow:0 1px 0 rgba(11,11,12,.08),0 8px 24px rgba(11,11,12,.16);pointer-events:none}
+.bubble::after{content:"";position:absolute;left:22px;bottom:-6px;width:12px;height:12px;background:#fff;transform:rotate(45deg);border-radius:0 0 3px 0}
 .bubble.pop{animation:pop .25s cubic-bezier(.3,1.4,.5,1)}
 @keyframes pop{from{transform:scale(.6);opacity:0}}
 .spot{position:absolute;z-index:7;border-radius:12px}
@@ -105,6 +105,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   <div class="word" id="word">Grass<br>Files</div>
   <div class="me" id="me"><img id="sprite" src="/char/durva-idle.png" alt="Durva, drawn as a pixel character"><button id="poke" aria-label="Poke Durva"></button></div>
   <canvas id="fx" aria-hidden="true"></canvas>
+  <button class="spot" id="ampBtn" aria-label="The amp: turn it up"></button>
   <button class="spot" id="boomBtn" aria-label="The boombox: click to play or stop"></button>
   <button class="spot" id="guitarBtn" aria-label="Play the guitar"></button>
   <button class="spot" id="danceBtn" aria-label="Dance"></button>
@@ -143,114 +144,167 @@ const POKES = [['wave', 'Hey.'], ['point', 'The tapes are on the shelf. Up there
 const live = POSTS.filter(p => !p.soon);
 $('foot').textContent = `${live.length} tape recorded, ${POSTS.length - live.length} still blank.`;
 
-/* ---------- the room: 1100 x 860 units, scaled to the screen ---------- */
+/* ---------- the room: 1600 x 860 units, scaled to the screen ---------- */
 const back = $('back'), fx = $('fx'), bg = back.getContext('2d'), fg = fx.getContext('2d');
-let focus = 500; let W = 0, H = 0, dpr = 1, phone = false, state = 'idle', playing = false, guitarOut = false, reading = null;
-const cam = { s: 1, ox: 0, oy: 0 }, WORLD = 1500, WH = 860;
-const L = { floor: 690, shelf: { x0: 24, x1: 540, y: 318 }, crate: { x: 70, y: 580, w: 290, h: 110 }, box: { x: 40, y: 430, w: 350, h: 150 }, deckC: [215, 492], guitar: 560, drum: 1170, disco: [990, 0], word: { x: 36, y: 120, h: 150 },
-  me: { idle: 760, guitar: 725, dance: 760, read: 760, drum: 1175 }, meH: 470, meB: 702, dance: { x: 650, y: 650, w: 190, h: 40 } };
+let focus = 690; let W = 0, H = 0, dpr = 1, phone = false, state = 'idle', playing = false, guitarOut = false, reading = null;
+const cam = { s: 1, ox: 0, oy: 0 }, WORLD = 1600, WH = 860;
+const L = { floor: 690, shelf: { x0: 24, x1: 540, y: 318 }, crate: { x: 70, y: 580, w: 290, h: 110 }, box: { x: 40, y: 430, w: 350, h: 150 }, deckC: [215, 492],
+  amp: { x: 420, y: 505, w: 180, h: 185 }, guitar: 668, drum: 1290, word: { x: 36, y: 120, h: 150 },
+  me: { idle: 885, guitar: 850, dance: 885, read: 885, drum: 1295 }, meH: 470, meB: 702, dance: { x: 775, y: 650 } };
 
-/* the brush: seeded, so every redraw lands in the same place and the lines never boil */
-let seed = 1; const R = () => (seed = seed * 16807 % 2147483647) / 2147483647;
-const resample = pts => { const P = []; for (let i = 0; i < pts.length - 1; i++) { const a = pts[i], b = pts[i + 1], n = Math.max(1, Math.ceil(Math.hypot(b[0] - a[0], b[1] - a[1]) / 9)); for (let k = 0; k < n; k++) P.push([a[0] + (b[0] - a[0]) * k / n, a[1] + (b[1] - a[1]) * k / n]); } P.push(pts[pts.length - 1]); return P; };
-function ink(g, pts, w = 2.6, col = INK) {
-  const P = resample(pts).map(p => [p[0] + (R() - .5) * 1.3, p[1] + (R() - .5) * 1.3]);
-  g.strokeStyle = col; g.lineCap = 'round'; g.lineJoin = 'round';
-  for (let i = 0; i < P.length - 1; i++) { const t = i / (P.length - 1); g.lineWidth = w * (.7 + .55 * Math.sin(t * Math.PI)) * (.88 + R() * .24); g.beginPath(); g.moveTo(P[i][0], P[i][1]); g.lineTo(P[i + 1][0], P[i + 1][1]); g.stroke(); }
-}
-const ell = (cx, cy, rx, ry, a0 = 0, a1 = Math.PI * 2, rot = 0) => { const n = Math.max(12, Math.ceil((rx + ry) * Math.abs(a1 - a0) / 14)), c = Math.cos(rot), sn = Math.sin(rot), P = [];
-  for (let i = 0; i <= n; i++) { const a = a0 + (a1 - a0) * i / n, x = Math.cos(a) * rx, y = Math.sin(a) * ry; P.push([cx + x * c - y * sn, cy + x * sn + y * c]); } return P; };
-const box = (x, y, w, h) => [[x, y], [x + w, y], [x + w, y + h], [x, y + h], [x, y]];
-const fill = (g, pts, col) => { g.fillStyle = col; g.beginPath(); pts.forEach((p, i) => i ? g.lineTo(p[0], p[1]) : g.moveTo(p[0], p[1])); g.closePath(); g.fill(); };
-const shape = (g, pts, col, w = 2.6) => { if (col) fill(g, pts, col); ink(g, pts, w); };
-const curve = (a, c, b, n = 24) => { const P = []; for (let i = 0; i <= n; i++) { const t = i / n, u = 1 - t; P.push([u * u * a[0] + 2 * u * t * c[0] + t * t * b[0], u * u * a[1] + 2 * u * t * c[1] + t * t * b[1]]); } return P; };
+/* clean vector drawing: soft gradients, thin dark outlines, no wobble */
+const TAU = Math.PI * 2, LINE = '#0b0b0c';
+const lg = (g, x0, y0, x1, y1, stops) => { const o = g.createLinearGradient(x0, y0, x1, y1); stops.forEach(([p, c]) => o.addColorStop(p, c)); return o; };
+const rg = (g, x, y, r0, r1, stops, x1 = x, y1 = y) => { const o = g.createRadialGradient(x, y, r0, x1, y1, r1); stops.forEach(([p, c]) => o.addColorStop(p, c)); return o; };
+const rrect = (g, x, y, w, h, r) => { g.beginPath(); g.roundRect(x, y, w, h, r); };
+const paint = (g, fillStyle, w = 1.6, stroke = LINE) => { if (fillStyle) { g.fillStyle = fillStyle; g.fill(); } if (w) { g.lineWidth = w; g.strokeStyle = stroke; g.lineJoin = 'round'; g.stroke(); } };
+const oval = (g, x, y, rx, ry, rot = 0) => { g.beginPath(); g.ellipse(x, y, rx, ry, rot, 0, TAU); };
+const line = (g, pts, w = 1.6, col = LINE) => { g.beginPath(); pts.forEach((p, i) => i ? g.lineTo(p[0], p[1]) : g.moveTo(p[0], p[1])); g.lineWidth = w; g.strokeStyle = col; g.lineCap = 'round'; g.lineJoin = 'round'; g.stroke(); };
+const CHROME = (g, x0, y0, x1, y1) => lg(g, x0, y0, x1, y1, [[0, '#f4f4f1'], [.45, '#b9b9b5'], [.55, '#8d8d89'], [1, '#d8d8d4']]);
+const shadow = (g, cx, w, a = .22) => { g.fillStyle = `rgba(11,11,12,${a})`; oval(g, cx, L.floor + 12, w, 11); g.fill(); };
+const hatch = (g, x, y, w, h, step, col, ang = 1) => { g.save(); g.beginPath(); g.rect(x, y, w, h); g.clip(); g.strokeStyle = col; g.lineWidth = 1; for (let k = -h; k < w + h; k += step) { g.beginPath(); g.moveTo(x + k, y + (ang > 0 ? h : 0)); g.lineTo(x + k + h * ang, y + (ang > 0 ? 0 : h)); g.stroke(); } g.restore(); };
 
 function camTransform(g) { g.setTransform(dpr * cam.s, 0, 0, dpr * cam.s, dpr * cam.ox, dpr * cam.oy); }
 
-/* the static room: wall, floor, shelf, crate, guitar stand, cable, rug */
+/* the still room: wall, floor, window light, shelf, crate, stand, rug, floor tiles */
 function drawBack() {
-  const g = bg; seed = 11; g.setTransform(dpr, 0, 0, dpr, 0, 0); g.fillStyle = WALL; g.fillRect(0, 0, W, H); camTransform(g);
-  const x0 = -cam.ox / cam.s - 10, x1 = (W - cam.ox) / cam.s + 10, yB = (H - cam.oy) / cam.s + 10;
-  const wg = g.createLinearGradient(0, -200, 0, L.floor); wg.addColorStop(0, '#efefeb'); wg.addColorStop(1, '#dcdcd7'); g.fillStyle = wg; g.fillRect(x0, -400, x1 - x0, L.floor + 400);
-  /* wainscot, rail and baseboard */
-  fill(g, box(x0, 540, x1 - x0, L.floor - 540), '#d5d5d0'); ink(g, [[x0, 540], [x1, 540]], 2.4); ink(g, [[x0, 548], [x1, 548]], 1, 'rgba(11,11,12,.25)'); fill(g, box(x0, 664, x1 - x0, 26), '#c6c6c1'); ink(g, [[x0, 664], [x1, 664]], 1.6);
-  for (let x = Math.floor(x0 / 120) * 120; x < x1; x += 120) ink(g, [[x, 548], [x, 664]], 1, 'rgba(11,11,12,.18)');
-  /* floor: boards with staggered joints and a soft shadow where it meets the wall */
-  const fg2 = g.createLinearGradient(0, L.floor, 0, yB); fg2.addColorStop(0, '#bdbdb8'); fg2.addColorStop(1, '#d9d9d4'); g.fillStyle = fg2; g.fillRect(x0, L.floor, x1 - x0, yB - L.floor); ink(g, [[x0, L.floor], [x1, L.floor]], 3);
-  for (const y of [722, 760, 808]) ink(g, [[x0, y], [x1, y]], 1, 'rgba(11,11,12,.22)');
-  for (let r = 0; r < 3; r++) { const y0 = [L.floor, 722, 760][r], y1 = [722, 760, 808][r]; for (let x = Math.floor(x0 / 150) * 150 + (r * 53) % 150; x < x1; x += 150) ink(g, [[x, y0], [x - 6 * (r + 1), y1]], 1, 'rgba(11,11,12,.16)'); }
-  /* window with daylight falling across the floor */
-  const wx = 860, wy = 90, ww = 230, wh = 280; g.fillStyle = 'rgba(255,255,255,.55)'; g.beginPath(); g.moveTo(wx, wy + wh); g.lineTo(wx + ww, wy + wh); g.lineTo(wx + ww - 330, 790); g.lineTo(wx - 360, 790); g.closePath(); g.fill();
-  fill(g, box(wx, wy, ww, wh), '#f7f7f4'); ink(g, box(wx, wy, ww, wh), 3.4); ink(g, [[wx + ww / 2, wy], [wx + ww / 2, wy + wh]], 3); ink(g, [[wx, wy + wh * .5], [wx + ww, wy + wh * .5]], 3); fill(g, box(wx - 12, wy + wh, ww + 24, 12), '#bdbdb8'); ink(g, box(wx - 12, wy + wh, ww + 24, 12), 2.2);
-  for (let k = 0; k < 6; k++) ink(g, [[wx + 14 + k * 8, wy + 20 + k * 8], [wx + 70 + k * 8, wy + 8 + k * 8]], 1.2, 'rgba(11,11,12,.18)');
-  /* framed spider lily above the shelf */
-  fill(g, box(560, 96, 120, 150), PAPER); ink(g, box(560, 96, 120, 150), 4); ink(g, box(570, 106, 100, 130), 1.4, 'rgba(11,11,12,.4)'); ink(g, [[620, 226], [620, 160]], 2.2); for (let k = -3; k <= 3; k++) ink(g, curve([620, 160], [620 + k * 16, 118], [620 + k * 26, 132 + Math.abs(k) * 5]), 2.4, RED);
-  /* contact shadows */
-  const sdw = (cx, w) => { g.fillStyle = 'rgba(11,11,12,.2)'; g.beginPath(); g.ellipse(cx, L.floor + 14, w, 12, 0, 0, 7); g.fill(); }; sdw(L.crate.x + L.crate.w / 2, 190); sdw(L.guitar, 70); sdw(L.drum + 60, 280); sdw(L.me.idle, 150);
+  const g = bg; g.setTransform(dpr, 0, 0, dpr, 0, 0); g.fillStyle = WALL; g.fillRect(0, 0, W, H); camTransform(g);
+  const x0 = -cam.ox / cam.s - 10, x1 = (W - cam.ox) / cam.s + 10, yB = (H - cam.oy) / cam.s + 10, FL = L.floor;
+  g.fillStyle = lg(g, 0, -300, 0, FL, [[0, '#f3f3f0'], [1, '#dededa']]); g.fillRect(x0, -400, x1 - x0, FL + 400);
+  /* wall panels, rail, baseboard */
+  g.fillStyle = '#d6d6d1'; g.fillRect(x0, 540, x1 - x0, FL - 540); line(g, [[x0, 540], [x1, 540]], 2); line(g, [[x0, 547], [x1, 547]], 1, 'rgba(11,11,12,.18)');
+  for (let x = Math.floor(x0 / 160) * 160; x < x1; x += 160) { rrect(g, x + 14, 562, 132, 92, 3); paint(g, null, 1, 'rgba(11,11,12,.16)'); }
+  g.fillStyle = '#c4c4bf'; g.fillRect(x0, 664, x1 - x0, 26); line(g, [[x0, 664], [x1, 664]], 1.4); line(g, [[x0, FL], [x1, FL]], 2.4);
+  /* floor */
+  g.fillStyle = lg(g, 0, FL, 0, yB, [[0, '#b8b8b3'], [.35, '#cfcfca'], [1, '#dcdcd7']]); g.fillRect(x0, FL, x1 - x0, yB - FL);
+  const rows = [FL, 724, 762, 810, yB]; rows.forEach((y, r) => { if (r) line(g, [[x0, y], [x1, y]], 1, 'rgba(11,11,12,.2)'); });
+  for (let r = 0; r < 4; r++) for (let x = Math.floor(x0 / 170) * 170 + (r * 61) % 170; x < x1; x += 170) line(g, [[x, rows[r]], [x - 7 * (r + 1), rows[r + 1]]], 1, 'rgba(11,11,12,.15)');
+  /* window and the light it throws */
+  const wx = 1010, wy = 80, ww = 240, wh = 290;
+  g.fillStyle = 'rgba(255,255,255,.5)'; g.beginPath(); g.moveTo(wx + 10, wy + wh); g.lineTo(wx + ww - 10, wy + wh); g.lineTo(wx + ww - 380, 800); g.lineTo(wx - 400, 800); g.closePath(); g.fill();
+  rrect(g, wx - 10, wy - 10, ww + 20, wh + 20, 3); paint(g, '#cfcfca', 1.6); g.fillStyle = lg(g, wx, wy, wx + ww, wy + wh, [[0, '#ffffff'], [1, '#e9eef0']]); g.fillRect(wx, wy, ww, wh); line(g, [[wx + ww / 2, wy], [wx + ww / 2, wy + wh]], 5, '#cfcfca'); line(g, [[wx, wy + wh * .5], [wx + ww, wy + wh * .5]], 5, '#cfcfca'); rrect(g, wx, wy, ww, wh, 0); paint(g, null, 2); rrect(g, wx - 16, wy + wh + 10, ww + 32, 12, 2); paint(g, '#c4c4bf', 1.4);
+  /* framed spider lily */
+  g.fillStyle = 'rgba(11,11,12,.12)'; g.fillRect(566, 104, 124, 156); rrect(g, 560, 96, 124, 156, 3); paint(g, '#f4f2ec', 2.4); rrect(g, 574, 110, 96, 128, 1); paint(g, '#ebe8e0', 1, 'rgba(11,11,12,.3)');
+  line(g, [[622, 226], [622, 168]], 2, '#4b4b48'); for (let k = -3; k <= 3; k++) { g.beginPath(); g.moveTo(622, 168); g.quadraticCurveTo(622 + k * 15, 120, 622 + k * 24, 138 + Math.abs(k) * 5); g.lineWidth = 2.2; g.strokeStyle = RED; g.lineCap = 'round'; g.stroke(); }
+  /* shadows on the floor */
+  shadow(g, L.crate.x + L.crate.w / 2, 190); shadow(g, L.amp.x + L.amp.w / 2, 110); shadow(g, L.guitar, 74); shadow(g, L.drum + 40, 330); shadow(g, L.me.idle, 150, .16);
   /* shelf */
-  if (!phone) { const { x0: a, x1: b, y } = L.shelf; fill(g, box(a, y, b - a, 14), '#8a8a85'); ink(g, box(a, y, b - a, 14), 2.4); for (const bx of [a + 40, b - 40]) ink(g, [[bx, y + 14], [bx, y + 52], [bx - 30, y + 14]], 2.2); }
+  if (!phone) { const { x0: a, x1: b, y } = L.shelf; rrect(g, a, y, b - a, 14, 2); paint(g, lg(g, 0, y, 0, y + 14, [[0, '#a9a9a4'], [1, '#85857f']]), 1.8); for (const bx of [a + 46, b - 46]) { line(g, [[bx, y + 14], [bx, y + 54]], 3, '#5d5d59'); line(g, [[bx, y + 54], [bx - 32, y + 14]], 3, '#5d5d59'); } }
   /* crate under the boombox */
-  const c = L.crate; fill(g, box(c.x, c.y, c.w, c.h), '#9a9a95'); ink(g, box(c.x, c.y, c.w, c.h), 2.8); for (let k = 1; k < 4; k++) ink(g, [[c.x, c.y + k * c.h / 4], [c.x + c.w, c.y + k * c.h / 4]], 1.4, 'rgba(11,11,12,.45)'); ink(g, [[c.x + c.w * .5, c.y], [c.x + c.w * .5, c.y + c.h]], 1.4, 'rgba(11,11,12,.3)');
-  for (let k = 0; k < 7; k++) ink(g, [[c.x + c.w - 6 - k * 9, c.y + 4], [c.x + c.w - 22 - k * 9, c.y + c.h - 4]], 1, 'rgba(11,11,12,.3)');
-  /* rug and dance floor */
-  fill(g, ell(L.me.idle, 706, 230, 30), RED); ink(g, ell(L.me.idle, 706, 230, 30), 2.4); for (let k = -5; k <= 5; k++) ink(g, [[L.me.idle + k * 41, 735], [L.me.idle + k * 41 + 3, 743]], 1.4);
-  const d = L.dance; for (let i = 0; i < 4; i++) for (let j = 0; j < 2; j++) { const tx = d.x + i * 48, ty = d.y + 20 + j * 26; fill(g, [[tx + 12, ty], [tx + 56, ty], [tx + 44, ty + 24], [tx, ty + 24]], (i + j) % 2 ? PAPER : '#c9c9c4'); ink(g, [[tx + 12, ty], [tx + 56, ty], [tx + 44, ty + 24], [tx, ty + 24], [tx + 12, ty]], 1.6); }
-  /* guitar stand, with the guitar on it unless Durva is playing it */
-  const gx = L.guitar; ink(g, [[gx - 40, 690], [gx, 560], [gx + 40, 690]], 2.6); ink(g, [[gx - 30, 650], [gx + 30, 650]], 2.2);
-  if (!guitarOut) { fill(g, box(gx - 7, 300, 14, 250), '#5a4630'); ink(g, box(gx - 7, 300, 14, 250), 2.2); shape(g, [[gx - 10, 300], [gx - 14, 262], [gx + 14, 262], [gx + 10, 300]], INK, 2.2);
-    for (let k = 0; k < 3; k++) { fill(g, ell(gx - 18, 270 + k * 11, 4, 3), SILVER); fill(g, ell(gx + 18, 270 + k * 11, 4, 3), SILVER); }
-    fill(g, ell(gx, 612, 54, 58), RED); fill(g, ell(gx, 538, 40, 42), RED); ink(g, ell(gx, 612, 54, 58, -Math.PI * .28, Math.PI * 1.28), 2.8); ink(g, ell(gx, 538, 40, 42, Math.PI * .78, Math.PI * 2.22), 2.8);
-    fill(g, ell(gx + 14, 600, 20, 30, 0, Math.PI * 2, .3), PAPER); ink(g, ell(gx + 14, 600, 20, 30, 0, Math.PI * 2, .3), 1.6); fill(g, box(gx - 16, 560, 32, 10), INK); fill(g, box(gx - 22, 638, 44, 8), SILVER);
-    for (let k = -2; k <= 3; k++) ink(g, [[gx + k * 2.4, 300], [gx + k * 2.4, 642]], .6, SILVER); }
-  /* guitar cable into the boombox */
-  ink(g, curve([gx - 30, 650], [gx - 130, 740], [L.box.x + L.box.w - 10, 600]), 2);
+  const c = L.crate; g.fillStyle = lg(g, c.x, c.y, c.x + c.w, c.y, [[0, '#a8a8a3'], [1, '#8d8d88']]); g.fillRect(c.x, c.y, c.w, c.h); for (let k = 1; k < 4; k++) line(g, [[c.x, c.y + k * c.h / 4], [c.x + c.w, c.y + k * c.h / 4]], 1.4, 'rgba(11,11,12,.4)'); for (const px of [c.x + 6, c.x + c.w - 14]) { g.fillStyle = 'rgba(11,11,12,.25)'; g.fillRect(px, c.y, 8, c.h); } rrect(g, c.x, c.y, c.w, c.h, 2); paint(g, null, 2);
+  /* rug and floor tiles */
+  const rx = L.me.idle; oval(g, rx, 708, 250, 30); paint(g, lg(g, 0, 680, 0, 740, [[0, '#ef2a43'], [1, '#b50e24']]), 2); oval(g, rx, 708, 214, 22); paint(g, null, 1.2, 'rgba(244,242,236,.7)');
+  for (let k = -9; k <= 9; k++) line(g, [[rx + k * 25, 735], [rx + k * 25 + 2, 742]], 1.2, 'rgba(11,11,12,.55)');
+  const d = L.dance; for (let i = 0; i < 4; i++) for (let j = 0; j < 2; j++) { const tx = d.x + i * 50, ty = d.y + 18 + j * 26; g.beginPath(); g.moveTo(tx + 12, ty); g.lineTo(tx + 58, ty); g.lineTo(tx + 46, ty + 24); g.lineTo(tx, ty + 24); g.closePath(); paint(g, (i + j) % 2 ? '#f4f2ec' : '#c3c3be', 1.2); }
+  /* drum throne, behind Durva when he plays */
+  const tx2 = L.me.drum; line(g, [[tx2, 640], [tx2, 684]], 5, '#4b4b48'); line(g, [[tx2 - 40, 690], [tx2, 668], [tx2 + 40, 690]], 3, '#4b4b48'); oval(g, tx2, 632, 52, 14); paint(g, lg(g, tx2 - 52, 0, tx2 + 52, 0, [[0, '#232327'], [.5, '#47474d'], [1, '#232327']]), 1.8);
+  /* guitar stand, and the guitar on it unless Durva is playing it */
+  const gx = L.guitar; line(g, [[gx - 44, 690], [gx, 600], [gx + 44, 690]], 3, '#4b4b48'); line(g, [[gx - 20, 650], [gx + 20, 650]], 2.6, '#4b4b48');
+  if (!guitarOut) {
+    rrect(g, gx - 8, 296, 16, 224, 2); paint(g, lg(g, gx - 8, 0, gx + 8, 0, [[0, '#6b4a33'], [.5, '#8a6445'], [1, '#5a3d29']]), 1.6); for (let k = 0; k < 14; k++) line(g, [[gx - 8, 330 + k * 14], [gx + 8, 330 + k * 14]], .8, '#c8c4b8');
+    rrect(g, gx - 13, 250, 26, 52, 4); paint(g, '#151518', 1.6); for (let k = 0; k < 3; k++) { oval(g, gx - 18, 262 + k * 14, 4, 4); paint(g, CHROME(g, gx - 22, 0, gx - 14, 0), .8); oval(g, gx + 18, 262 + k * 14, 4, 4); paint(g, CHROME(g, gx + 14, 0, gx + 22, 0), .8); }
+    g.beginPath(); g.moveTo(gx - 30, 508); g.bezierCurveTo(gx - 48, 508, gx - 54, 548, gx - 42, 572); g.bezierCurveTo(gx - 32, 592, gx - 64, 604, gx - 64, 638); g.bezierCurveTo(gx - 64, 682, gx + 64, 682, gx + 64, 638); g.bezierCurveTo(gx + 64, 604, gx + 32, 592, gx + 42, 572); g.bezierCurveTo(gx + 54, 548, gx + 48, 508, gx + 30, 508); g.closePath();
+    paint(g, rg(g, gx - 22, 560, 6, 120, [[0, '#ff4a60'], [.45, '#e0122d'], [1, '#8d0a1d']]), 2);
+    g.beginPath(); g.moveTo(gx - 6, 590); g.bezierCurveTo(gx - 40, 596, gx - 52, 640, gx - 24, 664); g.bezierCurveTo(gx + 6, 672, gx + 30, 640, gx + 16, 606); g.closePath(); paint(g, '#f4f2ec', 1.2);
+    rrect(g, gx - 22, 556, 44, 9, 2); paint(g, '#151518', 1); rrect(g, gx - 22, 580, 44, 9, 2); paint(g, '#151518', 1); rrect(g, gx - 22, 650, 44, 6, 2); paint(g, CHROME(g, gx - 22, 0, gx + 22, 0), 1); for (const [kx, ky] of [[gx + 26, 628], [gx + 36, 644]]) { oval(g, kx, ky, 6, 6); paint(g, '#151518', 1); }
+  }
+  /* guitar lead */
+  g.beginPath(); g.moveTo(gx - 64, 640); g.bezierCurveTo(gx - 120, 720, L.amp.x + L.amp.w + 90, 730, L.amp.x + L.amp.w - 6, 668); g.lineWidth = 2.4; g.strokeStyle = '#26262a'; g.stroke();
 }
 
-/* the boombox and every animated thing: redrawn each frame while something moves */
-function drawBoombox(g, t) {
-  const b = L.box, play = playing ? 1 : 0, pulse = play ? Math.sin(t * 13) * .5 + .5 : 0; seed = 77;
-  /* antenna and handle */
-  ink(g, [[b.x + b.w - 40, b.y + 6], [b.x + b.w + 34, b.y - 78]], 2.2); fill(g, ell(b.x + b.w + 36, b.y - 82, 5, 5), RED); ink(g, curve([b.x + 70, b.y + 4], [b.x + b.w / 2, b.y - 66], [b.x + b.w - 70, b.y + 4]), 7); ink(g, curve([b.x + 70, b.y + 4], [b.x + b.w / 2, b.y - 66], [b.x + b.w - 70, b.y + 4]), 2, SILVER);
-  /* body */
-  const body = [[b.x + 12, b.y], [b.x + b.w - 12, b.y], [b.x + b.w, b.y + 14], [b.x + b.w, b.y + b.h], [b.x, b.y + b.h], [b.x, b.y + 14], [b.x + 12, b.y]]; shape(g, body, '#2a2a2f', 3);
-  /* speakers */
-  [b.x + 82, b.x + b.w - 82].forEach(cx => { const cy = b.y + 80, r = 56 + pulse * 3; fill(g, ell(cx, cy, 58, 58), '#16161a'); ink(g, ell(cx, cy, 58, 58), 2.4); ink(g, ell(cx, cy, r - 18, r - 18), 1.4, SILVER); fill(g, ell(cx, cy, 28 + pulse * 5, 28 + pulse * 5), '#3d3d43'); ink(g, ell(cx, cy, 28 + pulse * 5, 28 + pulse * 5), 2, SILVER); fill(g, ell(cx, cy, 9, 9), SILVER); fill(g, ell(cx, b.y + 20, 5, 5), RED); });
-  /* centre panel: tape window, buttons, level lights */
-  const px = b.x + 142, pw = 66; fill(g, box(px, b.y + 30, pw, 36), PAPER); ink(g, box(px, b.y + 30, pw, 36), 2); fill(g, box(px + 4, b.y + 34, pw - 8, 28), '#3a3a3f');
-  [px + 18, px + pw - 18].forEach((rx, i) => { const ry = b.y + 48, ang = t * (playing ? 5 : 0) * (i ? 1 : 1.3); fill(g, ell(rx, ry, 10, 10), PAPER); for (let k = 0; k < 3; k++) { const a = ang + k * Math.PI * 2 / 3; ink(g, [[rx, ry], [rx + Math.cos(a) * 9, ry + Math.sin(a) * 9]], 2.4, INK); } });
-  if (!inserted) { fill(g, box(px + 10, b.y + 38, pw - 20, 20), '#16161a'); }
-  [0, 1, 2, 3].forEach(k => { fill(g, box(px + k * 17, b.y + 78, 14, 12), SILVER); ink(g, box(px + k * 17, b.y + 78, 14, 12), 1.4); }); fill(g, [[px + 36, b.y + 81], [px + 44, b.y + 84], [px + 36, b.y + 87]], RED);
-  for (let k = 0; k < 4; k++) { const on = play && Math.sin(t * 9 + k * 1.7) > k * .35 - .7; fill(g, ell(px + 8 + k * 16, b.y + 106, 4.5, 4.5), on ? RED : '#55555b'); }
-  g.fillStyle = PAPER; g.font = '900 13px Archivo'; g.textAlign = 'center'; g.fillText('GRASS FILES', b.x + b.w / 2, b.y + b.h - 10); g.textAlign = 'left';
+/* ---------- things that move or glow: drawn each frame while the room is busy ---------- */
+let inserted = false, discoOn = false; const hit = {};
+const kick = k => (hit[k] || 0) * Math.sin(performance.now() / 17) * 3;
+
+function drawAmp(g, t) {
+  const a = L.amp, pulse = playing ? Math.sin(t * 14) * .5 + .5 : 0;
+  rrect(g, a.x - 10, a.y - 22, 36, 8, 4); /* handle */ line(g, [[a.x + 40, a.y], [a.x + 40, a.y - 14], [a.x + a.w - 40, a.y - 14], [a.x + a.w - 40, a.y]], 7, '#151518'); line(g, [[a.x + 40, a.y - 14], [a.x + a.w - 40, a.y - 14]], 2, '#5b5b61');
+  rrect(g, a.x, a.y, a.w, a.h, 7); paint(g, lg(g, a.x, a.y, a.x + a.w, a.y + a.h, [[0, '#2c2c31'], [1, '#141417']]), 2.2);
+  g.save(); rrect(g, a.x, a.y, a.w, a.h, 7); g.clip(); g.fillStyle = 'rgba(255,255,255,.05)'; for (let y = a.y + 3; y < a.y + a.h; y += 5) for (let x = a.x + 3 + (((y - a.y) / 5) % 2) * 2.5; x < a.x + a.w; x += 5) g.fillRect(x, y, 1.2, 1.2); g.restore();
+  /* control panel */
+  rrect(g, a.x + 6, a.y + 6, a.w - 12, 38, 3); paint(g, lg(g, 0, a.y + 6, 0, a.y + 44, [[0, '#dededa'], [1, '#a9a9a5']]), 1.4);
+  for (let k = 0; k < 5; k++) { const kx = a.x + 24 + k * 26, ky = a.y + 25; oval(g, kx, ky, 8, 8); paint(g, rg(g, kx - 2, ky - 2, 1, 9, [[0, '#55555b'], [1, '#101012']]), 1.2); const an = -2.3 + k * .9; line(g, [[kx, ky], [kx + Math.cos(an) * 6, ky + Math.sin(an) * 6]], 1.6, '#f4f2ec'); }
+  oval(g, a.x + a.w - 22, a.y + 25, 5, 5); paint(g, playing ? '#ff5a6e' : '#7a1522', 1); if (playing) { g.fillStyle = `rgba(224,18,45,${.18 + pulse * .2})`; oval(g, a.x + a.w - 22, a.y + 25, 12, 12); g.fill(); }
+  /* grille cloth */
+  const gx = a.x + 12, gy = a.y + 52, gw = a.w - 24, gh = a.h - 66; rrect(g, gx, gy, gw, gh, 3); paint(g, lg(g, gx, gy, gx + gw, gy + gh, [[0, '#a3a39e'], [1, '#7d7d78']]), 1.6);
+  g.save(); rrect(g, gx, gy, gw, gh, 3); g.clip(); g.strokeStyle = 'rgba(11,11,12,.3)'; g.lineWidth = .8; for (let k = 0; k < gw + gh; k += 5) { line(g, [[gx + k, gy], [gx + k - gh, gy + gh]], .8, 'rgba(11,11,12,.28)'); line(g, [[gx + k - gh, gy], [gx + k, gy + gh]], .8, 'rgba(11,11,12,.28)'); }
+  const cx = gx + gw / 2, cy = gy + gh / 2; g.strokeStyle = `rgba(11,11,12,${.18 + pulse * .12})`; g.lineWidth = 1.4; for (const r of [20, 31, 41]) { oval(g, cx, cy, r + pulse * 2.4, r + pulse * 2.4); g.stroke(); } g.restore();
+  rrect(g, gx + 2, gy + 2, gw - 4, gh - 4, 2); paint(g, null, 2.6, RED);
+  rrect(g, a.x + a.w - 62, a.y + a.h - 12, 50, 8, 2); paint(g, CHROME(g, a.x, 0, a.x + a.w, 0), .8); g.fillStyle = '#151518'; g.font = '900 6.5px Archivo'; g.fillText('GRASS 30', a.x + a.w - 58, a.y + a.h - 6);
+  for (const fx2 of [a.x + 12, a.x + a.w - 24]) { rrect(g, fx2, a.y + a.h, 12, 6, 2); paint(g, '#101012', 1); }
 }
-let inserted = false; const hit = {};
+
+function drawBoombox(g, t) {
+  const b = L.box, play = playing ? 1 : 0, pulse = play ? Math.sin(t * 13) * .5 + .5 : 0;
+  line(g, [[b.x + b.w - 44, b.y + 4], [b.x + b.w + 30, b.y - 84]], 2.2, '#6d6d72'); oval(g, b.x + b.w + 32, b.y - 87, 4.5, 4.5); paint(g, RED, 1);
+  g.beginPath(); g.moveTo(b.x + 72, b.y + 2); g.quadraticCurveTo(b.x + b.w / 2, b.y - 70, b.x + b.w - 72, b.y + 2); g.lineWidth = 9; g.strokeStyle = '#17171a'; g.lineCap = 'round'; g.stroke(); g.lineWidth = 2; g.strokeStyle = '#6d6d72'; g.stroke();
+  rrect(g, b.x, b.y, b.w, b.h, 14); paint(g, lg(g, 0, b.y, 0, b.y + b.h, [[0, '#46464c'], [.08, '#2e2e33'], [1, '#18181b']]), 2.4);
+  rrect(g, b.x + 6, b.y + 6, b.w - 12, 5, 2); g.fillStyle = 'rgba(255,255,255,.12)'; g.fill();
+  [b.x + 84, b.x + b.w - 84].forEach(cx => { const cy = b.y + 80; oval(g, cx, cy, 60, 60); paint(g, CHROME(g, cx - 60, cy - 60, cx + 60, cy + 60), 1.6); oval(g, cx, cy, 55, 55); paint(g, '#101012', 1.4);
+    g.save(); oval(g, cx, cy, 53, 53); g.clip(); hatch(g, cx - 55, cy - 55, 110, 110, 4, 'rgba(255,255,255,.07)', 1); g.restore();
+    for (const r of [44, 33]) { oval(g, cx, cy, r + pulse * 1.5, r + pulse * 1.5); paint(g, null, 1.2, '#4b4b50'); }
+    oval(g, cx, cy, 24 + pulse * 3.5, 24 + pulse * 3.5); paint(g, rg(g, cx - 5, cy - 6, 2, 28, [[0, '#6a6a70'], [1, '#222226']]), 1.4); oval(g, cx, cy, 7, 7); paint(g, CHROME(g, cx - 7, cy - 7, cx + 7, cy + 7), 1); oval(g, cx, b.y + 18, 3.6, 3.6); paint(g, RED, .8); });
+  const px = b.x + 142, pw = 66; rrect(g, px - 4, b.y + 22, pw + 8, 52, 4); paint(g, '#101012', 1.2); rrect(g, px, b.y + 28, pw, 38, 3); paint(g, '#d9d9d4', 1.2); rrect(g, px + 4, b.y + 32, pw - 8, 30, 2); paint(g, '#2c2c31', 1);
+  [px + 17, px + pw - 17].forEach((rx2, i) => { const ry = b.y + 47, ang = t * (playing ? 5 : 0) * (i ? 1 : 1.3); oval(g, rx2, ry, 10, 10); paint(g, '#efefeb', 1); for (let k = 0; k < 3; k++) { const a2 = ang + k * TAU / 3; line(g, [[rx2, ry], [rx2 + Math.cos(a2) * 8.5, ry + Math.sin(a2) * 8.5]], 2.2, '#26262a'); } });
+  if (!inserted) { rrect(g, px + 4, b.y + 32, pw - 8, 30, 2); g.fillStyle = '#0b0b0c'; g.fill(); }
+  for (let k = 0; k < 4; k++) { rrect(g, px + k * 17, b.y + 82, 14, 12, 2); paint(g, CHROME(g, px + k * 17, 0, px + k * 17 + 14, 0), 1); } g.fillStyle = RED; g.beginPath(); g.moveTo(px + 36, b.y + 85); g.lineTo(px + 44, b.y + 88); g.lineTo(px + 36, b.y + 91); g.fill();
+  for (let k = 0; k < 4; k++) { const on = play && Math.sin(t * 9 + k * 1.7) > k * .35 - .7; oval(g, px + 8 + k * 16, b.y + 112, 4.2, 4.2); paint(g, on ? '#ff3b55' : '#4b4b50', .8); if (on) { g.fillStyle = 'rgba(224,18,45,.25)'; oval(g, px + 8 + k * 16, b.y + 112, 9, 9); g.fill(); } }
+  g.fillStyle = '#d9d9d4'; g.font = '900 12px Archivo'; g.textAlign = 'center'; g.fillText('GRASS FILES', b.x + b.w / 2, b.y + b.h - 9); g.textAlign = 'left';
+}
+
+function cymbal(g, x, y, r, k, tilt = 0) {
+  line(g, [[x, y + 6], [x, 688]], 3, '#5d5d59'); line(g, [[x - 38, 690], [x, 650], [x + 38, 690]], 2.4, '#5d5d59');
+  g.save(); g.translate(x, y + kick(k)); g.rotate(tilt + (hit[k] || 0) * .06 * Math.sin(performance.now() / 20));
+  oval(g, 0, 0, r, r * .15); paint(g, rg(g, 0, -2, r * .05, r, [[0, '#fff1b0'], [.4, '#d9b957'], [1, '#8d7228']]), 1.6);
+  for (const f of [.8, .62, .44]) { oval(g, 0, 0, r * f, r * .15 * f); paint(g, null, .8, 'rgba(70,52,10,.5)'); }
+  oval(g, 0, -1, r * .17, r * .06); paint(g, '#f4dd86', 1); g.restore();
+}
+function tomDrum(g, cx, topY, rx, h, k, shellA, shellB, legs) {
+  const dy = kick(k), ry = rx * .24, y = topY + dy;
+  if (legs) for (const dx of [-rx * .75, rx * .75, 0]) line(g, [[cx + dx, y + h - 4], [cx + dx * 1.2, 688]], 3, '#5d5d59');
+  g.beginPath(); g.rect(cx - rx, y, rx * 2, h); g.ellipse(cx, y + h, rx, ry, 0, 0, Math.PI); g.fillStyle = lg(g, cx - rx, 0, cx + rx, 0, [[0, shellB], [.28, shellA], [.5, shellA], [1, shellB]]); g.fill();
+  g.beginPath(); g.moveTo(cx - rx, y); g.lineTo(cx - rx, y + h); g.ellipse(cx, y + h, rx, ry, 0, Math.PI, 0, true); g.lineTo(cx + rx, y); g.lineWidth = 1.6; g.strokeStyle = LINE; g.stroke();
+  for (let i = 0; i < 6; i++) { const lx = cx - rx * .82 + i * (rx * 1.64 / 5), ly = y + h * .5 + Math.sqrt(Math.max(0, 1 - ((lx - cx) / rx) ** 2)) * ry * .7; rrect(g, lx - 2.2, ly - 6, 4.4, 12, 1.5); paint(g, CHROME(g, lx - 2, 0, lx + 2, 0), .7); }
+  oval(g, cx, y + h, rx, ry); g.lineWidth = 3; g.strokeStyle = '#c8c8c4'; g.save(); g.beginPath(); g.rect(cx - rx - 4, y + h, rx * 2 + 8, ry + 6); g.clip(); oval(g, cx, y + h, rx, ry); g.stroke(); g.restore();
+  oval(g, cx, y, rx, ry); paint(g, rg(g, cx - rx * .3, y - ry * .3, 1, rx, [[0, '#ffffff'], [1, '#d9d6cc']]), 1.6); oval(g, cx, y, rx - 4, ry - 1); g.lineWidth = 3; g.strokeStyle = '#c8c8c4'; g.stroke(); oval(g, cx, y, rx * .3, ry * .3); paint(g, null, .8, 'rgba(11,11,12,.25)');
+}
 function drawKit(g) {
-  const K = L.drum; seed = 303; const sh = k => (hit[k] || 0) * (Math.sin(performance.now() / 18) * 3);
-  /* throne is behind Durva; cymbal stands and the kit are drawn over him */
-  const cym = (x, y, r, k) => { ink(g, [[x, y + 10], [x, 690]], 2.4); fill(g, ell(x, y + sh(k), r, r * .16), '#d9cf9a'); ink(g, ell(x, y + sh(k), r, r * .16), 2.2); };
-  cym(K - 120, 360, 62, 'crash'); cym(K + 260, 430, 70, 'ride');
-  ink(g, [[K - 190, 500], [K - 190, 690]], 2.4); ink(g, [[K - 215, 690], [K - 190, 650], [K - 165, 690]], 2); fill(g, ell(K - 190, 495 + sh('hat'), 46, 8), '#d9cf9a'); ink(g, ell(K - 190, 495 + sh('hat'), 46, 8), 2); fill(g, ell(K - 190, 480 + sh('hat') * .5, 46, 8), '#e6dca8'); ink(g, ell(K - 190, 480 + sh('hat') * .5, 46, 8), 2);
-  const drum = (cx, cy, rx, h, k, col) => { const dy = sh(k); fill(g, box(cx - rx, cy + dy, rx * 2, h), col); ink(g, box(cx - rx, cy + dy, rx * 2, h), 2.6); for (let i = -2; i <= 2; i++) ink(g, [[cx + i * rx * .38, cy + dy], [cx + i * rx * .38, cy + dy + h]], 1, 'rgba(11,11,12,.3)'); fill(g, ell(cx, cy + dy, rx, rx * .22), PAPER); ink(g, ell(cx, cy + dy, rx, rx * .22), 2.4); };
-  drum(K + 70, 470, 50, 56, 'tom', RED); drum(K + 210, 560, 62, 80, 'floor', RED); ink(g, [[K + 160, 640], [K + 150, 690]], 2); ink(g, [[K + 270, 640], [K + 285, 690]], 2);
-  drum(K - 80, 560, 50, 40, 'snare', SILVER); ink(g, [[K - 80, 600], [K - 80, 690]], 2.2);
-  const kx = K + 20, ky = 610, kr = 86 + (hit.kick || 0) * 4; fill(g, ell(kx, ky, kr, kr), '#16161a'); ink(g, ell(kx, ky, kr, kr), 3); fill(g, ell(kx, ky, kr - 10, kr - 10), RED); ink(g, ell(kx, ky, kr - 10, kr - 10), 2); g.fillStyle = PAPER; g.font = '900 20px Archivo'; g.textAlign = 'center'; g.fillText('GRASS', kx, ky - 2); g.fillText('FILES', kx, ky + 20); g.textAlign = 'left';
-  ink(g, [[kx - kr + 6, ky + kr - 20], [kx - kr - 20, 690]], 2.2); ink(g, [[kx + kr - 6, ky + kr - 20], [kx + kr + 20, 690]], 2.2);
+  const K = L.drum;
+  cymbal(g, K - 110, 340, 66, 'crash', -.05); cymbal(g, K + 280, 410, 74, 'ride', .08);
+  /* hi-hat and pedal */
+  line(g, [[K - 215, 505], [K - 215, 688]], 3, '#5d5d59'); line(g, [[K - 250, 690], [K - 215, 655], [K - 180, 690]], 2.4, '#5d5d59'); rrect(g, K - 250, 676, 62, 8, 2); paint(g, '#26262a', 1);
+  for (const [dy, c] of [[0, '#c9a940'], [-13 + (hit.hat || 0) * 8, '#e8cd6a']]) { oval(g, K - 215, 500 + dy, 50, 7); paint(g, rg(g, K - 215, 498 + dy, 2, 50, [[0, '#fff1b0'], [1, c]]), 1.4); }
+  /* snare, floor tom, rack tom */
+  line(g, [[K - 90, 604], [K - 90, 650]], 3, '#5d5d59'); line(g, [[K - 130, 690], [K - 90, 650], [K - 50, 690]], 2.4, '#5d5d59');
+  tomDrum(g, K - 90, 570, 54, 36, 'snare', '#e7e7e3', '#9c9c98', false);
+  tomDrum(g, K + 215, 560, 66, 84, 'floor', '#e0122d', '#7d0818', true);
+  line(g, [[K + 10, 530], [K + 10, 472]], 4, '#5d5d59');
+  tomDrum(g, K + 10, 424, 54, 56, 'tom', '#e0122d', '#7d0818', false);
+  /* kick drum, facing us */
+  const kx = K + 30, ky = 612, kr = 88 + (hit.kick || 0) * 3;
+  line(g, [[kx - kr + 6, ky + kr * .6], [kx - kr - 24, 690]], 3, '#5d5d59'); line(g, [[kx + kr - 6, ky + kr * .6], [kx + kr + 24, 690]], 3, '#5d5d59');
+  oval(g, kx, ky, kr, kr); paint(g, CHROME(g, kx - kr, ky - kr, kx + kr, ky + kr), 2); oval(g, kx, ky, kr - 6, kr - 6); paint(g, '#5a0a16', 1.4);
+  for (let i = 0; i < 12; i++) { const a = i * TAU / 12; g.save(); g.translate(kx + Math.cos(a) * (kr - 3), ky + Math.sin(a) * (kr - 3)); g.rotate(a); rrect(g, -4, -2.4, 8, 4.8, 1.5); paint(g, CHROME(g, -4, 0, 4, 0), .7); g.restore(); }
+  oval(g, kx, ky, kr - 14, kr - 14); paint(g, rg(g, kx - 20, ky - 24, 4, kr, [[0, '#4d4d53'], [1, '#17171a']]), 1.4); oval(g, kx, ky + 8, 24, 14); g.lineWidth = 0; g.fillStyle = 'rgba(0,0,0,.35)'; g.fill();
+  g.fillStyle = '#f4f2ec'; g.font = '900 21px Archivo'; g.textAlign = 'center'; g.fillText('GRASS', kx, ky - 4); g.fillStyle = RED; g.fillText('FILES', kx, ky + 19); g.textAlign = 'left';
+  rrect(g, kx - 12, ky + kr - 14, 24, 10, 2); paint(g, CHROME(g, kx - 12, 0, kx + 12, 0), 1);
+  rrect(g, kx - 18, 681, 36, 8, 2); paint(g, '#26262a', 1); line(g, [[kx, 681], [kx + 12, ky + 30]], 3, '#5d5d59');
   for (const k in hit) hit[k] = Math.max(0, hit[k] - .08);
 }
+
 function drawFx(t) {
   const g = fg; g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, W, H); camTransform(g);
-  drawBoombox(g, t); drawKit(g);
+  drawAmp(g, t); drawBoombox(g, t); drawKit(g);
   if (playing && !reduce) { g.fillStyle = INK; g.font = '800 26px Archivo'; for (let k = 0; k < 4; k++) { const a = ((t * .55 + k / 4) % 1), x = L.box.x + 70 + k * 80 + Math.sin(a * 6 + k) * 14, y = L.box.y - 30 - a * 150; g.globalAlpha = 1 - a; g.fillText(k % 2 ? '♫' : '♪', x, y); } g.globalAlpha = 1; }
-  if (state === 'guitar' && !reduce) { const cx = L.me.guitar + 34, cy = 560; g.strokeStyle = RED; g.lineWidth = 3; g.lineCap = 'round'; for (let k = 0; k < 3; k++) { const a = ((t * 1.2 + k / 3) % 1); g.globalAlpha = 1 - a; g.beginPath(); g.arc(cx + 40, cy, 30 + a * 90, -.7, .7); g.stroke(); } g.globalAlpha = 1; }
-  if (state === 'dance' || (discoOn)) {
-    const bx = 760, by = 190; ink(g, [[bx, -20], [bx, by - 38]], 2); const sp = t * 1.4; fill(g, ell(bx, by, 38, 38), '#d6d6d1'); ink(g, ell(bx, by, 38, 38), 2.6);
-    for (let k = -2; k <= 2; k++) { const w = Math.cos(sp + k * .6) * 38; ink(g, [[bx + w * .95, by - Math.sqrt(Math.max(0, 1444 - w * w))], [bx + w * .95, by + Math.sqrt(Math.max(0, 1444 - w * w))]], 1, 'rgba(11,11,12,.5)'); }
-    for (let k = -2; k <= 2; k++) ink(g, [[bx - 36, by + k * 14], [bx + 36, by + k * 14]], 1, 'rgba(11,11,12,.35)');
-    for (let k = 0; k < 18; k++) { const a = sp * .9 + k * 2.4, rr = 90 + (k % 5) * 70, x = bx + Math.cos(a) * rr * 1.2, y = 330 + Math.abs(Math.sin(a * 1.3)) * 360; g.fillStyle = k % 3 ? 'rgba(224,18,45,.55)' : 'rgba(244,242,236,.9)'; g.beginPath(); g.arc(x, y, 8 + (k % 3) * 4, 0, 7); g.fill(); }
-    const d = L.dance; for (let i = 0; i < 4; i++) for (let j = 0; j < 2; j++) if (Math.sin(t * 6 + i * 1.3 + j * 2.1) > .1) { const tx = d.x + i * 48, ty = d.y + 20 + j * 26; fill(g, [[tx + 12, ty], [tx + 56, ty], [tx + 44, ty + 24], [tx, ty + 24]], 'rgba(224,18,45,.7)'); }
+  if (state === 'guitar' && !reduce) { const cx = L.me.guitar + 70, cy = 560; g.strokeStyle = RED; g.lineWidth = 3; g.lineCap = 'round'; for (let k = 0; k < 3; k++) { const a = ((t * 1.2 + k / 3) % 1); g.globalAlpha = 1 - a; g.beginPath(); g.arc(cx, cy, 30 + a * 90, -.7, .7); g.stroke(); } g.globalAlpha = 1; }
+  if (state === 'dance' || discoOn) {
+    const bx = L.me.dance, by = 190, sp = t * 1.4; line(g, [[bx, -20], [bx, by - 40]], 2, '#4b4b50'); oval(g, bx, by, 40, 40); paint(g, rg(g, bx - 12, by - 14, 3, 44, [[0, '#ffffff'], [.5, '#cfcfca'], [1, '#6d6d72']]), 1.8);
+    for (let k = -2; k <= 2; k++) { const w = Math.cos(sp + k * .6) * 40, h2 = Math.sqrt(Math.max(0, 1600 - w * w)); line(g, [[bx + w, by - h2], [bx + w, by + h2]], 1, 'rgba(11,11,12,.35)'); line(g, [[bx - 38, by + k * 15], [bx + 38, by + k * 15]], 1, 'rgba(11,11,12,.25)'); }
+    for (let k = 0; k < 18; k++) { const a = sp * .9 + k * 2.4, rr = 90 + (k % 5) * 70, x = bx + Math.cos(a) * rr * 1.2, y = 330 + Math.abs(Math.sin(a * 1.3)) * 360; g.fillStyle = k % 3 ? 'rgba(224,18,45,.5)' : 'rgba(255,255,255,.85)'; g.beginPath(); g.arc(x, y, 8 + (k % 3) * 4, 0, 7); g.fill(); }
+    const d = L.dance; for (let i = 0; i < 4; i++) for (let j = 0; j < 2; j++) if (Math.sin(t * 6 + i * 1.3 + j * 2.1) > .1) { const tx = d.x + i * 50, ty = d.y + 18 + j * 26; g.beginPath(); g.moveTo(tx + 12, ty); g.lineTo(tx + 58, ty); g.lineTo(tx + 46, ty + 24); g.lineTo(tx, ty + 24); g.closePath(); g.fillStyle = 'rgba(224,18,45,.7)'; g.fill(); }
   }
 }
-let discoOn = false;
+
 
 /* ---------- layout: camera, sprite, shelf, hotspots ---------- */
 const P = (x, y) => [cam.ox + x * cam.s, cam.oy + y * cam.s];
@@ -269,8 +323,8 @@ function layout() {
 }
 function placeAll() {
   const w = L.meH * 2 / 3; place($('me'), meX - w / 2, L.meB - L.meH, w, L.meH);
-  const wd = $('word'); const [wx, wy] = P(L.word.x, L.word.y); Object.assign(wd.style, { left: wx + 'px', top: wy + 'px', fontSize: L.word.h * .56 * cam.s + 'px', display: phone ? 'block' : 'block' });
-  place($('boomBtn'), L.box.x, L.box.y - 70, L.box.w, L.box.h + 70); place($('guitarBtn'), L.guitar - 70, 255, 140, 440); $('guitarBtn').hidden = guitarOut; place($('danceBtn'), L.dance.x - 10, 650, 230, 70); place($('drumBtn'), L.drum - 200, 330, 470, 370);
+  const wd = $('word'); const [wx, wy] = P(L.word.x, L.word.y); Object.assign(wd.style, phone ? { left: '16px', top: '16px', fontSize: '2.1rem' } : { left: wx + 'px', top: wy + 'px', fontSize: L.word.h * .56 * cam.s + 'px' });
+  place($('boomBtn'), L.box.x, L.box.y - 70, L.box.w, L.box.h + 70); place($('ampBtn'), L.amp.x, L.amp.y - 20, L.amp.w, L.amp.h + 20); place($('guitarBtn'), L.guitar - 70, 255, 140, 440); $('guitarBtn').hidden = guitarOut; place($('danceBtn'), L.dance.x - 10, 650, 230, 70); place($('drumBtn'), L.drum - 270, 300, 620, 400);
   if (!phone) { const { x0, x1, y } = L.shelf, [rx, ry] = P(x0 + 10, y), rw = (x1 - x0 - 20) * cam.s; Object.assign($('rack').style, { left: rx + 'px', width: rw + 'px', top: ry - rw * .186 * 1.0 * 1.58 / 1.58 + 'px' }); $('rack').style.top = ''; $('rack').style.bottom = ''; const h = rw * .186 / 1.58 * 1; $('rack').style.top = ry - h - 2 + 'px'; }
   else { const r = $('rack').style; r.left = r.top = r.width = ''; }
   const f = Math.max(.52, Math.min(.9, (L.shelf.x1 - L.shelf.x0) * cam.s / 700)); $('rack').style.setProperty('--tf', f + 'rem');
@@ -290,10 +344,10 @@ let walk = 0; const moveMe = x => { cancelAnimationFrame(walk); const x0 = meX, 
 
 /* ---------- the tapes ---------- */
 const rack = $('rack'); let flyer = null;
-rack.innerHTML = POSTS.map((p, i) => `<button class="tape${p.soon ? ' soon' : ''}" data-i="${i}" style="--r:${[-2.5, 1.5, -1, 2, -1.5][i % 5]}deg" aria-label="${esc(p.title)}${p.soon ? ' (not recorded yet)' : ''}"><span class="lbl"><b>${esc(p.short)}</b></span><span class="win"><i></i><i></i></span><span class="cap">${esc(p.title)}</span></button>`).join('');
+rack.innerHTML = POSTS.map((p, i) => `<button class="tape${p.soon ? ' soon' : ''}" data-i="${i}" aria-label="${esc(p.title)}${p.soon ? ' (not recorded yet)' : ''}"><span class="lbl"><b>${esc(p.short)}</b></span><span class="win"><i></i><i></i></span><span class="cap">${esc(p.title)}</span></button>`).join('');
 const tapes = [...rack.children];
 const pan = x => { focus = x; if (phone) moveCam(target(false), reduce ? 0 : 600); };
-$('chips').addEventListener('click', async e => { const go = e.target.dataset.go; if (!go || state !== 'idle') return; pan(go === 'drum' ? 1090 : go === 'guitar' ? 520 : 600); await sleep(phone && !reduce ? 650 : 0); $(go + 'Btn').click(); });
+$('chips').addEventListener('click', async e => { const go = e.target.dataset.go; if (!go || state !== 'idle') return; pan(go === 'drum' ? 1150 : go === 'guitar' ? 760 : 840); await sleep(phone && !reduce ? 650 : 0); $(go + 'Btn').click(); });
 tapes.forEach((el, i) => { const p = POSTS[i];
   el.addEventListener('mouseenter', () => { if (state === 'idle' && !phone) say(p.say, 'point', 0); });
   el.addEventListener('mouseleave', () => { if (state === 'idle') { bubble.style.opacity = 0; setPose('idle'); } });
@@ -333,19 +387,20 @@ $('poke').addEventListener('click', () => { if (state !== 'idle') return; const 
 $('guitarBtn').addEventListener('click', async () => {
   if (state !== 'idle') return; state = 'guitar'; guitarOut = true; drawBack(); $('guitarBtn').hidden = true; moveMe(L.me.guitar + 90); say('Okay. Listen.', 'guitar', 0); startLoop();
   await sleep(reduce ? 0 : 700); me.classList.add('strum'); playing = true; await sleep(reduce ? 0 : 5200); me.classList.remove('strum');
-  guitarOut = false; playing = false; state = 'idle'; drawBack(); placeAll(); moveMe(L.me.idle); pan(500); say('That’s the one I know.', 'wave', 2600); startLoop(true);
+  guitarOut = false; playing = false; state = 'idle'; drawBack(); placeAll(); moveMe(L.me.idle); pan(690); say('That’s the one I know.', 'wave', 2600); startLoop(true);
 });
 const PIECES = ['snare', 'hat', 'kick', 'tom', 'crash', 'floor', 'snare', 'ride'];
 $('drumBtn').addEventListener('click', async () => {
   if (state !== 'idle') return; state = 'drums'; moveMe(L.me.drum); say('Okay. One fill.', 'sit', 0); startLoop(); await sleep(reduce ? 0 : 600);
   for (let n = 0; n < (reduce ? 0 : 16); n++) { setPose(n % 2 ? 'drums2' : 'drums'); if (n % 2) { hit[PIECES[(n >> 1) % PIECES.length]] = 1; if (n % 4 === 1) hit.kick = 1; } await sleep(240); }
-  setPose('drums'); await sleep(reduce ? 0 : 500); state = 'idle'; moveMe(L.me.idle); pan(500); say('Right. The tapes.', 'point', 2400); startLoop(true);
+  setPose('drums'); await sleep(reduce ? 0 : 500); state = 'idle'; moveMe(L.me.idle); pan(690); say('Right. The tapes.', 'point', 2400); startLoop(true);
 });
 $('danceBtn').addEventListener('click', async () => {
   if (state !== 'idle') return; state = 'dance'; moveMe(L.me.dance); say('Okay. One song.', 'wave', 0); playing = true; discoOn = true; startLoop(); await sleep(reduce ? 0 : 500); me.classList.add('dance');
   const poses = ['wave', 'walk', 'point', 'headphones', 'wave', 'guard']; for (let n = 0; n < (reduce ? 0 : 20); n++) { setPose(poses[n % poses.length]); await sleep(300); }
-  me.classList.remove('dance'); playing = false; discoOn = false; state = 'idle'; moveMe(L.me.idle); pan(500); say('Okay, that’s enough.', 'idle', 2400); startLoop(true);
+  me.classList.remove('dance'); playing = false; discoOn = false; state = 'idle'; moveMe(L.me.idle); pan(690); say('Okay, that’s enough.', 'idle', 2400); startLoop(true);
 });
+$('ampBtn').addEventListener('click', () => { if (state !== 'idle') return; playing = !playing; say(playing ? 'Turned up. Hum only, sorry.' : 'Turned it down.', 'point', 2400); startLoop(!playing); });
 $('boomBtn').addEventListener('click', () => { if (state !== 'idle') return; playing = !playing; say(playing ? 'Nothing in it yet. Pick a tape.' : 'Off.', 'point', 2400); startLoop(!playing); });
 
 /* ---------- the animation loop: runs only while something moves ---------- */
