@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Durva Sharma (mockup 2)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Pixelify+Sans:wght@400..700&display=swap" rel="stylesheet">
+<style>
+:root{--k:#000;--w:#fff;--red:#e0122d;--chrome:#cfd3d8;--grey:#8b8f96;
+  --sans:"Archivo",Arial,sans-serif;--px:"Pixelify Sans",ui-monospace,monospace;--g:clamp(.6rem,1.2vw,1rem)}
+*{box-sizing:border-box;margin:0}
+html{background:var(--k);color:var(--w)}
+body{font-family:var(--sans);font-size:1rem;line-height:1.45;padding:var(--g);overflow-x:hidden}
+a{color:inherit}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--w);outline-offset:3px}
+.px{font-family:var(--px);font-size:.8rem;line-height:1.15;text-transform:uppercase;letter-spacing:.02em}
+
+/* ---------- red sheet ---------- */
+.sheet{position:relative;background:var(--red);color:var(--k);border-radius:6px;min-height:calc(100svh - var(--g)*2);
+  padding:clamp(.9rem,1.6vw,1.4rem);display:flex;flex-direction:column;overflow:hidden}
+.top{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem}
+.top ul{list-style:none;padding:0}
+.top ul a{text-decoration:underline;text-underline-offset:2px}
+.top ul a:hover{background:var(--k);color:var(--red);text-decoration:none}
+.pill{background:var(--k);color:var(--red);text-decoration:none;padding:.45em 1.1em;border-radius:3px}
+.pill:hover{background:var(--w);color:var(--k)}
+.three{display:grid;grid-template-columns:repeat(4,1fr);margin-top:clamp(2rem,7vh,5rem)}
+.title{align-self:flex-end;text-align:right;font-stretch:66%;font-weight:500;text-transform:uppercase;
+  font-size:clamp(1.9rem,4.6vw,4.4rem);line-height:.86;letter-spacing:-.01em;margin-top:.4rem}
+.logo{position:relative;margin:auto 0 0;height:19vw;min-height:7rem;cursor:none;touch-action:pan-y}
+.goo{position:absolute;inset:0;filter:url(#goo)}
+.goo .name{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-weight:900;font-stretch:112%;font-style:normal;text-transform:uppercase;font-size:20.5vw;line-height:1;letter-spacing:-.06em;
+  transform:skewX(-9deg);white-space:nowrap;user-select:none}
+.goo .blob{position:absolute;left:0;top:0;width:8vw;height:8vw;margin:-4vw 0 0 -4vw;border-radius:50%;background:var(--k);transform:translate(-20vw,-20vw)}
+.goo .drip{position:absolute;border-radius:50%;background:var(--k)}
+.loops{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+.loops ellipse{fill:none;stroke:var(--w);stroke-width:1.5;vector-effect:non-scaling-stroke}
+.logo .px{position:absolute;color:var(--w);pointer-events:none}
+.four{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-top:1rem}
+.bar{display:flex;align-items:center;gap:1rem;margin-top:1rem;background:var(--k);color:var(--red);text-decoration:none;
+  padding:.3em 1em;border-radius:3px;font-stretch:66%;font-weight:500;text-transform:uppercase;font-size:clamp(1.2rem,2.2vw,1.9rem)}
+.bar::before,.bar::after{content:"";flex:1;height:1.5px;background:currentColor}
+.bar:hover{background:var(--w);color:var(--k)}
+
+/* ---------- record ---------- */
+.deck{position:relative;overflow:hidden;display:grid;grid-template-columns:minmax(0,11fr) minmax(0,10fr);gap:clamp(1.5rem,4vw,4rem);align-items:center;
+  padding:clamp(4rem,9vw,8rem) clamp(.9rem,1.6vw,1.4rem)}
+.platter{position:relative;aspect-ratio:1;width:100%;max-width:78vh;justify-self:center}
+.vinyl{position:absolute;inset:0;border-radius:50%;animation:spin 6s linear infinite;
+  background:
+    conic-gradient(from 30deg,transparent 0 6%,rgba(255,255,255,.2) 11%,transparent 17% 48%,rgba(255,255,255,.14) 56%,transparent 63%),
+    repeating-radial-gradient(circle,#08080a 0 1.6px,#1c1d20 2.1px 2.7px)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.label{position:absolute;inset:31%;border-radius:50%;overflow:hidden;background:var(--red)}
+.label svg{width:100%;height:100%;display:block}
+.vinyl::after{content:"";position:absolute;inset:48.6%;border-radius:50%;background:var(--k);box-shadow:0 0 0 2px var(--chrome)}
+.arm{position:absolute;right:-3%;top:-4%;width:34%;height:70%;transform-origin:78% 12%;transform:rotate(var(--a,8deg));transition:transform .5s cubic-bezier(.3,1.4,.5,1);pointer-events:none}
+.side{display:flex;justify-content:space-between;border-bottom:1.5px solid var(--w);padding-bottom:.5rem;margin-bottom:.25rem}
+.trk{display:grid;grid-template-columns:2.2rem minmax(0,1fr);gap:.25rem 1rem;align-items:baseline;width:100%;text-align:left;
+  background:none;border:0;border-bottom:1px solid #333;padding:.7rem .6rem .8rem;cursor:pointer}
+.trk b{font-weight:900;font-stretch:112%;font-size:clamp(1.6rem,3vw,3.1rem);overflow-wrap:anywhere;line-height:.95;letter-spacing:-.03em}
+.trk .sub{grid-column:2;color:var(--grey);font-size:1.02rem;display:flex;flex-wrap:wrap;justify-content:space-between;gap:.2rem 1rem;align-items:baseline}
+.trk .px{color:var(--grey)}
+.trk:hover,.trk:focus-visible{background:var(--red);color:var(--k);border-color:var(--red)}
+.trk:hover .sub,.trk:hover .px,.trk:focus-visible .sub,.trk:focus-visible .px{color:var(--k)}
+.strip{position:absolute;background:var(--w);color:var(--k);padding:.15em .5em;font-stretch:66%;font-weight:600;text-transform:uppercase;font-size:clamp(.95rem,1.5vw,1.3rem);white-space:nowrap;z-index:2}
+.star{position:absolute;pointer-events:none;z-index:1}
+
+/* ---------- liner notes behind the glass ---------- */
+#liner{position:fixed;inset:0;z-index:20;background:var(--red);color:var(--k);padding:clamp(1.2rem,4vw,4rem);display:none;overflow:auto}
+#liner.on{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(1.5rem,5vw,5rem);align-content:center}
+#liner h2{font-weight:900;font-stretch:125%;font-size:clamp(3rem,10vw,10rem);line-height:.85;letter-spacing:-.045em;overflow-wrap:anywhere}
+#liner .tag{font-stretch:66%;font-weight:500;text-transform:uppercase;font-size:clamp(1.4rem,2.6vw,2.4rem);line-height:.95;margin-top:1rem}
+#liner p{font-size:1.2rem;max-width:34rem}
+#liner p+p{margin-top:1rem}
+#liner dl{display:grid;grid-template-columns:auto 1fr;gap:.4rem 1.2rem;margin-top:1.6rem;align-items:baseline}
+#liner dd{font-weight:600}
+#liner .x{position:absolute;top:1rem;right:1rem;border:0;cursor:pointer}
+#glass{position:fixed;inset:0;width:100%;height:100%;z-index:30;pointer-events:none}
+footer{display:flex;flex-wrap:wrap;gap:.5rem 2rem;justify-content:space-between;padding:1rem clamp(.9rem,1.6vw,1.4rem) 3rem;border-top:1px solid #333}
+.stamp{position:fixed;left:.5rem;bottom:.5rem;z-index:40;background:var(--w);color:var(--k);padding:.2em .5em}
+
+@media (max-width:820px){
+  .three{display:none}
+  .four{grid-template-columns:1fr 1fr}
+  .logo{height:30vw}
+  .deck,#liner.on{grid-template-columns:1fr}
+  .strip,.star{display:none}
+}
+@media (prefers-reduced-motion:reduce){.vinyl{animation:none}.arm{transition:none}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="goo"><feGaussianBlur id="gb" in="SourceGraphic" stdDeviation="10"/><feColorMatrix values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 42 -19"/></filter></svg>
+<p class="stamp px">mockup 2, throwaway</p>
+
+<header class="sheet">
+  <div class="top">
+    <ul class="px"><li><a href="#record">Projects</a></li><li><a href="#record">Work</a></li><li><a href="#hi">Contact</a></li><li><a href="https://github.com/sykeriin">GitHub</a></li></ul>
+    <a class="pill px" href="DurvaSharma_Resume.pdf">Resume, PDF</a>
+  </div>
+  <div class="three px"><span>Build</span><span>Break</span><span>Rebuild</span><span></span></div>
+  <h1 class="title">Durva Sharma<br>AI systems engineer</h1>
+
+  <div class="logo" id="logo" aria-hidden="true">
+    <div class="goo">
+      <div class="name">Durva</div>
+      <i class="drip" style="left:8%;top:68%;width:3.2vw;height:3.2vw"></i>
+      <i class="drip" style="left:47%;top:4%;width:2.4vw;height:2.4vw"></i>
+      <i class="drip" style="left:90%;top:72%;width:4vw;height:4vw"></i>
+      <i class="blob" id="blob"></i>
+    </div>
+    <svg class="loops" viewBox="0 0 100 100" preserveAspectRatio="none"><ellipse cx="31" cy="50" rx="9" ry="44" transform="rotate(8 31 50)"/><ellipse cx="66" cy="52" rx="11" ry="40" transform="rotate(-10 66 52)"/></svg>
+    <span class="px" style="left:12%;top:74%">D</span><span class="px" style="left:33%;top:20%">U</span><span class="px" style="left:52%;top:78%">R</span><span class="px" style="left:70%;top:24%">V</span><span class="px" style="left:88%;top:60%">A</span>
+  </div>
+
+  <div class="four px">
+    <span>B.Tech CSE<br>MIT Bengaluru, 2029</span>
+    <span>Founding engineer<br>PetAlly</span>
+    <span>Computer vision lead<br>HAWKEYE, Indian Air Force</span>
+    <span>I build the parts of AI<br>systems that tend to break</span>
+  </div>
+  <a class="bar" href="#record">Drop the needle</a>
+</header>
+
+<main class="deck" id="record">
+  <span class="strip" style="left:3%;top:7%;transform:rotate(-4deg)">1st place, MAHE Mobility Hackathon 2026</span>
+  <span class="strip" style="left:30%;bottom:6%;transform:rotate(3deg)">Top 32 of 1,000+ teams, Zenith26</span>
+  <span class="strip" style="right:4%;top:5%;transform:rotate(2deg)">Vice President, NeuraAI</span>
+  <svg class="star" style="left:38%;top:9%;width:11vw" viewBox="-50 -50 100 100"><path id="st" fill="#cfd3d8"/></svg>
+  <svg class="star" style="left:-2%;bottom:10%;width:15vw;transform:rotate(20deg)" viewBox="-50 -50 100 100"><use href="#st"/></svg>
+  <svg class="star" style="right:1%;bottom:3%;width:8vw;transform:rotate(-15deg)" viewBox="-50 -50 100 100"><use href="#st" fill="#e0122d"/></svg>
+
+  <div class="platter">
+    <div class="vinyl"><div class="label"><svg id="labelArt" viewBox="0 0 200 200" aria-hidden="true"></svg></div></div>
+    <svg class="arm" id="arm" viewBox="0 0 100 200" aria-hidden="true">
+      <circle cx="78" cy="24" r="17" fill="#2a2b2e" stroke="#cfd3d8" stroke-width="3"/><circle cx="78" cy="24" r="6" fill="#cfd3d8"/>
+      <path d="M78 24 L60 150 L40 178" fill="none" stroke="#cfd3d8" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="24" y="168" width="26" height="15" rx="2" fill="#fff" transform="rotate(35 37 175)"/>
+    </svg>
+  </div>
+
+  <div>
+    <div class="side px"><span>Side A, selected work</span><span>click a track</span></div>
+    <div id="tracks"></div>
+  </div>
+</main>
+
+<section id="liner" role="dialog" aria-modal="true" aria-label="Project notes"></section>
+<canvas id="glass" aria-hidden="true"></canvas>
+
+<footer id="hi" class="px">
+  <a href="mailto:durva.s170@gmail.com">durva.s170@gmail.com</a>
+  <a href="https://github.com/sykeriin">github.com/sykeriin</a>
+  <a href="https://linkedin.com/in/durva-s">linkedin.com/in/durva-s</a>
+  <span>Bengaluru, India</span>
+</footer>
+
+<script>
+(() => {
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const rng = s => () => { s |= 0; s = s + 0x6D2B79F5 | 0; let t = Math.imul(s ^ s >>> 15, 1 | s); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+
+/* liquid name: blur radius follows the viewport, the cursor is one more drop */
+const gb = document.getElementById('gb'), logo = document.getElementById('logo'), blob = document.getElementById('blob');
+const fit = () => gb.setAttribute('stdDeviation', Math.max(4, innerWidth * 0.013).toFixed(1));
+fit(); addEventListener('resize', fit);
+logo.addEventListener('pointermove', e => { const r = logo.getBoundingClientRect(); blob.style.transform = `translate(${e.clientX - r.left}px,${e.clientY - r.top}px)`; });
+logo.addEventListener('pointerleave', () => { blob.style.transform = 'translate(-20vw,-20vw)'; });
+
+/* starburst sticker */
+(() => { const R = rng(4); let d = ''; const n = 14;
+  for (let i = 0; i < n * 2; i++) { const a = i / (n * 2) * Math.PI * 2, r = i % 2 ? 9 + R() * 5 : 30 + R() * 20; d += (i ? 'L' : 'M') + (Math.cos(a) * r).toFixed(1) + ' ' + (Math.sin(a) * r).toFixed(1); }
+  document.getElementById('st').setAttribute('d', d + 'Z'); })();
+
+/* label art, one per project */
+const K = '#000', W = '#fff';
+const art = {
+  tread() { const R = rng(5); let o = '';
+    for (let r = 0; r < 15; r++) { let x = 10; const y = 14 + r * 12;
+      while (x < 186) { const w = Math.min(190 - x, 8 + R() * 36); o += `<rect x="${x.toFixed(1)}" y="${y}" width="${w.toFixed(1)}" height="6" fill="${r > 5 && r < 9 && x > 50 && x < 150 ? W : K}"/>`; x += w + 4; } } return o; },
+  fuzz() { let o = ''; for (let y = 0; y < 15; y++) for (let x = 0; x < 15; x++) { const r = 0.8 + 5.4 * Math.abs(Math.sin(x * 0.62 + y * 0.2) * Math.cos(y * 0.48 - x * 0.1)); o += `<circle cx="${16 + x * 12}" cy="${16 + y * 12}" r="${r.toFixed(2)}" fill="${x === 10 && y === 5 ? W : K}"/>`; } return o; },
+  dpdp() { const R = rng(9); let o = '';
+    for (let r = 0; r < 14; r++) { let x = 14; const y = 18 + r * 12.5;
+      while (x < 176) { const w = Math.min(186 - x, 10 + R() * 40), bar = R() < 0.4; o += `<rect x="${x.toFixed(1)}" y="${(y - (bar ? 3 : 0)).toFixed(1)}" width="${w.toFixed(1)}" height="${bar ? 9 : 3}" fill="${bar ? K : W}"/>`; x += w + 5; } } return o; },
+  taint() { let o = ''; for (let r = 0; r < 16; r++) { const y = 14 + r * 11.5, from = 160 - Math.max(0, r - 3) * 18;
+      o += `<rect x="12" y="${y}" width="176" height="3" fill="${K}"/>`; if (r > 3 && r < 11) o += `<rect x="${Math.max(12, from)}" y="${y - 2}" width="${188 - Math.max(12, from)}" height="7" fill="${W}"/>`; } return o + `<rect x="8" y="140" width="184" height="6" fill="${K}"/>`; },
+  cloud() { let o = `<path d="M100 46l56 98H44z" fill="none" stroke="${K}" stroke-width="5"/><path d="M0 130L76 100" stroke="${K}" stroke-width="5"/>`;
+    for (let i = 0; i < 6; i++) { const y = 96 + i * 9; o += i === 2 ? `<path d="M124 ${y}l20 5 8-32 9 38 39 7" fill="none" stroke="${W}" stroke-width="5"/>` : `<path d="M124 ${y}L200 ${y + 14 + i * 4}" stroke="${K}" stroke-width="3"/>`; } return o; }
+};
+const P = [
+  { n: 'tread', art: 'tread', tag: 'Faster long-context prompts', fact: '1.6× faster first token', what: 'Skips repeated prompt processing when documents are reused or rearranged, so the model starts generating sooner.', how: 'Content-addressed GPU and CPU KV-cache tiers, with exact RoPE re-rotation for reordered chunks. On Qwen2.5-0.5B, recomputing 20% improved time to first token 1.4× at 4K context and 1.6× at 8K.', stack: 'Python, PyTorch, Hugging Face Transformers', url: 'github.com/sykeriin/tread' },
+  { n: 'SkillFuzz', art: 'fuzz', tag: 'Fuzzing for agent tools', fact: '44 tests', what: 'Checks what an agent\'s tools actually do, instead of trusting the permissions they claim to need.', how: 'A rootless sandbox with a network sinkhole and honeytokens. It runs skills under many conditions, traces file, network and process effects, and diffs versions to flag capability growth nobody declared.', stack: 'Python, Linux namespaces, strace', url: 'github.com/sykeriin/SkillFuzz' },
+  { n: 'DPDP Guard', art: 'dpdp', tag: 'Privacy controls for AI apps', fact: 'Reads Hinglish', what: 'Lets developers apply privacy rules consistently and gives users clearer control over their data.', how: 'A consent SDK with per-purpose policy checks, PII masking before anything is logged, and detection of data-rights requests. Backed by a tamper-evident audit ledger and a dashboard.', stack: 'Python, FastAPI, PostgreSQL, Next.js', url: 'github.com/sykeriin/dpdp-guard' },
+  { n: 'TaintMem', art: 'taint', tag: 'Trusted memory for agents', fact: 'Sentence-level trust', what: 'Keeps the source and trust level of everything an agent remembers, so an untrusted instruction is never mistaken for reliable memory.', how: 'Sentence-level trust labels, provenance that survives LLM-style rewrites, and policy-gated retrieval.', stack: 'Python, SQLite', url: 'github.com/sykeriin/TaintMem' },
+  { n: 'CloudSense', art: 'cloud', tag: 'Cloud cost intelligence', fact: 'Deployed on AWS', what: 'Shows teams which services drive their cloud bill and flags unusual changes.', how: 'A FinOps platform on AWS Cost Explorer, with Isolation Forest anomaly detection, Prophet forecasting, an AI assistant and what-if cost analysis.', stack: 'Python, FastAPI, React, AWS', url: 'github.com/sykeriin/CloudSense' }
+];
+const tracks = document.getElementById('tracks'), labelArt = document.getElementById('labelArt'), arm = document.getElementById('arm');
+const cue = i => { labelArt.innerHTML = art[P[i].art](); arm.style.setProperty('--a', (8 + i * 4.5) + 'deg'); };
+P.forEach((p, i) => {
+  const b = document.createElement('button'); b.className = 'trk'; b.type = 'button';
+  b.innerHTML = `<span class="px">A${i + 1}</span><b>${p.n}</b><span class="sub">${p.tag}<span class="px">${p.fact}</span></span>`;
+  b.addEventListener('pointerenter', () => cue(i)); b.addEventListener('focus', () => cue(i));
+  b.addEventListener('click', e => open(i, e.clientX || innerWidth / 2, e.clientY || innerHeight / 2, b));
+  tracks.appendChild(b);
+});
+cue(0);
+
+/* liner notes, revealed by breaking the screen */
+const liner = document.getElementById('liner'), glass = document.getElementById('glass'), g = glass.getContext('2d');
+let opener = null;
+function open(i, x, y, from) {
+  const p = P[i]; opener = from;
+  liner.innerHTML = `<button class="x pill px" type="button">Back to the record</button>
+    <div><p class="px">Track A${i + 1}</p><h2>${p.n}</h2><p class="tag">${p.tag}</p></div>
+    <div><p>${p.what}</p><p>${p.how}</p><dl><dt class="px">Built with</dt><dd>${p.stack}</dd><dt class="px">Source</dt><dd><a href="https://${p.url}">${p.url}</a></dd></dl></div>`;
+  liner.classList.add('on'); liner.querySelector('.x').addEventListener('click', close); liner.querySelector('.x').focus();
+  if (!reduce) shatter(x, y, '#000');
+}
+function close() { liner.classList.remove('on'); if (!reduce) shatter(innerWidth / 2, innerHeight / 2, '#e0122d'); opener && opener.focus(); }
+addEventListener('keydown', e => { if (e.key === 'Escape' && liner.classList.contains('on')) close(); });
+
+function shatter(ox, oy, fill) {
+  const d = Math.min(devicePixelRatio || 1, 2), w = innerWidth, h = innerHeight, R = rng((ox * 7 + oy) | 0);
+  glass.width = w * d; glass.height = h * d; g.setTransform(d, 0, 0, d, 0, 0);
+  const cx = 10, cy = 7, pt = [];
+  for (let j = 0; j <= cy; j++) for (let i = 0; i <= cx; i++) {
+    const edge = i === 0 || j === 0 || i === cx || j === cy;
+    let x = i / cx * w, y = j / cy * h;
+    if (!edge) { x += (R() - 0.5) * w / cx * 0.9; y += (R() - 0.5) * h / cy * 0.9; x += (ox - x) * 0.12; y += (oy - y) * 0.12; }
+    pt.push([x, y]);
+  }
+  const sh = [];
+  for (let j = 0; j < cy; j++) for (let i = 0; i < cx; i++) {
+    const a = pt[j * (cx + 1) + i], b = pt[j * (cx + 1) + i + 1], c = pt[(j + 1) * (cx + 1) + i], e = pt[(j + 1) * (cx + 1) + i + 1];
+    for (const t of R() < 0.5 ? [[a, b, c], [b, e, c]] : [[a, b, e], [a, e, c]]) {
+      const mx = (t[0][0] + t[1][0] + t[2][0]) / 3, my = (t[0][1] + t[1][1] + t[2][1]) / 3, dist = Math.hypot(mx - ox, my - oy) || 1;
+      sh.push({ t: t.map(q => [q[0] - mx, q[1] - my]), mx, my, vx: (mx - ox) / dist * (300 + R() * 500), vy: (my - oy) / dist * (300 + R() * 500) - 120,
+        sp: (R() - 0.5) * 7, delay: dist / Math.hypot(w, h) * 0.28, glint: R() < 0.3 });
+    }
+  }
+  const t0 = performance.now();
+  (function frame(now) {
+    const T = (now - t0) / 1000; g.clearRect(0, 0, w, h); let live = false;
+    for (const s of sh) {
+      const u = Math.max(0, T - 0.1 - s.delay), life = 1 - u / 0.85; if (life <= 0) continue; live = true;
+      g.save(); g.translate(s.mx + s.vx * u, s.my + s.vy * u + 900 * u * u); g.rotate(s.sp * u); g.scale(1 - u * 0.25, Math.cos(u * s.sp * 1.3));
+      g.beginPath(); g.moveTo(s.t[0][0], s.t[0][1]); g.lineTo(s.t[1][0], s.t[1][1]); g.lineTo(s.t[2][0], s.t[2][1]); g.closePath();
+      g.globalAlpha = Math.min(1, life * 2.2); g.fillStyle = s.glint && u > 0 ? '#cfd3d8' : fill; g.fill();
+      g.strokeStyle = 'rgba(255,255,255,.9)'; g.lineWidth = 1.2; g.stroke(); g.restore();
+    }
+    if (live) requestAnimationFrame(frame); else g.clearRect(0, 0, w, h);
+  })(t0);
+}
+})();
+</script>
+</body>
+</html>

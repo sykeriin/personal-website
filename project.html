@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Projects · Durva Sharma</title>
+<meta name="description" content="Notes on the projects Durva Sharma has built: what each one does, how it works, the numbers, and what didn't hold up.">
+<link rel="icon" href="/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..600&family=Archivo:wdth,wght@62..125,400..800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4eee1;--paper:#faf6ec;--ink:#1e1b17;--soft:#6a6358;--rule:#d8cdb8;--red:#c4122c;--tan:#b9ab8f;--serif:"Newsreader",Georgia,serif;--sans:"Archivo",Arial,sans-serif;--mono:"DM Mono",ui-monospace,monospace}
+*{box-sizing:border-box;margin:0}
+html{background:var(--bg);color:var(--ink)}
+body{overflow-x:clip;font:400 1.18rem/1.62 var(--serif);font-optical-sizing:auto;-webkit-font-smoothing:antialiased;min-height:100vh}
+a{color:inherit;text-decoration-thickness:1px;text-underline-offset:3px}
+a:hover{color:var(--red)}
+:focus-visible{outline:2px solid var(--red);outline-offset:3px}
+button{font:inherit;color:inherit;cursor:pointer}
+.col{max-width:41rem;margin:0 auto;padding:0 1.25rem}
+.wide{max-width:60rem;margin:0 auto}
+
+.nav{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;padding:1.4rem 1.25rem;font:500 .84rem var(--sans);max-width:60rem;margin:0 auto}
+.nav a{text-decoration:none}
+.tabs{display:flex;gap:.2rem;flex-wrap:wrap}
+.tabs a{padding:.2rem .65rem;border-radius:99px}
+.tabs a.on{background:var(--ink);color:var(--bg)}
+.tabs a:not(.on):hover{background:rgba(30,27,23,.07);color:var(--ink)}
+header.top{padding:5rem 1.25rem 2rem}
+header.top h1{font:600 clamp(2.6rem,7vw,4.4rem)/1 var(--serif);letter-spacing:-.025em}
+.meta{margin-top:1rem;font:400 .78rem/1.8 var(--mono);color:var(--soft);display:flex;gap:.4rem 1rem;flex-wrap:wrap}
+.meta a{color:var(--ink)}
+.abs{margin-top:1.6rem;font-size:1.3rem;line-height:1.5}
+.abs b{font-weight:600}
+.stat{display:flex;gap:1.6rem 2.4rem;flex-wrap:wrap;margin:2rem 0 0}
+.stat div b{display:block;font:600 2rem/1 var(--serif);letter-spacing:-.02em;color:var(--red)}
+.stat div span{display:block;margin-top:.3rem;font:500 .78rem/1.3 var(--sans);color:var(--soft);max-width:11rem}
+
+#page{counter-reset:fig sec}
+section.s{margin-top:4rem;padding:0 1.25rem;counter-increment:sec}
+h2{font:700 .8rem var(--sans);letter-spacing:.09em;text-transform:uppercase;color:var(--red);margin-bottom:.9rem}
+h2::before{content:counter(sec) "  ";color:var(--soft);margin-right:.4rem}
+section p+p{margin-top:1em}
+.note{font-size:.9rem;color:var(--soft);line-height:1.5}
+ul.l{padding-left:1.1rem;margin-top:.8rem;display:grid;gap:.5rem}
+ul.l li::marker{color:var(--red)}
+code{font:400 .84em var(--mono);background:rgba(30,27,23,.07);padding:.08em .35em;border-radius:3px}
+pre.code{margin-top:1.1rem;background:var(--ink);color:#f1e9d6;padding:1.1rem 1.2rem;border-radius:4px;font:400 .8rem/1.65 var(--mono);overflow:auto}
+table.t{width:100%;border-collapse:collapse;margin-top:1.1rem;font-size:.95rem}
+table.t th{font:700 .72rem var(--sans);letter-spacing:.07em;text-transform:uppercase;text-align:left;color:var(--soft);padding:.4rem .8rem .5rem 0;border-bottom:1.5px solid var(--ink)}
+table.t td{padding:.55rem .8rem .55rem 0;border-bottom:1px solid var(--rule);vertical-align:top}
+table.t td:first-child{font:400 .82rem var(--mono);white-space:nowrap}
+.tw{overflow-x:auto}
+
+figure.fig{margin:2.2rem 0 0 50%;width:min(60rem,calc(100vw - 2.5rem));transform:translateX(-50%);counter-increment:fig}
+.fig .box{background:var(--paper);border:1px solid var(--rule);border-radius:4px;padding:1.2rem 1.2rem 1rem}
+.fig figcaption{margin-top:.6rem;font-size:.92rem;line-height:1.5;color:var(--soft)}
+.fig figcaption b{font:700 .72rem var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--ink);margin-right:.5rem}
+.fig figcaption b::before{content:"Fig. " counter(fig)}
+.fig img{display:block;width:100%;height:auto;border:1px solid var(--rule);border-radius:4px;background:#fff}
+.ctl{display:flex;gap:.6rem 1rem;flex-wrap:wrap;align-items:center;margin-bottom:1rem;font:500 .82rem var(--sans)}
+.btn{border:1.5px solid var(--ink);background:none;border-radius:99px;padding:.32rem .95rem;font:600 .82rem var(--sans);transition:background .15s,color .15s,transform .1s}
+.btn:hover{background:var(--ink);color:var(--bg)}
+.btn:active{transform:translateY(1px)}
+.btn.red{background:var(--red);border-color:var(--red);color:#fff}
+.btn.red:hover{background:var(--ink);border-color:var(--ink)}
+label.chk{display:inline-flex;gap:.45rem;align-items:center;cursor:pointer;user-select:none}
+input[type=checkbox]{accent-color:var(--red);width:1rem;height:1rem}
+input[type=range]{accent-color:var(--red);flex:1 1 12rem;min-width:8rem}
+input[type=text],select{font:400 .95rem var(--serif);border:1.5px solid var(--ink);background:var(--bg);border-radius:4px;padding:.4rem .6rem;color:var(--ink)}
+input[type=text]{flex:1 1 14rem;min-width:10rem}
+.out{font:400 .84rem/1.7 var(--mono)}
+svg text{font-family:var(--sans)}
+.chart{display:block;width:100%;height:auto;overflow:visible}
+.chart .ax{stroke:var(--ink);stroke-width:1}
+.chart .gr{stroke:var(--rule);stroke-width:1}
+.chart .tk{font-size:11px;fill:var(--soft)}
+.chart .lb{font-size:11.5px;font-weight:700;fill:var(--ink)}
+.tip{position:absolute;pointer-events:none;background:var(--ink);color:var(--bg);font:500 .75rem/1.4 var(--sans);padding:.3rem .55rem;border-radius:3px;white-space:nowrap;transform:translate(-50%,-125%);opacity:0;transition:opacity .12s;z-index:3}
+.rel{position:relative}
+.cells{display:flex;gap:.35rem;flex-wrap:wrap;margin:.35rem 0 .9rem}
+.cell{padding:.4rem .75rem;border-radius:4px;font:600 .82rem var(--sans);border:1.5px solid var(--ink);transition:background .25s,color .25s,border-color .25s}
+.cell.hit{background:#e9dfc7;border-color:#e9dfc7;color:var(--ink)}
+.cell.miss{background:var(--red);border-color:var(--red);color:#fff}
+.cell.un{border-style:dashed;border-color:var(--red);color:var(--red)}
+.rowl{font:700 .72rem var(--sans);letter-spacing:.07em;text-transform:uppercase;color:var(--soft)}
+.flow{display:flex;flex-wrap:wrap;gap:.5rem .35rem;align-items:center}
+.flow .st{display:inline-flex;flex-direction:column;gap:.35rem}
+.flow .n{border:1.5px solid var(--ink);border-radius:4px;padding:.4rem .7rem;font:600 .8rem/1.25 var(--sans);background:var(--bg)}
+.flow .n small{display:block;font-weight:400;color:var(--soft);font-size:.72rem}
+.flow .n.hl{background:var(--red);border-color:var(--red);color:#fff}
+.flow .n.hl small{color:#ffd9de}
+.flow .a{color:var(--soft);font:400 .9rem var(--mono)}
+.hubf{display:flex;flex-wrap:wrap;gap:.5rem}
+.hubf button{border:1.5px solid var(--ink);background:var(--bg);border-radius:4px;padding:.5rem .8rem;font:600 .85rem var(--sans);text-align:left;transition:all .15s}
+.hubf button:hover,.hubf button.on{background:var(--ink);color:var(--bg)}
+nav.pn{display:flex;justify-content:space-between;gap:1rem;margin:5rem auto 0;padding:1.4rem 1.25rem 5rem;border-top:1px solid var(--rule);font:500 .9rem var(--sans)}
+canvas.cv{display:block;width:100%;max-width:26rem;height:auto;border:1px solid var(--rule);border-radius:4px;image-rendering:pixelated;background:#222}
+@media (max-width:700px){body{font-size:1.1rem}header.top{padding-top:3.5rem}.nav{padding:1rem}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<nav class="nav"><a href="/">← Durva Sharma</a><div class="tabs" id="tabs"></div></nav>
+<main id="page"></main>
+
+<script>
+(() => {
+const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const esc = t => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+const rnd = seed => () => (seed = seed * 16807 % 2147483647) / 2147483647;
+const GH = 'https://github.com/sykeriin/', RAW = 'https://raw.githubusercontent.com/sykeriin/tread/HEAD/docs/img/';
+
+/* ================= charts ================= */
+const NS = 'http://www.w3.org/2000/svg';
+const svgEl = (w, h) => { const s = document.createElementNS(NS, 'svg'); s.setAttribute('viewBox', `0 0 ${w} ${h}`); s.setAttribute('class', 'chart'); s.setAttribute('role', 'img'); return s; };
+const add = (p, n, a = {}, t) => { const e = document.createElementNS(NS, n); for (const k in a) e.setAttribute(k, a[k]); if (t != null) e.textContent = t; p.appendChild(e); return e; };
+const nice = (max, n = 4) => { const raw = max / n, mag = 10 ** Math.floor(Math.log10(raw)), f = raw / mag, step = (f <= 1 ? 1 : f <= 2 ? 2 : f <= 5 ? 5 : 10) * mag; return { step, top: Math.ceil(max / step - 1e-9) * step }; };
+
+function lineChart(host, o) {
+  const W = 640, H = 330, m = { l: 54, r: 100, t: 14, b: 48 }, iw = W - m.l - m.r, ih = H - m.t - m.b, svg = svgEl(W, H);
+  svg.setAttribute('aria-label', o.alt || o.yl);
+  const xs = o.series.flatMap(s => s.pts.map(p => p[0])), ys = o.series.flatMap(s => s.pts.map(p => p[1]));
+  const x0 = o.xmin ?? Math.min(...xs), x1 = o.xmax ?? Math.max(...xs), { step, top } = nice(o.ymax ?? Math.max(...ys), 4);
+  const X = v => m.l + (v - x0) / (x1 - x0) * iw, Y = v => m.t + ih - v / top * ih;
+  for (let v = 0; v <= top + 1e-9; v += step) { add(svg, 'line', { class: 'gr', x1: m.l, x2: m.l + iw, y1: Y(v), y2: Y(v) }); add(svg, 'text', { class: 'tk', x: m.l - 8, y: Y(v) + 4, 'text-anchor': 'end' }, +v.toFixed(3)); }
+  (o.xticks || [x0, x1]).forEach(v => { add(svg, 'line', { class: 'ax', x1: X(v), x2: X(v), y1: m.t + ih, y2: m.t + ih + 4 }); add(svg, 'text', { class: 'tk', x: X(v), y: m.t + ih + 18, 'text-anchor': 'middle' }, o.xfmt ? o.xfmt(v) : v); });
+  add(svg, 'line', { class: 'ax', x1: m.l, x2: m.l + iw, y1: m.t + ih, y2: m.t + ih });
+  add(svg, 'line', { class: 'ax', x1: m.l, x2: m.l, y1: m.t, y2: m.t + ih });
+  add(svg, 'text', { class: 'tk', x: m.l + iw / 2, y: H - 6, 'text-anchor': 'middle' }, o.xl);
+  add(svg, 'text', { class: 'tk', transform: `translate(14 ${m.t + ih / 2}) rotate(-90)`, 'text-anchor': 'middle' }, o.yl);
+  if (o.ref != null) { add(svg, 'line', { x1: m.l, x2: m.l + iw, y1: Y(o.ref), y2: Y(o.ref), stroke: '#6a6358', 'stroke-dasharray': '3 4' }); add(svg, 'text', { class: 'tk', x: m.l + iw + 6, y: Y(o.ref) + 4 }, o.refLabel || ''); }
+  const dots = [];
+  o.series.forEach(s => {
+    add(svg, 'polyline', { points: s.pts.map(p => X(p[0]) + ',' + Y(p[1])).join(' '), fill: 'none', stroke: s.color, 'stroke-width': 2.4, 'stroke-linejoin': 'round' });
+    s.pts.forEach((p, i) => { const c = add(svg, 'circle', { cx: X(p[0]), cy: Y(p[1]), r: o.dot || 4.2, fill: (s.open || []).includes(i) ? 'var(--paper)' : s.color, stroke: s.color, 'stroke-width': 2 }); dots.push({ c, s, p }); });
+    if (s.name) { const e = s.pts[s.pts.length - 1]; add(svg, 'text', { class: 'lb', x: X(e[0]) + 9, y: Y(e[1]) + 4, fill: s.color }, s.name); }
+  });
+  host.classList.add('rel'); host.appendChild(svg);
+  const tip = document.createElement('div'); tip.className = 'tip'; host.appendChild(tip);
+  dots.forEach(d => { d.c.style.cursor = 'pointer'; const show = () => { const r = d.c.getBoundingClientRect(), hr = host.getBoundingClientRect(); tip.style.left = r.left - hr.left + r.width / 2 + 'px'; tip.style.top = r.top - hr.top + 'px'; tip.textContent = (d.s.name ? d.s.name + ': ' : '') + (o.tipfmt ? o.tipfmt(d.p) : d.p.join(', ')); tip.style.opacity = 1; };
+    d.c.addEventListener('pointerenter', show); d.c.addEventListener('pointerleave', () => tip.style.opacity = 0); d.c.addEventListener('click', show); });
+  return { svg, X, Y, add: (n, a, t) => add(svg, n, a, t) };
+}
+
+function barChart(host, o) {
+  const rowH = 38, W = 640, m = { l: o.lw || 190, r: 80, t: 6, b: 34 }, H = m.t + m.b + rowH * o.rows.length, iw = W - m.l - m.r, svg = svgEl(W, H), { step, top } = nice(o.max, 4);
+  svg.setAttribute('aria-label', o.alt || o.xl); const X = v => m.l + v / top * iw;
+  for (let v = 0; v <= top + 1e-9; v += step) { add(svg, 'line', { class: 'gr', x1: X(v), x2: X(v), y1: m.t, y2: H - m.b }); add(svg, 'text', { class: 'tk', x: X(v), y: H - m.b + 15, 'text-anchor': 'middle' }, o.xfmt ? o.xfmt(v) : +v.toFixed(3)); }
+  add(svg, 'text', { class: 'tk', x: m.l + iw / 2, y: H - 3, 'text-anchor': 'middle' }, o.xl);
+  o.rows.forEach((r, i) => { const y = m.t + i * rowH + 7, hl = r[3];
+    add(svg, 'text', { class: 'lb', x: m.l - 10, y: y + 15, 'text-anchor': 'end', style: 'font-weight:500' }, r[0]);
+    const w = X(r[1]) - m.l, b = add(svg, 'rect', { x: m.l, y, height: 22, width: o.instant ? Math.max(2, w) : 0, fill: hl === 1 ? 'var(--red)' : hl === 2 ? 'var(--tan)' : 'var(--ink)', rx: 2 }); b.dataset.w = Math.max(2, w); if (!o.instant) b.style.transition = 'width .9s cubic-bezier(.2,.7,.2,1)';
+    add(svg, 'text', { class: 'lb', x: X(r[1]) + 8, y: y + 15 }, r[2]); });
+  add(svg, 'line', { class: 'ax', x1: m.l, x2: m.l, y1: m.t, y2: H - m.b });
+  host.appendChild(svg);
+  if (!o.instant) new IntersectionObserver((es, ob) => { if (es[0].isIntersecting) { $$('rect[data-w]', svg).forEach(b => b.setAttribute('width', b.dataset.w)); ob.disconnect(); } }, { threshold: .3 }).observe(host);
+}
+
+/* ================= the figures: each builder fills its box ================= */
+const B = {};
+
+B.shuffle = box => {
+  const SYS = 500, DOC = 2000; let last = null, order = ['A', 'B', 'C'];
+  box.innerHTML = `<div class="ctl"><button class="btn red" data-a="sh">Shuffle the documents</button><button class="btn" data-a="rs">Reset</button><span class="out" data-r="st"></span></div>
+    <div class="rowl">Prefix cache (vLLM-style)</div><div class="cells" data-r="r1"></div><div class="rowl">tread</div><div class="cells" data-r="r2"></div><div class="out" data-r="sum"></div>`;
+  const q = k => $(`[data-r=${k}]`, box), cell = (t, k) => `<span class="cell ${k}">${t}</span>`;
+  const draw = () => {
+    const now = ['sys', ...order]; let pre, tr;
+    if (!last) { pre = now.map(() => 'miss'); tr = pre.slice(); } else { const prev = ['sys', ...last]; let ok = true; pre = now.map((d, i) => { if (ok && prev[i] === d) return 'hit'; ok = false; return 'miss'; }); tr = now.map(() => 'hit'); }
+    const lab = ['system', ...order.map(d => 'doc ' + d)], tok = now.map((d, i) => i ? DOC : SYS), read = a => a.reduce((s, k, i) => s + (k === 'miss' ? tok[i] : 0), 0), a = read(pre), b = read(tr);
+    q('r1').innerHTML = lab.map((l, i) => cell(l, pre[i])).join(''); q('r2').innerHTML = lab.map((l, i) => cell(l, tr[i])).join('');
+    q('st').textContent = last ? `order now: ${order.join(' ')}` : 'first request: nothing is cached yet';
+    q('sum').innerHTML = last ? `Tokens read from scratch: prefix cache <b style="color:var(--red)">${a.toLocaleString()}</b>, tread <b>${b.toLocaleString()}</b> (of ${(SYS + 3 * DOC).toLocaleString()}).` : `Tokens read: ${a.toLocaleString()} for both. Press shuffle for a second request.`; };
+  const perms = [['A', 'B', 'C'], ['A', 'C', 'B'], ['B', 'A', 'C'], ['B', 'C', 'A'], ['C', 'A', 'B'], ['C', 'B', 'A']];
+  $('[data-a=sh]', box).onclick = () => { last = order.slice(); let n; do { n = perms[Math.floor(Math.random() * 6)]; } while (n.join() === order.join()); order = n; draw(); };
+  $('[data-a=rs]', box).onclick = () => { last = null; order = ['A', 'B', 'C']; draw(); }; draw();
+};
+
+B.speed = box => lineChart(box, { xl: 'context length (tokens)', yl: 'speed-up over a full read (×)', xticks: [1000, 2000, 4000, 8000], xfmt: v => v / 1000 + 'k', ymax: 6, ref: 1, refLabel: 'full read', xmin: 1000, xmax: 8000, alt: 'Speed-up over a full read against context length',
+  series: [{ name: 'plain reuse', color: '#c4122c', pts: [[1000, 1], [2000, 1.9], [4000, 3.1], [8000, 5.8]], open: [0] }, { name: '20% recompute', color: '#1e1b17', pts: [[4000, 1.4], [8000, 1.6]] }], tipfmt: p => `${p[1]}× at ${p[0] / 1000}k tokens` });
+
+B.kl = box => {
+  const pts = [[0, .263], [20, .099], [30, .07], [50, .029], [100, 0]], f = x => { for (let i = 1; i < pts.length; i++) if (x <= pts[i][0]) { const [a, b] = [pts[i - 1], pts[i]]; return a[1] + (b[1] - a[1]) * (x - a[0]) / (b[0] - a[0]); } return 0; };
+  box.innerHTML = `<div class="ctl"><label for="rc">Tokens recomputed</label><input id="rc" type="range" min="0" max="100" value="20"><span class="out" data-r="ro"></span></div><div data-r="ch"></div>`;
+  const c = lineChart($('[data-r=ch]', box), { xl: 'share of document tokens recomputed (%)', yl: 'KL divergence from a full read', xticks: [0, 20, 40, 60, 80, 100], xfmt: v => v + '%', ymax: .3, alt: 'KL divergence against recompute share',
+    series: [{ name: 'measured', color: '#1e1b17', pts }], tipfmt: p => `${p[0]}% recomputed, KL ${p[1]}` });
+  const ln = c.add('line', { stroke: 'var(--red)', 'stroke-dasharray': '3 3' }), dot = c.add('circle', { r: 7, fill: 'var(--red)', stroke: '#fff', 'stroke-width': 2, 'pointer-events': 'none' });
+  const set = () => { const v = +$('#rc', box).value, y = f(v); dot.setAttribute('cx', c.X(v)); dot.setAttribute('cy', c.Y(y)); ln.setAttribute('x1', c.X(v)); ln.setAttribute('x2', c.X(v)); ln.setAttribute('y1', c.Y(y)); ln.setAttribute('y2', c.Y(0));
+    $('[data-r=ro]', box).textContent = `${v}% → KL ${y.toFixed(3)} (${pts.some(p => p[0] === v) ? 'measured' : 'read off the line'}), ${(100 * (1 - y / .263)).toFixed(0)}% of the drift removed`; };
+  $('#rc', box).oninput = set; set();
+};
+
+B.fuzz = box => {
+  const TR = [{ id: 'date', test: s => s.day === 1, does: 'opens a network connection' }, { id: 'ci', test: s => s.ci, does: 'reads ~/.ssh' }, { id: 'kw', test: s => /invoice/i.test(s.task), does: 'posts the file to a remote host' }];
+  box.innerHTML = `<div class="ctl"><label>Day of month <select data-r="d">${Array.from({ length: 28 }, (_, i) => `<option>${i + 1}</option>`).join('')}</select></label><label class="chk"><input type="checkbox" data-r="ci"> CI=true</label><label>Task <input type="text" data-r="tk" value="summarise report.pdf"></label></div>
+    <div class="ctl"><button class="btn" data-a="one">Run once</button><button class="btn red" data-a="rnd">Fuzz at random</button><button class="btn" data-a="rd">Read the skill’s code first</button></div><div class="out" data-r="log">Declared powers: read files, write a report. Run it.</div>`;
+  const q = k => $(`[data-r=${k}]`, box), cur = () => ({ day: +q('d').value, ci: q('ci').checked, task: q('tk').value }), log = q('log');
+  $('[data-a=one]', box).onclick = () => { const h = TR.filter(t => t.test(cur())); log.innerHTML = h.length ? h.map(x => `<span style="color:var(--red)">UNDECLARED: ${x.does}</span>`).join('<br>') : 'Behaved. Reads files, writes a report. Nothing else.'; };
+  const words = ['summarise report.pdf', 'send invoice 42', 'fix the bug', 'invoice totals', 'translate notes', 'tidy folder'];
+  $('[data-a=rnd]', box).onclick = () => { const seen = new Set(), lines = []; let n = 0; while (seen.size < 3 && n < 20000) { n++; const s = { day: 1 + Math.floor(Math.random() * 28), ci: Math.random() < .5, task: words[Math.floor(Math.random() * words.length)] }; TR.filter(t => t.test(s)).forEach(h => { if (!seen.has(h.id)) { seen.add(h.id); lines.push(`run ${n}: ${h.does}`); } }); }
+    log.innerHTML = lines.join('<br>') + `<br><b>All three found after ${n} random runs.</b>`; };
+  $('[data-a=rd]', box).onclick = () => { log.innerHTML = 'Scanning the source for values the skill compares against…<br>found <code>day == 1</code>, <code>CI</code>, <code>"invoice"</code><br>Ran each directly: <b>3 runs, all three behaviours found.</b>'; };
+};
+
+B.bars = box => barChart(box, { rows: [['One fixed run', 35, '35'], ['Static scan', 65, '65'], ['SkillFuzz', 90, '90', 1]], max: 90, xl: 'hidden behaviours found (of 90)', lw: 140 });
+
+B.dpdp = box => {
+  box.innerHTML = `<div class="ctl"><input type="text" data-r="msg" value="please delete my data, my number is 98765 43210"><button class="btn red" data-a="go">Send through guard()</button></div><div class="ctl">${['meri details hatao', 'I want to withdraw consent for marketing', 'what do you know about me?', 'where is my order? email me at asha@example.com'].map(t => `<button class="btn" data-t="${esc(t)}">${esc(t)}</button>`).join('')}</div><div class="out" data-r="o"></div>`;
+  const RIGHTS = [[/(delete|erase|remove|hatao|mita)\b.*\b(data|details|account|information)|\b(details|data)\b.*\b(hatao|delete)/i, 'erasure request'], [/withdraw.*consent|stop.*(marketing|messages)/i, 'consent withdrawal'], [/(what|show).*(know|have|stored).*about me|access my data/i, 'access request']];
+  const mask = t => t.replace(/[\w.+-]+@[\w-]+\.[\w.]+/g, '[email]').replace(/\b\d{5}[ -]?\d{5}\b/g, '[phone]').replace(/\b\d{4}[ -]?\d{4}[ -]?\d{4}\b/g, '[id number]');
+  const go = () => { const t = $('[data-r=msg]', box).value, r = RIGHTS.find(x => x[0].test(t)); $('[data-r=o]', box).innerHTML = `action: <b style="color:${r ? 'var(--red)' : 'inherit'}">${r ? 'reply' : 'forward'}</b>${r ? ` (${r[1]}: guard answers itself and queues it)` : ' (passes to your agent)'}<br>for your logs: <code>${esc(mask(t))}</code>`; };
+  $('[data-a=go]', box).onclick = go; $$('[data-t]', box).forEach(b => b.onclick = () => { $('[data-r=msg]', box).value = b.dataset.t; go(); }); go();
+};
+B.acc = box => barChart(box, { rows: [['Set 1, first try', 58.9, '58.9%'], ['Set 2, first try', 73.9, '73.9%'], ['Set 2, with review queue', 82.9, '34 of 41', 1]], max: 100, xl: 'rights requests caught (%)', lw: 190 });
+
+B.taint = box => {
+  const steps = [['Meeting moved to 3pm.', 'Pay the invoice to account 42.'], ['The meeting is at 3.', 'Remember to pay account 42.'], ['Meeting at 3pm, then pay account 42.', null], ['3pm meeting; account 42 needs paying.', null]]; let k = 0;
+  box.innerHTML = `<div class="ctl"><button class="btn red" data-a="rw">Let the agent reword its notes</button><button class="btn" data-a="rs">Reset</button><span class="out" data-r="n"></span></div><div class="rowl">Memory</div><div class="cells" data-r="m"></div><div class="rowl">Gate</div><div class="out" data-r="g"></div>`;
+  const q = x => $(`[data-r=${x}]`, box), draw = () => { const s = steps[k]; q('m').innerHTML = s[1] ? `<span class="cell hit">${s[0]}</span><span class="cell miss">${s[1]}</span>` : `<span class="cell un">${s[0]}</span>`;
+    q('n').textContent = `rewrites: ${k}`; q('g').innerHTML = (s[1] ? '<span style="color:var(--red)">second sentence is untrusted (from email)</span>: blocked as an instruction.' : '<span style="color:var(--red)">mixed sentence</span>: the trusted and untrusted parts are tracked separately, so “pay account 42” is still blocked.') + '<br><span class="note">Hand-written illustration of the idea, not output from a model.</span>'; };
+  $('[data-a=rw]', box).onclick = () => { k = Math.min(3, k + 1); draw(); }; $('[data-a=rs]', box).onclick = () => { k = 0; draw(); }; draw();
+};
+B.creep = box => barChart(box, { rows: [['Everything untrusted', 1, '1.000'], ['Sentence-level tags', .025, '0.025', 1], ['Sentence-level, smarter match', .075, '0.075'], ['Split trusted / untrusted', 0, '0.000', 2], ['Best achievable', .025, '0.025', 2]], max: 1, xl: 'creep (lower is better)', xfmt: v => v.toFixed(2), lw: 220 });
+B.creep2 = box => barChart(box, { rows: [['Sentence-level tags', .999, '0.999'], ['Sentence-level, smarter match', .75, '0.750', 1], ['Best achievable', .75, '0.750', 2]], max: 1, xl: 'creep (lower is better)', xfmt: v => v.toFixed(2), lw: 220 });
+
+B.spike = box => {
+  const r = rnd(42), N = 60, spikes = [17, 33, 48], cost = Array.from({ length: N }, (_, i) => 100 + 14 * Math.sin(i / 6) + (r() - .5) * 14 + (spikes.includes(i) ? 55 + r() * 20 : 0));
+  box.innerHTML = `<div class="ctl"><label for="z">Sensitivity</label><input id="z" type="range" min="12" max="45" value="26"><span class="out" data-r="zo"></span></div><div data-r="ch"></div>`;
+  const c = lineChart($('[data-r=ch]', box), { xl: 'day', yl: 'daily cost ($)', xticks: [0, 10, 20, 30, 40, 50, 59], ymax: 200, dot: 2.2, series: [{ name: '', color: '#1e1b17', pts: cost.map((v, i) => [i, v]) }], tipfmt: p => `day ${p[0]}, $${p[1].toFixed(0)}` });
+  let marks = [];
+  const set = () => { const th = +$('#z', box).value / 10; marks.forEach(m => m.remove()); marks = []; let hit = 0, tp = 0;
+    cost.forEach((v, i) => { if (i < 10) return; const w = cost.slice(i - 10, i), mu = w.reduce((a, b) => a + b) / 10, sd = Math.sqrt(w.reduce((a, b) => a + (b - mu) ** 2, 0) / 10) || 1; if ((v - mu) / sd > th) { hit++; if (spikes.includes(i)) tp++; marks.push(c.add('circle', { cx: c.X(i), cy: c.Y(v), r: 7, fill: 'none', stroke: 'var(--red)', 'stroke-width': 2.4, 'pointer-events': 'none' })); } });
+    $('[data-r=zo]', box).textContent = `flags a day sitting ${th.toFixed(1)} std. devs above the last 10 days: ${hit} flagged, ${tp} of 3 real spikes`; };
+  $('#z', box).oninput = set; set();
+};
+
+B.lag = box => {
+  const F = ['-probesize 32', '-analyzeduration 0', '-fflags nobuffer', '-flags low_delay'];
+  box.innerHTML = `<div class="ctl">${F.map((f, i) => `<label class="chk"><input type="checkbox" data-i="${i}" checked><code>${f}</code></label>`).join('')}</div><div data-r="b"></div><div class="out" data-r="o"></div>`;
+  const draw = () => { const all = $$('input', box).every(x => x.checked), v = all ? 300 : 3000, b = $('[data-r=b]', box); b.innerHTML = '';
+    barChart(b, { rows: [['glass-to-glass delay', v, all ? '200–400 ms' : '~3,000 ms', all ? 2 : 1]], max: 3000, xl: 'milliseconds', xfmt: x => x.toLocaleString(), lw: 170, instant: true });
+    $('[data-r=o]', box).innerHTML = all ? 'Every hop carries all four flags.' : 'A flag is missing. One hop falls back to the default 5-second probe, and the ~3 s comes back.'; };
+  $$('input', box).forEach(x => x.onchange = draw); draw();
+};
+
+B.frame = box => {
+  const w = 240, h = 135, r = rnd(7); box.innerHTML = `<div class="ctl"><label class="chk"><input type="checkbox" data-r="dn"> Denoise</label><label class="chk"><input type="checkbox" data-r="ct"> Contrast</label><label class="chk"><input type="checkbox" data-r="roi"> Crop to runway</label></div><canvas class="cv" width="${w}" height="${h}" aria-label="A synthetic, noisy runway frame with two small pieces of debris"></canvas>`;
+  const base = new Float32Array(w * h);
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { let v = 40 + (y / h) * 30 - Math.abs(x - w / 2) * .08; if (y < h * .35) v = 20 + y * .3; base[y * w + x] = v + (r() - .5) * 46; }
+  const bolt = (x, y) => { for (let dy = -2; dy <= 2; dy++) for (let dx = -4; dx <= 4; dx++) base[(y + dy) * w + x + dx] += 38; }; bolt(150, 98); bolt(60, 112);
+  const cv = $('canvas', box), g = cv.getContext('2d'), on = k => $(`[data-r=${k}]`, box).checked;
+  const draw = () => { let a = Float32Array.from(base);
+    if (on('dn')) { const b = new Float32Array(w * h); for (let y = 1; y < h - 1; y++) for (let x = 1; x < w - 1; x++) { let s = 0; for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) s += a[(y + dy) * w + x + dx]; b[y * w + x] = s / 9; } a = b; }
+    if (on('ct')) { const so = Float32Array.from(a).sort(), lo = so[Math.floor(w * h * .02)], hi = so[Math.floor(w * h * .98)]; a = a.map(v => (v - lo) / (hi - lo) * 255); }
+    const img = g.createImageData(w, h); for (let i = 0; i < w * h; i++) { const v = Math.max(0, Math.min(255, a[i])); img.data[i * 4] = img.data[i * 4 + 1] = img.data[i * 4 + 2] = v; img.data[i * 4 + 3] = 255; }
+    g.putImageData(img, 0, 0); if (on('roi')) { const top = Math.floor(h * .36); g.drawImage(cv, 0, top, w, h - top, 0, 0, w, h); } };
+  $$('input', box).forEach(x => x.onchange = draw); draw();
+};
+
+B.hub = box => {
+  const items = [['Recommendations', 'Suggests things to pet owners. I owned this one.'], ['AI chatbot', 'On the website and in the mobile app.'], ['Mood journal', 'A pet mood journal with AI help.'], ['Pet-health tracking', 'Logging and tracking health for each pet.'], ['Engagement scoring', 'A score for how involved each user is.'], ['Streaks and PawPoints', 'Activity streaks, with PawPoints rewards on top.'], ['App screens and landing page', 'Parts of the interface, and the landing page.'], ['AWS CI/CD', 'The pipeline that ships changes automatically.']];
+  box.innerHTML = `<div class="hubf">${items.map((it, i) => `<button data-i="${i}">${it[0]}</button>`).join('')}</div><p class="out" data-r="d" style="margin-top:1rem;min-height:1.6em">Tap one.</p>`;
+  $$('button', box).forEach(b => b.onclick = () => { $$('button', box).forEach(x => x.classList.toggle('on', x === b)); $('[data-r=d]', box).textContent = items[b.dataset.i][1]; });
+};
+
+/* ================= building blocks for the text ================= */
+const nd = n => `<span class="n${n.h ? ' hl' : ''}">${esc(n.t)}${n.s ? `<small>${esc(n.s)}</small>` : ''}</span>`;
+const flow = nodes => `<div class="flow">${nodes.map((n, i) => (i ? '<span class="a">→</span>' : '') + (Array.isArray(n) ? `<span class="st">${n.map(nd).join('')}</span>` : nd(n))).join('')}</div>`;
+const F = (name, cap, inner = '') => `<figure class="fig" data-f="${name}"><div class="box">${inner}</div><figcaption><b></b>${cap}</figcaption></figure>`;
+const IMG = (file, alt, cap) => `<figure class="fig"><img src="${RAW + file}" alt="${esc(alt)}" loading="lazy"><figcaption><b></b>${cap}</figcaption></figure>`;
+const code = c => `<pre class="code">${esc(c)}</pre>`;
+const table = (head, rows) => `<div class="tw"><table class="t"><thead><tr>${head.map(h => `<th>${esc(h)}</th>`).join('')}</tr></thead><tbody>${rows.map(r => `<tr>${r.map(c => `<td>${esc(c)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+const list = a => `<ul class="l">${a.map(t => `<li>${t}</li>`).join('')}</ul>`;
+const P = (...t) => t.map(x => `<p>${x}</p>`).join('');
+
+/* a section is [title, [parts]] where a part is text html or a figure; figures sit outside the narrow column */
+const PROJECTS = [
+{ slug: 'tread', name: 'tread', repo: 'tread', meta: ['Python', 'PyTorch', 'Qwen2', 'FastAPI', 'RTX 3050 laptop'],
+  abs: 'tread is an inference engine that <b>caches the work done on each document separately</b>. A prompt with the same documents in a different order gets read once instead of every time.',
+  stat: [['5.8×', 'faster first token at 8k tokens, reordered documents'], ['59%', 'of the drift removed by recomputing 20% of tokens'], ['0', 'approximation in the position shift']],
+  secs: [
+    ['Problem', [P('Before a model can answer a question about attached documents, it has to read them. That reading fills a key-value cache, and it is most of the wait before the first token.', 'vLLM, SGLang and llama.cpp reuse that cache only while the new prompt starts with the same tokens as the old one. Reorder the retrieved documents and everything after the first difference is read again.'),
+      F('shuffle', 'Three documents, two systems. Press shuffle and watch what each one has to read again. Token counts are illustrative.')]],
+    ['Approach', [P('Each document is stored under a hash of its content. When it comes back, tread moves its cache to wherever it landed in the new prompt.', 'Keys carry position through RoPE, which is a rotation. A key saved at position <code>p</code> becomes a key at <code>p′</code> by rotating it <code>p′ − p</code>. Values need no change. I test that this equals computing it in place, so this step is exact.'),
+      F('flow', 'One request. Unseen documents are read together in a packed pass with a block-diagonal mask, so they cannot attend to each other.', flow([{ t: 'Request', s: 'system, docs, query' }, { t: 'Split', s: 'one segment per doc' }, [{ t: 'Seen before', s: 'load cached block', h: 1 }, { t: 'New document', s: 'packed cold read' }], { t: 'Rotate keys', s: 'to the new position', h: 1 }, { t: 'Recompute', s: 'optional, a few tokens' }, { t: 'Query', s: 'first token' }])),
+      list(['<b>Prefix-shared prefill.</b> A document is read after the cached system prompt rather than alone. That alone halves the reuse error, because models treat the first few tokens specially (attention sinks).', '<b>Selective recompute.</b> Find the tokens whose first-layer cache drifts most from a fresh read and redo only those, in the style of CacheBlend.', '<b>Block store.</b> Content-addressed, under a GPU memory budget with LRU eviction, spilling to pinned CPU memory. One namespace per tenant.', '<b>CUDA graphs</b> for the recompute loop at 2k tokens or below, optional.'])]],
+    ['Speed', [P('These runs use a 0.5B model on a laptop, every system implemented in the same codebase. At 8k tokens the time to first token is 841 ms for a full read, 516 ms recomputing 20%, and 146 ms for plain reuse.'),
+      F('speed', 'Speed-up of time to first token over a full read, reordered documents. The open point at 1k means “about the same”. Recomputing 20% is slower than a full read below roughly 2k tokens, and its first token matches the full-read answer 69 to 92% of the time. Hover a point.'),
+      IMG('latency-light.png', 'Time to first token against context length. At 8k tokens: 841 ms, 516 ms and 146 ms.', 'The latency measurements behind it, from the repository README.')]],
+    ['Quality', [P('Reuse has a cost. A document read on its own never saw the documents before it, so the answer drifts from what a full read gives. Recomputing a slice of tokens pulls it back, and recomputing everything is exact. It is a dial, and the next figure lets you turn it.'),
+      F('kl', 'KL divergence from a full read against the share of tokens recomputed, on 300 held-out HotpotQA examples with a 1.5B model in fp16. Lower is better. The speed and quality runs use different models and lengths, so they do not combine into one number.'),
+      IMG('quality-light.png', 'KL divergence against recompute share: 0.263 with none, 0.099 at 20%, 0.029 at 50%, zero at 100%.', 'The same measurement as published in the README.')]],
+    ['What I found', [list(['The error is heavy-tailed. The worst 10% of requests carry about half of the total drift.', 'Choosing the recompute budget per request looked good on the data I tuned on and did not hold on held-out data. The result is in the repo.', 'Partial recompute is not monotone per request. On some requests it is worse than plain reuse.', 'On the two-document toy example plain reuse answers “Japan” and 20% recompute answers “Tokyo”, which matches a full read. One example is an illustration, not evidence.'])]],
+    ['The benchmark that lied', [P('My first run on the 1.5B model said tread was 15× faster than a full read. It was not. The 4 GB card had 19 MiB free, and Windows quietly spills GPU memory into system RAM instead of failing. The long full-read passes slowed down 3 to 9× and jumped around between requests, while tread’s short passes barely noticed.', 'The benchmarks now refuse to run without free VRAM headroom. I kept the invalid runs in the repo so nobody else times GPU code on a consumer Windows machine and believes it.'),
+      IMG('vram-spill-light.png', 'Per-request time to first token in the invalid run: full prefill scattered from 275 ms to 3.4 s, median 1,545 ms, while tread plain reuse stayed near 106 ms.', 'The invalid run. Full-read times scatter between 275 ms and 3.4 s (median 1,545 ms); tread stays near 106 ms. From the README.')]],
+    ['Run it', [P('Python 3.11 and a CUDA GPU. <code>transformers</code> is pinned because tread patches Qwen2’s attention internals, and they change between versions.'),
+      code('python -m pytest tests -q\npython bench/bench_scaling.py --model Qwen/Qwen2.5-0.5B-Instruct --lengths 1000 2000 4000 8000 --n 15\npython -m tread.server --model Qwen/Qwen2.5-0.5B-Instruct --port 8000\ncurl -s localhost:8000/v1/completions -H \'content-type: application/json\' -d @docs/example_request.json'),
+      P('Send the same documents in the opposite order and the reply reports <code>block_misses: 0</code>. The server decodes greedily, so its output matches a plain full read.'),
+      table(['Path', 'What it does'], [['tread/blend.py', 'RoPE re-rotation, chunk prefill, selective recompute'], ['tread/store.py', 'Block store: GPU and pinned-CPU tiers, budgets, LRU'], ['tread/engine.py', 'Request assembly, plus full-read and exact-prefix baselines'], ['tread/graphs.py', 'CUDA-graph replay of the recompute loop'], ['tread/server.py', 'FastAPI: POST /v1/completions, GET /metrics'], ['tests/', 'Exactness, cache hits, eviction'], ['bench/', 'Time-to-first-token and quality on a reordered-RAG workload'], ['phase0/', 'Feasibility study and held-out experiments']])]],
+    ['Status', [P('It works end to end: engine, server, tests and a laptop-scale benchmark. Large-model timings and the head-to-head with vLLM and llama.cpp have scripts written and have not been run, so read the speed numbers as small-model, small-sample results.')]]
+  ] },
+{ slug: 'skillfuzz', name: 'SkillFuzz', repo: 'SkillFuzz', meta: ['Python', 'Linux namespaces', 'strace', 'gcc'],
+  abs: 'SkillFuzz finds <b>AI-agent skills that only misbehave under certain conditions</b>. It runs a skill many times in a sandbox, with different tasks and settings, until the hidden behaviour appears.',
+  stat: [['90/90', 'hidden behaviours found'], ['65', 'found by a static scan'], ['35', 'found by one fixed run']],
+  secs: [
+    ['Problem', [P('A skill is an add-on an agent loads, and it is an easy place to hide malware. A scanner that reads the code can be fooled. A tool that runs the skill once sees only the path that one run takes, and misses anything gated on a date, an environment or a word in the task.')]],
+    ['Try it', [P('This is a toy skill with three hidden behaviours. The skill and the fuzzer here are written for the page, but the strategy is the real one: vary the inputs until a behaviour shows, and read the skill’s own code for the values it checks.'),
+      F('fuzz', 'A toy skill. Declared powers: read files and write a report. Run it by hand, fuzz at random, or read the code first.')]],
+    ['How it works', [list(['Run the skill many times with varied tasks and settings inside a sandbox, and record every action (strace).', 'Compare the recorded actions with the previous version of the skill.', 'Draw candidate values from the skill’s own code, such as the date or variable it compares against, plus random variation.', 'Sign the result and check it when the skill is installed.']),
+      table(['Exit code', 'Meaning'], [['0', 'Same powers as before'], ['1', 'The skill gained a power it did not declare'], ['2', 'A decoy secret escaped the sandbox']]),
+      P('It needs Linux with user namespaces, plus strace, openssl, gcc and Python 3.11 or newer. 44 tests.')]],
+    ['Results', [P('Out of 90 hidden behaviours.'), F('bars', 'Hidden behaviours found, out of 90. Higher is better.')]],
+    ['A result that surprised me', [P('I expected coverage-guided search to beat plain random variation. In my tests it did not. What works is running the skill and taking the trigger values straight from its own code.')]]
+  ] },
+{ slug: 'dpdp-guard', name: 'DPDP Guard', repo: 'dpdp-guard', meta: ['Python', 'FastAPI', 'Postgres', 'Next.js'],
+  abs: 'DPDP Guard sits in front of a chatbot and <b>handles consent, privacy and deletion requests</b> the way India’s data protection law asks, so the team building the bot does not wire that up by hand.',
+  stat: [['34/41', 'rights requests caught, with the review queue'], ['73.9%', 'caught first try on test set 2'], ['1 call', 'guard() before your agent']],
+  secs: [
+    ['Use', [code('from dpdp_guard import Guard\n\nguard = Guard("acme", "Acme Store",\n              required_purposes=["order_updates"],\n              optional_purposes=["marketing"])\n\nr = guard(message, user_id, "whatsapp")\nsend(agent(r.message) if r.action == "forward" else r.reply_text)'),
+      P('<code>guard()</code> either passes the message to your agent or answers it. <code>r.message</code> is the original text for the agent, and <code>r.masked_message</code> is the version that is safe to log.')]],
+    ['Try it', [P('A small version of the same idea, written for this page: spot a rights request and mask personal details. The real rules are in the repo and are broader.'), F('dpdp', 'Rights-request spotting and masking. These toy rules are for the demo only.')]],
+    ['What is in it', [list(['<b>Library.</b> The guard, a personal-data finder and a local store.', '<b>Server.</b> FastAPI and Postgres, with the append-only record, rights handling, erasure and audit tools.', '<b>Dashboard.</b> Next.js, for consents, requests and audit packs.', '<b>Node client</b>, and examples for a WhatsApp webhook and LangGraph.', 'Consent is asked per purpose, inside the chat. Everything lands in a tamper-evident ledger that drives deletions and audit reports.'])]],
+    ['Accuracy', [P('The rights-request spotter is a set of rules. I wrote both test sets after the rules, so real users will do worse than this. Messages that sound privacy-related but are not recognised go to a review queue, which is how set 2 gets to 34 of 41.'), F('acc', 'Share of rights requests caught. An LLM fallback exists and I have not measured it.')]],
+    ['Status', [P('This is not legal advice and I am not a registered Consent Manager. The notice and breach templates are drafts for a privacy lawyer to review. The deployment setup has been checked and never run.')]]
+  ] },
+{ slug: 'taintmem', name: 'TaintMem', repo: 'TaintMem', meta: ['Python', 'numpy', '73 tests'],
+  abs: 'TaintMem is an agent memory that <b>remembers where every fact came from</b>, so an instruction planted by an attacker cannot pass itself off as trusted.',
+  stat: [['0.025', 'creep with sentence-level tags'], ['73', 'tests'], ['1', 'dependency']],
+  secs: [
+    ['Idea', [P('An agent reads an email and saves a note. If the email said “send money to this account”, that note should stay marked as coming from an untrusted email, even after the agent has reworded it a few times.', 'Each memory is tagged with the channel it came from (email, user, tool). The tag comes from the channel, never from what the text says about itself.')]],
+    ['Try it', [P('The attack is rewording until the planted instruction sounds like the agent’s own thought. The tags are carried through each rewrite, sentence by sentence.'), F('taint', 'The tag outlives the rewrites. Hand-written illustration.')]],
+    ['Parts', [list(['A store of tagged text with a tamper check.', 'A gate that decides what the agent may act on, in strict or balanced mode.', 'An auditor that re-runs the agent with parts of its memory removed to find which memory caused an action.', 'A viewer that answers “why do you remember this?”'])]],
+    ['Do the tags survive?', [P('“Creep” is trusted facts wrongly marked untrusted after rewrites, so lower is better. This is a small synthetic test: 160 cases, three rewrites each.'), F('creep', 'Creep after three rewrites. Splitting trusted from untrusted has none, but it destroys every fact that mixes the two, and this number does not show that.')]],
+    ['Under heavy rewriting', [P('With heavy paraphrasing and mixing, plain sentence-level tagging gives up and marks nearly everything untrusted. The smarter matching holds at the best achievable level.'), F('creep2', 'Creep under heavy paraphrase and mixing.')]],
+    ['Status', [P('A research prototype. So far rule-based stand-ins play the model, so nothing here shows it works on real models yet. That is the next step.')]]
+  ] },
+{ slug: 'cloudsense', name: 'CloudSense', repo: 'CloudSense', meta: ['React 19', 'FastAPI', 'PostgreSQL', 'Prophet', 'scikit-learn'],
+  abs: 'CloudSense is a dashboard that <b>shows where your AWS money is going</b>, flags sudden spikes, forecasts the bill and suggests where to cut.',
+  stat: [['2', 'models: spikes and forecast'], ['3', 'services'], ['0', 'AWS accounts needed to try it']],
+  secs: [
+    ['What it does', [list(['Pulls AWS cost data and breaks it down by service.', 'Flags unusual spikes with an Isolation Forest, and forecasts costs with Prophet.', 'Views for summary, allocation, shared costs and unit economics.', 'What-if savings, and EC2 clean-ups with a log of every action.', 'An assistant that explains the numbers, with a local fallback.', 'A built-in fake dataset, so you can try it without an AWS account.'])]],
+    ['Try it', [P('The dashboard uses an Isolation Forest. This one is simpler, a rolling z-score on made-up data, but it shows what “flag a spike” means and what the sensitivity trade-off looks like.'), F('spike', 'A synthetic 60-day bill with three real spikes. Drag the sensitivity.')]],
+    ['Layout', [code('frontend/        React dashboard\nbackend/         FastAPI, AWS access, database\n  db/            models and connection\n  services/      business logic\n  main.py        the API\nml_service/      spike detection and forecasting'),
+      F('flow', 'The dashboard asks the backend, and the backend asks the ML service.', flow([[{ t: 'AWS costs', s: 'boto3' }, { t: 'Sample data' }], { t: 'Backend', s: 'FastAPI, Postgres', h: 1 }, [{ t: 'Spikes', s: 'Isolation Forest' }, { t: 'Forecast', s: 'Prophet' }], { t: 'Dashboard', s: 'React, Recharts', h: 1 }])),
+      P('React 19, TypeScript, Vite and Recharts in front. FastAPI, SQLAlchemy, PostgreSQL and boto3 behind. A second FastAPI service runs pandas, scikit-learn and Prophet.')]]
+  ] },
+{ slug: 'hawkeye', name: 'HAWKEYE', repo: '', meta: ['OpenCV', 'YOLO', 'FastAPI', 'React', 'Raspberry Pi', 'May 2026 to now'],
+  abs: 'HAWKEYE detects <b>debris on runways</b> from live camera feeds for the Indian Air Force. I lead the OpenCV preprocessing: three Raspberry Pi feeds in, one stream of clean frames out for the detector.',
+  stat: [['~0.3 s', 'camera delay, down from about 3 s'], ['3', 'Pi camera feeds'], ['~30 fps', 'annotated stream to the dashboard']],
+  secs: [
+    ['Pipeline', [P('A small bolt or a piece of tyre is a hazard to an aircraft. Cameras watch the surface and a detector looks for anything that should not be there.'),
+      F('flow', 'Each Pi publishes RTSP to a relay. My part is the highlighted step.', flow([[{ t: 'Pi cam 0' }, { t: 'Pi cam 1' }, { t: 'Pi cam 2' }], { t: 'ffmpeg', s: 'H.264 to RTSP' }, { t: 'MediaMTX', s: 'RTSP relay' }, { t: 'OpenCV', s: 'preprocessing', h: 1 }, { t: 'YOLO', s: 'detection' }, { t: 'Dashboard', s: 'MJPEG, WebSocket' }]))]],
+    ['Preprocessing', [P('A detector is only as good as the frames it gets, so every frame goes through the same steps: bilateral denoising (smooths noise, keeps edges), CLAHE (lifts contrast in dark and washed-out areas), a crop to the runway region, and frame skipping so the detector is not flooded.'),
+      F('frame', 'A synthetic dark, noisy frame with two bright pieces of debris. Toggle the steps. The real pipeline uses bilateral filtering and CLAHE; these are simpler stand-ins.')]],
+    ['The lag', [P('The Pi cameras showed about three seconds of delay. USB webcams on the same machine were fine. After tracking it down, the same pipeline runs at roughly 200 to 400 ms, close to the floor for this setup.', 'When OpenCV opens a network stream it switches to an ffmpeg backend tuned for files. That backend reads several seconds of video up front to work out what it is looking at, and the buffer it fills becomes a permanent delay.'),
+      table(['Source', 'Backend OpenCV uses', 'Default buffering', 'Delay floor'], [['USB webcam', 'V4L2 / DirectShow', '1 to 2 frames', '30 to 70 ms'], ['Pi camera over RTSP', 'ffmpeg', '5 MB probe, 5 s analysis', '~3 s']]),
+      P('The fix is four ffmpeg flags, set on every hop. Switch any one off to see the delay come back.'), F('lag', 'Glass-to-glass delay with and without the four flags.')]],
+    ['Why flags, not OpenCV', [P('For the ML side I stopped using OpenCV’s own capture for RTSP. The code starts its own ffmpeg process that pipes raw frames in, so the flags are guaranteed to be there. OpenCV honours them inconsistently across builds.'),
+      table(['Flag', 'What it does'], [['-probesize 32', 'Read 32 bytes before choosing a codec. Default is 5,000,000.'], ['-analyzeduration 0', 'Do not spend wall-clock time analysing the stream. Default is 5 s.'], ['-fflags nobuffer', 'Do not buffer packets to reorder them.'], ['-flags low_delay', 'Tell the H.264 decoder there are no B-frames, so frames come out immediately.']])]],
+    ['Backend and dashboard', [list(['FastAPI with WebSockets streams annotated MJPEG at about 30 fps, decoupled from the model’s frame rate, so the picture stays smooth when detection is slower.', 'The YOLO model is a drop-in. Point an environment variable at a <code>.pt</code> or <code>.engine</code> file.', 'An optional second “teacher” stage is off by default to protect latency.', 'Cameras that drop show a placeholder and reconnect by themselves. A health endpoint reports the model and each camera.', 'The React dashboard has a camera grid, detection log, FOD counter, latency badge, audit log and camera setup.'])]],
+    ['Status', [P('A working lab demo. Docker, PostgreSQL storage and the history and settings APIs are marked not wired up, and I do not count them as features. The repository is private.')]]
+  ] },
+{ slug: 'petally', name: 'PetAlly', repo: '', meta: ['Web', 'Mobile', 'AWS', 'March to September 2026'],
+  abs: 'PetAlly is a pet-care app for web and mobile. I was its <b>founding software and AI integration engineer</b> at The House of Vrindavan in Bengaluru.',
+  stat: [['8', 'pieces of the product I built'], ['2', 'platforms'], ['6 mo', 'as the first engineer']],
+  secs: [
+    ['What I built', [P('I owned the recommendation system and wired AI into the product, then built a lot of what keeps people coming back.'), F('hub', 'The eight things I worked on. Tap one.')]],
+    ['How I worked', [P('As the first engineer I took whatever the product needed next. That meant moving between the AI features, app screens, the landing page and the deployment pipeline. The repository is private, so there is no code to link.')]]
+  ] }
+];
+
+/* ================= render ================= */
+function render() {
+  const m = location.hash.match(/^#\/(.+)$/), p = PROJECTS.find(x => x.slug === (m && m[1])) || PROJECTS[0], i = PROJECTS.indexOf(p), nx = PROJECTS[(i + 1) % 7], pv = PROJECTS[(i + 6) % 7];
+  $('#tabs').innerHTML = PROJECTS.map(q => `<a href="#/${q.slug}"${q === p ? ' class="on"' : ''}>${q.name}</a>`).join('');
+  $('#page').innerHTML = `<header class="top col"><h1>${p.name}</h1><div class="meta">${p.meta.map(esc).join('<span>·</span>')}<span>·</span>${p.repo ? `<a href="${GH}${p.repo}" target="_blank" rel="noopener">code on GitHub</a>` : '<span>private, no public repo</span>'}</div>
+    <p class="abs">${p.abs}</p><div class="stat">${p.stat.map(s => `<div><b>${s[0]}</b><span>${s[1]}</span></div>`).join('')}</div></header>` +
+    p.secs.map(s => `<section class="s col"><h2>${esc(s[0])}</h2>${s[1].join('')}</section>`).join('') +
+    `<nav class="pn col"><a href="#/${pv.slug}">← ${pv.name}</a><a href="#/${nx.slug}">${nx.name} →</a></nav>`;
+  $$('[data-f]').forEach(f => { const b = B[f.dataset.f]; if (b) b($('.box', f)); });
+  document.title = `${p.name} · Durva Sharma`; scrollTo(0, 0);
+}
+addEventListener('hashchange', render); render();
+})();
+</script>
+</body>
+</html>

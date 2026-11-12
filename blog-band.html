@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Grass Files, Band Room</title>
+<meta name="description" content="Grass Files: Durva Sharma's notes on builds, security, shoots and poems, kept as tapes in a band room.">
+<link rel="icon" href="/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Pixelify+Sans:wght@400..600&display=swap" rel="stylesheet">
+<style>
+:root{--wall:#e7e7e3;--floor:#cfcfca;--ink:#0b0b0c;--red:#e0122d;--silver:#b9b9b5;--paper:#f4f2ec;--sans:Archivo,Arial,sans-serif;--px:"Pixelify Sans",Archivo,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--wall)}
+body{background:var(--wall);color:var(--ink);font-family:var(--sans);overflow-x:hidden}
+a{color:inherit}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+:focus-visible{outline:3px solid var(--red);outline-offset:3px}
+.bar{position:absolute;top:0;left:0;right:0;z-index:40;display:flex;justify-content:space-between;align-items:baseline;gap:1.5rem;padding:1.1rem clamp(1rem,2.4vw,2rem)}
+.bar a{font-weight:600;font-size:.95rem;text-decoration:none;border-bottom:2px solid currentColor}
+.bar a:hover{color:var(--red)}
+.intro{position:absolute;z-index:40;left:clamp(1rem,2.4vw,2rem);top:3.4rem;max-width:30rem;font-size:1.05rem;line-height:1.45;font-weight:500}
+
+/* the room */
+.stage{position:relative;height:100svh;min-height:560px;overflow:hidden}
+.stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+#front{pointer-events:none;z-index:6}
+.me{position:absolute;z-index:4;transform-origin:50% 100%;transition:left .45s cubic-bezier(.5,0,.2,1),top .45s cubic-bezier(.5,0,.2,1),width .45s,height .45s}
+.me img{display:block;width:100%;height:100%;image-rendering:pixelated;pointer-events:none}
+.me button{position:absolute;inset:8% 16% 0}
+.me.hop img{animation:hop .4s cubic-bezier(.3,.7,.3,1)}
+.me.strum img{animation:strum .32s ease-in-out infinite}
+@keyframes hop{40%{transform:translateY(-6%)}75%{transform:translateY(0) scaleY(.96)}}
+@keyframes strum{50%{transform:translateY(1.5%) rotate(-1deg)}}
+.bubble{position:absolute;z-index:30;width:max-content;max-width:16rem;background:#fff;border:3px solid var(--ink);padding:.55rem .8rem;font-family:var(--px);font-size:1.02rem;line-height:1.3;box-shadow:4px 4px 0 var(--ink);transform-origin:0 100%;pointer-events:none} /* taste-skill-ignore: the speech bubble floats over the scene */
+.bubble::after{content:"";position:absolute;left:18px;bottom:-14px;width:14px;height:14px;background:#fff;border-right:3px solid var(--ink);border-bottom:3px solid var(--ink);transform:skewX(35deg)}
+.bubble.pop{animation:pop .25s cubic-bezier(.3,1.4,.5,1)}
+@keyframes pop{from{transform:scale(.6);opacity:0}}
+.spot{position:absolute;z-index:7;border-radius:12px}
+.spot:focus-visible{outline:3px dashed var(--red);outline-offset:-6px}
+.head{position:absolute;z-index:8;display:grid;place-items:center;pointer-events:none}
+.head h1{font-weight:900;font-stretch:112%;text-transform:uppercase;letter-spacing:-.06em;line-height:.82;transform:skewX(-9deg);color:var(--red);text-align:center}
+
+/* tapes */
+.rack{position:absolute;z-index:9;display:flex;align-items:flex-end;gap:1.5%}
+.tape{position:relative;flex:0 0 18.8%;min-width:0;aspect-ratio:1.58;background:var(--ink);border-radius:7%/11%;padding:0;color:var(--ink);text-decoration:none;display:block;transform:rotate(var(--r));transition:transform .25s cubic-bezier(.3,1.3,.5,1);cursor:pointer;text-align:left}
+.tape .lbl{position:absolute;left:7%;right:7%;top:9%;height:42%;background:var(--paper);border-radius:4px;padding:0 6% 4%;overflow:hidden;display:flex;align-items:flex-end}
+.tape .lbl::before{content:"";position:absolute;left:0;right:0;top:0;height:26%;background:var(--red)}
+.tape .lbl b{position:relative;display:block;font-weight:800;font-stretch:80%;font-size:var(--tf,.8rem);line-height:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tape .win{position:absolute;left:24%;right:24%;bottom:15%;height:24%;background:#3a3a3f;border-radius:99px;display:flex;justify-content:space-between;align-items:center;padding:0 8%}
+.tape .win i{width:26%;aspect-ratio:1;border-radius:50%;background:var(--paper);border:3px dotted var(--ink)}
+.tape.soon .lbl{background:#d8d8d3}
+.tape.soon .lbl::before{background:#9b9b97}
+.tape.soon .lbl b{color:#6d6d69}
+.tape:hover,.tape:focus-visible,.tape.on{transform:translateY(-14%) rotate(0deg) scale(1.06)}
+.tape .cap{display:none}
+
+/* the reading deck: a J-card that slides in */
+.deck{position:fixed;z-index:60;top:0;right:0;bottom:0;width:min(46rem,52vw);background:var(--paper);transform:translateX(102%);transition:transform .55s cubic-bezier(.6,0,.2,1);overflow-y:auto;display:grid;grid-template-columns:3.2rem 1fr}
+.deck.open{transform:none;box-shadow:-24px 0 60px -30px rgba(0,0,0,.45)} /* taste-skill-ignore: a drawer over the page */
+.spine{background:var(--red);color:var(--paper);writing-mode:vertical-rl;transform:rotate(180deg);display:flex;align-items:center;justify-content:space-between;padding:1.4rem 0;font-weight:800;font-stretch:80%;text-transform:uppercase;letter-spacing:.02em;font-size:1rem}
+.jc{padding:clamp(1.4rem,3vw,2.6rem)}
+.jc .reels{display:flex;gap:1.4rem;align-items:center;background:var(--ink);border-radius:14px;padding:1rem 1.4rem;width:max-content;margin-bottom:2rem}
+.jc .reels svg{width:3.4rem;height:3.4rem;animation:spin 2.4s linear infinite}
+.jc .reels span{color:var(--paper);font-weight:600;font-size:.95rem}
+@keyframes spin{to{transform:rotate(360deg)}}
+.jc h2{font-weight:900;font-stretch:88%;font-size:clamp(2.2rem,4.4vw,4rem);line-height:.95;letter-spacing:-.035em;max-width:14ch}
+.jc .meta{margin:1rem 0 2rem;font-weight:600;color:var(--red)}
+.jc .body p{font-size:1.15rem;line-height:1.6;max-width:36rem;margin-bottom:1em}
+.jc .body p:first-child{font-weight:700;font-size:1.35rem;line-height:1.4}
+.jc .ctl{display:flex;gap:.7rem;flex-wrap:wrap;margin-top:2.4rem}
+.jc .ctl button,.jc .ctl a{background:var(--ink);color:var(--paper);padding:.7rem 1.2rem;font-weight:700;text-decoration:none;transition:background .2s,transform .15s}
+.jc .ctl button:hover,.jc .ctl a:hover{background:var(--red)}
+.jc .ctl :active{transform:translateY(2px)}
+.foot{position:absolute;z-index:40;right:clamp(1rem,2.4vw,2rem);bottom:1rem;font-weight:600;font-size:.9rem;color:#5b5b57}
+
+@media (max-width:760px){
+  .stage{height:auto;min-height:0}
+  .intro{position:static;padding:4rem 1rem 0;font-size:1rem}
+  .rack{position:static;display:grid;justify-content:stretch;grid-template-columns:1fr 1fr;gap:1.6rem 1rem;padding:1rem 1rem 3rem}
+  .tape{--tf:.95rem;width:100%}
+  .tape .cap{display:block;position:absolute;top:104%;left:0;right:0;color:var(--ink);font-weight:700;font-size:.85rem;line-height:1.2}
+  .rack .tape{margin-bottom:2.2rem}
+  .tapes-h{display:block;padding:1.6rem 1rem 0;font-weight:900;font-stretch:88%;font-size:1.8rem;letter-spacing:-.03em}
+  .deck{width:100%;grid-template-columns:2rem 1fr}
+  .bubble{font-size:.86rem;max-width:12rem}
+  .foot{position:static;display:block;padding:0 1rem 2rem}
+}
+@media (min-width:761px){.tapes-h{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<nav class="bar"><a href="/mockup-pale.html">← Back to the record</a><a href="/blog.html">Quiet version</a></nav>
+<p class="intro" id="intro">Durva’s notes on builds, security rabbit holes, shoots and poems. Pick a tape off the shelf, or hit the drums.</p>
+
+<section class="stage" id="stage" aria-label="Band room">
+  <canvas id="back" aria-hidden="true"></canvas>
+  <div class="me" id="me"><img id="sprite" src="/src/assets/ink/character/durva-idle.png" alt="Durva, drawn as a pixel character"><button id="poke" aria-label="Poke Durva"></button></div>
+  <canvas id="front" aria-hidden="true"></canvas>
+  <div class="head" id="head"><h1 id="h1">Grass<br>Files</h1></div>
+  <button class="spot" id="drums" aria-label="Play the drums"></button>
+  <button class="spot" id="guitar" aria-label="Play the guitar"></button>
+  <div class="bubble" id="bubble" aria-live="polite"></div>
+</section>
+<h2 class="tapes-h" id="tapesH">Tapes</h2>
+<div class="rack" id="rack" aria-labelledby="tapesH"></div>
+<p class="foot" id="foot"></p>
+
+<aside class="deck" id="deck" aria-label="Now playing" aria-hidden="true">
+  <div class="spine" id="spine"></div>
+  <div class="jc" id="jc"></div>
+</aside>
+
+<script>
+(() => {
+const $ = id => document.getElementById(id), esc = t => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+const reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
+const INK = '#0b0b0c', RED = '#e0122d', SILVER = '#b9b9b5', PAPER = '#f4f2ec', WALL = '#e7e7e3', FLOOR = '#cfcfca', FOAM = '#2b2b30';
+const SPR = p => `/src/assets/ink/character/durva-${p}.png`;
+
+/* the tapes. `say` is what I say when you point at one, `pose` is what I do */
+const POSTS = [
+  { slug: 'intentionally-unfinished', short: 'Unfinished', title: 'This space intentionally unfinished', tag: 'Note', date: '31 Aug 2026', pose: 'point',
+    say: 'The first one. It’s short, I promise.',
+    body: ['First note. This is where the longer things go.', 'Build logs, shoot write-ups, poems that didn’t fit anywhere else, and whatever doesn’t fit on a card. More soon.'] },
+  { slug: 'tread', short: 'tread', title: 'Skipping prefill: notes on tread', tag: 'Build log', soon: true, pose: 'guitar', say: 'The one where my own benchmark lied to me. Not recorded yet.' },
+  { slug: 'taintmem', short: 'TaintMem', title: 'Planting a payload in agent memory', tag: 'Security', soon: true, pose: 'guard', say: 'How to make an AI agent remember the wrong thing. Not recorded yet.' },
+  { slug: 'skillfuzz', short: 'SkillFuzz', title: 'Fuzzing the tools agents trust', tag: 'Security', soon: true, pose: 'guard', say: 'Running sketchy plugins ninety times so you don’t have to. Soon.' },
+  { slug: 'runway', short: 'Runway', title: 'Clean frames from three runway cameras', tag: 'Vision', soon: true, pose: 'walk', say: 'Three cameras, one runway, a lot of noise. Soon.' }
+];
+const HELLO = 'Hi. Pick a tape off the shelf.';
+const POKES = [['wave', 'Hey.'], ['guard', 'Careful. I do Muay Thai.'], ['point', 'The tapes are on the shelf. Up there.'], ['walk', 'I also shoot, direct and write poems. It’s a lot.'], ['wave', 'You can keep poking. I have nowhere to be.']];
+['idle', 'point', 'guitar', 'guard', 'walk', 'sit', 'wave', 'drums', 'drums2', 'headphones'].forEach(p => { const im = new Image(); im.src = SPR(p); });
+const live = POSTS.filter(p => !p.soon);
+$('foot').textContent = `${live.length} tape recorded, ${POSTS.length - live.length} still blank.`;
+
+/* ---------- the scene, in a 1600 x 900 room scaled to the screen ---------- */
+const back = $('back'), front = $('front'), bg = back.getContext('2d'), fg = front.getContext('2d');
+let W = 0, H = 0, s = 1, ox = 0, oy = 0, dpr = 1, phone = false;
+const L = { floor: 690, me: { x: 800, b: 702, h: 470 }, drum: { x: 1335, b: 652, h: 400 }, read: { x: 590, b: 702, h: 470 }, shelf: { x0: 50, x1: 610, y: 404 },
+  kick: { x: 1270, y: 598, r: 96 }, guitar: { x: 420 }, plant: { x: 236 } };
+let state = 'idle', guitarOut = false;
+
+/* the brush: seeded, so every redraw lands in the same place and the lines never boil */
+let seed = 1; const R = () => (seed = seed * 16807 % 2147483647) / 2147483647;
+const resample = pts => { const P = []; for (let i = 0; i < pts.length - 1; i++) { const a = pts[i], b = pts[i + 1], n = Math.max(1, Math.ceil(Math.hypot(b[0] - a[0], b[1] - a[1]) / 9)); for (let k = 0; k < n; k++) P.push([a[0] + (b[0] - a[0]) * k / n, a[1] + (b[1] - a[1]) * k / n]); } P.push(pts[pts.length - 1]); return P; };
+function ink(g, pts, w = 2.6, col = INK) {
+  const P = resample(pts).map(p => [p[0] + (R() - .5) * 1.3, p[1] + (R() - .5) * 1.3]);
+  g.strokeStyle = col; g.lineCap = 'round'; g.lineJoin = 'round';
+  for (let i = 0; i < P.length - 1; i++) { const t = i / (P.length - 1); g.lineWidth = w * (.7 + .55 * Math.sin(t * Math.PI)) * (.88 + R() * .24); g.beginPath(); g.moveTo(P[i][0], P[i][1]); g.lineTo(P[i + 1][0], P[i + 1][1]); g.stroke(); }
+  g.globalAlpha = .28; g.lineWidth = w * .5; g.beginPath(); P.forEach((p, i) => { const q = [p[0] + (R() - .5) * 2.2, p[1] + (R() - .5) * 2.2]; i ? g.lineTo(q[0], q[1]) : g.moveTo(q[0], q[1]); }); g.stroke(); g.globalAlpha = 1;
+}
+const ell = (cx, cy, rx, ry, a0 = 0, a1 = Math.PI * 2, rot = 0) => { const n = Math.max(12, Math.ceil((rx + ry) * Math.abs(a1 - a0) / 14)), c = Math.cos(rot), sn = Math.sin(rot), P = [];
+  for (let i = 0; i <= n; i++) { const a = a0 + (a1 - a0) * i / n, x = Math.cos(a) * rx, y = Math.sin(a) * ry; P.push([cx + x * c - y * sn, cy + x * sn + y * c]); } return P; };
+const box = (x, y, w, h) => [[x, y], [x + w, y], [x + w, y + h], [x, y + h], [x, y]];
+const fill = (g, pts, col) => { g.fillStyle = col; g.beginPath(); pts.forEach((p, i) => i ? g.lineTo(p[0], p[1]) : g.moveTo(p[0], p[1])); g.closePath(); g.fill(); };
+const shape = (g, pts, col, w = 2.6) => { if (col) fill(g, pts, col); ink(g, pts, w); };
+const curve = (a, c, b, n = 24) => { const P = []; for (let i = 0; i <= n; i++) { const t = i / n, u = 1 - t; P.push([u * u * a[0] + 2 * u * t * c[0] + t * t * b[0], u * u * a[1] + 2 * u * t * c[1] + t * t * b[1]]); } return P; };
+const hatch = (g, x, y, w, h, gap, ang, col, lw = 1.2) => { g.save(); g.beginPath(); g.rect(x, y, w, h); g.clip(); const d = w + h;
+  for (let k = -d; k < d; k += gap) { const c = Math.cos(ang), sn = Math.sin(ang), cx = x + w / 2 + k * -sn, cy = y + h / 2 + k * c; ink(g, [[cx - c * d, cy - sn * d], [cx + c * d, cy + sn * d]], lw, col); } g.restore(); };
+
+function drawBack() {
+  const g = bg; seed = 11; g.setTransform(dpr, 0, 0, dpr, 0, 0); g.fillStyle = WALL; g.fillRect(0, 0, W, H);
+  g.setTransform(dpr * s, 0, 0, dpr * s, dpr * ox, dpr * oy);
+  const x0 = -ox / s - 10, x1 = (W - ox) / s + 10, yB = (H - oy) / s + 10;
+  fill(g, box(x0, L.floor, x1 - x0, yB - L.floor), FLOOR);
+  ink(g, [[x0, L.floor], [x1, L.floor]], 3);
+  for (const y of [742, 812]) ink(g, [[x0, y], [x1, y]], 1, 'rgba(11,11,12,.25)');
+
+  /* foam on the wall behind the kit */
+  fill(g, box(1000, 70, 540, 380), FOAM); ink(g, box(1000, 70, 540, 380), 3);
+  for (let i = 0; i < 9; i++) for (let j = 0; j < 6; j++) { const x = 1000 + i * 60, y = 70 + j * 63.3; hatch(g, x + 4, y + 4, 52, 55, 9, (i + j) % 2 ? 0 : Math.PI / 2, 'rgba(231,231,227,.38)', 1.6); }
+
+  /* poster: a spider lily in paper ink on red */
+  g.save(); g.translate(505, 185); g.rotate(-.035);
+  fill(g, box(-82, -110, 164, 220), RED); ink(g, box(-82, -110, 164, 220), 2.4);
+  for (const [tx, ty] of [[-82, -110], [82, -110]]) fill(g, box(tx - 14, ty - 7, 28, 14), 'rgba(244,242,236,.8)');
+  ink(g, curve([0, 96], [-6, 30], [0, -12]), 3, PAPER);
+  for (let k = 0; k < 7; k++) { const a = -Math.PI / 2 + (k - 3) * .5, c = Math.cos(a), sn = Math.sin(a);
+    ink(g, curve([0, -12], [c * 30, -12 + sn * 30 - 8], [c * 46 + sn * 10, -12 + sn * 46 - c * 10]), 4, PAPER);
+    ink(g, [[0, -12], [c * 70, -12 + sn * 70 - 6]], 1.4, PAPER); }
+  g.fillStyle = PAPER; g.font = '800 19px Archivo'; g.textAlign = 'center'; g.fillText('GRASS FILES', 0, 82); g.font = '600 12px Archivo'; g.fillText('vol. 1', 0, 98);
+  g.restore();
+
+  /* the shelf the tapes stand on */
+  if (!phone) { const { x0: a, x1: b, y } = L.shelf; fill(g, box(a, y, b - a, 16), '#8a8a85'); ink(g, box(a, y, b - a, 16), 2.6);
+    for (const bx of [a + 50, b - 50]) ink(g, [[bx, y + 16], [bx, y + 56], [bx - 34, y + 16]], 2.4); }
+
+  /* amp */
+  const ax = 70, ay = 470, aw = 250, ah = 220;
+  fill(g, box(ax, ay, aw, ah), INK); fill(g, box(ax + 14, ay + 54, aw - 28, ah - 68), '#3a3a3f');
+  hatch(g, ax + 14, ay + 54, aw - 28, ah - 68, 7, Math.PI / 4, 'rgba(185,185,181,.55)', 1); hatch(g, ax + 14, ay + 54, aw - 28, ah - 68, 7, -Math.PI / 4, 'rgba(185,185,181,.35)', 1);
+  ink(g, box(ax, ay, aw, ah), 3); for (let k = 0; k < 6; k++) { const kx = ax + 30 + k * 30; fill(g, ell(kx, ay + 27, 9, 9), SILVER); ink(g, ell(kx, ay + 27, 9, 9), 1.6); ink(g, [[kx, ay + 27], [kx + 5, ay + 20]], 1.6); }
+  g.fillStyle = PAPER; g.font = '900 22px Archivo'; g.textAlign = 'right'; g.fillText('DS', ax + aw - 22, ay + 36);
+
+  /* guitar on its stand (gone while I'm playing it) */
+  const gx = L.guitar.x; ink(g, [[gx - 40, 690], [gx, 560], [gx + 40, 690]], 2.6); ink(g, [[gx - 30, 650], [gx + 30, 650]], 2.2);
+  if (!guitarOut) { fill(g, box(gx - 7, 300, 14, 250), '#5a4630'); ink(g, box(gx - 7, 300, 14, 250), 2.2);
+    shape(g, [[gx - 10, 300], [gx - 14, 262], [gx + 14, 262], [gx + 10, 300]], INK, 2.2);
+    for (let k = 0; k < 3; k++) { fill(g, ell(gx - 18, 270 + k * 11, 4, 3), SILVER); fill(g, ell(gx + 18, 270 + k * 11, 4, 3), SILVER); }
+    fill(g, ell(gx, 612, 54, 58), RED); fill(g, ell(gx, 538, 40, 42), RED); ink(g, ell(gx, 612, 54, 58, -Math.PI * .28, Math.PI * 1.28), 2.8); ink(g, ell(gx, 538, 40, 42, Math.PI * .78, Math.PI * 2.22), 2.8);
+    fill(g, ell(gx + 14, 600, 20, 30, 0, Math.PI * 2, .3), PAPER); ink(g, ell(gx + 14, 600, 20, 30, 0, Math.PI * 2, .3), 1.6);
+    fill(g, box(gx - 16, 560, 32, 10), INK); fill(g, box(gx - 16, 610, 32, 9), INK); fill(g, box(gx - 22, 638, 44, 8), SILVER);
+    for (let k = -2; k <= 3; k++) ink(g, [[gx + k * 2.4, 300], [gx + k * 2.4, 642]], .6, SILVER); }
+  /* cables across the floor */
+  ink(g, curve([ax + aw - 10, 676], [370, 735], [gx + 20, 640]), 2);
+  ink(g, curve([ax + aw - 30, 684], [520, 760], [600, 688]), 2);
+
+  /* mic stand */
+  ink(g, [[560, 690], [600, 640], [640, 690]], 2.6); ink(g, [[600, 640], [600, 380]], 3); ink(g, [[590, 390], [665, 330]], 2.6);
+  shape(g, ell(672, 322, 11, 18, 0, Math.PI * 2, .9), INK, 2.2); fill(g, ell(676, 316, 6, 10, 0, Math.PI * 2, .9), SILVER);
+
+  /* rug */
+  fill(g, ell(800, 706, 290, 34), RED); ink(g, ell(800, 706, 290, 34), 2.6); for (let k = -6; k <= 6; k++) ink(g, [[800 + k * 44, 739], [800 + k * 44 + 3, 748]], 1.6);
+
+  /* drum throne, behind the kit */
+  ink(g, [[1300, 690], [1335, 640], [1370, 690]], 2.6); ink(g, [[1335, 640], [1335, 622]], 3); shape(g, ell(1335, 618, 46, 11), INK, 2.4);
+}
+
+/* front layer: the kit and the plant. Pieces shake when hit */
+const hit = { kick: 0, snare: 0, tom: 0, floor: 0, hat: 0, crash: 0, ride: 0 }; let marks = [], blades = [], mx = -9999, my = -9999;
+function drawFront() {
+  const g = fg; seed = 77; g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, W, H); g.setTransform(dpr * s, 0, 0, dpr * s, dpr * ox, dpr * oy);
+  const j = k => (hit[k] > 0 ? Math.sin(hit[k] * 40) * hit[k] * 5 : 0);
+
+  /* potted grass and a spider lily on the amp, leaning away from the cursor */
+  const px = L.plant.x; shape(g, [[px - 34, 430], [px + 34, 430], [px + 26, 470], [px - 26, 470]], '#8a8a85', 2.4); ink(g, [[px - 38, 430], [px + 38, 430]], 3);
+  blades.forEach(b => { const tip = b.x + (b.lean + b.bend) * b.h; fill(g, [[b.x - 2.2, 430], [b.x + (tip - b.x) * .3, 430 - b.h * .55], [tip, 430 - b.h], [b.x + 2.2, 430]], b.c); });
+  const lb = blades.lily, lx = px + 8 + (lb ? lb.bend : 0) * 90, ly = 330; ink(g, curve([px + 6, 430], [px + 4, 380], [lx, ly]), 2.2, INK);
+  for (let k = 0; k < 7; k++) { const a = k / 7 * Math.PI * 2 - 1, c = Math.cos(a), sn = Math.sin(a); ink(g, curve([lx, ly], [lx + c * 12, ly + sn * 12 - 3], [lx + c * 17 + sn * 4, ly + sn * 17 - c * 4]), 3, RED); ink(g, [[lx, ly], [lx + c * 27, ly + sn * 27 - 5]], 1, RED); }
+
+  /* hi-hat */
+  const hj = j('hat'); ink(g, [[965, 690], [1000, 640], [1035, 690]], 2.4); ink(g, [[1000, 640], [1000, 444]], 2.6);
+  shape(g, ell(1000, 448 + hj * .4, 58, 8), SILVER, 2.2); shape(g, ell(1000, 438 - Math.abs(hj) * .6, 58, 8), SILVER, 2.2);
+  /* crash on a boom */
+  ink(g, [[1095, 690], [1125, 650], [1155, 690]], 2.4); ink(g, [[1125, 650], [1125, 380]], 2.6); ink(g, [[1125, 380], [1150, 336]], 2.4);
+  g.save(); g.translate(1152, 330); g.rotate(-.18 + j('crash') * .03); shape(g, ell(0, 0, 84, 13), SILVER, 2.4); fill(g, ell(0, -3, 8, 4), INK); g.restore();
+  /* ride */
+  ink(g, [[1515, 690], [1545, 650], [1575, 690]], 2.4); ink(g, [[1545, 650], [1545, 400]], 2.6);
+  g.save(); g.translate(1530, 396); g.rotate(.14 + j('ride') * .03); shape(g, ell(0, 0, 80, 12), SILVER, 2.4); fill(g, ell(0, -3, 8, 4), INK); g.restore();
+  /* floor tom */
+  const fj = j('floor'); ink(g, [[1395, 600], [1388, 690]], 2.4); ink(g, [[1505, 600], [1512, 690]], 2.4);
+  shape(g, [[1380, 545 + fj], [1520, 545 + fj], [1520, 650 + fj], [1380, 650 + fj]], RED, 2.6); shape(g, ell(1450, 545 + fj, 70, 14), PAPER, 2.6); ink(g, ell(1450, 650 + fj, 70, 12, 0, Math.PI), 2.4);
+  for (let k = 0; k < 5; k++) ink(g, [[1392 + k * 29, 552 + fj], [1392 + k * 29, 642 + fj]], 1.4, 'rgba(11,11,12,.55)');
+  /* snare */
+  const sj = j('snare'); ink(g, [[1050, 690], [1095, 615], [1140, 690]], 2.4);
+  shape(g, [[1037, 560 + sj], [1153, 560 + sj], [1153, 605 + sj], [1037, 605 + sj]], SILVER, 2.4); shape(g, ell(1095, 560 + sj, 58, 12), PAPER, 2.4); ink(g, ell(1095, 605 + sj, 58, 10, 0, Math.PI), 2.2);
+  /* kick: red shell ring, paper head (the name sits on it) */
+  const kj = j('kick'), k0 = L.kick; ink(g, [[k0.x - 70, 660], [k0.x - 104, 694]], 2.6); ink(g, [[k0.x + 70, 660], [k0.x + 104, 694]], 2.6);
+  fill(g, ell(k0.x, k0.y + kj, k0.r + 12, k0.r + 12), RED); shape(g, ell(k0.x, k0.y + kj, k0.r, k0.r), PAPER, 2.6); ink(g, ell(k0.x, k0.y + kj, k0.r + 12, k0.r + 12), 3);
+  for (let k = 0; k < 10; k++) { const a = k / 10 * Math.PI * 2, c = Math.cos(a), sn = Math.sin(a); fill(g, box(k0.x + c * (k0.r + 6) - 4, k0.y + kj + sn * (k0.r + 6) - 4, 8, 8), SILVER); }
+  /* rack tom on the kick */
+  const tj = j('tom'); ink(g, [[1250, 505], [1235, 490]], 3);
+  shape(g, [[1160, 460 + tj], [1262, 450 + tj], [1268, 504 + tj], [1166, 514 + tj]], RED, 2.6); shape(g, ell(1211, 455 + tj, 51, 12, 0, Math.PI * 2, -.1), PAPER, 2.4);
+  /* the marks a hit leaves in the air */
+  marks.forEach(m => { const a = m.life; g.globalAlpha = a; for (let k = 0; k < 3; k++) { const an = m.a + (k - 1) * .45, r0 = 18 + (1 - a) * 26; ink(g, [[m.x + Math.cos(an) * r0, m.y + Math.sin(an) * r0], [m.x + Math.cos(an) * (r0 + 16), m.y + Math.sin(an) * (r0 + 16)]], 2.6, RED); } g.globalAlpha = 1; });
+  /* the name moves with the kick head */
+  $('head').style.transform = `translateY(${kj * s}px)`;
+}
+
+function buildPlant() { blades = []; seed = 5; for (let k = 0; k < 26; k++) blades.push({ x: L.plant.x - 26 + R() * 52, h: 30 + R() * 55, lean: (R() - .5) * .7, bend: 0, c: R() < .5 ? INK : '#5b5b57' }); blades.lily = { x: L.plant.x + 8, h: 100, lean: 0, bend: 0 }; }
+
+/* ---------- layout ---------- */
+const P = (x, y) => [ox + x * s, oy + y * s];
+function place(el, x, y, w, h) { const [a, b] = P(x, y); Object.assign(el.style, { left: a + 'px', top: b + 'px', width: w * s + 'px', height: h * s + 'px' }); }
+const spot = () => state === 'drums' ? L.drum : state === 'reading' && !phone ? L.read : L.me;
+function placeMe() { const m = spot(), w = m.h * 2 / 3; place($('me'), m.x - w / 2, m.b - m.h, w, m.h); placeBubble(); }
+function placeBubble() { const m = spot(), b = $('bubble'), [a, t] = P(m.x + (state === 'drums' ? -40 : 30), m.b - m.h + 30);
+  b.style.left = Math.min(a, W - b.offsetWidth - 12) + 'px'; b.style.top = Math.max(phone ? 8 : 96, t - b.offsetHeight) + 'px'; }
+function layout() {
+  phone = innerWidth <= 760; dpr = Math.min(2, devicePixelRatio || 1); W = innerWidth;
+  if (phone) { s = W / 960; H = Math.round(860 * s); ox = -580 * s; oy = H - 820 * s; $('stage').style.height = H + 'px'; }
+  else { $('stage').style.height = ''; H = $('stage').clientHeight; s = Math.min(W / 1600, H / 860); ox = (W - 1600 * s) / 2; oy = H - 860 * s; }
+  for (const c of [back, front]) { c.width = W * dpr; c.height = H * dpr; }
+  placeMe();
+  const k = L.kick; place($('head'), k.x - k.r, k.y - k.r, k.r * 2, k.r * 2); $('h1').style.fontSize = 40 * s + 'px';
+  place($('drums'), 960, 300, 620, 395); place($('guitar'), 360, 255, 120, 440); $('guitar').hidden = phone;
+  const rk = $('rack');
+  if (!phone) { const sh = L.shelf; place(rk, sh.x0 + 14, sh.y - 120, sh.x1 - sh.x0 - 28, 120); rk.style.setProperty('--tf', Math.max(10, 15 * s) + 'px'); }
+  else { rk.removeAttribute('style'); }
+  drawBack(); drawFront();
+}
+
+/* ---------- me ---------- */
+const me = $('me'), sprite = $('sprite'), bubble = $('bubble'); let lastSay = '';
+function say(text, pose) { if (pose) sprite.src = SPR(pose); if (text === lastSay) return; lastSay = text; bubble.textContent = text; bubble.classList.remove('pop'); void bubble.offsetWidth; if (!reduce) bubble.classList.add('pop'); placeBubble(); }
+const hop = () => { me.classList.remove('hop'); void me.offsetWidth; me.classList.add('hop'); };
+
+/* ---------- tapes ---------- */
+$('rack').innerHTML = POSTS.map((p, i) => { const tilt = [-3, 2, -1.5, 3, -2.5][i];
+  const inner = `<span class="lbl"><b>${esc(p.short)}</b></span><span class="win"><i></i><i></i></span><span class="cap">${esc(p.title)}<br><span style="font-weight:500">${esc(p.tag)} · ${p.soon ? 'not recorded yet' : esc(p.date)}</span></span>`;
+  return p.soon ? `<button class="tape soon" data-i="${i}" style="--r:${tilt}deg" aria-label="${esc(p.title)}, not recorded yet">${inner}</button>`
+    : `<a class="tape" href="#/${p.slug}" data-i="${i}" style="--r:${tilt}deg" aria-label="${esc(p.title)}, ${esc(p.date)}">${inner}</a>`; }).join('');
+let cur = -1, idleT;
+function pick(i) { if (state !== 'idle' || i === cur) return; cur = i; clearTimeout(idleT);
+  document.querySelectorAll('.tape').forEach(t => t.classList.toggle('on', +t.dataset.i === i));
+  if (i >= 0) say(POSTS[i].say, POSTS[i].pose); else idleT = setTimeout(() => state === 'idle' && say(HELLO, 'idle'), 800); }
+$('rack').addEventListener('pointerover', e => { const t = e.target.closest('.tape'); if (t) pick(+t.dataset.i); });
+$('rack').addEventListener('pointerleave', () => pick(-1));
+$('rack').addEventListener('focusin', e => { const t = e.target.closest('.tape'); if (t) pick(+t.dataset.i); });
+$('rack').addEventListener('click', e => { const t = e.target.closest('.tape.soon'); if (t) { cur = -1; pick(+t.dataset.i); hop(); } });
+
+/* ---------- poke, drums, guitar ---------- */
+let pk = 0;
+$('poke').addEventListener('click', () => { if (state !== 'idle') return; const [p, t] = POKES[pk++ % POKES.length]; cur = -1; hop(); say(t, p); });
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const PIECES = [['snare', 1095, 560], ['hat', 1000, 440], ['kick', 1270, 598], ['tom', 1211, 455], ['crash', 1152, 330], ['floor', 1450, 545], ['snare', 1095, 560], ['ride', 1530, 396]];
+$('drums').addEventListener('click', async () => {
+  if (state !== 'idle') return; state = 'drums'; cur = -1; placeMe(); say('Okay. One fill.', 'sit'); await sleep(reduce ? 0 : 480);
+  for (let n = 0; n < 16; n++) { sprite.src = SPR(n % 2 ? 'drums2' : 'drums'); if (n % 2) { const [k, x, y] = PIECES[(n >> 1) % PIECES.length]; hit[k] = 1; hit.kick = Math.max(hit.kick, n % 4 === 1 ? 1 : 0); marks.push({ x, y, a: -Math.PI / 2 + (Math.random() - .5), life: 1 }); }
+    if (n === 1) say('That’s the only thing in here with no write-up.'); await sleep(reduce ? 60 : 150); }
+  sprite.src = SPR('drums'); await sleep(700); state = 'idle'; placeMe(); say('Right. The tapes.', 'point'); });
+$('guitar').addEventListener('click', async () => {
+  if (state !== 'idle') return; state = 'guitar'; cur = -1; guitarOut = true; drawBack(); say('One chord. That’s the whole song.', 'guitar'); me.classList.add('strum');
+  await sleep(2600); me.classList.remove('strum'); guitarOut = false; drawBack(); state = 'idle'; say(HELLO, 'idle'); });
+
+/* ---------- reading: the tape goes in, a J-card slides out, I put headphones on ---------- */
+const deck = $('deck');
+function route() { const slug = location.hash.replace(/^#\/?/, ''), p = live.find(q => q.slug === slug);
+  if (!p) { if (deck.classList.contains('open')) { deck.classList.remove('open'); deck.setAttribute('aria-hidden', 'true'); state = 'idle'; placeMe(); say(HELLO, 'idle'); } document.title = 'Grass Files, Band Room'; return; }
+  const nx = live[live.indexOf(p) + 1]; state = 'reading'; document.title = p.title + ' · Grass Files';
+  const reel = '<svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18" fill="#f4f2ec"/><circle cx="20" cy="20" r="6" fill="#0b0b0c"/><g fill="#0b0b0c"><rect x="18.5" y="4" width="3" height="9"/><rect x="18.5" y="27" width="3" height="9"/><rect x="4" y="18.5" width="9" height="3"/><rect x="27" y="18.5" width="9" height="3"/></g></svg>';
+  $('spine').innerHTML = `<span>Grass Files</span><span>${esc(p.short)}</span>`;
+  $('jc').innerHTML = `<div class="reels">${reel}<span>Now playing</span>${reel}</div><h2>${esc(p.title)}</h2><p class="meta">${esc(p.tag)}, ${esc(p.date)}</p>
+    <div class="body">${p.body.map(t => `<p>${esc(t)}</p>`).join('')}</div>
+    <div class="ctl"><button id="eject">Eject</button>${nx ? `<a href="#/${nx.slug}">Next tape: ${esc(nx.short)}</a>` : ''}</div>`;
+  $('eject').addEventListener('click', () => { location.hash = '#/'; });
+  deck.classList.add('open'); deck.setAttribute('aria-hidden', 'false'); deck.scrollTop = 0; $('eject').focus({ preventScroll: true });
+  cur = -1; placeMe(); say('Headphones on. Take your time.', 'headphones'); }
+addEventListener('hashchange', route);
+addEventListener('keydown', e => { if (e.key === 'Escape' && state === 'reading') location.hash = '#/'; });
+
+/* ---------- the loop: hits fade, marks drift, the plant leans ---------- */
+addEventListener('pointermove', e => { const r = front.getBoundingClientRect(); mx = (e.clientX - r.left - ox) / s; my = (e.clientY - r.top - oy) / s; });
+function tick() { let dirty = false;
+  for (const k in hit) if (hit[k] > 0) { hit[k] = Math.max(0, hit[k] - .06); dirty = true; }
+  marks = marks.filter(m => (m.life -= .05) > 0); if (marks.length) dirty = true;
+  const push = (o, bx, by) => { const dx = bx - mx, d = Math.hypot(dx, by - my), t = d < 120 ? Math.sign(dx || 1) * (1 - d / 120) * .8 : 0, nb = o.bend + (t - o.bend) * .12; if (Math.abs(nb - o.bend) > .001) { o.bend = nb; dirty = true; } };
+  blades.forEach(b => push(b, b.x, 430 - b.h / 2)); if (blades.lily) push(blades.lily, L.plant.x, 360);
+  if (dirty) drawFront(); requestAnimationFrame(tick); }
+
+buildPlant(); layout(); say(HELLO, 'idle'); route();
+document.fonts.ready.then(layout); addEventListener('resize', layout);
+if (!reduce) tick();
+})();
+</script>
+</body>
+</html>

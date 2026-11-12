@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Durva Sharma, B-side (mockup)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&family=Pixelify+Sans:wght@400..600&display=swap" rel="stylesheet">
+<style>
+:root{--red:#e0122d;--silver:#b9bcc2;--sans:"Archivo",Arial,sans-serif;--px:"Pixelify Sans",ui-monospace,monospace;--pad:clamp(1rem,2.4vw,2.2rem)}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%;overflow:hidden;background:#000;color:#fff}
+body{font-family:var(--sans);line-height:1.4}
+a{color:inherit;text-underline-offset:3px}
+:focus-visible{outline:2px solid #fff;outline-offset:2px}
+.px{font-family:var(--px);font-size:.8rem;text-transform:uppercase;letter-spacing:.03em;line-height:1.2}
+#gl,#css{position:fixed;inset:0}
+#gl{width:100%;height:100%;display:block;touch-action:none}
+#css{pointer-events:none}
+.hud{position:fixed;inset:0;padding:var(--pad);display:flex;flex-direction:column;justify-content:space-between;pointer-events:none;z-index:3}
+.hud a{pointer-events:auto}
+.top{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem}
+.mode{display:inline-flex;border:1.5px solid #fff;border-radius:3px;overflow:hidden;background:#000}
+.mode a{text-decoration:none;padding:.4em .8em}
+.mode a[aria-current=true]{background:#fff;color:#000}
+.mode a:not([aria-current]):hover{background:var(--red)}
+.hint{color:var(--silver);max-width:14rem}
+
+/* the screen on the glass player: real HTML, placed in 3D */
+.scr{width:640px;height:496px;background:#060606;color:#fff;display:flex;flex-direction:column;gap:10px;padding:18px 20px;border-radius:12px;pointer-events:auto;font-size:18px;overflow:hidden}
+.scr header{display:flex;justify-content:space-between;align-items:center;font-family:var(--px);font-size:15px;text-transform:uppercase;color:var(--silver);min-height:24px}
+.scr button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text-align:left}
+.scr header button{font-family:var(--px);text-transform:uppercase;padding:2px 8px 2px 0}
+.scr header button:hover{color:#fff}
+.rows{flex:1;display:flex;flex-direction:column;min-height:0}
+.row{display:flex;justify-content:space-between;align-items:baseline;gap:14px;padding:8px 12px;border-left:6px solid transparent}
+.row b{font-weight:800;font-stretch:112%;font-size:24px;text-transform:uppercase;letter-spacing:-.01em;white-space:nowrap}
+.row span{font-size:15px;color:var(--silver);text-align:right}
+.row:hover{border-left-color:var(--silver)}
+.row[aria-current=true]{background:var(--red);border-left-color:#fff}
+.row[aria-current=true] span{color:#fff}
+.scr h3{font-weight:900;font-stretch:125%;font-size:44px;line-height:.9;text-transform:uppercase;letter-spacing:-.035em}
+.scr .tag{color:var(--silver);font-size:17px}
+.scr .what{font-size:15px;line-height:1.4}
+.shot{border:1.5px solid #3a3c40;border-radius:6px;overflow:hidden}
+.shot figcaption{font-family:var(--px);font-size:13px;text-transform:uppercase;color:var(--silver);padding:5px 10px;border-bottom:1.5px solid #3a3c40;display:flex;gap:6px;align-items:center}
+.shot figcaption i{width:8px;height:8px;border-radius:50%;background:#3a3c40}
+.shot figcaption i:first-child{background:var(--red)}
+.shot figcaption span{margin-left:6px}
+.shot pre{font:12.5px/1.45 ui-monospace,Consolas,monospace;padding:10px;white-space:pre;overflow:hidden;color:#e9eaec}
+.bars{padding:12px 10px 4px;display:grid;gap:9px}
+.bars div{display:grid;grid-template-columns:170px 1fr 64px;align-items:center;gap:10px;font-size:15px}
+.bars em{display:block;height:16px;background:var(--red);width:calc(var(--w)*1%)}
+.bars div:first-child em{background:var(--silver)}
+.bars b{font-family:var(--px);font-weight:500;text-align:right}
+.shot small{display:block;padding:4px 10px 10px;color:var(--silver);font-size:13px}
+.foot{margin-top:auto;display:flex;justify-content:space-between;font-family:var(--px);font-size:14px;text-transform:uppercase;color:var(--silver)}
+.read{flex:1;overflow:auto;min-height:0;scrollbar-width:thin;scrollbar-color:#3a3c40 transparent}
+.read p{margin-top:14px;font-size:18px;line-height:1.5;max-width:34em}
+.eq{display:inline-flex;gap:3px;align-items:flex-end;height:14px;margin-right:8px}
+.eq u{width:4px;background:#fff;animation:eq .9s ease-in-out infinite alternate;height:30%}
+.eq u:nth-child(2){animation-delay:-.3s}.eq u:nth-child(3){animation-delay:-.6s}.eq u:nth-child(4){animation-delay:-.15s}
+@keyframes eq{to{height:100%}}
+.fallback{position:fixed;inset:0;display:none;place-items:center;padding:2rem;text-align:center;z-index:5;background:#000}
+@media (prefers-reduced-motion:reduce){.eq u{animation:none;height:70%}}
+</style>
+</head>
+<body>
+<canvas id="gl" aria-hidden="true"></canvas>
+<div id="css"></div>
+<div class="hud">
+  <div class="top">
+    <a class="px" href="mockup-liquid.html">Durva Sharma</a>
+    <span class="mode px" role="group" aria-label="Which site"><a href="mockup-liquid.html">Tech</a><a href="mockup-creative.html" aria-current="true">Creative</a></span>
+  </div>
+  <p class="px hint">Spin the record to move. Press its centre to open.</p>
+</div>
+<p class="fallback" id="fallback">This side needs WebGL, which this browser has switched off. <a href="mockup-liquid.html">Go back to the tech side.</a></p>
+
+<script type="module">
+import * as THREE from 'three';
+import { CSS3DRenderer, CSS3DObject } from 'three/addons/renderers/CSS3DRenderer.js';
+import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+
+/* ---------- what is on the player ---------- */
+const gh = 'https://github.com/sykeriin/';
+const WORK = [
+  { n: 'tread', t: 'Faster long-context prompts', what: 'Skips repeated prompt processing when documents are reused or rearranged, so the model starts generating sooner.', repo: 'tread',
+    shot: { file: 'bench: time to first token', rows: [['Full prefill', 1, '1.0×'], ['tread, 4K context', 1.4, '1.4×'], ['tread, 8K context', 1.6, '1.6×']], max: 1.6, note: 'Speed-up over full prefill. Qwen2.5-0.5B, 20% recompute.' } },
+  { n: 'SkillFuzz', t: 'Fuzzing for agent tools', what: "Checks what an agent's tools actually do, instead of trusting the permissions they claim to need.", repo: 'SkillFuzz',
+    shot: { file: 'eval: dormant behaviours caught', rows: [['Fixed single run', 35, '35/90'], ['Static scan', 65, '65/90'], ['SkillFuzz', 90, '90/90']], max: 90, note: 'Hidden behaviours that only fire under certain conditions.' } },
+  { n: 'DPDP Guard', t: 'Privacy controls for AI apps', what: 'Lets developers apply privacy rules consistently and gives users clearer control over their data.', repo: 'dpdp-guard',
+    shot: { file: 'quickstart.py', code: 'from dpdp_guard import Guard\n\nguard = Guard("acme", "Acme Store",\n              required_purposes=["order_updates"],\n              optional_purposes=["marketing"])\n\nr = guard(message, user_id, "whatsapp")\nsend(agent(r.message) if r.action == "forward" else r.reply_text)' } },
+  { n: 'TaintMem', t: 'Trusted memory for agents', what: 'Keeps the source and trust level of everything an agent remembers.', repo: 'TaintMem',
+    shot: { file: 'examples/demo_laundering.py', code: '$ python examples/demo_laundering.py\n# planted payload -> 2 rewrites -> BLOCK -> audit\n\nlabels, channels     integrity lattice\nstore, record        labelled spans, SQLite + HMAC\npropagate, rewrite   labels survive LLM rewrites\npolicy, agent/loop   retrieve > decide > gate > execute' } },
+  { n: 'CloudSense', t: 'Cloud cost intelligence', what: 'Shows teams which services drive their cloud bill and flags unusual changes.', repo: 'CloudSense',
+    shot: { file: 'architecture', code: 'frontend/        React dashboard and UI workflows\nbackend/         FastAPI APIs, AWS integration, automation\n  ├── db/        database models and connection\n  ├── services/  anomaly_detection.py, aws_cost_fetcher.py ...\n  └── main.py    FastAPI application\nml_service/      anomaly detection and forecasting' } },
+  { n: 'HAWKEYE', t: 'OpenCV lead, Indian Air Force runway project', what: 'Debris detection for a runway. I led the computer-vision preprocessing across three camera feeds.',
+    shot: { file: 'preprocessing pipeline', code: 'cam 0 ─┐\ncam 1 ─┼─► bilateral denoise ─► CLAHE ─► ROI crop ─► frame skip ─► detector\ncam 2 ─┘' } },
+  { n: 'PetAlly', t: 'Founding software and AI engineer', what: 'A pet-care product on web and mobile. I built its recommendation system and the AI features across both.',
+    shot: { file: 'what I built', code: 'recommendation system     AI chatbot        pet mood journal\npet-health tracking       engagement score  activity streaks\nPawPoints rewards         app UI            AWS CI/CD' } }
+];
+const POSTS = [{ title: 'this space intentionally unfinished', date: '31 Aug 2026', body: ['first note. this is where longer things will live: build logs, shoot write-ups, whatever doesn’t fit a panel.', 'the site around this is drawn in real time by a shader that thinks it’s a manga printer. the blog is deliberately the plainest room in the building: words first.', 'more soon. probably at 2am.'] }];
+const MUSIC = ['Linkin Park', 'Radiohead', 'Gorillaz', 'Tame Impala', 'DPR Ian', 'Nirvana', 'ATEEZ', 'Pink Floyd'];
+const MENU = [['Work', `${WORK.length} pieces`, 'work'], ['Blog', `${POSTS.length} note`, 'blog'], ['Listening', 'on rotation', 'music'], ['Tech side', 'the other site', 'tech'], ['Say hi', 'email', 'mail']];
+
+const $ = id => document.getElementById(id), esc = t => t.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const rng = s => () => { s |= 0; s = s + 0x6D2B79F5 | 0; let t = Math.imul(s ^ s >>> 15, 1 | s); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+
+/* ---------- screen ---------- */
+const scr = document.createElement('div'); scr.className = 'scr';
+let S = { v: 'menu', i: 0 }, playing = 0, wordWant = 'DURVA', dialTarget = 0, dialNow = 0, kick = 0, pulse = 0;
+const mem = { menu: 0, work: 0, blog: 0, music: 0 };
+const count = () => S.v === 'menu' ? MENU.length : S.v === 'work' || S.v === 'item' ? WORK.length : S.v === 'blog' || S.v === 'post' ? POSTS.length : MUSIC.length;
+const rows = (list, f) => `<div class="rows">${list.map((x, i) => { const [a, b] = f(x, i); return `<button class="row" data-i="${i}"${i === S.i ? ' aria-current="true"' : ''}><b>${a}</b><span>${b}</span></button>`; }).join('')}</div>`;
+const head = (title, back) => `<header>${back ? '<button data-back>&lsaquo; Back</button>' : '<span>Durva Sharma</span>'}<span>${title}</span></header>`;
+function shot(o) { return `<figure class="shot"><figcaption><i></i><i></i><i></i><span>${o.file}</span></figcaption>${o.code ? `<pre>${esc(o.code)}</pre>` : `<div class="bars">${o.rows.map(r => `<div><span>${r[0]}</span><em style="--w:${(r[1] / o.max * 100).toFixed(0)}"></em><b>${r[2]}</b></div>`).join('')}</div><small>${o.note}</small>`}</figure>`; }
+function draw() {
+  let h = '';
+  if (S.v === 'menu') { h = head('B-side') + rows(MENU, m => [m[0], m[1]]); wordWant = 'DURVA'; }
+  else if (S.v === 'work') { h = head('Work', 1) + rows(WORK, w => [esc(w.n), esc(w.t)]); wordWant = 'WORK'; }
+  else if (S.v === 'item') { const w = WORK[S.i]; wordWant = w.n.toUpperCase();
+    h = head(`${S.i + 1} / ${WORK.length}`, 1) + `<h3>${esc(w.n)}</h3><p class="tag">${esc(w.t)}</p>${shot(w.shot)}<p class="what">${esc(w.what)}</p><p class="foot"><span>Spin for the next one</span>${w.repo ? `<a href="${gh}${w.repo}" target="_blank" rel="noopener">Code on GitHub</a>` : '<span>Private work</span>'}</p>`; }
+  else if (S.v === 'blog') { h = head('Blog', 1) + rows(POSTS, p => [esc(p.title), p.date]); wordWant = 'BLOG'; }
+  else if (S.v === 'post') { const p = POSTS[S.i]; wordWant = 'BLOG'; h = head(p.date, 1) + `<div class="read" id="read" tabindex="0"><h3 style="font-size:34px">${esc(p.title)}</h3>${p.body.map(b => `<p>${esc(b)}</p>`).join('')}</div>`; }
+  else { h = head('On rotation', 1) + rows(MUSIC, (m, i) => [(i === playing ? '<span class="eq" aria-hidden="true"><u></u><u></u><u></u><u></u></span>' : '') + m, i === playing ? 'now playing' : '']); wordWant = MUSIC[S.i].toUpperCase(); }
+  scr.innerHTML = h;
+}
+function step(d, fromDrag) {
+  if (!fromDrag) dialTarget += d * 0.45; kick += d * 0.9;
+  if (S.v === 'post') { const r = $('read'); if (r) r.scrollBy({ top: d * 70, behavior: reduce ? 'auto' : 'smooth' }); return; }
+  const n = count(); S.i = (S.i + d + n) % n; if (mem[S.v] !== undefined) mem[S.v] = S.i; draw();
+}
+function press() {
+  pulse = 1;
+  if (S.v === 'menu') { const k = MENU[S.i][2]; if (k === 'tech') return void (location.href = 'mockup-liquid.html'); if (k === 'mail') return void (location.href = 'mailto:durva.s170@gmail.com'); S = { v: k, i: mem[k] }; }
+  else if (S.v === 'work') S = { v: 'item', i: S.i };
+  else if (S.v === 'blog') S = { v: 'post', i: S.i };
+  else if (S.v === 'music') playing = S.i;
+  else if (S.v === 'item' && WORK[S.i].repo) return void window.open(gh + WORK[S.i].repo, '_blank', 'noopener');
+  kick += 2; draw();
+}
+function back() { if (S.v === 'menu') return; if (S.v === 'item') S = { v: 'work', i: S.i }; else if (S.v === 'post') S = { v: 'blog', i: S.i }; else S = { v: 'menu', i: mem.menu }; kick -= 2; draw(); }
+scr.addEventListener('click', e => { if (e.target.closest('[data-back]')) return back(); const r = e.target.closest('.row'); if (r) { S.i = +r.dataset.i; if (mem[S.v] !== undefined) mem[S.v] = S.i; press(); } });
+addEventListener('keydown', e => { if (e.key === 'ArrowDown' || e.key === 'ArrowRight') { step(1); e.preventDefault(); } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') { step(-1); e.preventDefault(); }
+  else if (e.key === 'Enter' && !e.target.closest('button,a')) press(); else if (e.key === 'Escape' || e.key === 'Backspace') back(); });
+let wheelAcc = 0; addEventListener('wheel', e => { wheelAcc += e.deltaY; while (wheelAcc > 60) { wheelAcc -= 60; step(1); } while (wheelAcc < -60) { wheelAcc += 60; step(-1); } }, { passive: true });
+draw();
+
+/* ---------- 3D ---------- */
+let renderer;
+try { renderer = new THREE.WebGLRenderer({ canvas: $('gl'), antialias: true, powerPreference: 'high-performance' }); } catch (e) { $('fallback').style.display = 'grid'; }
+if (renderer) start();
+
+function start() {
+renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.5)); renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.05;
+const css = new CSS3DRenderer({ element: $('css') });
+const scene = new THREE.Scene(); scene.background = new THREE.Color(0x000000);
+const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 80); scene.add(camera);
+
+/* what the glass reflects: a black room with a few hard lights */
+{ const env = new THREE.Scene(), lit = (c, w, h, x, y, z, ry = 0, rx = 0) => { const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ color: c, side: THREE.DoubleSide })); m.position.set(x, y, z); m.rotation.set(rx, ry, 0); env.add(m); };
+  lit(new THREE.Color(9, 9, 9), 14, 2.2, 0, 9, 0, 0, Math.PI / 2); lit(new THREE.Color(10, 0.5, 1.2), 5, 12, -10, 0, 2, Math.PI / 2); lit(new THREE.Color(6, 6, 6.6), 2, 12, 10, 1, -3, -Math.PI / 2);
+  lit(new THREE.Color(7, 0.4, 0.9), 8, 1.2, 0, -7, 6, 0, -Math.PI / 2); lit(new THREE.Color(6, 6, 6), 0.9, 11, 3.5, 0, 12, Math.PI); lit(new THREE.Color(9, 0.4, 0.9), 0.6, 11, -4.5, 0, 12, Math.PI);
+  scene.environment = new THREE.PMREMGenerator(renderer).fromScene(env, 0.02).texture; }
+
+/* the giant word behind everything; the glass bends it */
+const wc = document.createElement('canvas'); wc.width = 2048; wc.height = 512; const wg = wc.getContext('2d'), wordTex = new THREE.CanvasTexture(wc); wordTex.colorSpace = THREE.SRGBColorSpace; wordTex.anisotropy = 8;
+let wordText = '', wv = 0;
+function paintWord(t) { wg.fillStyle = '#000'; wg.fillRect(0, 0, 2048, 512); wg.font = '900 420px Archivo, Arial, sans-serif'; wg.textAlign = 'center'; wg.textBaseline = 'middle'; wg.fillStyle = '#e0122d';
+  const w = wg.measureText(t).width; wg.save(); wg.translate(1024, 268); wg.scale(Math.min(1, 1960 / w), 1); wg.fillText(t, 0, 0); wg.restore(); wordTex.needsUpdate = true; wordText = t; }
+const word = new THREE.Mesh(new THREE.PlaneGeometry(30, 7.5), new THREE.MeshBasicMaterial({ color: 0x000000, map: wordTex, toneMapped: false })); camera.add(word);
+
+const glass = new THREE.MeshPhysicalMaterial({ color: 0xffffff, roughness: 0.04, metalness: 0, transmission: 1, thickness: 0.8, ior: 1.52, dispersion: 5, attenuationColor: new THREE.Color('#ff9aa6'), attenuationDistance: 3, envMapIntensity: 2.2 });
+const chrome = new THREE.MeshStandardMaterial({ color: 0xe6e8ec, metalness: 1, roughness: 0.08, envMapIntensity: 1.6 });
+
+/* the player: a slab of glass, a screen, and a record for a dial */
+const player = new THREE.Group(); scene.add(player);
+player.add(new THREE.Mesh(new RoundedBoxGeometry(4.6, 6.4, 0.4, 6, 0.3), glass));
+const backing = new THREE.Mesh(new THREE.PlaneGeometry(4.08, 3.18), new THREE.MeshBasicMaterial({ color: 0x060606 })); backing.position.set(0, 1.4, 0.205); player.add(backing);
+const screen = new CSS3DObject(scr); screen.scale.setScalar(0.00625); screen.position.set(0, 1.4, 0.21); player.add(screen);
+const dc = document.createElement('canvas'); dc.width = dc.height = 512; const dialTex = new THREE.CanvasTexture(dc); dialTex.colorSpace = THREE.SRGBColorSpace; dialTex.anisotropy = 8; dialTex.wrapS = THREE.RepeatWrapping; dialTex.repeat.x = -1; dialTex.center.set(0.5, 0.5); dialTex.rotation = Math.PI / 2;
+function paintDial() { const g = dc.getContext('2d'); g.clearRect(0, 0, 512, 512); g.translate(256, 256); g.fillStyle = '#070707'; g.beginPath(); g.arc(0, 0, 255, 0, 7); g.fill();
+  for (let r = 96; r < 250; r += 4) { g.strokeStyle = `rgba(255,255,255,${r % 44 < 4 ? 0.3 : 0.09})`; g.lineWidth = 1; g.beginPath(); g.arc(0, 0, r, 0, 7); g.stroke(); }
+  g.fillStyle = '#e0122d'; g.beginPath(); g.arc(0, 0, 86, 0, 7); g.fill(); g.strokeStyle = '#fff'; g.lineWidth = 3; g.beginPath(); g.arc(0, 0, 60, 0.5, 2.2); g.stroke(); g.beginPath(); g.arc(0, 0, 60, 3.6, 5.3); g.stroke();
+  g.fillStyle = '#000'; g.beginPath(); g.arc(0, 0, 9, 0, 7); g.fill(); g.setTransform(1, 0, 0, 1, 0, 0); dialTex.needsUpdate = true; }
+const dial = new THREE.Group(); dial.position.set(0, -1.75, 0.22); player.add(dial);
+const disc = new THREE.Mesh(new THREE.CylinderGeometry(1.1, 1.1, 0.06, 96), [chrome, new THREE.MeshStandardMaterial({ map: dialTex, roughness: 0.32, metalness: 0.35, envMapIntensity: 1.2 }), chrome]); disc.rotation.x = Math.PI / 2; dial.add(disc);
+const ring = new THREE.Mesh(new THREE.TorusGeometry(1.15, 0.035, 12, 96), chrome); ring.position.copy(dial.position); player.add(ring);
+
+/* glass and chrome shards hanging in the dark behind it */
+const R = rng(42);
+const shardGeo = seed => { const r = rng(seed), sh = new THREE.Shape(); sh.moveTo(-0.5, -0.3 - r() * 0.2); sh.lineTo(0.5 + r() * 0.2, -0.1 - r() * 0.3); sh.lineTo(r() * 0.5 - 0.25, 0.6 + r() * 0.3); sh.closePath();
+  const g = new THREE.ExtrudeGeometry(sh, { depth: 0.16, bevelEnabled: true, bevelThickness: 0.02, bevelSize: 0.02, bevelSegments: 1 }); g.center(); return g; };
+const NG = 46, NC = 22, shardSets = [[new THREE.InstancedMesh(shardGeo(1), glass, NG), NG], [new THREE.InstancedMesh(shardGeo(2), glass, NG), NG], [new THREE.InstancedMesh(shardGeo(3), chrome, NC), NC]];
+const shards = new THREE.Group(); scene.add(shards); const SH = [];
+shardSets.forEach(([m, n]) => { m.frustumCulled = false; shards.add(m); for (let i = 0; i < n; i++) { const a = R() * 6.283, rad = 3.9 + Math.pow(R(), 1.4) * 6;
+  SH.push({ m, i, p: new THREE.Vector3(Math.cos(a) * rad * 1.35, Math.sin(a) * rad, -0.9 - R() * 6), ax: new THREE.Vector3(R() - 0.5, R() - 0.5, R() - 0.5).normalize(), a0: R() * 6.283, sp: (R() - 0.5) * 0.3, s: 0.5 + R() * 1.3 }); } });
+
+/* ---------- input on the record ---------- */
+const ray = new THREE.Raycaster(), ndc = new THREE.Vector2(), tmp = new THREE.Vector3(), gl = $('gl');
+function onDial(e) { ndc.set(e.clientX / innerWidth * 2 - 1, -(e.clientY / innerHeight * 2 - 1)); ray.setFromCamera(ndc, camera); const h = ray.intersectObject(disc)[0]; if (!h) return -1; dial.worldToLocal(tmp.copy(h.point)); return Math.hypot(tmp.x, tmp.y); }
+function angle(e) { dial.getWorldPosition(tmp).project(camera); return Math.atan2(e.clientY - (1 - tmp.y) / 2 * innerHeight, e.clientX - (tmp.x + 1) / 2 * innerWidth); }
+let drag = null, acc = 0, px = 0, py = 0;
+gl.addEventListener('pointerdown', e => { const r = onDial(e); if (r < 0) return; if (r < 0.42) return press(); drag = { a: angle(e) }; acc = 0; gl.setPointerCapture(e.pointerId); gl.style.cursor = 'grabbing'; });
+gl.addEventListener('pointermove', e => { if (!drag) { const r = onDial(e); gl.style.cursor = r >= 0 ? (r < 0.42 ? 'pointer' : 'grab') : ''; return; }
+  const a = angle(e); let d = a - drag.a; if (d > Math.PI) d -= 2 * Math.PI; if (d < -Math.PI) d += 2 * Math.PI; drag.a = a; dialTarget += d; dialNow += d; acc += d;
+  while (acc > 0.45) { acc -= 0.45; step(1, true); } while (acc < -0.45) { acc += 0.45; step(-1, true); } });
+const endDrag = () => { drag = null; gl.style.cursor = ''; }; gl.addEventListener('pointerup', endDrag); gl.addEventListener('pointercancel', endDrag);
+addEventListener('pointermove', e => { if (reduce) return; px = e.clientX / innerWidth - 0.5; py = e.clientY / innerHeight - 0.5; });
+
+/* ---------- frame ---------- */
+const M = new THREE.Matrix4(), Q = new THREE.Quaternion(), Sc = new THREE.Vector3();
+let last = 0, swirl = 0;
+function size() { const w = innerWidth, h = innerHeight; renderer.setSize(w, h, false); css.setSize(w, h); camera.aspect = w / h;
+  const tan = Math.tan(camera.fov * Math.PI / 360), need = Math.max(6.4 / 0.84, 4.6 / 0.9 / camera.aspect), dist = need / (2 * tan); camera.position.set(0, 0, dist); camera.updateProjectionMatrix();
+  const wd = dist + 9; word.position.set(0, 0, -wd); const ww = 2 * wd * tan * camera.aspect * 1.04 / 28.7; word.scale.set(ww, ww, 1); }
+function frame(now) {
+  const time = now / 1000, dt = Math.min(0.1, time - last || 0.016), k = d => 1 - Math.exp(-dt * d); last = time;
+  player.rotation.y += (px * 0.42 - player.rotation.y) * k(5); player.rotation.x += (py * 0.24 - player.rotation.x) * k(5);
+  dialNow += (dialTarget - dialNow) * k(12); dial.rotation.z = -dialNow; pulse *= Math.exp(-dt * 9); dial.scale.setScalar(1 - pulse * 0.05);
+  swirl += kick * dt * 0.5; kick *= Math.exp(-dt * 2.4); shards.rotation.z = -swirl;
+  for (const s of SH) { Q.setFromAxisAngle(s.ax, s.a0 + (reduce ? 0 : time * s.sp) + swirl * 2); Sc.setScalar(s.s); M.compose(s.p, Q, Sc); s.m.setMatrixAt(s.i, M); }
+  shardSets.forEach(([m]) => { m.instanceMatrix.needsUpdate = true; });
+  if (wordText !== wordWant) { wv += (0 - wv) * k(12); if (wv < 0.04) paintWord(wordWant); } else wv += (1 - wv) * k(6);
+  word.material.color.setScalar(wv * 0.9);
+  renderer.render(scene, camera); css.render(scene, camera); requestAnimationFrame(frame);
+}
+addEventListener('resize', size); size(); paintDial(); paintWord(wordWant);
+document.fonts.ready.then(() => { paintDial(); paintWord(wordText); });
+requestAnimationFrame(frame);
+window.__creative = { step, press, back, get state() { return { ...S, wordText, playing }; } };
+}
+</script>
+</body>
+</html>

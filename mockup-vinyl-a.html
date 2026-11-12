@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Durva Sharma (vinyl A: the record is the menu)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&family=Pixelify+Sans:wght@400..600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#e3e3e0;--k:#000;--mid:#6a6a67;--line:#bcbcb8;--red:#e0122d;
+  --sans:"Archivo",Arial,sans-serif;--px:"Pixelify Sans",ui-monospace,monospace;--pad:clamp(1.1rem,2.6vw,2.4rem);
+  --d:135vh;--cx:calc(100vw - var(--d)*.22);--cy:52vh}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%}
+body{background:var(--bg);color:var(--k);font-family:var(--sans);font-size:1rem;line-height:1.5;overflow:hidden}
+a{color:inherit;text-underline-offset:3px}
+a:hover{color:var(--red)}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+:focus-visible{outline:2px solid var(--red);outline-offset:4px}
+.px{font-family:var(--px);font-size:.8rem;text-transform:uppercase;letter-spacing:.03em;line-height:1.2}
+
+/* ---------- the record ---------- */
+.rec{position:fixed;left:var(--cx);top:var(--cy);width:var(--d);height:var(--d);margin:calc(var(--d)/-2) 0 0 calc(var(--d)/-2);border-radius:50%;touch-action:none;cursor:grab;
+  box-shadow:0 2vh 6vh rgba(0,0,0,.22)}
+.rec:active{cursor:grabbing}
+.spin{position:absolute;inset:0;border-radius:50%;will-change:transform;
+  background:radial-gradient(circle,transparent 0 19.5%,#050505 19.6% 20.6%,transparent 20.7% 48.6%,#0a0a0a 48.8%),repeating-radial-gradient(circle,#0a0a0b 0 1.4px,#1b1b1d 1.9px 2.6px)}
+.sheen{position:absolute;inset:0;border-radius:50%;pointer-events:none;
+  background:conic-gradient(from 200deg,transparent 0 7%,rgba(255,255,255,.17) 12%,transparent 18% 49%,rgba(255,255,255,.11) 56%,transparent 63%)}
+.label{position:absolute;inset:36%;border-radius:50%;background:var(--red);color:var(--k);display:grid;place-items:center;text-align:center}
+.label::after{content:"";position:absolute;inset:46%;border-radius:50%;background:var(--bg)}
+.label span{position:absolute;top:16%}
+.label b{position:absolute;bottom:17%;font-weight:400}
+.item{position:absolute;left:50%;top:50%;transform-origin:0 0;white-space:nowrap;color:#77777a;
+  font-stretch:64%;font-weight:600;text-transform:uppercase;font-size:clamp(2rem,6.2vh,4.2rem);line-height:1;padding:.1em .2em;transition:color .25s}
+.item:hover{color:#c9c9cc}
+.item[aria-selected=true]{color:#fff}
+.needle{position:fixed;left:calc(var(--cx) - var(--d)/2 - 2.6rem);top:var(--cy);width:3.4rem;height:2px;background:var(--red);pointer-events:none}
+.needle::after{content:"";position:absolute;right:-1px;top:-5px;border:6px solid transparent;border-left-color:var(--red);border-right:0}
+
+/* ---------- words ---------- */
+header{position:fixed;left:var(--pad);top:var(--pad);z-index:2}
+header h1{font-stretch:64%;font-weight:600;text-transform:uppercase;font-size:clamp(1.5rem,2.4vw,2.1rem);line-height:.95}
+header p{color:var(--mid);margin-top:.35rem}
+.cv{position:fixed;right:var(--pad);top:var(--pad);z-index:3;background:var(--bg);color:var(--k);text-decoration:none;padding:.5em 1em;border-radius:99px}
+.cv:hover{background:var(--red);color:#fff}
+.panels{position:fixed;left:var(--pad);top:calc(50% + 1.5rem);transform:translateY(-50%);width:min(31rem,calc(var(--cx) - var(--d)/2 - var(--pad) - 4rem));z-index:2}
+.panel{display:none}
+.panel.on{display:block;animation:in .45s ease both}
+@keyframes in{from{opacity:0;transform:translateY(6px)}}
+.panel h2{font-stretch:64%;font-weight:600;text-transform:uppercase;font-size:clamp(2.4rem,4.4vw,4rem);line-height:.9;margin-bottom:.9rem}
+.panel p+p{margin-top:.8rem}
+.panel .lead{font-size:1.3rem;line-height:1.3}
+.rows{border-top:1px solid var(--k)}
+.rows li{list-style:none;border-bottom:1px solid var(--line);padding:.45rem 0;line-height:1.35;display:grid;grid-template-columns:8.5rem 1fr;gap:1rem;align-items:baseline}
+.rows b{font-weight:700}
+.rows a{text-decoration:none}
+.rows span{color:#333}
+.links{display:flex;flex-wrap:wrap;gap:.3rem 1.2rem;margin-top:1.1rem;font-weight:600}
+.big{display:block;font-stretch:64%;font-weight:600;font-size:clamp(1.5rem,2.8vw,2.3rem);line-height:1.05;text-decoration:none;overflow-wrap:anywhere}
+.hint{position:fixed;left:var(--pad);bottom:var(--pad);color:var(--mid);z-index:2}
+
+@media (max-width:860px){
+  :root{--d:150vw;--cx:50vw;--cy:calc(100svh + 26vw)}
+  .needle{left:50%;top:calc(var(--cy) - var(--d)/2 - 2.2rem);width:2px;height:2.6rem;margin-left:-1px}
+  .needle::after{right:-5px;top:auto;bottom:-1px;border:6px solid transparent;border-top-color:var(--red);border-bottom:0}
+  .item{font-size:clamp(1.6rem,8vw,2.6rem)}
+  .panels{position:fixed;top:5.6rem;transform:none;width:calc(100vw - var(--pad)*2);max-height:calc(100svh - 62vw - 7rem);overflow:auto}
+  .panel h2{font-size:2.4rem;margin-bottom:.6rem}
+  .rows li{grid-template-columns:1fr;gap:0}
+  .hint{display:none}
+}
+@media (prefers-reduced-motion:reduce){.panel.on{animation:none}}
+</style>
+</head>
+<body>
+<header>
+  <h1>Durva Sharma</h1>
+  <p class="px">AI systems engineer, Bengaluru</p>
+</header>
+<a class="cv px" href="DurvaSharma_Resume.pdf">Resume, PDF</a>
+
+<div class="rec" id="rec">
+  <div class="spin" id="spin" role="tablist" aria-label="Sections" aria-orientation="vertical">
+    <div class="label px"><span>Durva Sharma</span><b>33⅓ rpm</b></div>
+  </div>
+  <div class="sheen"></div>
+</div>
+<div class="needle" aria-hidden="true"></div>
+
+<main class="panels" id="panels">
+  <section class="panel" role="tabpanel" data-name="About">
+    <h2>About</h2>
+    <p class="lead">I build the parts of AI systems that tend to break.</p>
+    <p>Computer science at Manipal Institute of Technology, Bengaluru, class of 2029. Right now I lead computer-vision preprocessing on HAWKEYE, a runway debris detector for the Indian Air Force. Before that I was the founding engineer at PetAlly.</p>
+    <p>Off the clock: Muay Thai, guitar, poetry, photography, fashion.</p>
+  </section>
+  <section class="panel" role="tabpanel" data-name="Projects">
+    <h2>Projects</h2>
+    <ul class="rows">
+      <li><a href="https://github.com/sykeriin/tread"><b>tread</b></a><span>Faster long-context prompts. 1.6× quicker first token at 8K context.</span></li>
+      <li><a href="https://github.com/sykeriin/SkillFuzz"><b>SkillFuzz</b></a><span>Fuzzing for agent tools. Checks what a tool does, not what it claims.</span></li>
+      <li><a href="https://github.com/sykeriin/dpdp-guard"><b>DPDP Guard</b></a><span>Privacy controls for AI apps, with consent checks and PII masking.</span></li>
+      <li><a href="https://github.com/sykeriin/TaintMem"><b>TaintMem</b></a><span>Trusted memory for agents. Every sentence keeps its source.</span></li>
+      <li><a href="https://github.com/sykeriin/CloudSense"><b>CloudSense</b></a><span>Cloud cost intelligence with anomaly detection and forecasting.</span></li>
+    </ul>
+  </section>
+  <section class="panel" role="tabpanel" data-name="Work">
+    <h2>Work</h2>
+    <ul class="rows">
+      <li><b>HAWKEYE</b><span>OpenCV preprocessing lead, Indian Air Force runway project. May 2026 to now.</span></li>
+      <li><b>PetAlly</b><span>Founding software and AI integration engineer. March to September 2026.</span></li>
+      <li><b>NeuraAI</b><span>Vice President. Working committee, MAHE Innovation Centre.</span></li>
+      <li><b>Hackathons</b><span>1st at MAHE Mobility 2026. 2nd at PowerNext and Tech Solstice. Top 32 of 1,000+ at Zenith26.</span></li>
+    </ul>
+  </section>
+  <section class="panel" role="tabpanel" data-name="Contact">
+    <h2>Contact</h2>
+    <a class="big" href="mailto:durva.s170@gmail.com">durva.s170@gmail.com</a>
+    <div class="links"><a href="https://github.com/sykeriin">GitHub</a><a href="https://linkedin.com/in/durva-s">LinkedIn</a><a href="DurvaSharma_Resume.pdf">Resume</a></div>
+  </section>
+</main>
+<p class="hint px">Scroll, drag the record, or use the arrow keys</p>
+
+<script>
+(() => {
+const spin = document.getElementById('spin'), rec = document.getElementById('rec');
+const panels = [...document.querySelectorAll('.panel')], STEP = 26, items = [];
+const narrow = () => innerWidth <= 860;
+panels.forEach((p, i) => {
+  const b = document.createElement('button'); b.className = 'item'; b.type = 'button'; b.textContent = p.dataset.name;
+  b.setAttribute('role', 'tab'); b.id = 'tab' + i; p.setAttribute('aria-labelledby', b.id);
+  b.addEventListener('click', () => { if (!dragged) go(i); }); spin.appendChild(b); items.push(b);
+});
+function layout() {
+  const R = rec.clientWidth / 2 * 0.9;
+  items.forEach((b, i) => { const a = i * STEP;
+    b.style.transform = narrow() ? `rotate(${a + 90}deg) translate(${-R}px,0) rotate(-90deg) translate(-50%,0)` : `rotate(${a}deg) translate(${-R}px,-50%)`; });
+}
+let angle = 0, target = 0, active = -1, raf = 0, dragged = false;
+const clamp = v => Math.max(-(items.length - 1) * STEP - 8, Math.min(8, v));
+function show(i) { if (i === active) return; active = i;
+  items.forEach((b, j) => { b.setAttribute('aria-selected', j === i); b.tabIndex = j === i ? 0 : -1; });
+  panels.forEach((p, j) => p.classList.toggle('on', j === i)); }
+function tick() { angle += (target - angle) * 0.12; if (Math.abs(target - angle) < 0.02) angle = target;
+  spin.style.transform = `rotate(${angle}deg)`; show(Math.max(0, Math.min(items.length - 1, Math.round(-angle / STEP))));
+  raf = angle === target ? 0 : requestAnimationFrame(tick); }
+const kick = () => { if (!raf) raf = requestAnimationFrame(tick); };
+function go(i) { target = -Math.max(0, Math.min(items.length - 1, i)) * STEP; kick(); }
+let settle;
+const snap = () => { clearTimeout(settle); settle = setTimeout(() => go(Math.round(-target / STEP)), 160); };
+addEventListener('wheel', e => { target = clamp(target - e.deltaY * 0.06); kick(); snap(); }, { passive: true });
+addEventListener('keydown', e => { const d = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }[e.key]; if (d) { go(Math.round(-target / STEP) + d); e.preventDefault(); } });
+let grab = null;
+const ang = e => { const r = rec.getBoundingClientRect(); return Math.atan2(e.clientY - r.top - r.height / 2, e.clientX - r.left - r.width / 2) * 180 / Math.PI; };
+rec.addEventListener('pointerdown', e => { grab = { a: ang(e), t: target }; dragged = false; });
+addEventListener('pointermove', e => { if (!grab) return; let d = ang(e) - grab.a; if (d > 180) d -= 360; if (d < -180) d += 360;
+  if (Math.abs(d) > 1.5) dragged = true; if (dragged) { target = clamp(grab.t + d); kick(); } });
+addEventListener('pointerup', () => { if (grab && dragged) snap(); grab = null; setTimeout(() => (dragged = false), 0); });
+addEventListener('resize', layout); layout(); show(0); spin.style.transform = 'rotate(0deg)';
+})();
+</script>
+</body>
+</html>

@@ -95,6 +95,15 @@ export default defineConfig({
     // it inside a JS chunk where it can no longer be cached on its own.
     assetsInlineLimit: 1024,
     rollupOptions: {
+      input: {
+        main: path.resolve('index.html'),
+        creative: path.resolve('creative.html'),
+        liquidMockup: path.resolve('mockup-liquid.html'),
+        creativeMockup: path.resolve('mockup-creative.html'),
+        blog: path.resolve('blog.html'),
+        blogBand: path.resolve('blog-band.html'),
+        project: path.resolve('project.html'),
+      },
       output: {
         manualChunks(id) {
           // three is ~170KB gzip and must never sit in the entry chunk, nor be

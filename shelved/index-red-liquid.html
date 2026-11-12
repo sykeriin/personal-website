@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Durva Sharma</title>
+<meta name="theme-color" content="#e0122d"><meta name="description" content="Durva Sharma. AI systems, agent security, and a creative B-side."><link rel="icon" href="/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&family=Pixelify+Sans:wght@400..600&display=swap" rel="stylesheet">
+
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <filter id="flatgoo" x="-5%" y="-25%" width="110%" height="150%"><feGaussianBlur id="blur2" in="SourceGraphic" stdDeviation="12"/><feColorMatrix values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 42 -19"/></filter>
+  <filter id="liq" x="-5%" y="-25%" width="110%" height="150%" color-interpolation-filters="sRGB">
+    <feGaussianBlur id="blur" in="SourceGraphic" stdDeviation="12" result="b"/>
+    <feColorMatrix in="b" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 42 -19" result="goo"/>
+    <feGaussianBlur id="bump" in="goo" stdDeviation="6" result="soft"/>
+    <feSpecularLighting in="soft" surfaceScale="6" specularConstant="1.05" specularExponent="34" lighting-color="#fff" result="spec"><fePointLight id="lamp" x="300" y="-200" z="120"/></feSpecularLighting>
+    <feComposite in="spec" in2="goo" operator="in" result="shine"/>
+    <feComposite in="shine" in2="goo" operator="arithmetic" k1="0" k2="1" k3="1" k4="0"/>
+  </filter>
+</svg>
+<div id="app"></div>
+<button class="ab px" type="button" id="ab">Showing: flat. Switch to glossy</button>
+
+<script type="module" src="/src/liquid/liquid.js"></script>
+</body>
+</html>

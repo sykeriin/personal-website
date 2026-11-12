@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Durva Sharma (room mockup)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&family=Pixelify+Sans:wght@400..600&display=swap" rel="stylesheet">
+<style>
+:root{--red:#e0122d;--silver:#b9bcc2;--sans:"Archivo",Arial,sans-serif;--px:"Pixelify Sans",ui-monospace,monospace;--pad:clamp(1rem,2.2vw,2rem)}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%;overflow:hidden;background:#000;color:#fff}
+body{font-family:var(--sans);line-height:1.4;user-select:none;-webkit-user-select:none}
+a{color:inherit;text-underline-offset:3px}
+:focus-visible{outline:2px solid #fff;outline-offset:2px}
+.px{font-family:var(--px);font-size:.8rem;text-transform:uppercase;letter-spacing:.03em;line-height:1.25}
+#gl,#css{position:fixed;inset:0}
+#gl{width:100%;height:100%;display:block;touch-action:none;cursor:grab}
+#css{pointer-events:none}
+.hud{position:fixed;inset:0;padding:var(--pad);display:flex;flex-direction:column;justify-content:space-between;pointer-events:none;z-index:3}
+.hud a,.hud button{pointer-events:auto}
+.hud>div{display:flex;justify-content:space-between;align-items:flex-end;gap:1rem}
+.hud>div:first-child{align-items:flex-start}
+.who b{display:block;font-family:var(--sans);font-weight:900;font-stretch:125%;font-size:clamp(1.3rem,2.2vw,2rem);letter-spacing:-.03em;line-height:.9;text-transform:uppercase}
+.who span{display:block;margin-top:.45rem;color:var(--silver)}
+.links{display:flex;gap:1.2rem}
+.count{color:var(--silver);text-align:right}
+.count b{color:#fff;font-weight:500}
+.hint{color:var(--silver)}
+
+.me{width:220px;height:330px;image-rendering:pixelated;display:block}
+.card{width:480px;height:340px;background:#070707;color:#fff;border-radius:10px;padding:16px 18px;display:flex;flex-direction:column;gap:8px;overflow:hidden;pointer-events:auto;backface-visibility:hidden;font-size:14px;cursor:pointer;transition:opacity .4s;opacity:.2}
+.card.on{opacity:1;cursor:auto}
+.card header{display:flex;justify-content:space-between;font-family:var(--px);font-size:12px;text-transform:uppercase;color:var(--silver)}
+.card h3{font-weight:900;font-stretch:125%;font-size:34px;line-height:.9;text-transform:uppercase;letter-spacing:-.035em}
+.card .tag{color:var(--silver);font-size:14px}
+.card p{font-size:13px;line-height:1.4}
+.card .foot{margin-top:auto;display:flex;justify-content:space-between;font-family:var(--px);font-size:12px;text-transform:uppercase;color:var(--silver)}
+.shot{border:1.5px solid #34363a;border-radius:6px;overflow:hidden}
+.shot figcaption{font-family:var(--px);font-size:11px;text-transform:uppercase;color:var(--silver);padding:4px 9px;border-bottom:1.5px solid #34363a;display:flex;gap:5px;align-items:center}
+.shot figcaption i{width:7px;height:7px;border-radius:50%;background:#34363a}
+.shot figcaption i:first-child{background:var(--red)}
+.shot figcaption span{margin-left:5px}
+.shot pre{font:10px/1.45 ui-monospace,Consolas,monospace;padding:8px 9px;white-space:pre;overflow:hidden;color:#e9eaec}
+.bars{padding:10px 9px 3px;display:grid;gap:7px}
+.bars div{display:grid;grid-template-columns:130px 1fr 52px;align-items:center;gap:8px;font-size:12.5px}
+.bars em{display:block;height:13px;background:var(--red);width:calc(var(--w)*1%)}
+.bars div:first-child em{background:var(--silver)}
+.bars b{font-family:var(--px);font-weight:500;text-align:right}
+.shot small{display:block;padding:3px 9px 8px;color:var(--silver);font-size:11px}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:4px 14px;margin-top:4px}
+.cols b{font-weight:800;font-stretch:112%;font-size:19px;text-transform:uppercase}
+.fallback{position:fixed;inset:0;display:none;place-items:center;padding:2rem;text-align:center;z-index:5;background:#000}
+</style>
+</head>
+<body>
+<canvas id="gl" aria-hidden="true"></canvas>
+<div id="css"></div>
+<div class="hud">
+  <div>
+    <p class="who px"><b>Durva Sharma</b><span>AI systems engineer. Also fights, plays, models and writes.</span></p>
+    <p class="links px"><a href="/DurvaSharma_Resume.pdf" target="_blank" rel="noopener">Resume</a><a href="https://github.com/sykeriin" target="_blank" rel="noopener">GitHub</a><a href="mailto:durva.s170@gmail.com">Say hi</a></p>
+  </div>
+  <div>
+    <p class="px hint">Drag to turn the room</p>
+    <p class="px count" id="count" aria-live="polite"></p>
+  </div>
+</div>
+<p class="fallback" id="fallback">This page needs WebGL, which this browser has switched off.</p>
+
+<script type="module">
+import * as THREE from 'three';
+import { CSS3DRenderer, CSS3DObject } from 'three/addons/renderers/CSS3DRenderer.js';
+import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+
+const gh = 'https://github.com/sykeriin/', esc = t => t.replace(/&/g, '&amp;').replace(/</g, '&lt;'), $ = id => document.getElementById(id);
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const pose = p => `/src/assets/ink/character/durva-${p}.png`;
+const WORK = [
+  { n: 'tread', t: 'Faster long-context prompts', pose: 'point', repo: 'tread', shot: { file: 'bench: time to first token', rows: [['Full prefill', 1, '1.0×'], ['tread, 4K context', 1.4, '1.4×'], ['tread, 8K context', 1.6, '1.6×']], max: 1.6, note: 'Speed-up over full prefill. Qwen2.5-0.5B, 20% recompute.' }, what: 'Skips repeated prompt processing when documents are reused or rearranged.' },
+  { n: 'SkillFuzz', t: 'Fuzzing for agent tools', pose: 'guard', repo: 'SkillFuzz', shot: { file: 'eval: dormant behaviours caught', rows: [['Fixed single run', 35, '35/90'], ['Static scan', 65, '65/90'], ['SkillFuzz', 90, '90/90']], max: 90, note: 'Hidden behaviours that only fire under certain conditions.' }, what: "Checks what an agent's tools actually do, not what they claim to need." },
+  { n: 'DPDP Guard', t: 'Privacy controls for AI apps', pose: 'idle', repo: 'dpdp-guard', shot: { file: 'quickstart.py', code: 'from dpdp_guard import Guard\n\nguard = Guard("acme", "Acme Store",\n              required_purposes=["order_updates"],\n              optional_purposes=["marketing"])\n\nr = guard(message, user_id, "whatsapp")\nsend(agent(r.message) if r.action == "forward" else r.reply_text)' } },
+  { n: 'TaintMem', t: 'Trusted memory for agents', pose: 'point', repo: 'TaintMem', shot: { file: 'examples/demo_laundering.py', code: '$ python examples/demo_laundering.py\n# planted payload -> 2 rewrites -> BLOCK -> audit\n\nlabels, channels     integrity lattice\nstore, record        labelled spans, SQLite + HMAC\npropagate, rewrite   labels survive LLM rewrites\npolicy, agent/loop   retrieve > decide > gate > execute' } },
+  { n: 'CloudSense', t: 'Cloud cost intelligence', pose: 'walk', repo: 'CloudSense', shot: { file: 'architecture', code: 'frontend/        React dashboard and UI workflows\nbackend/         FastAPI APIs, AWS integration, automation\n  ├── db/        database models and connection\n  ├── services/  anomaly_detection.py, aws_cost_fetcher.py ...\n  └── main.py    FastAPI application\nml_service/      anomaly detection and forecasting' }, what: 'Shows teams which services drive their cloud bill.' },
+  { n: 'HAWKEYE', t: 'OpenCV lead, Indian Air Force runway project', pose: 'guard', shot: { file: 'preprocessing pipeline', code: 'cam 0 ─┐\ncam 1 ─┼─► bilateral denoise ─► CLAHE ─► ROI crop ─► frame skip ─► detector\ncam 2 ─┘' }, what: 'Debris detection for a runway. I led the computer-vision preprocessing across three camera feeds. May 2026 to now.' },
+  { n: 'PetAlly', t: 'Founding software and AI engineer', pose: 'walk', shot: { file: 'what I built', code: 'recommendation system     AI chatbot        pet mood journal\npet-health tracking       engagement score  activity streaks\nPawPoints rewards         app UI            AWS CI/CD' }, what: 'A pet-care product on web and mobile. March to September 2026.' }
+];
+const shot = o => `<figure class="shot"><figcaption><i></i><i></i><i></i><span>${o.file}</span></figcaption>${o.code ? `<pre>${esc(o.code)}</pre>` : `<div class="bars">${o.rows.map(r => `<div><span>${r[0]}</span><em style="--w:${(r[1] / o.max * 100).toFixed(0)}"></em><b>${r[2]}</b></div>`).join('')}</div><small>${o.note}</small>`}</figure>`;
+const ITEMS = [
+  ...WORK.map(w => ({ name: w.n, pose: w.pose, html: `<header><span>Work</span><span>${w.repo ? 'Open source' : 'Private work'}</span></header><h3>${esc(w.n)}</h3><p class="tag">${esc(w.t)}</p>${shot(w.shot)}${w.what ? `<p>${esc(w.what)}</p>` : ''}<p class="foot"><span></span>${w.repo ? `<a href="${gh}${w.repo}" target="_blank" rel="noopener">Code on GitHub</a>` : ''}</p>` })),
+  { name: 'Listening', pose: 'guitar', html: `<header><span>Listening</span><span>On rotation</span></header><h3>Loud</h3><p class="tag">Guitar and drums when I'm playing. These when I'm not.</p><div class="cols">${['Linkin Park', 'Radiohead', 'Gorillaz', 'Tame Impala', 'DPR Ian', 'Nirvana', 'ATEEZ', 'Pink Floyd'].map(m => `<b>${m}</b>`).join('')}</div>` },
+  { name: 'Blog', pose: 'sit', html: `<header><span>Blog</span><span>31 Aug 2026</span></header><h3 style="font-size:26px">this space intentionally unfinished</h3><p>first note. this is where longer things will live: build logs, shoot write-ups, whatever doesn’t fit a panel.</p><p>the blog is deliberately the plainest room in the building: words first.</p><p>more soon. probably at 2am.</p>` },
+  { name: 'The facts', pose: 'idle', html: `<header><span>The facts</span><span>For recruiters</span></header><h3>In short</h3><p>AI systems engineer. LLM inference, agent security and computer vision.</p><p><b>Now:</b> OpenCV preprocessing lead on HAWKEYE, May 2026 to now.</p><p><b>Before:</b> founding software and AI engineer at PetAlly, March to September 2026.</p><p><b>Studying:</b> MIT Bengaluru, class of 2029.</p><p><b>Tools:</b> Python, PyTorch, OpenCV, FastAPI, React, AWS, Docker.</p><p class="foot"><a href="/DurvaSharma_Resume.pdf" target="_blank" rel="noopener">Resume, PDF</a><a href="mailto:durva.s170@gmail.com">Email</a></p>` }
+];
+const N = ITEMS.length, STEP = Math.PI * 2 / N, R = 6.6, FOCUS = 0.56;
+
+let renderer;
+try { renderer = new THREE.WebGLRenderer({ canvas: $('gl'), antialias: true, powerPreference: 'high-performance' }); } catch (e) { $('fallback').style.display = 'grid'; }
+if (renderer) start();
+
+function start() {
+renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.5)); renderer.toneMapping = THREE.ACESFilmicToneMapping;
+const css = new CSS3DRenderer({ element: $('css') });
+const scene = new THREE.Scene(); scene.background = new THREE.Color(0x000000);
+const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 100);
+
+/* reflections for the glass: a black room with a few hard lights */
+{ const env = new THREE.Scene(), lit = (c, w, h, x, y, z, ry = 0, rx = 0) => { const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ color: c, side: THREE.DoubleSide })); m.position.set(x, y, z); m.rotation.set(rx, ry, 0); env.add(m); };
+  lit(new THREE.Color(8, 8, 8), 14, 2, 0, 9, 0, 0, Math.PI / 2); lit(new THREE.Color(10, 0.5, 1.2), 5, 12, -10, 0, 2, Math.PI / 2); lit(new THREE.Color(6, 6, 6.6), 2, 12, 10, 1, -3, -Math.PI / 2); lit(new THREE.Color(9, 0.5, 1), 16, 16, 0, -6, 0, 0, Math.PI / 2);
+  scene.environment = new THREE.PMREMGenerator(renderer).fromScene(env, 0.02).texture; }
+
+/* the floor: one pool of red light, and a shadow under the figure */
+const ME = new THREE.Vector3(-2.7, 0, 7.2);
+{ const c = document.createElement('canvas'); c.width = c.height = 1024; const g = c.getContext('2d'), gr = g.createRadialGradient(512, 512, 0, 512, 512, 512);
+  gr.addColorStop(0, '#ff2a45'); gr.addColorStop(0.3, '#e0122d'); gr.addColorStop(0.62, '#5d0612'); gr.addColorStop(1, '#000'); g.fillStyle = gr; g.fillRect(0, 0, 1024, 1024);
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace;
+  const floor = new THREE.Mesh(new THREE.PlaneGeometry(34, 34), new THREE.MeshBasicMaterial({ map: t, toneMapped: false })); floor.rotation.x = -Math.PI / 2; floor.position.set(-0.8, 0, 4.2); scene.add(floor);
+  const sc = document.createElement('canvas'); sc.width = sc.height = 256; const sg = sc.getContext('2d'), sr = sg.createRadialGradient(128, 128, 0, 128, 128, 128); sr.addColorStop(0, 'rgba(0,0,0,.85)'); sr.addColorStop(0.6, 'rgba(0,0,0,.5)'); sr.addColorStop(1, 'rgba(0,0,0,0)'); sg.fillStyle = sr; sg.fillRect(0, 0, 256, 256);
+  const sh = new THREE.Mesh(new THREE.PlaneGeometry(3.4, 5), new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(sc), transparent: true, depthWrite: false })); sh.rotation.x = -Math.PI / 2; sh.position.set(ME.x + 0.5, 0.01, ME.z - 1.6); scene.add(sh); }
+
+/* the figure, as a real element so the panes can pass behind it */
+const me = document.createElement('img'); me.className = 'me'; me.alt = 'Pixel-art Durva'; me.src = pose(ITEMS[0].pose); me.draggable = false;
+const meObj = new CSS3DObject(me); meObj.scale.setScalar(0.0103); meObj.position.set(ME.x, 1.7, ME.z); scene.add(meObj);
+[...new Set(ITEMS.map(i => i.pose))].forEach(p => { new Image().src = pose(p); });
+
+/* the ring of glass panes */
+const glass = new THREE.MeshPhysicalMaterial({ color: 0xffffff, roughness: 0.05, metalness: 0, transmission: 1, thickness: 0.5, ior: 1.5, dispersion: 4, envMapIntensity: 2 });
+const slab = new RoundedBoxGeometry(4.2, 3.08, 0.1, 4, 0.12), ring = new THREE.Group(); ring.position.y = 2.15; scene.add(ring);
+const cards = ITEMS.map((it, i) => { const a = i * STEP, g = new THREE.Group(); g.position.set(Math.sin(a) * R, 0, Math.cos(a) * R); g.rotation.y = a;
+  g.add(new THREE.Mesh(slab, glass)); const el = document.createElement('article'); el.className = 'card'; el.innerHTML = it.html; el.dataset.i = i;
+  const o = new CSS3DObject(el); o.scale.setScalar(0.008); o.position.z = 0.07; g.add(o); ring.add(g); return { el, a, o }; });
+
+/* ---------- turning the room ---------- */
+let at = 0, rot = FOCUS, rotT = FOCUS, last = 0, px = 0, py = 0;
+const idx = () => ((at % N) + N) % N;
+function show() { const i = idx(); cards.forEach((c, j) => c.el.classList.toggle('on', j === i)); me.src = pose(ITEMS[i].pose);
+  $('count').innerHTML = `<b>${String(i + 1).padStart(2, '0')}</b> / ${N}<br>${ITEMS[i].name}`; }
+function go(d) { at += d; rotT = FOCUS - at * STEP; show(); }
+let drag = null;
+addEventListener('pointerdown', e => { if (e.target.closest('a')) return; drag = { x: e.clientX, moved: 0, acc: 0, card: e.target.closest('.card') }; $('gl').style.cursor = 'grabbing'; });
+addEventListener('pointermove', e => { px = e.clientX / innerWidth - 0.5; py = e.clientY / innerHeight - 0.5; if (!drag) return; const dx = e.clientX - drag.x; drag.x = e.clientX; drag.moved += Math.abs(dx); drag.acc += dx;
+  while (drag.acc > 130) { drag.acc -= 130; go(-1); } while (drag.acc < -130) { drag.acc += 130; go(1); } });
+addEventListener('pointerup', () => { if (drag && drag.moved < 8 && drag.card) { let d = +drag.card.dataset.i - idx(); if (d > N / 2) d -= N; if (d < -N / 2) d += N; if (d) go(d); } drag = null; $('gl').style.cursor = ''; });
+addEventListener('keydown', e => { if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { go(1); e.preventDefault(); } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { go(-1); e.preventDefault(); } });
+let wheelAcc = 0; addEventListener('wheel', e => { wheelAcc += e.deltaY + e.deltaX; while (wheelAcc > 80) { wheelAcc -= 80; go(1); } while (wheelAcc < -80) { wheelAcc += 80; go(-1); } }, { passive: true });
+
+function size() { const w = innerWidth, h = innerHeight; renderer.setSize(w, h, false); css.setSize(w, h); camera.aspect = w / h; camera.fov = w < h ? 62 : 40; camera.updateProjectionMatrix(); }
+function frame(now) {
+  const t = now / 1000, dt = Math.min(0.1, t - last || 0.016); last = t;
+  rot += (rotT - rot) * (reduce ? 1 : 1 - Math.exp(-dt * 6)); ring.rotation.y = rot; for (const c of cards) c.o.visible = Math.cos(c.a + rot) > 0.2;
+  camera.position.set((reduce ? 0 : px * 0.7), 2.6 - (reduce ? 0 : py * 0.35), 15); camera.lookAt(0.6, 1.9, 0);
+  renderer.render(scene, camera); css.render(scene, camera); requestAnimationFrame(frame);
+}
+addEventListener('resize', size); size(); show(); requestAnimationFrame(frame);
+window.__room = { go, get at() { return idx(); } };
+}
+</script>
+</body>
+</html>

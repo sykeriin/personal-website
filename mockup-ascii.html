@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Durva Sharma (ASCII record mockup)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#e4e4e1;--k:#111;--mid:#85857f;--faint:#b9b9b4;--red:#e0122d;--mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;--pad:clamp(1rem,2.6vw,2.4rem)}
+*{box-sizing:border-box;margin:0}
+body{background:var(--bg);color:var(--k);font-family:var(--mono);font-size:.92rem;line-height:1.5;min-height:100svh;display:flex;flex-direction:column;padding:var(--pad);gap:clamp(.8rem,2vh,1.4rem)}
+a{color:inherit;text-underline-offset:3px}
+a:hover{color:var(--red)}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+:focus-visible{outline:2px solid var(--red);outline-offset:3px}
+canvas{display:block}
+.dim{color:var(--mid)}
+header{display:flex;justify-content:space-between;align-items:baseline;gap:.5rem 2rem;flex-wrap:wrap}
+header h1{font-size:1rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+header h1 span{font-weight:400;color:var(--mid);letter-spacing:0;text-transform:none}
+header nav{display:flex;gap:.3rem 1.3rem;flex-wrap:wrap}
+header .cv{background:var(--k);color:var(--bg);text-decoration:none;padding:.1em .7em}
+header .cv:hover{background:var(--red);color:#fff}
+
+main{flex:1;display:grid;grid-template-columns:minmax(13rem,20fr) minmax(0,42fr) minmax(0,30fr);gap:clamp(1.2rem,3.4vw,3.4rem);align-items:center;min-height:0}
+
+/* character select */
+.who{display:flex;flex-direction:column;align-items:flex-start;min-width:0}
+#sprite{width:min(100%,30vh);aspect-ratio:32/48}
+.pick{display:flex;align-items:center;gap:.4rem;margin-top:.8rem;width:100%}
+.pick button{padding:.1rem .5rem;font-size:1.2rem;line-height:1}
+.pick button:hover{color:var(--red)}
+.pick h2{font-size:clamp(1.3rem,2.2vw,1.9rem);font-weight:700;text-transform:uppercase;letter-spacing:.02em;line-height:1;flex:1;text-align:center}
+.cls{margin-top:.3rem;color:var(--mid);width:100%;text-align:center}
+.dots{display:flex;gap:.35rem;justify-content:center;width:100%;margin-top:.5rem}
+.dots button{width:1.5rem;height:1.5rem;font-size:.75rem;border:1px solid var(--k)}
+.dots button[aria-pressed=true]{background:var(--k);color:var(--bg)}
+.abil{list-style:none;padding:0;margin-top:1.1rem;width:100%;border-top:1px solid var(--k)}
+.abil li{display:grid;grid-template-columns:1.6rem 1fr;gap:.6rem;padding:.35rem 0;border-bottom:1px solid var(--faint);line-height:1.3}
+.abil kbd{font:inherit;font-weight:700;border:1px solid var(--k);text-align:center;height:1.5rem;line-height:1.4rem}
+
+/* record */
+.rec{justify-self:center;width:min(100%,76vh);position:relative}
+#rec{width:100%;aspect-ratio:1;cursor:pointer;touch-action:manipulation}
+.rec button{position:absolute;left:0;bottom:0}
+.rec button:hover{color:var(--red)}
+
+/* tracks */
+.side{display:flex;justify-content:space-between;border-bottom:1px solid var(--k);padding-bottom:.35rem;color:var(--mid)}
+.trk{display:grid;grid-template-columns:2.2rem minmax(0,1fr);gap:0 .4rem;width:100%;text-align:left;padding:.42rem 0;border-bottom:1px solid var(--faint);align-items:baseline}
+.trk b{font-size:clamp(1.05rem,1.55vw,1.35rem);font-weight:700;text-transform:uppercase;line-height:1.15}
+.trk i{grid-column:2;font-style:normal;color:var(--mid);font-size:.84rem;line-height:1.3}
+.trk span{color:var(--mid)}
+.trk:hover b{color:var(--red)}
+.trk[aria-current=true] b::before{content:"> ";color:var(--red)}
+.note{margin-top:1rem;min-height:9.5em}
+.note p{max-width:32rem}
+.note a{display:inline-block;margin-top:.5rem}
+footer{display:flex;justify-content:space-between;gap:.3rem 2rem;flex-wrap:wrap;color:var(--mid)}
+
+@media (max-width:900px){
+  main{grid-template-columns:1fr;align-items:start}
+  .who{display:grid;grid-template-columns:7.5rem 1fr;gap:0 1rem;align-items:start}
+  #sprite{width:7.5rem;grid-row:1/5}
+  .abil{grid-column:1/-1}
+  .rec{width:min(100%,60vh)}
+  .note{min-height:0}
+  footer span:last-child{display:none}
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>Durva Sharma <span>/ AI systems engineer, Bengaluru</span></h1>
+  <nav><a href="https://github.com/sykeriin">GitHub</a><a href="https://linkedin.com/in/durva-s">LinkedIn</a><a href="mailto:durva.s170@gmail.com">Email</a><a class="cv" href="DurvaSharma_Resume.pdf">Resume.pdf</a></nav>
+</header>
+
+<main>
+  <section class="who" aria-label="Character select">
+    <canvas id="sprite" role="img" aria-label="Durva, drawn in text characters"></canvas>
+    <div class="pick"><button type="button" id="prevS" aria-label="Previous character">&lt;</button><h2 id="sName" aria-live="polite"></h2><button type="button" id="nextS" aria-label="Next character">&gt;</button></div>
+    <p class="cls" id="sCls"></p>
+    <div class="dots" id="dots"></div>
+    <ul class="abil" id="abil"></ul>
+  </section>
+
+  <section class="rec" aria-label="Record">
+    <canvas id="rec" role="img" aria-label="A record whose grooves are written in the text of the tracks"></canvas>
+    <button type="button" id="pp">[ pause ]</button>
+  </section>
+
+  <section aria-label="Tracks">
+    <div class="side"><span id="sideName"></span><span id="count"></span></div>
+    <div id="list"></div>
+    <div class="note" aria-live="polite"><p id="note"></p><a id="link" href="#" hidden></a></div>
+  </section>
+</main>
+
+<footer><span>I build the parts of AI systems that tend to break.</span><span>&lt; &gt; character &nbsp; ^ v track &nbsp; space play</span></footer>
+
+<script>
+(() => {
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches, $ = id => document.getElementById(id);
+const gh = 'github.com/sykeriin/', ART = '/src/assets/ink/character/durva-';
+const SKINS = [
+  { name: 'Engineer', cls: 'AI systems', pose: 'point', side: 'Side A: projects and work',
+    abil: ['LLM inference: KV caching, RoPE', 'Agent security: sandboxes, fuzzing, provenance', 'Computer vision: OpenCV pipelines', 'Shipping: FastAPI, React, AWS, Docker'],
+    tracks: [
+      { n: 'tread', t: 'Faster long-context prompts', d: 'Skips repeated prompt processing when documents are reused or rearranged. On Qwen2.5-0.5B, recomputing 20% improved time to first token 1.4x at 4K context and 1.6x at 8K.', u: gh + 'tread' },
+      { n: 'SkillFuzz', t: 'Fuzzing for agent tools', d: "Checks what an agent's tools actually do, in a rootless sandbox with a network sinkhole and honeytokens, and flags capability growth nobody declared. 44 tests.", u: gh + 'SkillFuzz' },
+      { n: 'DPDP Guard', t: 'Privacy controls for AI apps', d: 'A consent SDK with per-purpose policy checks, PII masking before logging, and data-rights request detection, including in Hinglish.', u: gh + 'dpdp-guard' },
+      { n: 'TaintMem', t: 'Trusted memory for agents', d: 'Keeps the source and trust level of everything an agent remembers, so an untrusted instruction never passes as reliable memory.', u: gh + 'TaintMem' },
+      { n: 'CloudSense', t: 'Cloud cost intelligence', d: 'A deployed FinOps platform with Isolation Forest anomaly detection, Prophet forecasting and what-if cost analysis.', u: gh + 'CloudSense' },
+      { n: 'HAWKEYE', t: 'OpenCV lead, May 2026 to now', d: 'The vision pipeline for an Indian Air Force runway debris detector. Three Raspberry Pi camera feeds in, one consistent stream of frames out.' },
+      { n: 'PetAlly', t: 'Founding engineer, Mar to Sep 2026', d: 'Recommendation system, AI chatbot and pet mood journal across web and mobile, plus health tracking, streaks, rewards and AWS CI/CD.' } ] },
+  { name: 'Fighter', cls: 'Muay Thai', pose: 'guard', side: 'Side B: the gym', abil: ['Muay Thai', 'Discipline', 'Resilience'],
+    tracks: [{ n: 'Muay Thai', t: 'Training', d: 'Discipline, strength and resilience. The katana on my arm stands for the same three things.' }] },
+  { name: 'Musician', cls: 'Guitar, rock', pose: 'guitar', side: 'Side C: on rotation', abil: ['Guitar', 'Drums', 'Concert crowds'],
+    tracks: [{ n: 'Linkin Park', t: 'Saw them live', d: 'Tiger jeans, black tank top, jumping to the sound.' }, { n: 'Radiohead', t: 'On rotation', d: '' }, { n: 'Gorillaz', t: 'On rotation', d: '' }, { n: 'DPR Ian', t: 'On rotation', d: '' }, { n: 'Tame Impala', t: 'On rotation', d: '' }, { n: 'Nirvana', t: 'On rotation', d: '' }] },
+  { name: 'Model', cls: 'Fashion, photography', pose: 'walk', side: 'Side D: the camera', abil: ['Modelling', 'Styling', 'Photography', 'Directing shoots'],
+    tracks: [{ n: 'Fashion', t: 'Dressing up, cosplay, metal', d: 'Black, silver, and whatever the fit needs.' }, { n: 'Photography', t: 'Behind the camera', d: 'I shoot as well as stand in front of it.' }] },
+  { name: 'Poet', cls: 'Published', pose: 'sit', side: 'Side E: writing', abil: ['Poetry, published', 'Journalling', 'Storyboards'],
+    tracks: [{ n: 'The book', t: 'Published poetry collection', d: 'A published book of poems. The rest live in the notes app and a notebook.' }, { n: 'What ifs', t: 'Ideas that used to go nowhere', d: 'What if you could see VR with your eyes closed? Signals sent straight to the visual nerves, so two people can share a dream and both touch things in it.' }] }
+];
+let skin = 0, idx = 0, hover = -1, playing = !reduce, rot = 0;
+
+/* ---------- character, drawn in characters ---------- */
+const RAMP = ' .:-=+*%#@', sc = $('sprite'), sx = sc.getContext('2d'), cache = {};
+function load(pose) { return cache[pose] || (cache[pose] = new Promise(res => { const im = new Image(); im.onload = () => {
+  const c = document.createElement('canvas'); c.width = 32; c.height = 48; const g = c.getContext('2d'); g.imageSmoothingEnabled = false; g.drawImage(im, 0, 0, 32, 48);
+  const d = g.getImageData(0, 0, 32, 48).data, cells = [];
+  for (let i = 0; i < 32 * 48; i++) { const r = d[i * 4], gg = d[i * 4 + 1], b = d[i * 4 + 2], a = d[i * 4 + 3]; if (a < 100) { cells.push(null); continue; }
+    const lum = (0.299 * r + 0.587 * gg + 0.114 * b) / 255; cells.push({ ch: RAMP[Math.max(1, Math.round((1 - lum) * (RAMP.length - 1)))], red: r > 170 && gg < 100 && b < 100 }); }
+  res(cells); }; im.onerror = () => res(null); im.src = ART + pose + '.png'; })); }
+let spriteCells = null, spriteT = 1;
+function drawSprite() { const d = Math.min(devicePixelRatio || 1, 2), w = sc.clientWidth, h = sc.clientHeight; if (!w) return;
+  if (sc.width !== Math.round(w * d)) { sc.width = Math.round(w * d); sc.height = Math.round(h * d); }
+  sx.setTransform(d, 0, 0, d, 0, 0); sx.clearRect(0, 0, w, h); if (!spriteCells) return; const cw = w / 32;
+  sx.font = `700 ${(cw * 1.25).toFixed(1)}px "IBM Plex Mono",monospace`; sx.textAlign = 'center'; sx.textBaseline = 'middle';
+  spriteCells.forEach((c, i) => { if (!c) return; const x = i % 32, y = (i / 32) | 0, live = y / 48 < spriteT;
+    sx.fillStyle = live ? (c.red ? '#e0122d' : '#111') : '#b9b9b4'; sx.fillText(live ? c.ch : RAMP[1 + (Math.random() * 9 | 0)], (x + 0.5) * cw, (y + 0.5) * cw); }); }
+async function showSprite(pose) { const cells = await load(pose); if (SKINS[skin].pose !== pose) return; spriteCells = cells;
+  if (reduce) { spriteT = 1; return drawSprite(); } const t0 = performance.now();
+  (function f(now) { spriteT = Math.min(1, (now - t0) / 520); drawSprite(); if (spriteT < 1 && SKINS[skin].pose === pose) requestAnimationFrame(f); })(t0); }
+
+/* ---------- the record: every groove is the track's own text ---------- */
+const G = 63, C = 31, R = 30, FIRST = 8, rc = $('rec'), rx = rc.getContext('2d');
+let bandOf = [], ringOff = [], texts = [], mids = [];
+function cut() { const tr = SKINS[skin].tracks, n = tr.length, w = Math.max(2, Math.min(6, Math.floor((R - FIRST + 1) / n)));
+  bandOf = new Array(R + 1).fill(-1); ringOff = new Array(R + 1).fill(0); mids = [];
+  texts = tr.map(t => (t.n + ' / ' + t.t + ' / ' + (t.d || t.t) + ' /// ').toUpperCase());
+  tr.forEach((t, i) => { const top = R - i * w, rings = w > 2 ? w - 1 : w; let off = 0;
+    for (let k = top; k > top - rings; k--) { bandOf[k] = i; ringOff[k] = off; off += Math.round(2 * Math.PI * k); } mids[i] = top - (rings - 1) / 2; }); }
+const LABEL = 'DURVA SHARMA * ';
+function drawRec() { const d = Math.min(devicePixelRatio || 1, 2), W = rc.clientWidth; if (!W) return;
+  if (rc.width !== Math.round(W * d)) { rc.width = rc.height = Math.round(W * d); }
+  rx.setTransform(d, 0, 0, d, 0, 0); rx.clearRect(0, 0, W, W); const cell = W / G;
+  rx.font = `500 ${(cell * 1.12).toFixed(1)}px "IBM Plex Mono",monospace`; rx.textAlign = 'center'; rx.textBaseline = 'middle';
+  for (let y = 0; y < G; y++) for (let x = 0; x < G; x++) { const dx = x - C, dy = y - C, r = Math.hypot(dx, dy), k = Math.round(r); if (k > R || k < 2) continue;
+    const th = Math.atan2(dy, dx), circ = Math.round(2 * Math.PI * k), pos = Math.floor((((th - rot) / (2 * Math.PI)) % 1 + 1) % 1 * circ); let ch, col;
+    if (k < FIRST - 1) { ch = k === 2 ? '#' : LABEL[(pos + k * 4) % LABEL.length]; col = '#e0122d'; if (ch === ' ') ch = k % 2 ? '#' : '='; }
+    else { const b = bandOf[k]; if (b < 0) continue; const tx = texts[b]; ch = tx[(pos + ringOff[k]) % tx.length];
+      const a = Math.abs(((th + 0.9 + Math.PI) % Math.PI) - Math.PI / 2) < 0.16;
+      col = b === idx ? '#111' : b === hover ? '#55554f' : a ? '#c2c2bd' : '#9d9d98'; if (ch === ' ') { ch = '.'; if (b !== idx) col = '#c8c8c3'; } }
+    rx.fillStyle = col; rx.fillText(ch, (x + 0.5) * cell, (y + 0.5) * cell); }
+  /* tonearm, also characters */
+  const a0 = -0.42, tx = Math.round(C + Math.cos(a0) * mids[idx]), ty = Math.round(C + Math.sin(a0) * mids[idx]); let px = G - 2, py = 1;
+  const put = (x, y, ch, col) => { rx.fillStyle = '#e4e4e1'; rx.fillRect(x * cell - 1, y * cell - 1, cell + 2, cell + 2); rx.fillStyle = col; rx.fillText(ch, (x + 0.5) * cell, (y + 0.5) * cell); };
+  rx.font = `700 ${(cell * 1.3).toFixed(1)}px "IBM Plex Mono",monospace`; put(px, py, '@', '#111');
+  const ddx = Math.abs(tx - px), ddy = Math.abs(ty - py), sxn = tx > px ? 1 : -1, syn = ty > py ? 1 : -1; let err = ddx - ddy;
+  while (px !== tx || py !== ty) { const e2 = err * 2; let mx = 0, my = 0; if (e2 > -ddy) { err -= ddy; px += sxn; mx = sxn; } if (e2 < ddx) { err += ddx; py += syn; my = syn; }
+    if (px === tx && py === ty) break; put(px, py, mx && my ? (mx * my < 0 ? '/' : '\\') : mx ? '-' : '|', '#111'); }
+  put(tx, ty, 'V', '#e0122d'); }
+function bandAt(e) { const r = rc.getBoundingClientRect(), cell = r.width / G, k = Math.round(Math.hypot((e.clientX - r.left) / cell - 0.5 - C, (e.clientY - r.top) / cell - 0.5 - C)); return k >= FIRST && k <= R ? bandOf[k] : -1; }
+rc.addEventListener('pointermove', e => { const b = bandAt(e); if (b !== hover) { hover = b; rc.style.cursor = b < 0 ? 'default' : 'pointer'; if (!playing) drawRec(); } });
+rc.addEventListener('pointerleave', () => { hover = -1; if (!playing) drawRec(); });
+rc.addEventListener('click', e => { const b = bandAt(e); if (b >= 0) track(b); });
+let lastF = 0, lastT = performance.now();
+function spin(now) { if (!playing) return; rot += (now - lastT) / 1000 * 0.22; lastT = now; if (now - lastF > 55) { lastF = now; drawRec(); } requestAnimationFrame(spin); }
+function play(on) { playing = on; $('pp').textContent = on ? '[ pause ]' : '[ play ]'; if (on) { lastT = performance.now(); requestAnimationFrame(spin); } else drawRec(); }
+$('pp').addEventListener('click', () => play(!playing));
+
+/* ---------- words ---------- */
+let typer = 0;
+function track(i) { const tr = SKINS[skin].tracks; idx = (i + tr.length) % tr.length; const t = tr[idx];
+  [...$('list').children].forEach((b, j) => b.setAttribute('aria-current', j === idx));
+  const a = $('link'); a.hidden = !t.u; if (t.u) { a.href = 'https://' + t.u; a.textContent = t.u; }
+  const full = t.d || t.t, p = $('note'); clearInterval(typer);
+  if (reduce) p.textContent = full; else { let n = 0; p.textContent = ''; typer = setInterval(() => { n += 3; p.textContent = full.slice(0, n) + (n < full.length ? '_' : ''); if (n >= full.length) clearInterval(typer); }, 16); }
+  if (!playing) drawRec(); }
+function pick(i) { skin = (i + SKINS.length) % SKINS.length; const s = SKINS[skin]; $('sName').textContent = s.name; $('sCls').textContent = s.cls; $('sideName').textContent = s.side; $('count').textContent = s.tracks.length + (s.tracks.length === 1 ? ' track' : ' tracks');
+  [...$('dots').children].forEach((b, j) => b.setAttribute('aria-pressed', j === skin));
+  $('abil').innerHTML = s.abil.map((a, j) => `<li><kbd>${'QECX'[j]}</kbd><span>${a}</span></li>`).join('');
+  $('list').innerHTML = s.tracks.map((t, j) => `<button class="trk" type="button"><span>${String(j + 1).padStart(2, '0')}</span><b>${t.n}</b><i>${t.t}</i></button>`).join('');
+  [...$('list').children].forEach((b, j) => { b.addEventListener('click', () => track(j)); b.addEventListener('pointerenter', () => { hover = j; if (!playing) drawRec(); }); b.addEventListener('pointerleave', () => { hover = -1; if (!playing) drawRec(); }); });
+  cut(); track(0); showSprite(s.pose); drawRec(); }
+$('dots').innerHTML = SKINS.map((s, i) => `<button type="button" aria-label="${s.name}">${i + 1}</button>`).join('');
+[...$('dots').children].forEach((b, i) => b.addEventListener('click', () => pick(i)));
+$('prevS').addEventListener('click', () => pick(skin - 1)); $('nextS').addEventListener('click', () => pick(skin + 1));
+addEventListener('keydown', e => { if (e.target.closest('a')) return; const k = e.key;
+  if (k === 'ArrowLeft') pick(skin - 1); else if (k === 'ArrowRight') pick(skin + 1); else if (k === 'ArrowUp') track(idx - 1); else if (k === 'ArrowDown') track(idx + 1);
+  else if (k >= '1' && k <= '5') pick(+k - 1); else if (k === ' ' && !e.target.closest('button')) play(!playing); else return; e.preventDefault(); });
+addEventListener('resize', () => { drawRec(); drawSprite(); });
+document.fonts.ready.then(() => { pick(0); play(playing); });
+})();
+</script>
+</body>
+</html>

@@ -1,54 +1,19 @@
-import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
-import { Layout } from './components/Layout'
-import { Cover } from './pages/Cover'
-import { Origin } from './pages/Origin'
-import { Training } from './pages/Training'
-import { Projects } from './pages/Projects'
-import { ProjectDetail } from './pages/ProjectDetail'
-import { SkillTree } from './pages/SkillTree'
-import { Studio } from './pages/Studio'
-import { Direction } from './pages/Direction'
-import { Session } from './pages/Session'
-import { Prints } from './pages/Prints'
-import { Notes, NotePost } from './pages/Notes'
-import { Contact } from './pages/Contact'
-import { NotFound } from './pages/NotFound'
+import { useEffect, useRef, useState, type MouseEvent } from 'react'
+import { BrowserRouter, Link, NavLink, Route, Routes, useLocation, useParams } from 'react-router-dom'
+import { Mark } from './zero/Mark'
+import Play from './zero/Play'
+import { projects, interests } from './portfolio/content'
+import './styles/zero.css'
 
-/**
- * The entrance (EntryGate) is once-per-visitor, front door only, and
- * interactive in half a second — deliberately unlike v1's gate, which held
- * the whole router behind a 2.4s modal on every session, deep links included.
- * Deep links never see it; Esc skips it; the choice it asks doubles as the
- * render-tier prompt.
- */
-const router = createBrowserRouter([
-  {
-    path: '/',
-    element: <Layout />,
-    errorElement: <Layout />,
-    children: [
-      { index: true, element: <Cover /> },
-      { path: 'origin', element: <Origin /> },
-      { path: 'training', element: <Training /> },
-      { path: 'projects', element: <Projects /> },
-      { path: 'projects/:slug', element: <ProjectDetail /> },
-      { path: 'skill-tree', element: <SkillTree /> },
-      { path: 'studio', element: <Studio /> },
-      { path: 'direction', element: <Direction /> },
-      { path: 'session', element: <Session /> },
-      { path: 'prints', element: <Prints /> },
-      { path: 'prints/:cat', element: <Prints /> },
-      { path: 'notes', element: <Notes /> },
-      { path: 'notes/:slug', element: <NotePost /> },
-      { path: 'contact', element: <Contact /> },
-      // v1 shipped these paths publicly; keep them resolving.
-      { path: 'battles', element: <Navigate to="/projects" replace /> },
-      { path: 'battles/:slug', element: <Navigate to="/projects" replace /> },
-      { path: '*', element: <NotFound /> },
-    ],
-  },
-])
-
-export default function App() {
-  return <RouterProvider router={router} />
-}
+function Header(){return <header className="header"><Link to="/" className="wordmark" aria-label="Durva Sharma, home"><span className="wordmark-sigil">d<span>✳</span>s</span><span>DURVA<br/>SHARMA</span></Link><div className="header-index">BENGALURU, INDIA<br/><span>AI / ML / SYSTEMS</span></div><nav aria-label="Main navigation"><NavLink end to="/">INDEX <span>↗</span></NavLink><NavLink to="/work">THE WORK <span>↗</span></NavLink><NavLink to="/about">THE PERSON <span>↗</span></NavLink><NavLink to="/play">PLAY <span>↗</span></NavLink><NavLink to="/contact">CONTACT <span>↗</span></NavLink></nav><a className="resume" href="/DurvaSharma_Resume.pdf" target="_blank" rel="noreferrer">RÉSUMÉ <span>↗</span></a></header>}
+function MotionToggle(){const [paused,setPaused]=useState(()=>matchMedia('(prefers-reduced-motion: reduce)').matches);useEffect(()=>{document.documentElement.dataset.motion=paused?'off':'on'},[paused]);return <button className="motion-toggle" aria-pressed={paused} onClick={()=>setPaused(!paused)}><span>{paused?'○':'◉'}</span> MOTION {paused?'OFF':'ON'}</button>}
+function Footer(){return <footer className="footer"><span>© {new Date().getFullYear()} DURVA SHARMA</span><span>MADE OF CURIOSITY & OTHER THINGS ✳</span><MotionToggle/><Link to="/contact">GET IN TOUCH ↗</Link></footer>}
+function Hero(){const art=useRef<HTMLDivElement>(null);function tilt(e:MouseEvent<HTMLDivElement>){if(document.documentElement.dataset.motion==='off')return;const r=e.currentTarget.getBoundingClientRect();art.current?.style.setProperty('--mx',`${((e.clientX-r.left)/r.width-.5)*12}deg`);art.current?.style.setProperty('--my',`${((e.clientY-r.top)/r.height-.5)*-12}deg`)}function reset(){art.current?.style.setProperty('--mx','0deg');art.current?.style.setProperty('--my','0deg')}
+ return <main className="cover"><div className="cover-grain"/><div className="cover-topline"><span>PERSONAL PORTFOLIO / 2026</span><span>TECHNOLOGY ✳ ART ✳ EVERYTHING IN BETWEEN</span></div><div className="cover-main"><div className="cover-copy"><div className="intro-line"><span className="intro-square">✳</span><span>HELLO, I’M DURVA.<br/>AI & ML ENGINEER IN THE MAKING.</span></div><h1><span>MADE OF</span><span className="outline">MANY</span><span>THINGS<i>.</i></span></h1><p className="cover-description">I build AI systems, take things apart to learn how they work, and believe the details are where the magic lives.</p><div className="cover-actions"><Link to="/work" className="action-primary">EXPLORE MY WORK <span>↗</span></Link><Link to="/about" className="action-secondary">MEET THE PERSON <span>↗</span></Link></div><div className="cover-annotation"><span>✳</span><p>RESEARCH MINDED.<br/>HANDS ON.<br/>ALWAYS CURIOUS.</p></div></div><div className="cover-art" onMouseMove={tilt} onMouseLeave={reset}><div className="art-bg-word" aria-hidden="true">DURVA</div><div className="art-stage" ref={art}><div className="art-ring art-ring-one"/><div className="art-ring art-ring-two"/><div className="mark-wrap"><Mark/></div><div className="art-sticker art-sticker-one"><span>NOT JUST<br/>ONE THING.</span><b>✳</b></div><div className="art-sticker art-sticker-two">A LITTLE<br/>SOFT.<br/><em>A LITTLE<br/>LOUD.</em></div><div className="art-label art-label-a">SPIDER LILY<br/>POCKET WATCH<br/>KATANA<br/>BUTTERFLIES</div><div className="art-label art-label-b">MEMORY<br/>MADE<br/>VISIBLE.</div><span className="art-star">✳</span></div><span className="art-caption">A SELF-PORTRAIT IN OBJECTS / MOVE YOUR CURSOR</span></div></div><div className="cover-bottom"><div className="bottom-note"><span>01 / WORK</span><p>Inference, agents,<br/>and the systems underneath.</p><Link to="/work" aria-label="Explore work">↗</Link></div><div className="bottom-note"><span>02 / LIFE</span><p>Music, Muay Thai,<br/>art, games, and good stories.</p><Link to="/about" aria-label="Explore the person">↗</Link></div><div className="bottom-ascii" aria-hidden="true">{'  .       *       .\n       /\\      ✳\n  .   / /\\ \\     *\n     /_/  \\_\\   . '}</div><span className="cover-stamp">INDEPENDENT MIND<br/>ORIGINAL SIGNAL<br/>✳ ✳ ✳</span></div></main>}
+function Work(){const [active,setActive]=useState(0);const p=projects[active];return <main className="work"><div className="page-band"><span>THE WORK / A SELECTION</span><span>QUESTIONS, TAKEN SERIOUSLY</span><span>2026 ✳</span></div><div className="work-header"><div><p className="eyebrow">SOFTWARE / RESEARCH / EXPERIMENTS</p><h1>THINGS<br/><em>IN MOTION.</em></h1></div><p>From inference to agent security: the projects that kept me asking “what happens if?”</p></div><div className="work-body"><div className="work-index" aria-label="Project selector">{projects.map((item,i)=><button key={item.slug} onClick={()=>setActive(i)} aria-pressed={active===i}><span className="work-num">0{i+1}</span><span className="work-title">{item.name}<small>{item.category}</small></span><span className="work-index-arrow">↗</span></button>)}<a href="https://github.com/sykeriin" target="_blank" rel="noreferrer" className="all-code">MORE EXPERIMENTS ON GITHUB ↗</a></div><article className="work-feature" key={p.slug}><div className="feature-top"><span>PROJECT FILE / 0{active+1}</span><span>{p.category.toUpperCase()}</span></div><div className="feature-art"><span className="feature-symbol">{p.symbol}</span><div className="feature-art-text">{p.name}<br/><span>✳</span></div><div className="feature-diagram"><span>INPUT</span><span>→</span><span>?</span><span>→</span><span>OUTPUT</span></div><div className="feature-ink" aria-hidden="true">✳</div></div><div className="feature-copy"><h2>{p.short}</h2><p>{p.summary}</p><div className="feature-result"><span>THE TAKEAWAY</span><strong>{p.result}</strong></div><div className="feature-bottom"><span>{p.stack.join(' / ')}</span><Link to={`/work/${p.slug}`}>OPEN PROJECT ↗</Link></div></div></article></div><div className="work-experience"><div><span>ALSO IN THE REAL WORLD ↗</span><h2>WORKING<br/><em>ON IT.</em></h2></div><div><article><span>2026 / PRESENT</span><h3>HAWKEYE</h3><p>OpenCV Preprocessing Lead for an Indian Air Force runway debris detection project. Three camera feeds, one consistent frame pipeline.</p></article><article><span>MAR — SEP 2026</span><h3>PETALLY</h3><p>Founding Software & AI Integration Engineer. Recommendations, AI features, health tracking, and AWS CI/CD.</p></article></div></div></main>}
+function Project(){const {slug}=useParams();const p=projects.find(item=>item.slug===slug);if(!p)return <NotFound/>;return <main className="project"><div className="page-band"><Link to="/work">← BACK TO WORK</Link><span>{p.category.toUpperCase()}</span><span>PROJECT FILE ✳</span></div><div className="project-hero"><div><p className="eyebrow">SELECTED WORK / {p.category.toUpperCase()}</p><h1>{p.name}<span>.</span></h1><p>{p.question}</p></div><div className="project-art"><span>{p.symbol}</span><div>{p.tags}</div></div></div><div className="project-content"><div><span>THE QUESTION</span><p>{p.summary}</p></div><div><span>WHAT I BUILT</span><p>{p.approach}</p></div><div className="project-outcome"><span>THE OUTCOME</span><h2>{p.result}</h2><p>{p.detail}</p></div><div className="project-link"><span>{p.stack.join(' / ')}</span><a href={`https://github.com/sykeriin/${p.repo}`} target="_blank" rel="noreferrer">SEE THE CODE ↗</a></div></div></main>}
+function About(){const [active,setActive]=useState(0);const interest=interests[active];return <main className="about"><div className="page-band"><span>THE PERSON / NOT JUST A BIO</span><span>SOME ASSEMBLY REQUIRED</span><span>✳</span></div><div className="about-intro"><div><p className="eyebrow">SOME CONTEXT FOR THE CODE</p><h1>I CONTAIN<br/><em>MULTITUDES.</em></h1><p>I can lose an evening to an AI paper, a novel, or getting one tiny interaction to feel right. I like things with a point of view. I’m trying to make more of them.</p></div><div className="about-mark"><Mark/><span>THE THINGS I CARRY<br/>WITH ME ↗</span></div></div><div className="about-cabinet"><div className="cabinet-header"><div><p className="eyebrow">OPEN THE CABINET</p><h2>OTHER<br/><em>FREQUENCIES.</em></h2></div><p>Choose a piece of the picture.</p></div><div className="cabinet-layout"><div className="cabinet-tabs">{interests.map((item,i)=><button key={item.name} onClick={()=>setActive(i)} aria-pressed={active===i}><span>0{i+1}</span><strong>{item.name}</strong><b>↗</b></button>)}</div><div className="cabinet-card" key={interest.name}><span className="cabinet-symbol">{interest.symbol}</span><span className="cabinet-number">0{active+1} / 04</span><h3>{interest.title}</h3><p>{interest.text}</p><small>{interest.detail.toUpperCase()}</small></div></div></div><div className="about-facts"><p><span>EDUCATION</span><br/>B.Tech Computer Science<br/>MIT Bengaluru · Class of 2029</p><p><span>EXPERIENCE</span><br/>HAWKEYE · OpenCV Preprocessing Lead<br/>PetAlly · Founding Software & AI Integration Engineer</p><p><span>COMMUNITY</span><br/>Vice President, NeuraAI<br/>MAHE Innovation Centre</p></div></main>}
+function Contact(){const [copied,setCopied]=useState(false);return <main className="contact"><div className="page-band"><span>OPEN CHANNEL / GET IN TOUCH</span><span>BENGALURU, INDIA</span><span>✳</span></div><div className="contact-main"><p className="eyebrow">FOR INTERESTING CONVERSATIONS</p><h1>LET’S<br/><em>MAKE</em><br/>CONTACT<span>.</span></h1><div className="contact-object"><div className="contact-circle"><span>✳</span><p>AI / ART /<br/>EVERYTHING<br/>IN BETWEEN</p></div></div><div className="contact-bottom"><p>I’m interested in AI research, ML engineering, MLOps, and forward-deployed work. Also: excellent album recommendations.</p><div className="contact-list"><a href="mailto:durva.s170@gmail.com">DURVA.S170@GMAIL.COM ↗</a><button onClick={async()=>{try{await navigator.clipboard.writeText('durva.s170@gmail.com');setCopied(true);setTimeout(()=>setCopied(false),2500)}catch{setCopied(false)}}}>{copied?'COPIED ✓':'COPY EMAIL ↗'}</button><a href="https://github.com/sykeriin" target="_blank" rel="noreferrer">GITHUB ↗</a><a href="https://www.linkedin.com/in/durva-s" target="_blank" rel="noreferrer">LINKEDIN ↗</a><a href="/DurvaSharma_Resume.pdf" target="_blank" rel="noreferrer">RÉSUMÉ ↗</a></div></div></div></main>}
+function NotFound(){return <main className="missing"><h1>WRONG<br/><em>TURN.</em></h1><p>There’s nothing here, but there’s plenty back home.</p><Link to="/">BACK TO THE START ↗</Link></main>}
+function Layout(){const loc=useLocation();useEffect(()=>{window.scrollTo(0,0)},[loc.pathname]);return <><a className="skip" href="#content">SKIP TO CONTENT</a><Header/><div id="content" key={loc.pathname} className="page-transition"><Routes><Route path="/" element={<Hero/>}/><Route path="/work" element={<Work/>}/><Route path="/work/:slug" element={<Project/>}/><Route path="/about" element={<About/>}/><Route path="/contact" element={<Contact/>}/><Route path="/play" element={<Play/>}/><Route path="*" element={<NotFound/>}/></Routes></div><Footer/></>}
+export default function App(){return <BrowserRouter><Layout/></BrowserRouter>}

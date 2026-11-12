@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Durva Sharma (vinyl B: the record holds the projects)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&family=Pixelify+Sans:wght@400..600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#e3e3e0;--k:#000;--mid:#6a6a67;--line:#bcbcb8;--red:#e0122d;
+  --sans:"Archivo",Arial,sans-serif;--px:"Pixelify Sans",ui-monospace,monospace;--pad:clamp(1.1rem,2.6vw,2.4rem)}
+*{box-sizing:border-box;margin:0}
+body{background:var(--bg);color:var(--k);font-family:var(--sans);font-size:1rem;line-height:1.5;min-height:100svh;display:flex;flex-direction:column;padding:var(--pad)}
+a{color:inherit;text-underline-offset:3px}
+a:hover{color:var(--red)}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+:focus-visible{outline:2px solid var(--red);outline-offset:3px}
+.px{font-family:var(--px);font-size:.8rem;text-transform:uppercase;letter-spacing:.03em;line-height:1.2}
+header{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem}
+header h1{font-stretch:64%;font-weight:600;text-transform:uppercase;font-size:clamp(1.5rem,2.4vw,2.1rem);line-height:.95}
+header p{color:var(--mid);margin-top:.35rem}
+header nav{display:flex;gap:.4rem 1.2rem;flex-wrap:wrap;justify-content:flex-end;align-items:center}
+.cv{background:var(--k);color:var(--bg);text-decoration:none;padding:.5em 1em;border-radius:99px}
+.cv:hover{background:var(--red);color:#fff}
+
+.deck{flex:1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(1.5rem,5vw,5rem);align-items:center;padding:clamp(1.5rem,4vh,3rem) 0}
+.table{position:relative;width:min(100%,74vh);aspect-ratio:1;justify-self:center;perspective:1600px}
+.flip{position:absolute;inset:0;transform-style:preserve-3d;transition:transform .9s cubic-bezier(.6,0,.2,1)}
+.flip.b{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;border-radius:50%;backface-visibility:hidden;box-shadow:0 2vh 5vh rgba(0,0,0,.22)}
+.face.back{transform:rotateY(180deg)}
+.face svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.grooves{position:absolute;inset:0;border-radius:50%;background:repeating-radial-gradient(circle,#0a0a0b 0 1.3px,#1c1c1e 1.8px 2.5px)}
+.sheen{position:absolute;inset:0;border-radius:50%;pointer-events:none;background:conic-gradient(from 20deg,transparent 0 7%,rgba(255,255,255,.18) 12%,transparent 18% 49%,rgba(255,255,255,.12) 56%,transparent 63%)}
+.band{fill:none;stroke:#fff;stroke-opacity:0;stroke-width:5.5;cursor:pointer;transition:stroke-opacity .2s}
+.band.on{stroke-opacity:.3}
+.gap{fill:none;stroke:#000;stroke-width:.7}
+.lab{fill:var(--red)}
+.hole{fill:var(--bg)}
+.face text{font-family:var(--px);font-size:3.1px;text-transform:uppercase;letter-spacing:.12px;fill:#000;text-anchor:middle}
+.arm{position:absolute;right:-9%;top:-7%;width:30%;height:66%;transform-origin:76% 11%;transform:rotate(var(--a,-4deg));transition:transform .55s cubic-bezier(.3,1.3,.5,1);pointer-events:none;filter:drop-shadow(0 1vh 1vh rgba(0,0,0,.25))}
+
+.side{display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid var(--k);padding-bottom:.5rem}
+.side button{text-decoration:underline;text-underline-offset:3px}
+.side button:hover{color:var(--red)}
+.trk{border-bottom:1px solid var(--line)}
+.trk>button{display:grid;grid-template-columns:2.4rem minmax(0,1fr);gap:0 .6rem;align-items:baseline;width:100%;text-align:left;padding:.6rem 0 .65rem}
+.trk>button b{font-stretch:64%;font-weight:600;text-transform:uppercase;font-size:clamp(1.8rem,3.3vw,3rem);line-height:.95;transition:letter-spacing .25s}
+.trk>button i{grid-column:2;font-style:normal;color:var(--mid)}
+.trk>button .px{color:var(--mid)}
+.trk.on>button b,.trk>button:hover b{color:var(--red)}
+.more{display:grid;grid-template-rows:0fr;transition:grid-template-rows .35s ease}
+.trk.open .more{grid-template-rows:1fr}
+.more>div{overflow:hidden;padding-left:3rem}
+.more p{max-width:34rem}
+.more p:last-child{padding-bottom:1rem;margin-top:.5rem;color:#333}
+footer{display:flex;flex-wrap:wrap;gap:.3rem 1.5rem;justify-content:space-between;color:var(--mid)}
+
+@media (max-width:860px){
+  .deck{grid-template-columns:1fr}
+  .table{width:min(86vw,46vh)}
+  .more>div{padding-left:0}
+}
+@media (prefers-reduced-motion:reduce){.flip,.arm,.more{transition:none}}
+</style>
+</head>
+<body>
+<header>
+  <div><h1>Durva Sharma</h1><p class="px">AI systems engineer, Bengaluru</p></div>
+  <nav class="px"><a href="https://github.com/sykeriin">GitHub</a><a href="https://linkedin.com/in/durva-s">LinkedIn</a><a href="mailto:durva.s170@gmail.com">Email</a><a class="cv" href="DurvaSharma_Resume.pdf">Resume, PDF</a></nav>
+</header>
+
+<main class="deck">
+  <div class="table">
+    <div class="flip" id="flip">
+      <div class="face" id="faceA"></div>
+      <div class="face back" id="faceB"></div>
+    </div>
+    <svg class="arm" id="arm" viewBox="0 0 100 220" aria-hidden="true">
+      <circle cx="76" cy="24" r="19" fill="#c9c9c6" stroke="#000" stroke-width="1.5"/><circle cx="76" cy="24" r="7" fill="#000"/>
+      <path d="M76 24 L58 160 L40 192" fill="none" stroke="#000" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="24" y="182" width="26" height="15" rx="2" fill="#e0122d" transform="rotate(35 37 189)"/>
+    </svg>
+  </div>
+
+  <div>
+    <div class="side px"><span id="sideName">Side A, projects</span><button type="button" class="px" id="flipBtn">Flip to side B</button></div>
+    <div id="list"></div>
+  </div>
+</main>
+
+<footer class="px"><span>I build the parts of AI systems that tend to break</span><span>B.Tech CSE, MIT Bengaluru, 2029</span></footer>
+
+<script>
+(() => {
+const SIDES = {
+  A: { name: 'Side A, projects', other: 'Flip to side B', tracks: [
+    { n: 'tread', t: 'Faster long-context prompts', d: 'Skips repeated prompt processing when documents are reused or rearranged. On Qwen2.5-0.5B, recomputing 20% improved time to first token 1.4× at 4K context and 1.6× at 8K.', m: 'Python, PyTorch, Transformers', u: 'github.com/sykeriin/tread' },
+    { n: 'SkillFuzz', t: 'Fuzzing for agent tools', d: "Checks what an agent's tools actually do, in a rootless sandbox with a network sinkhole and honeytokens, and flags capability growth nobody declared. 44 tests.", m: 'Python, Linux namespaces, strace', u: 'github.com/sykeriin/SkillFuzz' },
+    { n: 'DPDP Guard', t: 'Privacy controls for AI apps', d: 'A consent SDK with per-purpose policy checks, PII masking before logging, and data-rights request detection, including in Hinglish.', m: 'Python, FastAPI, PostgreSQL, Next.js', u: 'github.com/sykeriin/dpdp-guard' },
+    { n: 'TaintMem', t: 'Trusted memory for agents', d: 'Keeps the source and trust level of everything an agent remembers, so an untrusted instruction never passes as reliable memory.', m: 'Python, SQLite', u: 'github.com/sykeriin/TaintMem' },
+    { n: 'CloudSense', t: 'Cloud cost intelligence', d: 'A deployed FinOps platform with Isolation Forest anomaly detection, Prophet forecasting and what-if cost analysis.', m: 'Python, FastAPI, React, AWS', u: 'github.com/sykeriin/CloudSense' } ] },
+  B: { name: 'Side B, the person', other: 'Flip to side A', tracks: [
+    { n: 'About', t: 'Who this is', d: 'Computer science student at Manipal Institute of Technology, Bengaluru, class of 2029. I learn fastest by building, and I want to end up contributing to AI research.', m: 'Also: Muay Thai, guitar, poetry, photography, fashion' },
+    { n: 'HAWKEYE', t: 'OpenCV preprocessing lead, May 2026 to now', d: 'The vision pipeline for an Indian Air Force runway debris detector. Three Raspberry Pi camera feeds in, one consistent stream of frames out.', m: 'OpenCV, Raspberry Pi' },
+    { n: 'PetAlly', t: 'Founding engineer, March to September 2026', d: 'Recommendation system, AI chatbot and pet mood journal across web and mobile, plus health tracking, streaks, rewards and AWS CI/CD.', m: 'AI integration, web, mobile, AWS' },
+    { n: 'Wins', t: 'Hackathons and leadership', d: '1st at MAHE Mobility Hackathon 2026. 2nd at PowerNext (CPRI) and the Tech Solstice UI/UX Sprint. Top 10 at iQOO and Point Blank CTF. Top 32 of 1,000+ teams at Zenith26.', m: 'Vice President, NeuraAI' },
+    { n: 'Contact', t: 'Say hi', d: 'durva.s170@gmail.com', m: 'Bengaluru, India', u: 'linkedin.com/in/durva-s' } ] }
+};
+const OUT = 47.5, BW = 6.2, radius = i => OUT - BW / 2 - i * BW;
+function face(el, key) { const s = SIDES[key];
+  let svg = `<div class="grooves"></div><svg viewBox="-50 -50 100 100" aria-hidden="true">`;
+  s.tracks.forEach((t, i) => { svg += `<circle class="band" data-i="${i}" r="${radius(i).toFixed(2)}"/><circle class="gap" r="${(OUT - (i + 1) * BW + 0.4).toFixed(2)}"/>`; });
+  svg += `<circle class="lab" r="15.2"/><path id="arc${key}" d="M-10.5 0A10.5 10.5 0 0 1 10.5 0" fill="none"/><text><textPath href="#arc${key}" startOffset="50%">Durva Sharma</textPath></text><text y="9.5">Side ${key}</text><circle class="hole" r="1.5"/></svg><div class="sheen"></div>`;
+  el.innerHTML = svg; el.querySelectorAll('.band').forEach(b => { b.addEventListener('pointerenter', () => cue(+b.dataset.i)); b.addEventListener('click', () => toggle(+b.dataset.i)); }); }
+const flip = document.getElementById('flip'), list = document.getElementById('list'), arm = document.getElementById('arm');
+let side = 'A', open = -1;
+face(document.getElementById('faceA'), 'A'); face(document.getElementById('faceB'), 'B');
+function cue(i) { const f = document.getElementById('face' + side);
+  f.querySelectorAll('.band').forEach((b, j) => b.classList.toggle('on', j === i)); [...list.children].forEach((r, j) => r.classList.toggle('on', j === i));
+  arm.style.setProperty('--a', (i < 0 ? -6 : 2 + i * 3.3) + 'deg'); }
+function toggle(i) { open = open === i ? -1 : i; [...list.children].forEach((r, j) => { r.classList.toggle('open', j === open); r.firstElementChild.setAttribute('aria-expanded', j === open); }); cue(i); }
+function render() { const s = SIDES[side]; document.getElementById('sideName').textContent = s.name; document.getElementById('flipBtn').textContent = s.other; open = -1;
+  list.innerHTML = s.tracks.map((t, i) => `<div class="trk"><button type="button" aria-expanded="false"><span class="px">${side}${i + 1}</span><b>${t.n}</b><i>${t.t}</i></button>
+    <div class="more"><div><p>${t.d}</p><p>${t.m}${t.u ? ` &nbsp; <a href="https://${t.u}">${t.u}</a>` : ''}</p></div></div></div>`).join('');
+  [...list.children].forEach((r, i) => { const b = r.firstElementChild; b.addEventListener('pointerenter', () => cue(i)); b.addEventListener('focus', () => cue(i)); b.addEventListener('click', () => toggle(i)); });
+  cue(-1); }
+document.getElementById('flipBtn').addEventListener('click', () => { side = side === 'A' ? 'B' : 'A'; flip.classList.toggle('b', side === 'B'); arm.style.setProperty('--a', '-14deg'); setTimeout(render, 300); });
+render();
+})();
+</script>
+</body>
+</html>

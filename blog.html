@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Grass Files</title>
+<link rel="icon" href="/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..600,100,1;1,9..144,300..600,100,1&family=Nunito:wght@400;600;700&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f8f5f0;--card:#fffdf9;--ink:#3a3633;--mute:#9a938b;--line:#ebe5dc;--rose:#d9586c;--blush:#fbe6e8;--art:#d9909b}
+@media (prefers-color-scheme:dark){:root{--bg:#1d1b1a;--card:#25221f;--ink:#ece6dd;--mute:#8d867d;--line:#34302c;--rose:#f08a98;--blush:#3a2629;--art:#b97782}}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--bg)}
+body{background:var(--bg);color:var(--ink);font:400 1rem/1.6 Nunito,system-ui,sans-serif;min-height:100vh;min-height:100svh;display:flex;flex-direction:column;-webkit-font-smoothing:antialiased}
+.wrap{flex:1;width:100%}
+#grass{display:block;width:100%;height:150px;flex:none;margin-top:-1rem;cursor:default}
+a{color:inherit;text-decoration:none}
+.mono{font-family:"DM Mono",ui-monospace,monospace;font-size:.78rem;letter-spacing:.02em;color:var(--mute)}
+.wrap{max-width:40rem;margin:0 auto;padding:2.2rem 1.25rem 3rem}
+.top{display:flex;justify-content:space-between;align-items:center}
+.top a{transition:color .2s}.top a:hover{color:var(--rose)}
+
+/* header */
+header{margin:4.5rem 0 3rem;display:flex;align-items:flex-end;gap:1.1rem}
+.buddy{width:76px;height:76px;flex:none;cursor:pointer}
+.buddy .bod{animation:bob 3.2s ease-in-out infinite;transform-origin:50% 100%}
+.buddy .eye{animation:blink 4.6s infinite;transform-origin:center;transform-box:fill-box}
+.buddy .sprout{transform-origin:50% 100%;transform-box:fill-box;animation:sway 3.2s ease-in-out infinite}
+.buddy.hop .bod{animation:hop .5s ease}
+@keyframes bob{50%{transform:translateY(1.5px) scaleY(.98)}}
+@keyframes blink{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.1)}}
+@keyframes sway{50%{transform:rotate(-7deg)}}
+@keyframes hop{40%{transform:translateY(-9px) scaleY(1.05)}75%{transform:translateY(0) scaleY(.94)}}
+h1{font-family:Fraunces,serif;font-style:italic;font-weight:400;font-variation-settings:"SOFT" 100,"WONK" 1;font-size:clamp(2.6rem,8vw,3.6rem);line-height:.95;letter-spacing:-.02em}
+h1 em{font-style:normal;color:var(--rose)}
+.sub{color:var(--mute);margin-top:.45rem;font-size:.98rem}
+
+/* list */
+.list{list-style:none;border-top:1px solid var(--line)}
+.list li{border-bottom:1px solid var(--line)}
+.row{position:relative;display:grid;grid-template-columns:5.6rem 1fr auto;align-items:baseline;gap:1rem;padding:1.05rem .9rem;border-radius:14px;isolation:isolate}
+.row::before{content:"";position:absolute;inset:4px -4px;border-radius:14px;background:var(--blush);transform:scaleX(0);transform-origin:left;transition:transform .35s cubic-bezier(.3,.7,.2,1);z-index:-1}
+.row .t{font-family:Fraunces,serif;font-variation-settings:"SOFT" 100;font-weight:400;font-size:1.22rem;line-height:1.3;transition:transform .35s cubic-bezier(.3,.7,.2,1),color .2s}
+.tag{font-size:.74rem;font-weight:700;color:var(--rose);background:var(--blush);padding:.15rem .6rem;border-radius:99px;white-space:nowrap;transition:background .2s}
+a.row:hover::before,a.row:focus-visible::before{transform:scaleX(1)}
+a.row:hover .t,a.row:focus-visible .t{transform:translateX(.35rem)}
+a.row:hover .tag,a.row:focus-visible .tag{background:var(--card)}
+a.row:focus-visible{outline:2px solid var(--rose);outline-offset:2px}
+.row.soon .t{color:var(--mute)}
+.row.soon .tag{color:var(--mute);background:transparent;border:1px dashed var(--line)}
+.dots i{display:inline-block;width:3px;height:3px;border-radius:50%;background:currentColor;margin-left:2px;vertical-align:middle;animation:dot 1.4s infinite}
+.dots i:nth-child(2){animation-delay:.2s}.dots i:nth-child(3){animation-delay:.4s}
+@keyframes dot{0%,60%,100%{opacity:.25}30%{opacity:1}}
+.foot{margin-top:2.2rem;display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+
+/* the little art card that follows the cursor */
+.peek{position:fixed;left:0;top:0;z-index:20;pointer-events:none;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:.7rem .8rem;box-shadow:0 14px 34px -14px rgba(80,50,50,.28);opacity:0;transform:translate(-50%,-50%) scale(.85);transition:opacity .25s,transform .25s}
+.peek.on{opacity:1;transform:translate(-50%,-50%) scale(1)}
+pre.art{font:400 5px/5px "DM Mono",monospace;color:var(--art);white-space:pre;user-select:none}
+
+/* reading view */
+#post{display:none}
+body.reading #home{display:none}
+body.reading #post{display:block}
+.back{display:inline-flex;gap:.4rem;align-items:center;transition:color .2s}.back:hover{color:var(--rose)}
+.ph{margin:3.5rem 0 2.2rem}
+.badge{display:inline-block;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:.6rem .7rem;margin-bottom:1.6rem}
+.ph h2{font-family:Fraunces,serif;font-variation-settings:"SOFT" 100,"WONK" 1;font-weight:400;font-size:clamp(2rem,6vw,2.8rem);line-height:1.08;letter-spacing:-.015em;margin:.5rem 0 .2rem}
+.prose p{font-size:1.1rem;line-height:1.8;margin-bottom:1.15em}
+.prose p:first-child::first-letter{font-family:Fraunces,serif;font-variation-settings:"SOFT" 100;color:var(--rose);font-size:1.4em}
+.next{margin-top:3rem;padding-top:1.4rem;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+.next a:hover{color:var(--rose)}
+.fade{animation:in .45s ease both}
+@keyframes in{from{opacity:0;transform:translateY(6px)}}
+
+@media (max-width:560px){
+  header{margin:3rem 0 2.2rem}
+  .buddy{width:60px;height:60px}
+  .row{grid-template-columns:1fr auto;gap:.2rem .8rem;padding:.95rem .5rem}
+  .row .mono{grid-column:1/-1;order:-1}
+  .row .t{font-size:1.1rem}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav class="top mono"><a href="/">← durva</a><span id="count"></span></nav>
+
+  <section id="home">
+    <header>
+      <svg class="buddy" id="buddy" viewBox="0 0 80 80" role="img" aria-label="a small sprout creature">
+        <g class="bod">
+          <g class="sprout"><path d="M40 30 C40 22 40 18 40 14" stroke="var(--ink)" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+            <path d="M40 18 C33 18 29 13 29 9 C35 9 40 12 40 18Z" fill="var(--blush)" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M40 15 C46 15 51 11 51 6 C45 6 40 9 40 15Z" fill="var(--blush)" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round"/></g>
+          <path d="M14 70 C10 46 24 30 40 30 C56 30 70 46 66 70 Z" fill="var(--card)" stroke="var(--ink)" stroke-width="2.2" stroke-linejoin="round"/>
+          <ellipse class="eye" cx="32" cy="50" rx="2.6" ry="3.4" fill="var(--ink)"/>
+          <ellipse class="eye" cx="48" cy="50" rx="2.6" ry="3.4" fill="var(--ink)"/>
+          <ellipse cx="26" cy="57" rx="4" ry="2.4" fill="var(--rose)" opacity=".35"/>
+          <ellipse cx="54" cy="57" rx="4" ry="2.4" fill="var(--rose)" opacity=".35"/>
+          <path d="M37 56 Q40 59 43 56" stroke="var(--ink)" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+        </g>
+        <path d="M8 71 H72" stroke="var(--line)" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <div>
+        <h1>grass <em>files</em></h1>
+        <p class="sub">little notes from durva. builds, shoots, and half-finished thoughts.</p>
+      </div>
+    </header>
+
+    <ul class="list" id="list"></ul>
+    <div class="foot mono"><span id="tally"></span><span>written slowly, on purpose</span></div>
+  </section>
+
+  <article id="post" aria-live="polite"></article>
+</div>
+<canvas id="grass" aria-hidden="true"></canvas>
+<div class="peek" id="peek" aria-hidden="true"><pre class="art" id="peekArt"></pre></div>
+
+<script>
+(() => {
+const $ = id => document.getElementById(id), esc = t => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+const reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
+const W = 72, H = 36, TAU = Math.PI * 2, RAMP = " .'`^,:;~-_+<>i!lI?/|()1{}[]rcvunxzjftLCJUYXZO0Qoahkbdpqwm*WMB8&%$#@";
+const hash = (x, y) => { const h = Math.sin(x * 127.1 + y * 311.7) * 43758.5453; return h - Math.floor(h); };
+const sm = u => u * u * (3 - 2 * u), fr = v => v - Math.floor(v);
+const vn = (x, y) => { const i = Math.floor(x), j = Math.floor(y), fx = sm(x - i), fy = sm(y - j), a = hash(i, j), b = hash(i + 1, j), c = hash(i, j + 1), d = hash(i + 1, j + 1); return a + (b - a) * fx + (c - a) * fy + (a - b - c + d) * fx * fy; };
+const fbm = (x, y) => { let v = 0, a = .5; for (let o = 0; o < 4; o++) { v += a * vn(x, y); x = x * 2 + 3.1; y = y * 2 + 1.7; a *= .5; } return v; };
+const SHAPES = [
+  // Linkin Park: a dusty spiral galaxy, arms bent by noise, stars outside
+  (x, y, r, a, t) => { if (r > 1.02) return hash(Math.floor(x * 40), Math.floor(y * 40)) > .992 ? .9 : 0;
+    const w = fbm(x * 3 + t * .15, y * 3 - t * .1) * 1.6, arm = Math.pow((Math.sin(2 * (a + w * .8) - r * 14 + t * 1.2) + 1) / 2, 2), dust = fbm(x * 7, y * 7 + t * .2);
+    return Math.min(1, arm * (1 - r * .7) * (.5 + dust) + Math.exp(-r * 7) * 1.2 + (Math.abs(r - .98) < .02 ? .5 : 0)); },
+  // Radiohead: a bloodshot eye with fibres in the iris, blinking and looking around
+  (x, y, r, a, t) => { const open = .25 + .75 * Math.abs(Math.cos(t * .5)), lid = .64 * Math.cos(x * 1.4) * open;
+    if (Math.abs(x) > 1.02) return 0;
+    if (Math.abs(y) > lid) return Math.max(y < -lid && Math.abs(x) > .15 && Math.abs(y + lid) < .2 && fr(x * 20) < .14 ? .8 : 0, Math.abs(Math.abs(y) - lid) < .05 ? .9 : 0);
+    const ix = .22 * Math.sin(t * .8), iy = .06 * Math.cos(t * .6), dx = x - ix, dy = (y - iy) * 1.15, d = Math.hypot(dx, dy), ia = Math.atan2(dy, dx), pupil = .09 + .05 * Math.sin(t * 1.7);
+    if (d < pupil) return Math.hypot(dx - .05, dy + .04) < .028 ? 1 : 0;
+    if (d < .4) return .35 + .5 * Math.abs(Math.sin(ia * 18 + fbm(d * 8, ia) * 4)) * (1 - d * .6);
+    return .08 + fbm(x * 6, y * 6) * .18 + (fbm(x * 10 + 3, y * 3) > .62 ? .3 : 0); },
+  // Gorillaz: six melting blobs drawn as contour lines
+  (x, y, r, a, t) => { let f = 0; for (let i = 0; i < 6; i++) f += .04 / ((x - .62 * Math.sin(t * .7 + i * 1.9)) ** 2 + (y - .55 * Math.cos(t * .5 + i * 2.4 + 1)) ** 2 + .01);
+    return f < .85 ? 0 : f < 1 ? .3 : .15 + .8 * fr((f - 1) * 1.4); },
+  // Tame Impala: striped sun, noise mountains, stars, a scrolling grid floor
+  (x, y, r, a, t) => { const hz = .15;
+    if (y < hz) { const d = Math.hypot(x, y + .25); if (d < .5) return y > -.25 && Math.sin(y * 45 - t * 1.5) > .2 ? .15 : .6 + .4 * (1 - d * 2);
+      const ridge = hz - .2 * fbm(x * 3 + 1, 2); if (y > ridge) return Math.abs(y - ridge) < .03 ? .85 : .12;
+      return hash(Math.floor(x * 36), Math.floor(y * 18)) > .985 ? .4 + .5 * Math.sin(t * 3 + x * 9) ** 2 : 0; }
+    const z = 1 / (y - hz + .04), line = Math.abs(fr(x * z * .5) - .5) > .46 || fr(z * .9 - t * 1.2) > .93; return line ? Math.min(1, .25 + (y - hz) * 1.2) : .06; },
+  // DPR Ian: a square tunnel of checkerboard tiles rushing past
+  (x, y, r, a, t) => { const m = Math.max(Math.abs(x), Math.abs(y)); if (m < .05) return 1; const z = .45 / m, ang = Math.atan2(y, x) + t * .25, chk = ((Math.floor(ang / TAU * 16 + 16) + Math.floor(z * 3 - t * 2.5)) % 2 + 2) % 2; return (chk ? .92 : .18) * Math.min(1, m * 2.2); },
+  // Nirvana: a shaded smiley with x eyes, VHS glitching and scanlines
+  (x, y, r, a, t) => { const row = Math.floor((y + 1) * H / 2), xx = x + (hash(row, Math.floor(t * 6)) > .93 ? (hash(row, 3) - .5) * .3 : 0), rr = Math.hypot(xx, y);
+    if (rr > .93) return rr < .98 ? .85 : hash(Math.floor(xx * 30), Math.floor(y * 30)) > .97 ? .3 : 0;
+    const cross = sx => { const dx = Math.abs(xx - sx), dy = Math.abs(y + .22); return dx < .18 && dy < .18 && Math.abs(dx - dy) < .05; }, mouth = Math.abs(xx) < .56 && Math.abs(y - (.25 + .32 * xx * xx * (.7 + .3 * Math.sin(t * 2)))) < .06;
+    if (cross(-.34) || cross(.34) || mouth) return 0;
+    return Math.sqrt(1 - rr * rr * .9) * .75 + .1 - (xx + y * .6) * .12 + hash(Math.floor(xx * 40), Math.floor(y * 40)) * .08 - (fr(y * H * .5 - t * .5) < .12 ? .12 : 0); },
+  // ATEEZ: a compass rose, two stars turning against each other, ticks, orbiting dots
+  (x, y, r, a, t) => { let v = Math.abs(r - .93) < .025 ? .8 : 0;
+    if (r > .82 && r < .93 && fr(a / TAU * 48 + t * .2) < .2) v = Math.max(v, .7);
+    const k = Math.abs(Math.cos((a + t * .4) * 4)), k2 = Math.abs(Math.cos((a - t * .7) * 4 + .785));
+    if (r < .8 * (.12 + .88 * k ** 4)) v = Math.max(v, .95 - r * .4);
+    if (r < .42 * (.15 + .85 * k2 ** 3)) v = 1;
+    if (r < .8 && Math.abs(Math.sin(r * 9 - t * 2.5)) < .07) v = Math.max(v, .35);
+    for (let i = 0; i < 3; i++) if (Math.hypot(x - .62 * Math.cos(t * 1.2 + i * 2.09), y - .62 * Math.sin(t * 1.2 + i * 2.09)) < .05) v = 1;
+    return v; },
+  // Pink Floyd: a beam in, a prism with faceted glass, a spectrum fanning out
+  (x, y, r, a, t) => { const xs = x + .45, tri = y > -.72 && y < .62 && Math.abs(xs) < (y + .72) * .55;
+    if (tri) return Math.abs(Math.abs(xs) - (y + .72) * .55) < .07 || y > .57 ? .95 : .1 + .15 * fbm(xs * 8, y * 8 + t) + (Math.abs(xs - (y - .1) * .2) < .015 ? .5 : 0);
+    let v = hash(Math.floor(x * 36), Math.floor(y * 18)) > .995 ? .5 : 0;
+    if (xs < -.05) { const d = Math.abs(y - .05); return Math.max(v, d < .03 ? 1 : d < .07 ? .3 : 0); }
+    if (xs > .15) for (let n = 0; n < 7; n++) { const ry = .05 + (xs - .15) * (n - 3) * .17; if (Math.abs(y - ry) < .03 + (xs - .15) * .02) v = Math.max(v, .35 + n * .07 + .3 * Math.sin(xs * 24 - t * 6 + n * 2) ** 2); }
+    return v; }
+];
+/* thirteen more covers, so every song has a sleeve of its own. order matches SONGS */
+const COVERS = [
+  SHAPES[0], SHAPES[1], SHAPES[2], SHAPES[3],
+  // DPR IAN, The Show: curtains, three searching spotlights, a figure on stage, a crowd
+  (x, y, r, a, t) => { if (y > .8 - .05 * Math.abs(Math.sin(x * 11 + Math.floor(x * 5)))) return 0;
+    if (Math.abs(x) > .72 + .05 * Math.sin(y * 7 + t)) return .25 + .35 * Math.abs(Math.sin(x * 34));
+    let v = 0; for (let k = 0; k < 3; k++) { const ax = -.8 + k * .8, tgt = .55 * Math.sin(t * .7 + k * 2.1), cx = ax + (tgt - ax) * (y + 1) / 2, w = .05 + (y + 1) * .16, d = Math.abs(x - cx); if (d < w) v += .35 * (1 - d / w) + .12; }
+    if (Math.hypot(x, y - .02) < .1 || (Math.abs(x) < .13 && y > .1 && y < .58) || (Math.abs(y - .2) < .025 && Math.abs(x) < .3 && Math.abs(x) > .13)) return 0;
+    if (y > .62) return (Math.abs(fr(x * (y - .5) * 6 + .5) - .5) > .46 ? .5 : .1) + v * .3;
+    return Math.min(1, v) + (hash(Math.floor(x * 40), Math.floor(y * 20)) > .99 ? .5 : 0); },
+  SHAPES[5], SHAPES[6], SHAPES[7],
+  // CORTIS, REDRED: two red discs sliding over each other, glitching, with a bright lens where they overlap
+  (x, y, r, a, t) => { const c1 = Math.hypot(x + .28 * Math.sin(t * .5), y) < .55, c2 = Math.hypot(x - .28 * Math.sin(t * .5), y) < .55, scan = fr(y * H * .5 - t) < .45, gl = hash(Math.floor((y + 1) * H / 2), Math.floor(t * 5)) > .9 ? .3 : 0;
+    if (c1 && c2) return .95 - r * .2; if (c1 || c2) return (scan ? .55 : .25) + gl; return r < 1.02 ? (Math.abs(Math.sin(r * 14 - t * 2)) > .9 ? .35 : .05) + gl * .5 : 0; },
+  // Metallica, Enter Sandman: a cratered moon over drifting cloud, dunes below
+  (x, y, r, a, t) => { const mx = .1, my = -.35, md = Math.hypot(x - mx, y - my), dune = .45 + .12 * Math.sin(x * 3 + 1) + .05 * Math.sin(x * 9 + t * .3);
+    if (md < .42) { const lit = .9 - md * .8; return fbm((x - mx) * 6, (y - my) * 6 + 3) > .62 ? lit * .45 : lit; }
+    if (y > dune) return Math.abs(y - dune) < .03 ? .85 : .08 + .1 * fbm(x * 8, y * 8);
+    return (md < .6 ? .15 * (1 - md) : 0) + (fbm(x * 3 + t * .1, y * 6) > .6 ? .25 : 0) + (hash(Math.floor(x * 40), Math.floor(y * 20)) > .99 ? .9 : 0); },
+  // Guns N' Roses, Sweet Child O' Mine: a cross with five skulls, thorns creeping round it
+  (x, y, r, a, t) => { for (const [sx, sy] of [[0, -.8], [0, .8], [-.5, -.2], [.5, -.2], [0, -.2]]) { const d = Math.hypot(x - sx, (y - sy) * 1.1);
+      if (d < .16) { const eye = Math.hypot(Math.abs(x - sx) - .06, y - sy + .02) < .035, nose = Math.abs(x - sx) < .02 && Math.abs(y - sy - .05) < .03, teeth = y - sy > .09 && Math.abs(fr((x - sx) * 30) - .5) < .12; return eye || nose || teeth ? .05 : .95; } }
+    if ((Math.abs(x) < .09 && y > -.8 && y < .8) || (Math.abs(y + .2) < .09 && Math.abs(x) < .5)) return .5 + .25 * Math.sin(t * 2 + y * 8);
+    return Math.exp(-Math.hypot(x, y + .2) * 3) * .5 + (fbm(x * 5 + t * .1, y * 5) > .6 && r < .95 ? .4 : 0) + (r > .96 && r < 1 ? .5 : 0); },
+  // Scorpions, Wind of Change: streamlines of wind, dandelion seeds blown across
+  (x, y, r, a, t) => { let v = Math.pow(Math.max(0, Math.sin(y * 16 + fbm(x * 2 + t * .2, y * 2) * 10 - x * 2)), 8) * (.5 + .5 * Math.sin(x * 3 - t * 1.5));
+    for (let i = 0; i < 7; i++) { const px = ((hash(i, 1) * 2.4 + t * .25) % 2.4) - 1.2, py = hash(i, 2) * 1.6 - .8 + .1 * Math.sin(t * 2 + i), d = Math.hypot(x - px, y - py); if (d < .05) v = 1; else if (d < .15 && fr(Math.atan2(y - py, x - px) * 3.18 + i) < .15) v = Math.max(v, .8); } return v; },
+  // Bon Jovi, Livin' on a Prayer: slippery when wet. Drops fall down glass onto a rippling surface
+  (x, y, r, a, t) => { let v = 0; for (let i = 0; i < 6; i++) { const dx = hash(i, 5) * 1.8 - .9, sp = .25 + hash(i, 6) * .3, dy = ((t * sp + hash(i, 7)) % 1) * 2.2 - 1.1, d = Math.hypot((x - dx) * 1.4, (y - dy) * .7);
+      if (d < .07) v = 1; if (Math.abs(x - dx) < .012 && y < dy && y > dy - .35) v = Math.max(v, .5 * (1 - (dy - y) / .35)); }
+    if (y > .55) v = Math.max(v, .2 + .15 * Math.sin(x * 14 + t * 2) * .5 + (Math.abs(fr(y * 10 + Math.sin(x * 4 + t)) - .5) > .45 ? .4 : 0)); return v + (hash(Math.floor(x * 30), Math.floor(y * 15)) > .985 ? .3 : 0); },
+  // AC/DC, Back in Black: high voltage. A jagged, forking bolt with a glow, flashing inside a storm
+  (x, y, r, a, t) => { const tri = u => Math.abs(fr(u) - .5) * 4 - 1, flick = .55 + .45 * Math.abs(Math.sin(t * 6.3) * Math.sin(t * 2.9)),
+      bolt = (off, ph, wd) => { const d = Math.abs(x - (.28 * tri(y * 1.7 + ph) + .07 * tri(y * 8 + ph * 3 + t * .3) + off)); return d < wd ? 1 : Math.exp(-(d - wd) * 13) * .75; };
+    let v = bolt(0, 0, .035); if (y > -.1) v = Math.max(v, bolt(.25 * (y + .1), .37, .018) * .8); if (y < .35) v = Math.max(v, bolt(-.3 * (.35 - y), .71, .015) * .7);
+    return Math.min(1, v * flick + fbm(x * 3 + t * .15, y * 3) * (1 - Math.abs(y) * .6) * flick * .25); },
+  // Green Day, Boulevard of Broken Dreams: a cracked heart with a grenade pin and a burning fuse
+  (x, y, r, a, t) => { const sc = 1 + .05 * Math.sin(t * 3), hx = x / (.8 * sc), hy = -(y + .1) / (.8 * sc), hv = (hx * hx + hy * hy - 1) ** 3 - hx * hx * hy ** 3;
+    if (Math.abs(Math.hypot(x - .45, y + .78) - .14) < .03 || (Math.abs(y + .72 - (x - .05) * .4) < .025 && x > -.1 && x < .5) || Math.hypot(x - .55, y + .95) < .06 + .03 * Math.sin(t * 12)) return 1;
+    if (Math.abs(hv) < .06) return .95; if (hv < 0) return fbm(x * 7, y * 7 + 1) > .66 ? .1 : .55 + .25 * hy + .1 * hash(Math.floor(x * 40), Math.floor(y * 20));
+    return hash(Math.floor(x * 30), Math.floor(y * 15)) > .99 ? .5 : 0; },
+  // Aerosmith, Dream On: a pair of wings spread from a ringed centre, feathers flexing
+  (x, y, r, a, t) => { const px = Math.abs(x) - .12, py = y + .1, rad = Math.hypot(px, py), ang = Math.atan2(py, px), flap = .08 * Math.sin(t * 1.5); let v = 0;
+    if (Math.abs(Math.hypot(x, y + .05) - .13) < .025 || Math.hypot(x, y + .05) < .03) return 1;
+    if (Math.abs(x) > .1) for (let n = 0; n < 8; n++) { const an = -1.15 + n * .22 + flap, L = .45 + .5 * Math.sin(n * .42 + .2); if (rad < L && Math.abs(ang - an) < .06 + rad * .03) v = Math.max(v, .35 + .5 * (1 - rad / L) + .15 * Math.sin(rad * 40 - t * 3)); }
+    return v + (hash(Math.floor(x * 30), Math.floor(y * 15)) > .99 ? .4 : 0); },
+  // R.E.M., Losing My Religion: two ring patterns drifting through each other until the picture swims
+  (x, y, r, a, t) => { const c1 = Math.hypot(x - .3 * Math.sin(t * .4), y - .3 * Math.cos(t * .3)), c2 = Math.hypot(x + .3 * Math.cos(t * .35), y + .3 * Math.sin(t * .45)); return r < 1.02 ? ((Math.sin(c1 * 50) + Math.sin(c2 * 50)) / 2 + 1) / 2 * .8 + (r > .98 ? .2 : 0) : 0; },
+  // Evanescence, Bring Me to Life: a gothic arch holding a turning rose window
+  (x, y, r, a, t) => { const top = -.55, inArch = Math.abs(x) < .62 && (y > top || Math.hypot(x, y - top) < .62) && y < .95;
+    if (!inArch) return (Math.abs(Math.abs(x) - .62) < .03 && y > top - .1) ? .8 : (hash(Math.floor(x * 37), Math.floor(y * 20)) > .99 ? .4 : 0);
+    const dy = y + .1, rr = Math.hypot(x, dy), aa = Math.atan2(dy, x) + t * .15;
+    if (rr < .5) { const petal = Math.abs(Math.cos(aa * 6)) * .4 + .1; if (Math.abs(rr - petal) < .05) return .95; if (rr < .06) return 1; return (Math.abs(Math.sin(rr * 30)) > .9 ? .5 : .12) + .1 * Math.sin(aa * 12); }
+    return Math.abs(fr(x * 5 + .5) - .5) > .44 ? .7 : .08 + .25 * fbm(x * 6, y * 6 + t * .3); },
+  // Red Hot Chili Peppers, Californication: pool-light caustics with a palm frond's shadow across the corner
+  (x, y, r, a, t) => { const q = fbm(x * 3 + t * .2, y * 3 - t * .15), v = Math.pow(1 - Math.abs(2 * fbm(x * 6 + q * 3, y * 6 + q * 2 + t * .1) - 1), 5) * 1.1, px = x + .85, py = y + .85, pr = Math.hypot(px, py), pa = Math.atan2(py, px);
+    if (pr < 1.05 && pa > -.1 && pa < 1.7 && Math.abs(Math.sin(pa * 9 + Math.sin(t) * .2)) > .55 && pr < 1.05 - .2 * Math.abs(Math.sin(pa * 9))) return 0; return v; },
+  // Dire Straits, Sultans of Swing: a Strat on the diagonal, all six strings ringing
+  (x, y, r, a, t) => { const c = Math.cos(.62), s = Math.sin(.62), u = x * c + y * s, v = -x * s + y * c; let o = hash(Math.floor(x * 40), Math.floor(y * 20)) > .99 ? .4 : 0;
+    for (let j = 0; j < 6; j++) if (u > -.4 && u < 1 && Math.abs(v - (j - 2.5) * .02 - .012 * Math.sin(u * 22 - t * (9 + j)) * Math.sin(u * 3)) < .006) return .95;
+    if (u > -.05 && u < .95 && Math.abs(v) < .07) return fr(u * 9) < .05 ? .7 : .25; if (u > .9 && u < 1.15 && Math.abs(v) < .1) return .5;
+    if (Math.hypot((u + .32) / .42, v / .3) < 1 || Math.hypot((u + .55) / .25, (v - .1) / .2) < 1) { for (let k = 0; k < 3; k++) if (Math.abs(u + .3 - k * .1) < .02 && Math.abs(v) < .1) return .9; return .4 + .25 * Math.sin(x * 6 + y * 3 - t); } return o; },
+  // Oasis, Wonderwall: a brick wall washed by a drifting light, the whole picture rippling
+  (x, y, r, a, t) => { const xx = x + .03 * Math.sin(y * 12 + t * 2), row = Math.floor((y + 1) * 6), off = (row % 2) * .5, bx = fr((xx + 1) * 3 + off), by = fr((y + 1) * 6), d = Math.hypot(xx - .5 * Math.sin(t * .4), y + .2 - .2 * Math.cos(t * .3)), light = Math.max(0, 1 - d * 1.1);
+    if (bx < .07 || by < .12) return .12 * light + .04; return light * (.5 + .25 * hash(Math.floor((xx + 1) * 3 + off), row)) * 1.6 + .06; }
+];
+const art = (i, t) => { let o = ''; for (let j = 0; j < H; j++) { for (let k = 0; k < W; k++) { const x = k / (W - 1) * 2 - 1, y = j / (H - 1) * 2 - 1, r = Math.hypot(x, y); let v = COVERS[i](x, y, r, Math.atan2(y, x), t); if (v < .08) v = Math.max(v, (.01 + .07 * fbm(x * 3.5 + i * 7, y * 3.5 - t * .08)) * (1.1 - r * .6)); v = Math.max(0, Math.min(.999, v)); o += RAMP[Math.floor(v * RAMP.length)]; } o += String.fromCharCode(10); } return o; };
+
+
+/* the notes. add one here and it shows up in the list */
+const POSTS = [
+  { slug: 'intentionally-unfinished', title: 'This space intentionally unfinished', tag: 'Note', date: '31 Aug 2026', art: 3,
+    body: ['First note. This is where the longer things will live: build logs, shoot write-ups, and whatever doesn’t fit on a card.', 'More soon.'] },
+  { slug: 'tread', title: 'Skipping prefill: notes on tread', tag: 'Build log', soon: true, art: 4 },
+  { slug: 'taintmem', title: 'Planting a payload in agent memory', tag: 'Security', soon: true, art: 2 },
+  { slug: 'skillfuzz', title: 'Fuzzing the tools agents trust', tag: 'Security', soon: true, art: 6 },
+  { slug: 'runway', title: 'Clean frames from three runway cameras', tag: 'Vision', soon: true, art: 7 }
+];
+const live = POSTS.filter(p => !p.soon);
+$('count').textContent = `${live.length} note${live.length === 1 ? '' : 's'}`;
+$('tally').textContent = `${live.length} written · ${POSTS.length - live.length} brewing`;
+const dots = '<span class="dots"><i></i><i></i><i></i></span>';
+$('list').innerHTML = POSTS.map((p, i) => p.soon
+  ? `<li><div class="row soon" data-i="${i}"><span class="mono">soon</span><span class="t">${esc(p.title)}</span><span class="tag">brewing${dots}</span></div></li>`
+  : `<li><a class="row" href="#/${p.slug}" data-i="${i}"><span class="mono">${esc(p.date)}</span><span class="t">${esc(p.title)}</span><span class="tag">${esc(p.tag)}</span></a></li>`).join('');
+
+/* buddy hops when poked */
+$('buddy').addEventListener('click', e => { const b = e.currentTarget; b.classList.remove('hop'); void b.getBBox(); b.classList.add('hop'); });
+
+/* hover peek: a small, slow ASCII picture that trails the cursor */
+const peek = $('peek'), peekArt = $('peekArt');
+let T = 0, hov = -1, px = 0, py = 0, cx = 0, cy = 0;
+const draw = () => { if (hov >= 0) peekArt.textContent = art(POSTS[hov].art, T); };
+$('list').addEventListener('pointermove', e => {
+  if (e.pointerType !== 'mouse') return;
+  const r = e.target.closest('a.row'); px = e.clientX + 150; py = e.clientY;
+  const i = r ? +r.dataset.i : -1;
+  if (i !== hov) { hov = i; peek.classList.toggle('on', i >= 0); if (i >= 0) { if (!cx) { cx = px; cy = py; } draw(); } }
+});
+$('list').addEventListener('pointerleave', () => { hov = -1; peek.classList.remove('on'); });
+(function follow() { cx += (px - cx) * .14; cy += (py - cy) * .14; peek.style.left = cx + 'px'; peek.style.top = cy + 'px'; requestAnimationFrame(follow); })();
+
+/* reading view */
+let reading = null;
+const route = () => {
+  const slug = location.hash.replace(/^#\/?/, ''), p = live.find(q => q.slug === slug);
+  reading = p || null; document.body.classList.toggle('reading', !!p);
+  peek.classList.remove('on'); hov = -1;
+  if (!p) { document.title = 'Grass Files'; return; }
+  const i = live.indexOf(p), nx = live[i + 1];
+  document.title = p.title + ' · Grass Files';
+  $('post').innerHTML = `<div class="fade"><a class="back mono" href="#/">← all notes</a>
+    <div class="ph"><div class="badge"><pre class="art" id="side"></pre></div>
+    <p class="mono">${esc(p.date)} · ${esc(p.tag)}</p><h2>${esc(p.title)}</h2></div>
+    <div class="prose">${p.body.map(t => `<p>${esc(t)}</p>`).join('')}</div>
+    <div class="next mono"><a href="#/">← back to the list</a>${nx ? `<a href="#/${nx.slug}">next: ${esc(nx.title)} →</a>` : '<span>that’s the newest one</span>'}</div></div>`;
+  $('side').textContent = art(p.art, T); scrollTo(0, 0);
+};
+addEventListener('hashchange', route); route();
+addEventListener('keydown', e => { if (e.key === 'Escape' && reading) location.hash = '#/'; });
+
+/* a strip of ink-drawn grass along the bottom. It stands still, and only leans away from the cursor */
+(() => {
+  const cv = $('grass'), g = cv.getContext('2d'); let blades = [], flowers = [], w = 0, h = 0, mx = -999, my = -999, dirty = true, cols;
+  const rnd = (a, b) => a + Math.random() * (b - a);
+  const css = () => { const st = getComputedStyle(document.documentElement); cols = { ink: st.getPropertyValue('--ink').trim(), mute: st.getPropertyValue('--mute').trim(), rose: st.getPropertyValue('--rose').trim(), blush: st.getPropertyValue('--blush').trim() }; };
+  const build = () => { const r = devicePixelRatio || 1; w = cv.clientWidth; h = cv.clientHeight; cv.width = w * r; cv.height = h * r; g.setTransform(r, 0, 0, r, 0, 0);
+    blades = []; flowers = []; const n = Math.floor(w / 4.5);
+    for (let k = 0; k < n; k++) { const x = (k + Math.random()) * (w / n), wave = .55 + .45 * Math.sin(x / 90) * Math.sin(x / 37 + 1);
+      blades.push({ x, h: rnd(18, 70) * (.6 + .6 * wave), lean: rnd(-.35, .35), bend: 0, wid: rnd(1, 2.2), a: rnd(.25, .8), back: Math.random() < .45 }); }
+    for (let k = 0; k < Math.max(3, w / 160); k++) flowers.push({ x: rnd(20, w - 20), h: rnd(55, 95), lean: rnd(-.2, .2), bend: 0, r: rnd(4, 6.5) });
+    dirty = true; };
+  const blade = b => { const bx = b.x, top = h - b.h, tip = bx + (b.lean + b.bend) * b.h; g.beginPath(); g.moveTo(bx - b.wid, h); g.quadraticCurveTo(bx + (tip - bx) * .3, h - b.h * .55, tip, top); g.quadraticCurveTo(bx + (tip - bx) * .3 + b.wid * .4, h - b.h * .55, bx + b.wid, h); g.fill(); };
+  const draw = () => { g.clearRect(0, 0, w, h);
+    g.fillStyle = cols.mute; blades.forEach(b => { if (b.back) { g.globalAlpha = b.a * .5; blade(b); } });
+    flowers.forEach(f => { const tx = f.x + (f.lean + f.bend) * f.h, ty = h - f.h; g.globalAlpha = .9; g.strokeStyle = cols.ink; g.lineWidth = 1.4; g.beginPath(); g.moveTo(f.x, h); g.quadraticCurveTo(f.x + (tx - f.x) * .3, h - f.h * .5, tx, ty); g.stroke();
+      for (let k = 0; k < 6; k++) { const an = k / 6 * Math.PI * 2; g.fillStyle = cols.blush; g.strokeStyle = cols.rose; g.lineWidth = 1.1; g.beginPath(); g.ellipse(tx + Math.cos(an) * f.r, ty + Math.sin(an) * f.r, f.r * .75, f.r * .45, an, 0, 7); g.fill(); g.stroke(); }
+      g.fillStyle = cols.rose; g.beginPath(); g.arc(tx, ty, f.r * .45, 0, 7); g.fill(); });
+    g.fillStyle = cols.ink; blades.forEach(b => { if (!b.back) { g.globalAlpha = b.a * .55; blade(b); } }); g.globalAlpha = 1; };
+  const tick = () => { let moving = false; const r = cv.getBoundingClientRect(), lx = mx - r.left, ly = my - r.top;
+    const push = o => { const dx = o.x - lx, d = Math.hypot(dx, (h - o.h * .5) - ly), target = d < 90 ? Math.sign(dx || 1) * (1 - d / 90) * .9 : 0; const nb = o.bend + (target - o.bend) * .12; if (Math.abs(nb - o.bend) > .0005) { o.bend = nb; moving = true; } };
+    blades.forEach(push); flowers.forEach(push); if (moving || dirty) { draw(); dirty = false; } requestAnimationFrame(tick); };
+  css(); build(); if (reduce) draw(); else tick();
+  addEventListener('resize', build);
+  addEventListener('pointermove', e => { if (e.pointerType === 'mouse') { mx = e.clientX; my = e.clientY; } });
+  cv.addEventListener('pointerdown', e => { mx = e.clientX; my = e.clientY; setTimeout(() => { mx = my = -999; }, 500); });
+  matchMedia('(prefers-color-scheme:dark)').addEventListener('change', () => { css(); dirty = true; if (reduce) draw(); });
+})();
+
+/* everything moves slowly, so the page stays calm */
+if (!reduce) setInterval(() => { T += .035; draw(); if (reading) { const s = $('side'); if (s) s.textContent = art(reading.art, T); } }, 140);
+})();
+</script>
+</body>
+</html>
