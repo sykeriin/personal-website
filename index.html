@@ -68,7 +68,7 @@ main{height:100vh;height:100svh}
 .card.work .body>.shot{grid-column:2;grid-row:1 / span 5}
 .card.work .body>:not(.shot){grid-column:1}
 .card .ttl{text-decoration:none;display:inline-block}
-.card .ttl span{font-size:.45em;vertical-align:super;margin-left:.25em;color:var(--red);letter-spacing:0}
+.card .ttl span{font-variant-emoji:text;font-size:.45em;vertical-align:super;margin-left:.25em;color:var(--red);letter-spacing:0}
 .card .ttl:hover{color:var(--red)}
 .card .desc{font-size:.92rem}
 .card.wide{width:min(38rem,100%);max-height:min(52vh,28rem)}
@@ -218,7 +218,7 @@ const DESC = {
   'CloudSense': 'A FinOps dashboard for AWS spend. It pulls cost data, flags anomalies with an Isolation Forest, forecasts with Prophet and suggests what to cut.'
 };
 const slug = n => n.toLowerCase().replace(/[^a-z0-9]+/g, '-');
-const work = (n, t, pose, repo, s, what) => ({ n, pose, kind: 'Work', html: `<h2><a class="ttl" href="/project.html#/${slug(n)}">${esc(n)}<span>↗</span></a></h2><p class="tag">${esc(t)}</p><p class="desc">${esc(DESC[n] || what || '')}</p>${shot(s)}<p class="px foot"><a href="/project.html#/${slug(n)}">Full write-up</a>${repo ? `<a href="${gh}${repo}" target="_blank" rel="noopener">Code on GitHub</a>` : ''}</p>` });
+const work = (n, t, pose, repo, s, what) => ({ n, pose, kind: 'Work', html: `<h2><a class="ttl" href="/project.html#/${slug(n)}">${esc(n)}<span>↗︎</span></a></h2><p class="tag">${esc(t)}</p><p class="desc">${esc(DESC[n] || what || '')}</p>${shot(s)}<p class="px foot"><a href="/project.html#/${slug(n)}">Full write-up</a>${repo ? `<a href="${gh}${repo}" target="_blank" rel="noopener">Code on GitHub</a>` : ''}</p>` });
 const SONGS = [
   { a: 'Linkin Park', t: 'In The End', d: 216, c: '#2a2a2e' }, { a: 'Radiohead', t: 'Creep', d: 238, c: '#3b4a3f' }, { a: 'Gorillaz', t: 'Feel Good Inc.', d: 221, c: '#2b3c5a' }, { a: 'Tame Impala', t: 'The Less I Know The Better', d: 216, c: '#7a3b5e' },
   { a: 'DPR IAN', t: 'The Show', d: 205, c: '#4a3a6a' }, { a: 'Nirvana', t: 'Smells Like Teen Spirit', d: 301, c: '#9a8a2a' }, { a: 'ATEEZ', t: 'Guerrilla', d: 199, c: '#8a1d2c' }, { a: 'Pink Floyd', t: 'Another Brick In The Wall', d: 239, c: '#5a5a60' },
