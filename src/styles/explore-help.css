@@ -35,8 +35,7 @@
 .explore-help__browse { margin-bottom: .4rem; }
 .explore-help__restore { display: block; }
 .explore-help__books {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: block;
   max-height: min(50vh, 24rem);
   overflow-y: auto;
   background: var(--paper);
@@ -50,3 +49,7 @@
 @media (max-width: 47.99rem) {
   .explore-help { bottom: 6.5rem; width: min(20rem, calc(100vw - 2rem)); }
 }
+
+.explore-help__section + .explore-help__section { margin-top: .75rem; }
+.explore-help__section h3 { margin: .3rem 0; padding: .3rem; background: var(--ink); color: var(--paper); font: inherit; text-transform: uppercase; letter-spacing: .04em; }
+.explore-help__section > div { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .3rem; }

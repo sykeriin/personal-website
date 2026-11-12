@@ -18,7 +18,7 @@ export type RenderTier =
   /** Full pipeline at higher DPR with more edge taps. */
   | 'inked-plus'
 
-const ORDER: RenderTier[] = ['paper', 'flat', 'inked', 'inked-plus']
+const ORDER: RenderTier[] = ['paper', 'inked', 'inked-plus']
 const STORAGE_KEY = 'inkwell-tier'
 
 export type RenderTierState = {
@@ -42,6 +42,7 @@ function supportsWebGL2(): boolean {
 function readPinned(): RenderTier | null {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
+    if (raw === 'flat') return 'paper'
     return ORDER.includes(raw as RenderTier) ? (raw as RenderTier) : null
   } catch {
     return null
@@ -72,7 +73,7 @@ function detectTier(): RenderTier {
   // the real hardware-based read below, same as any other laptop.
   if (coarse && window.innerWidth <= 1024) return 'paper'
   // Past tablet width, gate purely on the hardware, never on viewport width.
-  if (cores <= 4) return 'flat'
+  if (cores <= 4) return 'paper'
   if (coarse) return 'inked'
   return cores >= 8 ? 'inked-plus' : 'inked'
 }
@@ -127,7 +128,7 @@ export function useRenderTier(): RenderTierState {
         if (slow / frames > 0.5) {
           setAutoTier((current) => {
             const index = ORDER.indexOf(current)
-            return index > 1 ? ORDER[index - 1] : current
+            return index > 0 ? ORDER[index - 1] : current
           })
           stop = true
         }

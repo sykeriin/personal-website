@@ -24,7 +24,8 @@ export function Cover() {
   useDocumentMeta(`${site.name} — ${entry.label}`, entry.description)
 
   return (
-    <main className="chapter">
+    <main className="chapter cover-chapter">
+      <div className="cover-edition" aria-hidden="true"><span>PORTFOLIO / 2026</span><span>ONE PERSON · TWO SIDES</span></div>
       <header className="chapter-head">
         <div className="chapter-head__eyebrow">{entry.label} · two covers, one spine</div>
         <h1 className="chapter-head__title" tabIndex={-1} id="chapter-title">
@@ -32,7 +33,11 @@ export function Cover() {
         </h1>
       </header>
 
-      <p className="lede">{site.coverHook}</p>
+      <div className="cover-intro">
+        <p className="cover-intro__eyebrow">ENGINEER / CREATIVE / CURIOUS</p>
+        <p className="cover-intro__headline">I MAKE <em>THINGS.</em></p>
+        <p className="lede">AI systems, visual stories, and everything I learn by making them. Pick a side to start — the other is never far away.</p>
+      </div>
 
       {/* The fork. Each half is a front cover: side A builds, side B shoots. */}
       <nav className="fork" aria-label="Pick a side">
@@ -41,20 +46,20 @@ export function Cover() {
           to="/origin"
           style={{ '--fork': sideAccent.tech } as React.CSSProperties}
         >
-          <span className="fork__label">cover a</span>
-          <span className="fork__title">the tech side</span>
+          <span className="fork__label">01 / THE BUILDER</span>
+          <span className="fork__title">TECH<span aria-hidden="true"> ↗</span></span>
           <span className="fork__blurb">ai systems, research experiments, and things built to work</span>
-          <span className="fork__go">open it →</span>
+          <span className="fork__go">EXPLORE TECH →</span>
         </Link>
         <Link
           className="fork__side"
           to="/session"
           style={{ '--fork': sideAccent.creative } as React.CSSProperties}
         >
-          <span className="fork__label">cover b</span>
-          <span className="fork__title">the creative side</span>
+          <span className="fork__label">02 / THE MAKER</span>
+          <span className="fork__title">CREATIVE<span aria-hidden="true"> ↗</span></span>
           <span className="fork__blurb">modelling, directing shoots, designing the thing</span>
-          <span className="fork__go">flip it →</span>
+          <span className="fork__go">EXPLORE CREATIVE →</span>
         </Link>
       </nav>
 

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { projects } from '../data/content'
+import { projectSections } from '../data/projectSections'
 import { hotspots, useHotspots } from '../world/hotspots'
 import '../styles/explore-help.css'
 
@@ -47,7 +48,10 @@ export function ExploreHelp({ pathname, explore }: { pathname: string; explore: 
             {browse ? 'close book list' : `browse all ${projects.length} books`} {browse ? '−' : '+'}
           </button>
           {browse && <div id="book-picker" className="explore-help__books" aria-label="Choose a project book">
-            {projects.map((project) => <button key={project.slug} onClick={() => hotspots.activate(`proj-${project.slug}`)}>{project.title}</button>)}
+            {projectSections.map((section) => <section key={section.id} className="explore-help__section" aria-label={section.title}>
+              <h3>{section.title}</h3>
+              <div>{section.projects.map((project) => <button key={project.slug} onClick={() => hotspots.activate(`proj-${project.slug}`)}>{project.title}</button>)}</div>
+            </section>)}
           </div>}
         </>
       )}

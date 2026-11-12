@@ -122,7 +122,7 @@ export function Layout() {
       {explore ? <BookReader /> : null}
 
       <PageTurns />
-      {entered ? <ExploreHelp pathname={location.pathname} explore={explore} /> : null}
+      {entered && world ? <ExploreHelp pathname={location.pathname} explore={explore} /> : null}
       {!entered ? (
         <EntryGate
           reduceMotion={reduceMotion}

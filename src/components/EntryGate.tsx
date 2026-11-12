@@ -67,10 +67,6 @@ export function EntryGate({
             <strong>heavy</strong>
             <span>the full drawn world</span>
           </button>
-          <button onClick={() => pick('flat')}>
-            <strong>light</strong>
-            <span>3d, fewer effects</span>
-          </button>
           <button onClick={() => pick('paper')}>
             <strong>just the words</strong>
             <span>flat and fast</span>

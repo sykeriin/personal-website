@@ -1,3 +1,4 @@
+import { projectSections } from '../data/projectSections'
 import { projects } from '../data/content'
 
 /**
@@ -280,12 +281,14 @@ export const PROJECT_ACCENTS: Record<string, string> = {
  * to that exact spine instead of just cutting closer on the whole shelf.
  */
 export const CASE_GROUP = { position: [0.2, -0.27, -1.7] as [number, number, number], scale: 0.8 }
-export const PROJECT_BOOKS = projects.map((project, index) => ({
-  ...project,
-  x: -2.3 + (index % 12) * 0.415,
-  y: index < 12 ? 0.68 : -1.04,
-  h: 1.2 + (index % 3) * 0.08,
-}))
+export const PROJECT_BOOKS = projectSections.flatMap((section, sectionIndex) =>
+  section.projects.map((project, index) => ({
+    ...project,
+    x: (sectionIndex % 2 === 0 ? -1.32 : 1.32) + (index - (section.projects.length - 1) / 2) * Math.min(0.35, 2.25 / Math.max(1, section.projects.length - 1)),
+    y: sectionIndex < 2 ? 0.68 : -1.04,
+    h: 1.2 + (index % 3) * 0.07,
+  })),
+)
 export const PROJECT_BOOK_LOCAL = Object.fromEntries(
   PROJECT_BOOKS.map(({ slug, x, y }) => [slug, { x, y }]),
 )

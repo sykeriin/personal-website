@@ -6,6 +6,7 @@ import type { InkPalette } from '../three/theme'
 import { makeToonGradient } from '../three/toonGradient'
 import { notes } from '../content/notes'
 import { achievements, socials } from '../data/content'
+import { projectSections } from '../data/projectSections'
 import { usePresence } from '../hooks/usePresence'
 import { PROJECT_ACCENTS, PROJECT_BOOKS, sideAccent, type SceneKey } from './manifest'
 import { Figure } from './Figure'
@@ -1236,6 +1237,18 @@ function CaseScene({ mats, explore }: { mats: Mats; explore: boolean }) {
             <Trophy mats={mats} />
           </group>
         </Hotspot>
+
+        {projectSections.map((section, index) => (
+          <group key={section.id} position={[index % 2 === 0 ? -1.32 : 1.32, index < 2 ? 2.2 : 0.49, 0.44]}>
+            <mesh material={mats.accent}><boxGeometry args={[2.4, 0.22, 0.04]} /></mesh>
+            <Text font={monoBoldWoff} fontSize={0.13} color="#f7f6f3" anchorX="center" anchorY="middle" position={[0, 0, 0.025]} maxWidth={2.25}>
+              {section.title.toUpperCase()}
+            </Text>
+          </group>
+        ))}
+        {[1.48, -0.24].map((y) => (
+          <mesh key={y} position={[0, y, 0]} material={mats.dim}><boxGeometry args={[0.08, 1.6, 0.8]} /></mesh>
+        ))}
 
         {PROJECT_BOOKS.map((book) => (
           <Hotspot key={book.slug} id={`proj-${book.slug}`} enabled={explore}>
