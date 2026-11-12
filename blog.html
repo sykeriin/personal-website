@@ -9,16 +9,15 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..600,100,1;1,9..144,300..600,100,1&family=Nunito:wght@400;600;700&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#f8f5f0;--card:#fffdf9;--ink:#3a3633;--mute:#9a938b;--line:#ebe5dc;--rose:#d9586c;--blush:#fbe6e8;--art:#d9909b}
-@media (prefers-color-scheme:dark){:root{--bg:#1d1b1a;--card:#25221f;--ink:#ece6dd;--mute:#8d867d;--line:#34302c;--rose:#f08a98;--blush:#3a2629;--art:#b97782}}
+:root{color-scheme:light;--bg:#f8f5f0;--card:#fffdf9;--ink:#3a3633;--mute:#9a938b;--line:#ebe5dc;--rose:#d9586c;--blush:#fbe6e8;--art:#d9909b;--lily:#c4122c}
 *{box-sizing:border-box;margin:0;padding:0}
 html{background:var(--bg)}
 body{background:var(--bg);color:var(--ink);font:400 1rem/1.6 Nunito,system-ui,sans-serif;min-height:100vh;min-height:100svh;display:flex;flex-direction:column;-webkit-font-smoothing:antialiased}
 .wrap{flex:1;width:100%}
-#grass{display:block;width:100%;height:150px;flex:none;margin-top:-1rem;cursor:default}
+#grass{display:block;width:100%;height:min(42vh,320px);flex:none;margin-top:-1rem;cursor:default}
 a{color:inherit;text-decoration:none}
 .mono{font-family:"DM Mono",ui-monospace,monospace;font-size:.78rem;letter-spacing:.02em;color:var(--mute)}
-.wrap{max-width:40rem;margin:0 auto;padding:2.2rem 1.25rem 3rem}
+.wrap{max-width:46rem;margin:0 auto;padding:2.2rem 1.25rem 3rem}
 .top{display:flex;justify-content:space-between;align-items:center}
 .top a{transition:color .2s}.top a:hover{color:var(--rose)}
 
@@ -107,7 +106,7 @@ body.reading #post{display:block}
       </svg>
       <div>
         <h1>grass <em>files</em></h1>
-        <p class="sub">little notes from durva. builds, shoots, and half-finished thoughts.</p>
+        <p class="sub">little notes</p>
       </div>
     </header>
 
@@ -299,30 +298,53 @@ addEventListener('keydown', e => { if (e.key === 'Escape' && reading) location.h
 
 /* a strip of ink-drawn grass along the bottom. It stands still, and only leans away from the cursor */
 (() => {
-  const cv = $('grass'), g = cv.getContext('2d'); let blades = [], flowers = [], w = 0, h = 0, mx = -999, my = -999, dirty = true, cols;
+  const cv = $('grass'), g = cv.getContext('2d'); let blades = [], flowers = [], flies = [], w = 0, h = 0, mx = -999, my = -999, dirty = true, cols;
   const rnd = (a, b) => a + Math.random() * (b - a);
-  const css = () => { const st = getComputedStyle(document.documentElement); cols = { ink: st.getPropertyValue('--ink').trim(), mute: st.getPropertyValue('--mute').trim(), rose: st.getPropertyValue('--rose').trim(), blush: st.getPropertyValue('--blush').trim() }; };
+  const css = () => { const st = getComputedStyle(document.documentElement); cols = { ink: st.getPropertyValue('--ink').trim(), mute: st.getPropertyValue('--mute').trim(), rose: st.getPropertyValue('--rose').trim(), blush: st.getPropertyValue('--blush').trim(), lily: st.getPropertyValue('--lily').trim() }; };
   const build = () => { const r = devicePixelRatio || 1; w = cv.clientWidth; h = cv.clientHeight; cv.width = w * r; cv.height = h * r; g.setTransform(r, 0, 0, r, 0, 0);
-    blades = []; flowers = []; const n = Math.floor(w / 4.5);
+    blades = []; flowers = []; flies = []; const n = Math.floor(w / 4), S = h / 320;
     for (let k = 0; k < n; k++) { const x = (k + Math.random()) * (w / n), wave = .55 + .45 * Math.sin(x / 90) * Math.sin(x / 37 + 1);
-      blades.push({ x, h: rnd(18, 70) * (.6 + .6 * wave), lean: rnd(-.35, .35), bend: 0, wid: rnd(1, 2.2), a: rnd(.25, .8), back: Math.random() < .45 }); }
-    for (let k = 0; k < Math.max(3, w / 160); k++) flowers.push({ x: rnd(20, w - 20), h: rnd(55, 95), lean: rnd(-.2, .2), bend: 0, r: rnd(4, 6.5) });
+      blades.push({ x, h: rnd(40, 170) * S * (.55 + .65 * wave), lean: rnd(-.4, .4), bend: 0, wid: rnd(1.2, 2.8), a: rnd(.4, 1), back: Math.random() < .45 }); }
+    for (let k = 0; k < Math.max(3, w / 170); k++) flowers.push({ lily: k % 2 === 0, x: rnd(20, w - 20), h: rnd(120, 230) * S, lean: rnd(-.14, .14), bend: 0, r: rnd(5, 7.5) });
+    for (let k = 0; k < Math.max(3, Math.round(w / 380)); k++) flies.push({ x0: rnd(0, w), y0: rnd(h * .12, h * .55), sp: rnd(.12, .25), ph: rnd(0, 6.3), s: rnd(.9, 1.3), c: k % 3 });
     dirty = true; };
+  const lily = (f, tx, ty) => { g.lineCap = 'round'; for (let k = 0; k < 7; k++) { const a = -Math.PI / 2 + (k - 3) * .36, L = 38 + (k % 2) * 10, ex = tx + Math.cos(a) * L, ey = ty + Math.sin(a) * L, cx = tx + Math.cos(a) * L * .55, cy = ty + Math.sin(a) * L * .55 - 9;
+      g.strokeStyle = cols.lily; g.lineWidth = 2.8; g.beginPath(); g.moveTo(tx, ty); g.quadraticCurveTo(cx, cy, ex + (k - 3) * 2, ey - 3); g.stroke();
+      g.lineWidth = 1; g.strokeStyle = cols.ink; g.globalAlpha = .55; g.beginPath(); g.moveTo(tx, ty); g.quadraticCurveTo(cx, cy, ex + (k - 3) * 2, ey - 3); g.stroke(); g.globalAlpha = .9;
+      g.fillStyle = cols.ink; g.beginPath(); g.arc(ex + (k - 3) * 2, ey - 3, 1.6, 0, 7); g.fill(); } };
+  const fly = (b, t) => { const x = (b.x0 + t * b.sp * 60) % (w + 80) - 40, y = b.y0 + Math.sin(t * .9 + b.ph) * 26 + Math.sin(t * 2.3 + b.ph) * 6, fl = reduce ? .8 : .25 + .75 * Math.abs(Math.cos(t * 7 + b.ph)), s = b.s * 13, col = [cols.rose, cols.lily, cols.mute][b.c];
+    g.save(); g.translate(x, y); g.rotate(Math.sin(t * .9 + b.ph) * .25); g.lineWidth = 1.1; g.strokeStyle = cols.ink; g.fillStyle = col; g.globalAlpha = .92;
+    [-1, 1].forEach(d => { g.save(); g.scale(d * fl, 1); g.beginPath(); g.ellipse(s * .55, -s * .45, s * .6, s * .8, -.5, 0, 7); g.fill(); g.stroke(); g.beginPath(); g.ellipse(s * .45, s * .5, s * .4, s * .55, .5, 0, 7); g.fill(); g.stroke(); g.restore(); });
+    g.lineWidth = 1.8; g.beginPath(); g.moveTo(0, -s * .9); g.lineTo(0, s * .9); g.stroke(); g.restore(); };
   const blade = b => { const bx = b.x, top = h - b.h, tip = bx + (b.lean + b.bend) * b.h; g.beginPath(); g.moveTo(bx - b.wid, h); g.quadraticCurveTo(bx + (tip - bx) * .3, h - b.h * .55, tip, top); g.quadraticCurveTo(bx + (tip - bx) * .3 + b.wid * .4, h - b.h * .55, bx + b.wid, h); g.fill(); };
   const draw = () => { g.clearRect(0, 0, w, h);
     g.fillStyle = cols.mute; blades.forEach(b => { if (b.back) { g.globalAlpha = b.a * .5; blade(b); } });
     flowers.forEach(f => { const tx = f.x + (f.lean + f.bend) * f.h, ty = h - f.h; g.globalAlpha = .9; g.strokeStyle = cols.ink; g.lineWidth = 1.4; g.beginPath(); g.moveTo(f.x, h); g.quadraticCurveTo(f.x + (tx - f.x) * .3, h - f.h * .5, tx, ty); g.stroke();
+      if (f.lily) { lily(f, tx, ty); return; }
       for (let k = 0; k < 6; k++) { const an = k / 6 * Math.PI * 2; g.fillStyle = cols.blush; g.strokeStyle = cols.rose; g.lineWidth = 1.1; g.beginPath(); g.ellipse(tx + Math.cos(an) * f.r, ty + Math.sin(an) * f.r, f.r * .75, f.r * .45, an, 0, 7); g.fill(); g.stroke(); }
       g.fillStyle = cols.rose; g.beginPath(); g.arc(tx, ty, f.r * .45, 0, 7); g.fill(); });
-    g.fillStyle = cols.ink; blades.forEach(b => { if (!b.back) { g.globalAlpha = b.a * .55; blade(b); } }); g.globalAlpha = 1; };
-  const tick = () => { let moving = false; const r = cv.getBoundingClientRect(), lx = mx - r.left, ly = my - r.top;
+    g.fillStyle = cols.ink; blades.forEach(b => { if (!b.back) { g.globalAlpha = b.a * .8; blade(b); } }); g.globalAlpha = 1;
+    flies.forEach(b => fly(b, performance.now() / 1000)); };
+  const tick = () => { let moving = !reduce; const r = cv.getBoundingClientRect(), lx = mx - r.left, ly = my - r.top;
     const push = o => { const dx = o.x - lx, d = Math.hypot(dx, (h - o.h * .5) - ly), target = d < 90 ? Math.sign(dx || 1) * (1 - d / 90) * .9 : 0; const nb = o.bend + (target - o.bend) * .12; if (Math.abs(nb - o.bend) > .0005) { o.bend = nb; moving = true; } };
     blades.forEach(push); flowers.forEach(push); if (moving || dirty) { draw(); dirty = false; } requestAnimationFrame(tick); };
   css(); build(); if (reduce) draw(); else tick();
   addEventListener('resize', build);
   addEventListener('pointermove', e => { if (e.pointerType === 'mouse') { mx = e.clientX; my = e.clientY; } });
   cv.addEventListener('pointerdown', e => { mx = e.clientX; my = e.clientY; setTimeout(() => { mx = my = -999; }, 500); });
-  matchMedia('(prefers-color-scheme:dark)').addEventListener('change', () => { css(); dirty = true; if (reduce) draw(); });
+})();
+
+/* opening: a blush sheet; a hole blooms open from the little sprout creature and the page appears through it */
+if (!reduce && !location.hash.replace('#', '').replace('/', '')) (() => {
+  const ov = document.createElement('div'); ov.setAttribute('aria-hidden', 'true');
+  ov.style.cssText = 'position:fixed;inset:0;z-index:50;pointer-events:none;background:var(--blush);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:.4rem';
+  document.body.appendChild(ov);
+  const bd = document.querySelector('.buddy'), rc = bd ? bd.getBoundingClientRect() : { left: innerWidth / 2, top: 200, width: 0, height: 0 }, cx = rc.left + rc.width / 2, cy = rc.top + rc.height / 2, far = Math.hypot(Math.max(cx, innerWidth - cx), Math.max(cy, innerHeight - cy)) + 40;
+  const t0 = performance.now(), hold = 750, dur = 1100, ease = u => 1 - Math.pow(1 - u, 3);
+  const frame = now => { const t = now - t0, u = Math.max(0, Math.min(1, (t - hold) / dur)), R = ease(u) * far, m = 'radial-gradient(circle at ' + cx + 'px ' + cy + 'px,transparent ' + R + 'px,#000 ' + (R + 2) + 'px)';
+    ov.style.webkitMaskImage = ov.style.maskImage = m;
+    if (u >= 1) { ov.remove(); return; } requestAnimationFrame(frame); };
+  requestAnimationFrame(frame);
 })();
 
 /* everything moves slowly, so the page stays calm */

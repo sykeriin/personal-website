@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Durva Sharma</title>
-<meta name="description" content="Durva Sharma. AI systems engineer: LLM inference, agent security and computer vision. Also guitar, drums, shoots and poems.">
+<meta name="description" content="Durva Sharma. AI systems engineer: LLM inference, agent security and computer vision. Also hiking, guitar, dance, shoots and poems.">
 <meta name="theme-color" content="#e7e7e3">
 <link rel="icon" href="/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -137,7 +137,7 @@ pre.art{flex:none;margin:0;padding:.5rem .55rem;border-radius:6px;background:var
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="goo" x="-5%" y="-30%" width="110%" height="160%"><feGaussianBlur id="gb" in="SourceGraphic" stdDeviation="4"/><feColorMatrix values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 40 -18"/></filter></svg>
 <header class="top">
   <p class="px who">Durva Sharma<br>AI systems engineer. Inference, agent security, computer vision.</p>
-  <p class="px links"><a class="lnk" href="/blog.html">Grass Files</a><a href="https://github.com/sykeriin" target="_blank" rel="noopener">GitHub</a><a href="mailto:durva.s170@gmail.com">Say hi</a></p>
+  <p class="px links"><a class="lnk" href="/blog.html">Grass Files</a><a href="https://github.com/sykeriin" target="_blank" rel="noopener">GitHub</a><a href="https://linkedin.com/in/durva-s" target="_blank" rel="noopener">LinkedIn</a><a href="https://x.com/dsrkiv" target="_blank" rel="noopener">X</a><a href="mailto:durva.s170@gmail.com">Say hi</a></p>
 </header>
 
 <main>
@@ -204,6 +204,7 @@ const DESC = {
   'SkillFuzz': 'A sandbox that runs an agent skill under many tasks and environments until hidden, conditional behaviour fires, then diffs each version to catch capabilities it never declared.',
   'DPDP Guard': 'One guard() call that runs before your chatbot: it captures consent per purpose, masks personal data before it reaches logs, spots rights requests and keeps a tamper-evident ledger for India’s DPDP Act.',
   'TaintMem': 'Memory for agents that remembers where every fact came from. Labels survive rewrites, so a planted instruction cannot launder itself into something the agent trusts.',
+  'catadye': 'A pre-registered controlled study of whether updating parts of a model at different speeds reduces catastrophic forgetting. Two pilots in, the answer is no, and the negative result is written up as readily as a positive one.',
   'CloudSense': 'A FinOps dashboard for AWS spend. It pulls cost data, flags anomalies with an Isolation Forest, forecasts with Prophet and suggests what to cut.'
 };
 const slug = n => n.toLowerCase().replace(/[^a-z0-9]+/g, '-');
@@ -217,19 +218,20 @@ const SONGS = [
   { a: 'Oasis', t: 'Wonderwall', d: 258, c: '#4a5a6a' }
 ];
 const SIDES = [[
-  { n: 'About me', pose: 'idle', kind: 'Hello', wide: true, html: `<p class="lead">I build AI systems and then try to break them. Mostly that means making models faster and agents safer to trust.</p><p>Right now I lead computer-vision preprocessing for a runway debris-detection system. Before that I was the founding engineer at PetAlly. I'm a student at MIT Bengaluru, class of 2029.</p><p>Outside of code: Muay Thai, guitar and drums, modelling, directing shoots, writing poems. The projects are on this side of the record, the rest is on side B.` },
+  { n: 'About me', pose: 'idle', kind: 'Hello', wide: true, html: `<p class="lead">I build AI systems and then try to break them. Mostly that means making models faster and agents safer to trust.</p><p>Right now I lead computer-vision preprocessing for a runway debris-detection system. Before that I was the founding engineer at PetAlly. I'm a student at MIT Bengaluru, class of 2029.</p><p>Outside of code: hiking, the gym, guitar and dance, modelling, directing shoots, writing poems, and a lot of gaming, anime and movies. The projects are on this side of the record, the rest is on side B.` },
   work('tread', 'Faster long-context prompts', 'point', 'tread', { file: 'bench: time to first token', rows: [['Full prefill', 1, '1.0×'], ['tread, 4K context', 1.4, '1.4×'], ['tread, 8K context', 1.6, '1.6×']], max: 1.6, note: 'Speed-up over full prefill. Qwen2.5-0.5B, 20% recompute.' }),
   work('SkillFuzz', 'Fuzzing for agent tools', 'guard', 'SkillFuzz', { file: 'eval: dormant behaviours caught', rows: [['Fixed single run', 35, '35/90'], ['Static scan', 65, '65/90'], ['SkillFuzz', 90, '90/90']], max: 90, note: 'Hidden behaviours that only fire under certain conditions.' }),
   work('DPDP Guard', 'Privacy controls for AI apps', 'idle', 'dpdp-guard', { file: 'quickstart.py', code: 'from dpdp_guard import Guard\n\nguard = Guard("acme", "Acme Store",\n              required_purposes=["order_updates"],\n              optional_purposes=["marketing"])\n\nr = guard(message, user_id, "whatsapp")' }),
   work('TaintMem', 'Trusted memory for agents', 'point', 'TaintMem', { file: 'examples/demo_laundering.py', code: '$ python examples/demo_laundering.py\n# planted payload -> 2 rewrites -> BLOCK -> audit\n\nlabels, channels     integrity lattice\nstore, record        labelled spans, SQLite + HMAC\npropagate, rewrite   labels survive LLM rewrites' }),
+  work('catadye', 'Does staggered updating reduce forgetting?', 'point', 'catadye', { file: 'pilot 2: forgetting at matched plasticity', rows: [['baseline', 3.59, '3.59'], ['CMS 1/8/64', 3.68, '3.68'], ['LR-matched', 3.57, '3.57']], max: 4, note: 'Nats of forgetting after TinyStories then Python. Lower is better. No detectable gain.' }),
   work('CloudSense', 'Cloud cost intelligence', 'walk', 'CloudSense', { file: 'architecture', code: 'frontend/        React dashboard and UI workflows\nbackend/         FastAPI APIs, AWS integration\n  ├── services/  anomaly_detection.py ...\n  └── main.py    FastAPI application\nml_service/      anomaly detection and forecasting' }),
   work('HAWKEYE', 'OpenCV lead, Indian Air Force runway project', 'guard', '', { file: 'preprocessing pipeline', code: 'cam 0 ─┐\ncam 1 ─┼─► denoise ─► CLAHE ─► ROI crop ─► frame skip ─► detector\ncam 2 ─┘' }, 'Debris detection for a runway. I led the vision preprocessing across three camera feeds. May 2026 to now.'),
   work('PetAlly', 'Founding software and AI engineer', 'walk', '', { file: 'what I built', code: 'recommendation system    AI chatbot       mood journal\npet-health tracking      engagement     activity streaks\nPawPoints rewards        app UI         AWS CI/CD' }, 'A pet-care product on web and mobile. March to September 2026.')
 ], [
-  { n: 'The facts', pose: 'idle', kind: 'For recruiters', cols: true, html: `<h2>In short</h2><p>AI systems engineer. LLM inference, agent security and computer vision.</p><p><b>Now:</b> OpenCV preprocessing lead on HAWKEYE, May 2026 to now.</p><p><b>Before:</b> founding software and AI engineer at PetAlly, March to September 2026.</p><p><b>Studying:</b> MIT Bengaluru, class of 2029.</p><p><b>Tools:</b> Python, PyTorch, OpenCV, FastAPI, React, AWS, Docker.</p><p class="px foot"><a href="https://github.com/sykeriin" target="_blank" rel="noopener">GitHub</a><a href="mailto:durva.s170@gmail.com">Email</a></p>` },
+  { n: 'The facts', pose: 'idle', kind: 'For recruiters', cols: true, html: `<h2>In short</h2><p>AI systems engineer. LLM inference, agent security and computer vision.</p><p><b>Now:</b> OpenCV preprocessing lead on HAWKEYE, May 2026 to now.</p><p><b>Before:</b> founding software and AI engineer at PetAlly, March to September 2026.</p><p><b>Studying:</b> MIT Bengaluru, class of 2029.</p><p><b>Tools:</b> Python, PyTorch, OpenCV, FastAPI, React, AWS, Docker.</p><p class="px foot"><a href="https://github.com/sykeriin" target="_blank" rel="noopener">GitHub</a><a href="https://linkedin.com/in/durva-s" target="_blank" rel="noopener">LinkedIn</a><a href="https://x.com/dsrkiv" target="_blank" rel="noopener">X</a><a href="mailto:durva.s170@gmail.com">Email</a></p>` },
   { n: 'Listening', pose: 'guitar', kind: 'On rotation', listen: true, html: `<div class="mp"><pre class="art" id="mart2" aria-hidden="true"></pre><div class="mi"><b id="mart"></b><span id="mtit"></span><div class="bar" id="mbar"><em id="mfill"></em></div><div class="eq" id="eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="tm px"><span id="mcur">0:00</span><span id="mlen"></span></div><div class="ctl px"><button type="button" data-act="prev" aria-label="Previous song">Prev</button><button type="button" data-act="play" id="mplay">Play</button><button type="button" data-act="next" aria-label="Next song">Next</button></div></div></div>` },
   { n: 'Blog', pose: 'sit', kind: '31 Aug 2026', html: `<h2 style="font-size:1.6rem">this space intentionally unfinished</h2><p>first note. this is where longer things will live: build logs, shoot write-ups, whatever doesn’t fit a panel.</p><p>more soon. probably at 2am.</p><p class="px foot"><a href="/blog.html">Open Grass Files</a></p>` },
-  { n: 'Off the clock', pose: 'walk', kind: 'The rest', html: `<h2>Also</h2><p>Muay Thai. Guitar and drums. Modelling, styling and directing shoots. A published book of poems. Guild Wars 2 and Valorant when there's time.</p>` }
+  { n: 'Off the clock', pose: 'walk', kind: 'The rest', html: `<h2>When I'm not coding</h2><p>Hiking and the gym. Guitar and dance. Modelling, styling and directing shoots. A published book of poems. Gaming, anime and movies when there's time.</p>` }
 ]];
 const OUT = 47, IN = 18, P = [60, -44], L = 64, D = Math.hypot(P[0], P[1]), BASE = Math.atan2(-P[1], -P[0]);
 const armAngle = r => (BASE - Math.acos((D * D + L * L - r * r) / (2 * D * L))) * 180 / Math.PI;

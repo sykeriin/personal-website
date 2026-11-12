@@ -10,35 +10,35 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..600&family=Archivo:wdth,wght@62..125,400..800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#f4eee1;--paper:#faf6ec;--ink:#1e1b17;--soft:#6a6358;--rule:#d8cdb8;--red:#c4122c;--tan:#b9ab8f;--serif:"Newsreader",Georgia,serif;--sans:"Archivo",Arial,sans-serif;--mono:"DM Mono",ui-monospace,monospace}
+:root{--bg:#f4eee1;--paper:#faf6ec;--ink:#1e1b17;--soft:#6a6358;--rule:#d8cdb8;--red:#c4122c;--tan:#b9ab8f;--serif:"Newsreader",Georgia,serif;--sans:"Archivo",Arial,sans-serif;--mono:"DM Mono",ui-monospace,monospace;--ml:clamp(1.25rem,6vw,5.5rem);--barw:clamp(5rem,11vw,10rem)}
 *{box-sizing:border-box;margin:0}
 html{background:var(--bg);color:var(--ink)}
-body{overflow-x:clip;font:400 1.18rem/1.62 var(--serif);font-optical-sizing:auto;-webkit-font-smoothing:antialiased;min-height:100vh}
+body{overflow-x:clip;padding-right:calc(var(--barw) + 3rem);font:400 1.1rem/1.6 var(--serif);font-optical-sizing:auto;-webkit-font-smoothing:antialiased;min-height:100vh}
 a{color:inherit;text-decoration-thickness:1px;text-underline-offset:3px}
 a:hover{color:var(--red)}
 :focus-visible{outline:2px solid var(--red);outline-offset:3px}
 button{font:inherit;color:inherit;cursor:pointer}
-.col{max-width:41rem;margin:0 auto;padding:0 1.25rem}
+.col{max-width:41rem;margin:0 0 0 var(--ml);padding:0}
 .wide{max-width:60rem;margin:0 auto}
 
-.nav{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;padding:1.4rem 1.25rem;font:500 .84rem var(--sans);max-width:60rem;margin:0 auto}
+.nav{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;padding:1.4rem 0 1.4rem var(--ml);font:500 .84rem var(--sans);max-width:calc(41rem + var(--ml));margin:0}
 .nav a{text-decoration:none}
 .tabs{display:flex;gap:.2rem;flex-wrap:wrap}
 .tabs a{padding:.2rem .65rem;border-radius:99px}
 .tabs a.on{background:var(--ink);color:var(--bg)}
 .tabs a:not(.on):hover{background:rgba(30,27,23,.07);color:var(--ink)}
-header.top{padding:5rem 1.25rem 2rem}
-header.top h1{font:600 clamp(2.6rem,7vw,4.4rem)/1 var(--serif);letter-spacing:-.025em}
+header.top{padding:4rem 0 1.6rem}
+header.top h1{font:600 clamp(2.3rem,6vw,3.4rem)/1 var(--serif);letter-spacing:-.025em}
 .meta{margin-top:1rem;font:400 .78rem/1.8 var(--mono);color:var(--soft);display:flex;gap:.4rem 1rem;flex-wrap:wrap}
 .meta a{color:var(--ink)}
-.abs{margin-top:1.6rem;font-size:1.3rem;line-height:1.5}
+.abs{margin-top:1.4rem;font-size:1.2rem;line-height:1.5}
 .abs b{font-weight:600}
 .stat{display:flex;gap:1.6rem 2.4rem;flex-wrap:wrap;margin:2rem 0 0}
-.stat div b{display:block;font:600 2rem/1 var(--serif);letter-spacing:-.02em;color:var(--red)}
+.stat div b{display:block;font:600 1.7rem/1 var(--serif);letter-spacing:-.02em;color:var(--red)}
 .stat div span{display:block;margin-top:.3rem;font:500 .78rem/1.3 var(--sans);color:var(--soft);max-width:11rem}
 
 #page{counter-reset:fig sec}
-section.s{margin-top:4rem;padding:0 1.25rem;counter-increment:sec}
+section.s{margin-top:3.4rem;padding:0;counter-increment:sec}
 h2{font:700 .8rem var(--sans);letter-spacing:.09em;text-transform:uppercase;color:var(--red);margin-bottom:.9rem}
 h2::before{content:counter(sec) "  ";color:var(--soft);margin-right:.4rem}
 section p+p{margin-top:1em}
@@ -53,9 +53,9 @@ table.t td{padding:.55rem .8rem .55rem 0;border-bottom:1px solid var(--rule);ver
 table.t td:first-child{font:400 .82rem var(--mono);white-space:nowrap}
 .tw{overflow-x:auto}
 
-figure.fig{margin:2.2rem 0 0 50%;width:min(60rem,calc(100vw - 2.5rem));transform:translateX(-50%);counter-increment:fig}
-.fig .box{background:var(--paper);border:1px solid var(--rule);border-radius:4px;padding:1.2rem 1.2rem 1rem}
-.fig figcaption{margin-top:.6rem;font-size:.92rem;line-height:1.5;color:var(--soft)}
+figure.fig{margin:1.8rem 0 0;width:100%;counter-increment:fig}
+.fig .box{background:var(--paper);border:1px solid var(--rule);border-radius:4px;padding:1rem 1rem .8rem}
+.fig figcaption{margin-top:.55rem;font-size:.88rem;line-height:1.5;color:var(--soft)}
 .fig figcaption b{font:700 .72rem var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--ink);margin-right:.5rem}
 .fig figcaption b::before{content:"Fig. " counter(fig)}
 .fig img{display:block;width:100%;height:auto;border:1px solid var(--rule);border-radius:4px;background:#fff}
@@ -95,13 +95,18 @@ svg text{font-family:var(--sans)}
 .hubf{display:flex;flex-wrap:wrap;gap:.5rem}
 .hubf button{border:1.5px solid var(--ink);background:var(--bg);border-radius:4px;padding:.5rem .8rem;font:600 .85rem var(--sans);text-align:left;transition:all .15s}
 .hubf button:hover,.hubf button.on{background:var(--ink);color:var(--bg)}
-nav.pn{display:flex;justify-content:space-between;gap:1rem;margin:5rem auto 0;padding:1.4rem 1.25rem 5rem;border-top:1px solid var(--rule);font:500 .9rem var(--sans)}
-canvas.cv{display:block;width:100%;max-width:26rem;height:auto;border:1px solid var(--rule);border-radius:4px;image-rendering:pixelated;background:#222}
-@media (max-width:700px){body{font-size:1.1rem}header.top{padding-top:3.5rem}.nav{padding:1rem}}
+nav.pn{display:flex;justify-content:space-between;gap:1rem;margin:4rem 0 0;padding:1.3rem 0 1.6rem;border-top:1px solid var(--rule);font:500 .9rem var(--sans)}
+canvas.cv{display:block;width:100%;max-width:22rem;height:auto;border:1px solid var(--rule);border-radius:4px;image-rendering:pixelated;background:#222}
+footer.foot{margin:0 0 4rem;padding-top:1.2rem;border-top:1px solid var(--rule);font:500 .88rem var(--sans);display:flex;gap:.4rem 1.6rem;flex-wrap:wrap}
+#bar{position:fixed;top:1.25rem;right:1.25rem;bottom:1.25rem;width:var(--barw);border-radius:3px;overflow:hidden;z-index:5}
+#bar canvas{display:block;width:100%;height:100%;image-rendering:pixelated;cursor:crosshair}
+@media (min-width:1100px){body{padding-right:0}#bar{left:calc(var(--ml) + 41rem + 3rem);width:auto}}
+@media (max-width:800px){body{padding-right:0}#bar{position:relative;inset:auto;width:auto;height:3.4rem;margin:.8rem var(--ml) 0}.nav{padding-right:var(--ml)}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
 <body>
+<aside id="bar" aria-hidden="true"><canvas></canvas></aside>
 <nav class="nav"><a href="/">← Durva Sharma</a><div class="tabs" id="tabs"></div></nav>
 <main id="page"></main>
 
@@ -119,7 +124,7 @@ const add = (p, n, a = {}, t) => { const e = document.createElementNS(NS, n); fo
 const nice = (max, n = 4) => { const raw = max / n, mag = 10 ** Math.floor(Math.log10(raw)), f = raw / mag, step = (f <= 1 ? 1 : f <= 2 ? 2 : f <= 5 ? 5 : 10) * mag; return { step, top: Math.ceil(max / step - 1e-9) * step }; };
 
 function lineChart(host, o) {
-  const W = 640, H = 330, m = { l: 54, r: 100, t: 14, b: 48 }, iw = W - m.l - m.r, ih = H - m.t - m.b, svg = svgEl(W, H);
+  const W = 640, H = 270, m = { l: 54, r: 100, t: 12, b: 44 }, iw = W - m.l - m.r, ih = H - m.t - m.b, svg = svgEl(W, H);
   svg.setAttribute('aria-label', o.alt || o.yl);
   const xs = o.series.flatMap(s => s.pts.map(p => p[0])), ys = o.series.flatMap(s => s.pts.map(p => p[1]));
   const x0 = o.xmin ?? Math.min(...xs), x1 = o.xmax ?? Math.max(...xs), { step, top } = nice(o.ymax ?? Math.max(...ys), 4);
@@ -145,14 +150,14 @@ function lineChart(host, o) {
 }
 
 function barChart(host, o) {
-  const rowH = 38, W = 640, m = { l: o.lw || 190, r: 80, t: 6, b: 34 }, H = m.t + m.b + rowH * o.rows.length, iw = W - m.l - m.r, svg = svgEl(W, H), { step, top } = nice(o.max, 4);
+  const rowH = 32, W = 640, m = { l: o.lw || 190, r: 80, t: 6, b: 34 }, H = m.t + m.b + rowH * o.rows.length, iw = W - m.l - m.r, svg = svgEl(W, H), { step, top } = nice(o.max, 4);
   svg.setAttribute('aria-label', o.alt || o.xl); const X = v => m.l + v / top * iw;
   for (let v = 0; v <= top + 1e-9; v += step) { add(svg, 'line', { class: 'gr', x1: X(v), x2: X(v), y1: m.t, y2: H - m.b }); add(svg, 'text', { class: 'tk', x: X(v), y: H - m.b + 15, 'text-anchor': 'middle' }, o.xfmt ? o.xfmt(v) : +v.toFixed(3)); }
   add(svg, 'text', { class: 'tk', x: m.l + iw / 2, y: H - 3, 'text-anchor': 'middle' }, o.xl);
   o.rows.forEach((r, i) => { const y = m.t + i * rowH + 7, hl = r[3];
-    add(svg, 'text', { class: 'lb', x: m.l - 10, y: y + 15, 'text-anchor': 'end', style: 'font-weight:500' }, r[0]);
-    const w = X(r[1]) - m.l, b = add(svg, 'rect', { x: m.l, y, height: 22, width: o.instant ? Math.max(2, w) : 0, fill: hl === 1 ? 'var(--red)' : hl === 2 ? 'var(--tan)' : 'var(--ink)', rx: 2 }); b.dataset.w = Math.max(2, w); if (!o.instant) b.style.transition = 'width .9s cubic-bezier(.2,.7,.2,1)';
-    add(svg, 'text', { class: 'lb', x: X(r[1]) + 8, y: y + 15 }, r[2]); });
+    add(svg, 'text', { class: 'lb', x: m.l - 10, y: y + 13, 'text-anchor': 'end', style: 'font-weight:500' }, r[0]);
+    const w = X(r[1]) - m.l, b = add(svg, 'rect', { x: m.l, y, height: 18, width: o.instant ? Math.max(2, w) : 0, fill: hl === 1 ? 'var(--red)' : hl === 2 ? 'var(--tan)' : 'var(--ink)', rx: 2 }); b.dataset.w = Math.max(2, w); if (!o.instant) b.style.transition = 'width .9s cubic-bezier(.2,.7,.2,1)';
+    add(svg, 'text', { class: 'lb', x: X(r[1]) + 8, y: y + 13 }, r[2]); });
   add(svg, 'line', { class: 'ax', x1: m.l, x2: m.l, y1: m.t, y2: H - m.b });
   host.appendChild(svg);
   if (!o.instant) new IntersectionObserver((es, ob) => { if (es[0].isIntersecting) { $$('rect[data-w]', svg).forEach(b => b.setAttribute('width', b.dataset.w)); ob.disconnect(); } }, { threshold: .3 }).observe(host);
@@ -267,6 +272,22 @@ B.hub = box => {
 
 /* ================= building blocks for the text ================= */
 const nd = n => `<span class="n${n.h ? ' hl' : ''}">${esc(n.t)}${n.s ? `<small>${esc(n.s)}</small>` : ''}</span>`;
+B.cdsched = box => {
+  let mode = 'cms'; const K = [1, 8, 64];
+  box.innerHTML = `<div class="ctl"><button class="btn red" data-a="cms">CMS: update every k steps</button><button class="btn" data-a="lrm">LR-matched: every step, lr / k</button></div><div data-r="g"></div><div class="out" data-r="sum"></div>`;
+  const g = $('[data-r=g]', box), sum = $('[data-r=sum]', box);
+  const draw = () => {
+    g.innerHTML = K.map(k => `<div style="display:flex;align-items:center;gap:.6rem;margin:.35rem 0"><span class="mono" style="width:5.2rem;font-size:.78rem">sub-block ${k === 1 ? '1' : '1/' + k}</span><div style="flex:1;display:grid;grid-template-columns:repeat(64,1fr);gap:1px">${Array.from({ length: 64 }, (_, i) => { const on = mode === 'cms' ? i % k === 0 : true, op = mode === 'cms' ? 1 : Math.max(.1, 1 / k); return `<i style="height:16px;border-radius:1px;background:${on ? 'var(--red)' : 'var(--rule)'};opacity:${on ? op : 1}"></i>`; }).join('')}</div></div>`).join('') + `<div class="mono" style="font-size:.74rem;margin-top:.3rem;color:var(--mute)">64 optimizer steps, left to right</div>`;
+    sum.innerHTML = mode === 'cms' ? 'Sub-block 1/64 gets <b>one full-size update</b> in these 64 steps.' : 'Sub-block 1/64 gets <b>64 updates at 1/64 the size</b>. Under AdamW that moves it about as far, which is why this is the fair control.';
+    $$('[data-a]', box).forEach(b => b.classList.toggle('red', b.dataset.a === mode));
+  };
+  $$('[data-a]', box).forEach(b => b.onclick = () => { mode = b.dataset.a; draw(); }); draw();
+};
+B.cdbars = box => barChart(box, { xl: 'forgetting at matched new-domain loss (nats, lower is better)', max: 4, lw: 130, alt: 'Forgetting for baseline, CMS and the LR-matched control',
+  rows: [['baseline', 3.592, '3.59 ± 0.16', 0], ['CMS 1/8/64', 3.678, '3.68 ± 0.06', 1], ['LR-matched', 3.567, '3.57 ± 0.05', 2]] });
+B.cdorder = box => barChart(box, { xl: 'forgetting with the domains in the opposite order (nats)', max: 6, lw: 130, alt: 'Forgetting with the domain order reversed',
+  rows: [['baseline', 4.90, '4.90 ± 0.17', 0], ['CMS 1/8/64', 5.14, '5.14 ± 0.20', 1], ['LR-matched', 5.20, '5.20 ± 0.07', 2]] });
+
 const flow = nodes => `<div class="flow">${nodes.map((n, i) => (i ? '<span class="a">→</span>' : '') + (Array.isArray(n) ? `<span class="st">${n.map(nd).join('')}</span>` : nd(n))).join('')}</div>`;
 const F = (name, cap, inner = '') => `<figure class="fig" data-f="${name}"><div class="box">${inner}</div><figcaption><b></b>${cap}</figcaption></figure>`;
 const IMG = (file, alt, cap) => `<figure class="fig"><img src="${RAW + file}" alt="${esc(alt)}" loading="lazy"><figcaption><b></b>${cap}</figcaption></figure>`;
@@ -295,10 +316,6 @@ const PROJECTS = [
     ['What I found', [list(['The error is heavy-tailed. The worst 10% of requests carry about half of the total drift.', 'Choosing the recompute budget per request looked good on the data I tuned on and did not hold on held-out data. The result is in the repo.', 'Partial recompute is not monotone per request. On some requests it is worse than plain reuse.', 'On the two-document toy example plain reuse answers “Japan” and 20% recompute answers “Tokyo”, which matches a full read. One example is an illustration, not evidence.'])]],
     ['The benchmark that lied', [P('My first run on the 1.5B model said tread was 15× faster than a full read. It was not. The 4 GB card had 19 MiB free, and Windows quietly spills GPU memory into system RAM instead of failing. The long full-read passes slowed down 3 to 9× and jumped around between requests, while tread’s short passes barely noticed.', 'The benchmarks now refuse to run without free VRAM headroom. I kept the invalid runs in the repo so nobody else times GPU code on a consumer Windows machine and believes it.'),
       IMG('vram-spill-light.png', 'Per-request time to first token in the invalid run: full prefill scattered from 275 ms to 3.4 s, median 1,545 ms, while tread plain reuse stayed near 106 ms.', 'The invalid run. Full-read times scatter between 275 ms and 3.4 s (median 1,545 ms); tread stays near 106 ms. From the README.')]],
-    ['Run it', [P('Python 3.11 and a CUDA GPU. <code>transformers</code> is pinned because tread patches Qwen2’s attention internals, and they change between versions.'),
-      code('python -m pytest tests -q\npython bench/bench_scaling.py --model Qwen/Qwen2.5-0.5B-Instruct --lengths 1000 2000 4000 8000 --n 15\npython -m tread.server --model Qwen/Qwen2.5-0.5B-Instruct --port 8000\ncurl -s localhost:8000/v1/completions -H \'content-type: application/json\' -d @docs/example_request.json'),
-      P('Send the same documents in the opposite order and the reply reports <code>block_misses: 0</code>. The server decodes greedily, so its output matches a plain full read.'),
-      table(['Path', 'What it does'], [['tread/blend.py', 'RoPE re-rotation, chunk prefill, selective recompute'], ['tread/store.py', 'Block store: GPU and pinned-CPU tiers, budgets, LRU'], ['tread/engine.py', 'Request assembly, plus full-read and exact-prefix baselines'], ['tread/graphs.py', 'CUDA-graph replay of the recompute loop'], ['tread/server.py', 'FastAPI: POST /v1/completions, GET /metrics'], ['tests/', 'Exactness, cache hits, eviction'], ['bench/', 'Time-to-first-token and quality on a reordered-RAG workload'], ['phase0/', 'Feasibility study and held-out experiments']])]],
     ['Status', [P('It works end to end: engine, server, tests and a laptop-scale benchmark. Large-model timings and the head-to-head with vLLM and llama.cpp have scripts written and have not been run, so read the speed numbers as small-model, small-sample results.')]]
   ] },
 { slug: 'skillfuzz', name: 'SkillFuzz', repo: 'SkillFuzz', meta: ['Python', 'Linux namespaces', 'strace', 'gcc'],
@@ -336,11 +353,22 @@ const PROJECTS = [
     ['Under heavy rewriting', [P('With heavy paraphrasing and mixing, plain sentence-level tagging gives up and marks nearly everything untrusted. The smarter matching holds at the best achievable level.'), F('creep2', 'Creep under heavy paraphrase and mixing.')]],
     ['Status', [P('A research prototype. So far rule-based stand-ins play the model, so nothing here shows it works on real models yet. That is the next step.')]]
   ] },
+{ slug: 'catadye', name: 'catadye', repo: 'catadye', meta: ['Python', 'PyTorch', 'pre-registered study', 'arXiv 2512.24695'],
+  abs: 'catadye tests one idea from Google’s Nested Learning paper: <b>if parts of a model update at different speeds, does it forget less?</b> In two pilots, no.',
+  stat: [['0', 'detectable gain over a smaller learning rate'], ['2', 'pilots, both negative'], ['39%', 'of parameters staggered in the second pilot']],
+  secs: [
+    ['Question', [P('A model trained on one domain and then another forgets the first. The Nested Learning paper chains MLP blocks that update at different frequencies, and says this helps. Its setup is hard to copy: updates happen at test time, on Llama models after 15B extra tokens.', 'catadye asks a narrower question first. In a plain small transformer, does <i>update-frequency staggering alone</i> reduce forgetting? The hypotheses and kill criteria were written down before any run, so a negative result counts.')]],
+    ['The control that matters', [P('Under AdamW, updating a block every <i>k</i> steps moves it roughly 1/<i>k</i> as far as updating it every step. So a gain from staggering could just be a smaller learning rate in disguise. The control uses the same blocks at lr/<i>k</i>, updated every step.'), F('cdsched', 'The two schedules for the three MLP sub-blocks (periods 1, 8 and 64). Toggle between them.')]],
+    ['How forgetting is measured', [P('Each model trains on TinyStories, then on Python. After each domain it is scored on both. <b>Forgetting</b> is how much the TinyStories loss rises after the Python phase. Slower learning forgets less but also learns the new domain less, so arms are only compared at the same new-domain loss, read off a line traced by three learning rates.')]],
+    ['What came out', [P('The second pilot used 24.0M parameters, 39% of them in staggered sub-blocks, three learning rates and three seeds. At every learning rate CMS learns the new domain slightly better and forgets slightly more, so it sits on the same line as the baseline.'), F('cdbars', 'Forgetting at a matched new-domain loss of 2.79, mean ± sd over 3 seeds. CMS minus LR-matched is +0.111 nats, 95% CI [−0.013, +0.179]. The pre-registered gain was at least 10% with the interval below zero, so it fails.'),
+      P('Reversing the domain order gives the same picture.'), F('cdorder', 'Order B at lr 6e-4, 3 seeds each. Not used in the pre-registered gate.')]],
+    ['What this does not show', [list(['Test-time updates on a pretrained Llama, which is what the paper does.', 'Nested consolidation between levels, the self-modifying memory, or multi-timescale momentum.', 'Anything about larger models. Both pilots are small, from-scratch, and three seeds.'])]],
+    ['Status', [P('The gate picked the short version of the plan. A test-time probe on a small model is declared and the base models are training, with 30 runs to follow. Diagnostics on where the forgetting lives are queued behind them. The main grid and the LoRA stage have not started.')]]
+  ] },
 { slug: 'cloudsense', name: 'CloudSense', repo: 'CloudSense', meta: ['React 19', 'FastAPI', 'PostgreSQL', 'Prophet', 'scikit-learn'],
   abs: 'CloudSense is a dashboard that <b>shows where your AWS money is going</b>, flags sudden spikes, forecasts the bill and suggests where to cut.',
   stat: [['2', 'models: spikes and forecast'], ['3', 'services'], ['0', 'AWS accounts needed to try it']],
   secs: [
-    ['What it does', [list(['Pulls AWS cost data and breaks it down by service.', 'Flags unusual spikes with an Isolation Forest, and forecasts costs with Prophet.', 'Views for summary, allocation, shared costs and unit economics.', 'What-if savings, and EC2 clean-ups with a log of every action.', 'An assistant that explains the numbers, with a local fallback.', 'A built-in fake dataset, so you can try it without an AWS account.'])]],
     ['Try it', [P('The dashboard uses an Isolation Forest. This one is simpler, a rolling z-score on made-up data, but it shows what “flag a spike” means and what the sensitivity trade-off looks like.'), F('spike', 'A synthetic 60-day bill with three real spikes. Drag the sensitivity.')]],
     ['Layout', [code('frontend/        React dashboard\nbackend/         FastAPI, AWS access, database\n  db/            models and connection\n  services/      business logic\n  main.py        the API\nml_service/      spike detection and forecasting'),
       F('flow', 'The dashboard asks the backend, and the backend asks the ML service.', flow([[{ t: 'AWS costs', s: 'boto3' }, { t: 'Sample data' }], { t: 'Backend', s: 'FastAPI, Postgres', h: 1 }, [{ t: 'Spikes', s: 'Isolation Forest' }, { t: 'Forecast', s: 'Prophet' }], { t: 'Dashboard', s: 'React, Recharts', h: 1 }])),
@@ -371,16 +399,298 @@ const PROJECTS = [
   ] }
 ];
 
+
+/* ================= the colour bar: a still, dithered ember, one palette per write-up ================= */
+const PAL = { tread: ['#1e1b17', '#5a0e18', '#a8112a', '#e0412a', '#f6c28b'], skillfuzz: ['#14171c', '#2a3140', '#4a5a73', '#8fa3bf', '#e4ecf5'], 'dpdp-guard': ['#1d1a10', '#4d4417', '#8c7a1c', '#d1b52f', '#f5e8a8'],
+  taintmem: ['#1c1220', '#43204f', '#7a2e86', '#c25bb0', '#f3c1e0'], cloudsense: ['#0f1c1a', '#13453f', '#1f7a6c', '#4fbfa5', '#cdf2e4'], hawkeye: ['#1a1d12', '#3b4a1b', '#6b8523', '#aed343', '#eef7b4'], catadye: ['#12162b', '#232a5c', '#3f4fb0', '#7f92f0', '#dfe4ff'], petally: ['#241512', '#5b2a1c', '#a1472b', '#e8875a', '#fbd9b8'] };
+const hsh = (x, y) => { const h = Math.sin(x * 127.1 + y * 311.7) * 43758.5453; return h - Math.floor(h); };
+const smo = u => u * u * (3 - 2 * u);
+const vnz = (x, y) => { const i = Math.floor(x), j = Math.floor(y), fx = smo(x - i), fy = smo(y - j), a = hsh(i, j), b = hsh(i + 1, j), c = hsh(i, j + 1), d = hsh(i + 1, j + 1); return a + (b - a) * fx + (c - a) * fy + (a - b - c + d) * fx * fy; };
+const fbm2 = (x, y) => { let v = 0, a = .5; for (let o = 0; o < 4; o++) { v += a * vnz(x, y); x = x * 2 + 3.1; y = y * 2 + 1.7; a *= .5; } return v; };
+const BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
+/* the right-hand art. ?art=ember (default), tiles or ascii */
+const barS = { slug: '', pal: '', mods: {}, w: 0, h: 0, M: 16, cols: 1, last: -1, mx: -99, my: -99, style: 'ember', raf: 0 };
+const PALK = Object.keys(PAL), RAMP = ' .,:;-=+*#%@';
+function drawBar(slug) {
+  const cv = $('#bar canvas'), r = cv.getBoundingClientRect(), S = barS;
+  if (S.slug !== slug) { S.mods = {}; S.pal = ''; S.slug = slug; }
+  S.style = new URLSearchParams(location.search).get('art') || 'story';
+  if ((S.style === 'lily' || S.style === 'rd' || S.style === 'story') && r.width > r.height * 3) S.style = 'ember';
+  if (S.style === 'story') { startStory(cv, r); return; }
+  if (S.style === 'rd') { startRD(cv, r); return; }
+  if (S.style === 'lily') { const d = devicePixelRatio || 1; S.W = r.width; S.H = r.height; S.d = d; cv.width = r.width * d; cv.height = r.height * d; S.w = S.h = 1; S.M = 1e6; S.cols = 1; S.plants = null; paintBar(); return; }
+  if (S.style === 'ascii') { const d = devicePixelRatio || 1; S.cw = 9; S.ch = 15; S.w = Math.max(4, Math.floor(r.width / S.cw)); S.h = Math.max(4, Math.floor(r.height / S.ch)); cv.width = r.width * d; cv.height = r.height * d; S.d = d; }
+  else { S.w = Math.max(8, Math.round(r.width / 5)); S.h = Math.max(8, Math.round(r.height / 5)); cv.width = S.w; cv.height = S.h; }
+  S.M = S.style === 'tiles' ? Math.min(30, Math.max(8, Math.min(S.w, S.h))) : 1e6; S.cols = S.style === 'tiles' ? Math.ceil(S.w / S.M) : 1; paintBar();
+}
+function paintBar() {
+  if (barS.style === 'lily') return paintLily();
+  if (barS.style === 'story') return;
+  const S = barS, cv = $('#bar canvas'), g = cv.getContext('2d'), sd = [...S.slug].reduce((a, c) => a + c.charCodeAt(0), 0) * 3.7, M = S.M, paper = [244, 238, 225], tiles = S.style === 'tiles', ascii = S.style === 'ascii';
+  const rgbs = {}; const rgbOf = k => rgbs[k] || (rgbs[k] = PAL[k].map(c => [1, 3, 5].map(i => parseInt(c.slice(i, i + 2), 16))));
+  const bloom = (x, y) => { const dx = x - S.mx, dy = (y - S.my) * (ascii ? .6 : 1), q = dx * dx + dy * dy; return q > 900 ? 0 : .45 * Math.exp(-q / 160); };
+  const val = (x, y, id, lx, ly, off) => { const t = tiles ? ((hsh(id, 3) < .5 ? M - ly : ly) / M) : y / (S.h - 1), n = fbm2(lx * (tiles ? .16 : .06) + off, ly * (tiles ? .12 : .035) + off * .5), m2 = fbm2(lx * (tiles ? .35 : .22) + 9 + off, ly * (tiles ? .2 : .08));
+    return Math.max(0, Math.min(.999, n * .85 + m2 * .22 - .12 + Math.pow(t, tiles ? 1.4 : 1.5) * .6 - (1 - t) * .12 + (tiles ? (hsh(id, 9) - .5) * .3 : 0) + bloom(x, y))); };
+  if (ascii) { const rgb = rgbOf(S.pal || S.slug); g.setTransform(S.d, 0, 0, S.d, 0, 0); g.fillStyle = PAL[S.pal || S.slug][0]; g.fillRect(0, 0, S.w * S.cw + 20, S.h * S.ch + 20); g.font = '600 13px "DM Mono",monospace'; g.textBaseline = 'top';
+    for (let y = 0; y < S.h; y++) for (let x = 0; x < S.w; x++) { const v = val(x, y, 0, x, y, sd), k = Math.min(4, Math.floor(v * 5)), ch = RAMP[Math.min(RAMP.length - 1, Math.floor(v * RAMP.length))]; if (ch === ' ') continue; const c = rgb[Math.max(1, k)]; g.fillStyle = 'rgb(' + c + ')'; g.fillText(ch, x * S.cw, y * S.ch); } return; }
+  const img = g.createImageData(S.w, S.h);
+  for (let y = 0; y < S.h; y++) for (let x = 0; x < S.w; x++) {
+    const mx = Math.floor(x / M), my = Math.floor(y / M), id = my * S.cols + mx, lx = tiles ? x % M : x, ly = tiles ? y % M : y, o = (y * S.w + x) * 4; let c;
+    if (tiles && (lx === 0 || ly === 0)) c = paper; else { const rgb = rgbOf(S.mods[id] || S.pal || S.slug), v = val(x, y, id, lx, ly, sd + id * 7.3), lvl = v * 4, base = Math.floor(lvl), thr = (BAYER[(y % 4) * 4 + (x % 4)] + .5) / 16; c = rgb[Math.min(4, base + (lvl - base > thr ? 1 : 0))]; }
+    img.data[o] = c[0]; img.data[o + 1] = c[1]; img.data[o + 2] = c[2]; img.data[o + 3] = 255; }
+  g.putImageData(img, 0, 0);
+}
+
+/* a botanical plate: tall spider lilies and a couple of butterflies in the project's colours, drawn with seeded, jittered ink strokes so nothing moves */
+function paintLily() {
+  const S = barS, W = S.W, H = S.H, pal = PAL[S.slug] || PAL.tread, cv = $('#bar canvas');
+  let seed = [...S.slug].reduce((a, c) => a * 31 + c.charCodeAt(0), 7) >>> 0; const R = () => { seed = (seed + 0x6D2B79F5) >>> 0; let t = seed; t = Math.imul(t ^ t >>> 15, t | 1); t ^= t + Math.imul(t ^ t >>> 7, t | 61); return ((t ^ t >>> 14) >>> 0) / 4294967296; }, rr = (a, b) => a + R() * (b - a);
+  if (!S.plants) {
+    const mk = (n, layer, hmin, hmax) => Array.from({ length: n }, (_, k) => ({ layer, x: (k + .5 + rr(-.3, .3)) / n * W, h: rr(hmin, hmax) * H, lean: rr(-.16, .16), pal: '', sd: R() * 1e5, big: [.5, .8, 1.15][layer] * rr(.9, 1.1) }));
+    S.plants = [...mk(Math.max(3, Math.round(W / 110)), 0, .28, .5), ...mk(Math.max(3, Math.round(W / 150)), 1, .3, .62), ...mk(Math.max(2, Math.round(W / 210)), 2, .38, .78)];
+    S.flies = [0, 1, 2, 3].map(i => ({ x: rr(.1, .9) * W, y: rr(.1, .5) * H, ph: rr(0, 6.3), s: rr(10, 16), sp: rr(.5, 1.1), c: i % 3 }));
+    S.blades = Array.from({ length: Math.round(W / 2.6) }, () => ({ x: rr(0, W), h: rr(.04, .22) * H * (.5 + R()), l: rr(-.3, .3), w: rr(1, 2.6), a: rr(.3, .9), back: R() < .5 }));
+    S.fall = Array.from({ length: 16 }, () => ({ x: rr(0, W), y: rr(.05, .9) * H, a: rr(0, 6.3), s: rr(3, 6), c: Math.floor(rr(2, 4.99)) }));
+    S.sunx = rr(.45, .8) * W;
+  }
+  const off = S.off || (S.off = document.createElement('canvas')); off.width = W * S.d; off.height = H * S.d; const g = off.getContext('2d'); g.setTransform(S.d, 0, 0, S.d, 0, 0); g.lineCap = 'round'; g.lineJoin = 'round';
+  g.fillStyle = '#ece3d0'; g.fillRect(0, 0, W, H);
+  const sr = W * .3, sy = H * .22; g.fillStyle = pal[4]; g.globalAlpha = .55; g.beginPath(); g.arc(S.sunx, sy, sr, 0, 7); g.fill(); g.fillStyle = pal[3]; g.globalAlpha = .3; g.beginPath(); g.arc(S.sunx, sy, sr * .72, 0, 7); g.fill(); g.globalAlpha = 1;
+  for (let k = 0; k < 120; k++) { const an = k * 2.4, rad = Math.sqrt(k / 120) * sr * 1.1; g.fillStyle = pal[2]; g.globalAlpha = .3; g.beginPath(); g.arc(S.sunx + Math.cos(an) * rad, sy + Math.sin(an) * rad, 1.4, 0, 7); g.fill(); } g.globalAlpha = 1;
+  const blade = b => { const tx = b.x + b.l * b.h; g.beginPath(); g.moveTo(b.x - b.w, H); g.quadraticCurveTo(b.x + (tx - b.x) * .3, H - b.h * .55, tx, H - b.h); g.quadraticCurveTo(b.x + (tx - b.x) * .3 + b.w * .5, H - b.h * .55, b.x + b.w, H); g.fill(); };
+  g.fillStyle = pal[1]; S.blades.forEach(b => { if (b.back) { g.globalAlpha = b.a * .45; blade(b); } }); g.globalAlpha = 1;
+  const petal = (tx, ty, ex, ey, cx, cy, w, fill, line) => { const nx = -(ey - ty), ny = ex - tx, nl = Math.hypot(nx, ny) || 1, ux = nx / nl * w, uy = ny / nl * w; g.fillStyle = fill; g.strokeStyle = line; g.lineWidth = 1.1; g.beginPath(); g.moveTo(tx, ty); g.quadraticCurveTo(cx + ux, cy + uy, ex, ey); g.quadraticCurveTo(cx - ux, cy - uy, tx, ty); g.fill(); g.stroke(); };
+  S.plants.slice().sort((p, q) => p.layer - q.layer).forEach(p => { const pl = PAL[p.pal || S.slug], far = p.layer === 0, col = far ? pl[3] : pl[2], dk = far ? pl[2] : pl[1], tx = p.x + p.lean * p.h, ty = H - p.h; let q = p.sd; const j = () => { q = (q * 16807) % 2147483647; return q / 2147483647 - .5; };
+    g.globalAlpha = far ? .7 : 1; g.strokeStyle = far ? pl[2] : pal[0]; g.lineWidth = 3 * p.big; g.beginPath(); g.moveTo(p.x, H); g.quadraticCurveTo(p.x + (tx - p.x) * .2 + j() * 6, H - p.h * .5, tx, ty); g.stroke();
+    const L = 64 * p.big; for (let k = 0; k < 7; k++) { const a = -Math.PI / 2 + (k - 3) * .52 + j() * .12, len = L * (k % 2 ? .82 : 1.05) * (1 + j() * .2), ex = tx + Math.cos(a) * len, ey = ty + Math.sin(a) * len * .85 + 10, cx = tx + Math.cos(a) * len * .5 + (k - 3) * 3, cy = ty + Math.sin(a) * len * .5 - 18;
+      petal(tx, ty, ex, ey, cx, cy, 3.4 * p.big, col, dk);
+      const sx = ex + Math.cos(a) * 18 * p.big, sy2 = ey - 14 * p.big; g.strokeStyle = dk; g.lineWidth = 1; g.beginPath(); g.moveTo(tx, ty); g.quadraticCurveTo(cx, cy - 12, sx, sy2); g.stroke(); g.fillStyle = pal[0]; g.beginPath(); g.arc(sx, sy2, 2.2 * Math.max(.6, p.big), 0, 7); g.fill(); }
+    g.fillStyle = dk; g.beginPath(); g.arc(tx, ty, 4 * p.big, 0, 7); g.fill(); g.globalAlpha = 1; });
+  S.fall.forEach(f => { g.save(); g.translate(f.x, f.y); g.rotate(f.a); g.fillStyle = pal[f.c]; g.strokeStyle = pal[1]; g.lineWidth = .8; g.beginPath(); g.ellipse(0, 0, f.s * 1.8, f.s * .7, 0, 0, 7); g.fill(); g.stroke(); g.restore(); });
+  g.fillStyle = pal[0]; S.blades.forEach(b => { if (!b.back) { g.globalAlpha = b.a * .8; blade(b); } }); g.globalAlpha = 1;
+  g.strokeStyle = 'rgba(30,27,23,.5)'; g.lineWidth = 1; g.strokeRect(.5, .5, W - 1, H - 1);
+  if (!S.loop) { S.loop = true; const ctx = cv.getContext('2d'), reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
+    const fr = now => { if (S.style !== 'lily') { S.loop = false; return; } const t = now / 1000, c = ctx; c.setTransform(1, 0, 0, 1, 0, 0); c.drawImage(S.off, 0, 0); c.setTransform(S.d, 0, 0, S.d, 0, 0); const pl = PAL[S.slug] || PAL.tread;
+      S.flies.forEach(b => { const x = b.x + Math.sin(t * .35 * b.sp + b.ph) * 38, y = b.y + Math.sin(t * .6 * b.sp + b.ph * 2) * 22, fl = reduce ? .85 : .2 + .8 * Math.abs(Math.cos(t * 7 * b.sp + b.ph)), s = b.s, ang = Math.cos(t * .35 * b.sp + b.ph) * .5;
+        c.save(); c.translate(x, y); c.rotate(ang); c.strokeStyle = pl[0]; c.lineWidth = 1.2; c.fillStyle = pl[[2, 3, 4][b.c]]; [-1, 1].forEach(d => { c.save(); c.scale(d * fl, 1); c.beginPath(); c.ellipse(s * .6, -s * .45, s * .65, s * .85, -.5, 0, 7); c.fill(); c.stroke(); c.beginPath(); c.ellipse(s * .48, s * .55, s * .42, s * .58, .5, 0, 7); c.fill(); c.stroke(); c.restore(); });
+        c.lineWidth = 2; c.beginPath(); c.moveTo(0, -s * .9); c.lineTo(0, s * .9); c.stroke(); c.restore(); });
+      requestAnimationFrame(fr); }; requestAnimationFrame(fr); }
+}
+
+/* a living colour field: a reaction-diffusion (Gray-Scott) simulation grows in the project's palette, and the cursor plants new growth */
+const RDK = [[.0545, .062], [.0367, .0649], [.029, .057], [.078, .061], [.03, .062], [.0367, .0649], [.0545, .062]];
+function startRD(cv, r) {
+  const S = barS, cs = 4, w = Math.max(16, Math.round(r.width / cs)), h = Math.max(16, Math.round(r.height / cs)); S.w = w; S.h = h; S.M = 1e6; S.cols = 1; cv.width = w; cv.height = h;
+  const N = w * h, rd = S.rd = { w, h, U: new Float32Array(N).fill(1), V: new Float32Array(N), U2: new Float32Array(N), V2: new Float32Array(N), slug: S.slug }, [F, K] = RDK[Math.max(0, PALK.indexOf(S.slug)) % RDK.length];
+  rd.F = F; rd.K = K;
+  for (let n = 0; n < Math.round(N / 900) + 6; n++) { const cx = 4 + Math.floor(Math.random() * (w - 8)), cy = 4 + Math.floor(Math.random() * (h - 8)); for (let y = -3; y <= 3; y++) for (let x = -3; x <= 3; x++) { const i = (cy + y) * w + cx + x; rd.U[i] = .5; rd.V[i] = .25; } }
+  for (let t = 0; t < 120; t++) stepRD(rd);
+  if (!S.rdLoop) { S.rdLoop = true; const g = cv.getContext('2d'); let img = null;
+    const fr = () => { if (S.style !== 'rd') { S.rdLoop = false; return; } const q = S.rd, c = $('#bar canvas'), gg = c.getContext('2d');
+      if (!document.hidden) { for (let t = 0; t < 7; t++) stepRD(q); if (!img || img.width !== q.w || img.height !== q.h) img = gg.createImageData(q.w, q.h);
+        const rgb = PAL[S.pal || S.slug].map(h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16))), V = q.V, D = img.data;
+        for (let y = 0; y < q.h; y++) for (let x = 0; x < q.w; x++) { const i = y * q.w + x, l = Math.min(.999, V[i] * 3.2) * 4, b = Math.floor(l), th = (BAYER[(y % 4) * 4 + (x % 4)] + .5) / 16, c2 = rgb[Math.min(4, b + (l - b > th ? 1 : 0))], o = i * 4; D[o] = c2[0]; D[o + 1] = c2[1]; D[o + 2] = c2[2]; D[o + 3] = 255; }
+        gg.putImageData(img, 0, 0); }
+      requestAnimationFrame(fr); }; requestAnimationFrame(fr); }
+}
+function stepRD(q) {
+  const { w, h, U, V, U2, V2, F, K } = q;
+  for (let y = 1; y < h - 1; y++) for (let x = 1; x < w - 1; x++) { const i = y * w + x, u = U[i], v = V[i],
+    lu = .2 * (U[i - 1] + U[i + 1] + U[i - w] + U[i + w]) + .05 * (U[i - w - 1] + U[i - w + 1] + U[i + w - 1] + U[i + w + 1]) - u,
+    lv = .2 * (V[i - 1] + V[i + 1] + V[i - w] + V[i + w]) + .05 * (V[i - w - 1] + V[i - w + 1] + V[i + w - 1] + V[i + w + 1]) - v, uvv = u * v * v;
+    U2[i] = u + lu - uvv + F * (1 - u); V2[i] = v + .5 * lv + uvv - (K + F) * v; }
+  q.U = U2; q.V = V2; q.U2 = U; q.V2 = V;
+}
+
+/* ===== per-project art: each panel is a small living picture of what the project does, and a toy you can poke ===== */
+const mono = '600 12px "DM Mono",monospace', clamp01 = u => Math.max(0, Math.min(1, u)), eio = u => u < .5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2;
+const inBox = (S, x, y, w, h) => S.mx >= x && S.mx <= x + w && S.my >= y && S.my <= y + h;
+const STORY = {
+  /* tread: hover a document to follow it up the stack, click to send a new request in a fresh order */
+  tread(g, t, W, H, P, S, st) {
+    g.fillStyle = P[0]; g.fillRect(0, 0, W, H);
+    const rowH = 64, bh = 42, pad = 24, iw = W - pad * 2, names = ['A', 'B', 'C', 'D'], docs = [[.2, P[2]], [.16, P[3]], [.26, P[4]], [.18, P[2]]];
+    if (!st.rows) { st.rows = []; st.push = -9; st.n = 0; st.next = 0; }
+    const send = () => { const o = [0, 1, 2, 3].map(i => [i, Math.random()]).sort((a, b) => a[1] - b[1]).map(a => a[0]); st.rows.unshift(o); st.rows.length = Math.min(st.rows.length, 20); st.push = t; st.n++; st.next = t + 2.4; };
+    if (!st.rows.length) for (let k = 0; k < 14; k++) send(); S.clicks.forEach(() => send()); if (t > st.next) send();
+    const f = eio(clamp01((t - st.push) / .55)), baseY = H - 80, lay = [];
+    st.rows.forEach((ord, a) => { const yy = baseY - rowH * a + rowH * (1 - f); if (yy < 76 || yy > H - 20) { lay.push(null); return; } let x = pad; const sw = iw * .09, blocks = {}; x += sw + 3; ord.forEach(di => { const w = iw * docs[di][0] * 1.08; blocks[di] = [x, w - 3]; x += w; }); lay.push({ yy, blocks, sys: [pad, sw] }); });
+    let hov = -1; lay.forEach(r => { if (r) for (const di in r.blocks) if (inBox(S, r.blocks[di][0], r.yy, r.blocks[di][1], bh)) hov = +di; });
+    for (let a = 0; a < lay.length - 1; a++) { const lo = lay[a], hi = lay[a + 1]; if (!lo || !hi) continue; for (const di in lo.blocks) { const x1 = lo.blocks[di][0] + lo.blocks[di][1] / 2, x2 = hi.blocks[di][0] + hi.blocks[di][1] / 2, y1 = lo.yy, y2 = hi.yy + bh, on = +di === hov;
+      g.strokeStyle = docs[di][1]; g.globalAlpha = on ? .95 : hov >= 0 ? .08 : .3; g.lineWidth = on ? 3 : 1.4; g.beginPath(); g.moveTo(x1, y1); g.bezierCurveTo(x1, (y1 + y2) / 2, x2, (y1 + y2) / 2, x2, y2); g.stroke(); } } g.globalAlpha = 1;
+    lay.forEach((r, a) => { if (!r) return; const al = a === 0 ? f : 1; g.globalAlpha = al; g.fillStyle = P[1]; g.fillRect(r.sys[0], r.yy, r.sys[1], bh); g.fillStyle = P[4]; g.font = mono; g.fillText('sys', r.sys[0] + 5, r.yy + bh / 2 + 4);
+      for (const di in r.blocks) { const [x, w] = r.blocks[di], dim = hov >= 0 && +di !== hov; g.globalAlpha = al * (dim ? .3 : 1); g.fillStyle = docs[di][1]; g.fillRect(x, r.yy, w, bh); g.fillStyle = 'rgba(255,255,255,.4)'; g.fillRect(x, r.yy, w * .2, bh); g.fillStyle = P[0]; g.font = mono; g.fillText(names[di], x + w / 2 - 4, r.yy + bh / 2 + 4); if (+di === hov) { g.globalAlpha = 1; g.strokeStyle = '#fff'; g.lineWidth = 2; g.strokeRect(x - 1, r.yy - 1, w + 2, bh + 2); } } g.globalAlpha = 1; });
+    g.fillStyle = P[4]; g.font = mono; g.textAlign = 'left'; g.fillText('same documents, any order', pad, 30); g.fillStyle = 'rgba(255,255,255,.4)'; g.fillRect(pad, 42, 14, 8); g.fillStyle = P[4]; g.fillText('recomputed 20%', pad + 22, 50);
+    g.textAlign = 'right'; g.fillText('tokens reused  ' + (st.n * 4 * 1800).toLocaleString(), W - pad, 30); g.fillText(hov >= 0 ? 'doc ' + names[hov] + ' is read once, then reused' : 'hover a doc · click to send a request', W - pad, 50); g.textAlign = 'left';
+  },
+  /* skillfuzz: it fuzzes by itself; click a cell to run that input yourself */
+  skillfuzz(g, t, W, H, P, S, st) {
+    g.fillStyle = P[0]; g.fillRect(0, 0, W, H); const cols = 10, pad = 24, cw = Math.min((W - pad * 2) / cols, (H - 170) / 9), ox = (W - cw * cols) / 2, oy = 76;
+    if (!st.c) { st.c = new Array(90).fill(0); st.flash = new Array(90).fill(-9); st.next = 1; st.done = 0; }
+    const run = i => { if (st.c[i]) return; st.c[i] = hsh(i, 5) < .4 ? 2 : 1; st.flash[i] = t; };
+    let hi = -1; if (S.mx >= ox && S.my >= oy) { const cx = Math.floor((S.mx - ox) / cw), cy = Math.floor((S.my - oy) / cw); if (cx < cols && cy < 9) hi = cy * cols + cx; }
+    S.clicks.forEach(() => { if (hi >= 0) run(hi); });
+    if (t > st.next) { const left = st.c.map((v, i) => v ? -1 : i).filter(i => i >= 0); if (left.length) run(left[Math.floor(Math.random() * left.length)]); st.next = t + .11; if (!left.length && !st.done) st.done = t; }
+    if (st.done && t - st.done > 2.5) { st.c.fill(0); st.done = 0; }
+    let tried = 0, hit = 0; for (let i = 0; i < 90; i++) { const v = st.c[i], x = ox + (i % cols) * cw, y = oy + Math.floor(i / cols) * cw, age = t - st.flash[i]; if (v) tried++; if (v === 2) hit++;
+      g.fillStyle = v === 2 ? P[4] : v === 1 ? P[2] : P[1]; g.fillRect(x + 2, y + 2, cw - 4, cw - 4); if (age < .5) { g.strokeStyle = v === 2 ? '#fff' : P[3]; g.globalAlpha = 1 - age / .5; g.lineWidth = 2; const e = age * 14; g.strokeRect(x - e, y - e, cw + e * 2, cw + e * 2); g.globalAlpha = 1; }
+      if (i === hi) { g.strokeStyle = '#fff'; g.lineWidth = 2; g.strokeRect(x + 1, y + 1, cw - 2, cw - 2); } }
+    g.fillStyle = P[4]; g.font = mono; g.fillText('inputs tried  ' + tried + '/90', pad, 34); g.fillText('behaviours triggered  ' + hit, pad, 54); g.textAlign = 'right'; g.fillText(hi >= 0 && !st.c[hi] ? 'click to run input #' + (hi + 1) : 'fuzzing…', W - pad, 34); g.textAlign = 'left';
+    g.fillStyle = P[1]; g.fillRect(pad, H - 40, W - pad * 2, 6); g.fillStyle = P[4]; g.fillRect(pad, H - 40, (W - pad * 2) * tried / 90, 6); g.fillText('light = a hidden behaviour showed up', pad, H - 54);
+  },
+  /* dpdp-guard: the guard follows your cursor; everything below it is masked */
+  'dpdp-guard'(g, t, W, H, P, S, st) {
+    g.fillStyle = P[0]; g.fillRect(0, 0, W, H); if (st.gate == null) st.gate = H * .5; const want = S.my >= 0 ? S.my : H * .5 + Math.sin(t * .5) * H * .12; st.gate += (want - st.gate) * .12; const gate = st.gate;
+    const lanes = [['my number is ', ['98450 12345', 1]], ['delete my account', ''], ['I am ', ['Rahul Mehta', 1], ' order 4412'], ['mail me at ', ['rahul@mail.com', 1]], ['stop marketing texts', ''], ['aadhaar ', ['4821 7731 0902', 1], ' attached'], ['call me on ', ['90000 11122', 1]]], sp = 46, span = H + 120; let masked = 0;
+    g.font = mono; g.textBaseline = 'middle';
+    lanes.forEach((ln, i) => { const y = ((t * sp + i * span / lanes.length) % span) - 40, x = 26 + (i % 2) * W * .22 + (i % 3) * 14, below = y > gate; g.globalAlpha = Math.max(0, Math.min(1, y / 40, (H - y) / 40 + .2)); let cx = x; const parts = ln.map(p => typeof p === 'string' ? [p, 0] : [p[0], 1]).filter(p => p[0]);
+      g.fillStyle = P[1]; g.fillRect(x - 10, y - 15, parts.reduce((a, p) => a + g.measureText(p[0]).width, 0) + 20, 30);
+      parts.forEach(([s, pii]) => { const w = g.measureText(s).width; if (pii && below) { g.fillStyle = P[3]; g.fillRect(cx, y - 7, w, 14); if (y < H - 30) masked++; } else { g.fillStyle = pii ? P[3] : P[4]; g.fillText(s, cx, y); } cx += w; }); g.globalAlpha = 1; });
+    g.fillStyle = P[3]; g.fillRect(0, gate - 1.5, W, 3); g.fillStyle = P[0]; g.fillRect(W - 112, gate - 14, 100, 28); g.strokeStyle = P[3]; g.lineWidth = 1.5; g.strokeRect(W - 112, gate - 14, 100, 28); g.fillStyle = P[4]; g.textAlign = 'center'; g.fillText('guard()', W - 62, gate); g.textAlign = 'left';
+    g.fillText('raw', 26, 24); g.fillText('masked', 26, H - 24); g.textAlign = 'right'; g.fillText(S.my >= 0 ? 'move the guard' : 'hover to move the guard', W - 20, 24); g.textBaseline = 'alphabetic'; g.textAlign = 'left';
+  },
+  /* taintmem: click any note to poison it and watch the spread */
+  taintmem(g, t, W, H, P, S, st) {
+    g.fillStyle = P[0]; g.fillRect(0, 0, W, H); const N = 54, pts = Array.from({ length: N }, (_, i) => [28 + hsh(i, 1) * (W - 56), 40 + hsh(i, 2) * (H - 80)]);
+    if (!st.adj) { st.adj = pts.map((p, i) => pts.map((q, j) => [j, Math.hypot(p[0] - q[0], p[1] - q[1])]).filter(a => a[0] !== i).sort((a, b) => a[1] - b[1]).slice(0, 3).map(a => a[0])); st.nb = pts.map((_, i) => new Set(st.adj[i])); st.adj.forEach((ns, i) => ns.forEach(j => st.nb[j].add(i))); st.seed = -1; st.t0 = -99; }
+    const spread = s => { st.seed = s; st.t0 = t; const d = new Array(N).fill(1e9); d[s] = 0; const q = [s]; while (q.length) { const a = q.shift(); st.nb[a].forEach(b => { if (d[b] > d[a] + 1) { d[b] = d[a] + 1; q.push(b); } }); } st.dist = d; };
+    let hi = -1, bd = 22; pts.forEach((p, i) => { const d = Math.hypot(p[0] - S.mx, p[1] - S.my); if (d < bd) { bd = d; hi = i; } });
+    S.clicks.forEach(() => { if (hi >= 0) spread(hi); }); if (st.seed < 0 || t - st.t0 > 15) spread(Math.floor(Math.random() * N));
+    const tt = t - st.t0, at = i => .3 + st.dist[i] * 1.05 + hsh(i, 8) * .5; g.lineWidth = 1.4;
+    st.adj.forEach((ns, i) => ns.forEach(j => { const a = at(i), b = at(j), lo = a < b ? i : j, hi2 = a < b ? j : i, s0 = Math.min(a, b), e0 = Math.max(a, b), u = clamp01((tt - s0) / (e0 - s0 + .6)); g.strokeStyle = P[1]; g.beginPath(); g.moveTo(...pts[i]); g.lineTo(...pts[j]); g.stroke();
+      if (u > 0) { g.strokeStyle = P[3]; g.beginPath(); g.moveTo(...pts[lo]); g.lineTo(pts[lo][0] + (pts[hi2][0] - pts[lo][0]) * u, pts[lo][1] + (pts[hi2][1] - pts[lo][1]) * u); g.stroke(); } }));
+    let count = 0; pts.forEach((p, i) => { const inf = tt > at(i), age = tt - at(i), r = i === st.seed ? 8 : 4.5; if (inf) count++; if (inf && age < .8) { g.fillStyle = P[4]; g.globalAlpha = 1 - age / .8; g.beginPath(); g.arc(p[0], p[1], r + age * 22, 0, 7); g.fill(); g.globalAlpha = 1; } g.fillStyle = inf ? P[3] : P[2]; g.beginPath(); g.arc(p[0], p[1], r + (i === hi ? 3 : 0), 0, 7); g.fill();
+      if (i === hi) { g.strokeStyle = '#fff'; g.lineWidth = 1.5; g.beginPath(); g.arc(p[0], p[1], r + 8, 0, 7); g.stroke(); } });
+    g.fillStyle = P[4]; g.font = mono; g.fillText('poisoned note', pts[st.seed][0] + 12, pts[st.seed][1] - 10); g.fillText('tainted ' + count + '/' + N, 24, H - 22); g.textAlign = 'right'; g.fillText(hi >= 0 ? 'click to poison this note' : 'click a note', W - 24, H - 22); g.textAlign = 'left';
+  },
+  /* cloudsense: hover a day for its cost, click a day to put the spike there */
+  cloudsense(g, t, W, H, P, S, st) {
+    g.fillStyle = '#ece3d0'; g.fillRect(0, 0, W, H); const n = 56, pad = 34, bw = (W - pad * 2) / n, base = H - 64, top = 96, grow = eio(clamp01(t / 2)), sc = (base - top) / 1.75; if (st.sp == null) st.sp = 40;
+    const val = (d, s) => (s === 0 ? .42 : s === 1 ? .28 : .17) * (1 + .12 * Math.sin(d * .5 + s)) * (1 + (hsh(d, s) - .5) * .12) * (d === st.sp && s === 1 ? 3.3 : 1) * (1 + d / 220), tot = d => val(d, 0) + val(d, 1) + val(d, 2);
+    g.font = mono; g.strokeStyle = 'rgba(30,27,23,.14)'; g.lineWidth = 1; g.fillStyle = 'rgba(30,27,23,.55)'; [0, .5, 1, 1.5].forEach(v => { const y = base - v * sc; g.beginPath(); g.moveTo(pad, y); g.lineTo(W - pad, y); g.stroke(); g.textAlign = 'right'; g.fillText('$' + Math.round(v * 1000), pad - 6, y + 4); }); g.textAlign = 'left';
+    const hd = S.mx >= pad && S.mx <= W - pad && S.my > top - 50 && S.my < base + 24 ? Math.min(n - 1, Math.floor((S.mx - pad) / bw)) : -1; S.clicks.forEach(() => { if (hd >= 0) { st.sp = hd; st.spT = t; } });
+    for (let d = 0; d < n; d++) { let y = base; const x = pad + d * bw; for (let s = 0; s < 3; s++) { const h = val(d, s) * sc * clamp01(grow * 1.6 - d / n * .6); g.fillStyle = d === hd ? ['#1e1b17', P[1], P[2]][s] : [P[1], P[2], P[3]][s]; g.fillRect(x + 1, y - h, bw - 2, h); y -= h; } }
+    g.strokeStyle = '#1e1b17'; g.lineWidth = 1.4; g.beginPath(); g.moveTo(pad, base + .5); g.lineTo(W - pad, base + .5); g.stroke(); g.fillStyle = 'rgba(30,27,23,.55)'; [1, 14, 28, 42, 56].forEach(d => g.fillText('d' + d, pad + (d - 1) * bw - 4, base + 18));
+    const u = clamp01((t - (st.spT != null ? st.spT : 2.4)) / .6), sx = pad + st.sp * bw + bw / 2, sy = base - tot(st.sp) * sc; g.strokeStyle = '#c4122c'; g.lineWidth = 2.2; g.globalAlpha = u; g.beginPath(); g.arc(sx, sy, 16 + (1 - u) * 22, 0, 7); g.stroke(); g.fillStyle = '#c4122c'; g.font = '600 13px "DM Mono",monospace'; g.textAlign = st.sp > 34 ? 'right' : 'left'; g.fillText('spike  +230%', sx + (st.sp > 34 ? -22 : 22), sy - 6); g.textAlign = 'left'; g.globalAlpha = 1; g.font = mono;
+    const fu = clamp01((t - 3) / 2.5); g.setLineDash([5, 4]); g.strokeStyle = '#1e1b17'; g.lineWidth = 1.8; g.beginPath(); for (let d = 44; d < 44 + 12 * fu; d++) { const x = pad + d * bw + bw / 2, y = base - tot(d - 6) * sc * 1.05 - 12; d === 44 ? g.moveTo(x, y) : g.lineTo(x, y); } g.stroke(); g.setLineDash([]); g.fillStyle = '#1e1b17'; if (fu > .2) g.fillText('forecast', pad + 44 * bw, base - tot(38) * sc * 1.05 - 38);
+    g.fillStyle = '#1e1b17'; g.fillText('daily AWS cost by service', pad, 32); [P[1], P[2], P[3]].forEach((c, i) => { g.fillStyle = c; g.fillRect(pad + i * 78, 48, 10, 10); g.fillStyle = '#1e1b17'; g.fillText(['EC2', 'S3', 'RDS'][i], pad + 14 + i * 78, 57); });
+    if (hd >= 0) { const x = pad + hd * bw + bw / 2, y = base - tot(hd) * sc, label = 'day ' + (hd + 1) + '   $' + Math.round(tot(hd) * 1000); const w = g.measureText(label).width + 16, bx = Math.min(W - w - 6, Math.max(6, x - w / 2)); g.fillStyle = '#1e1b17'; g.fillRect(bx, y - 42, w, 24); g.fillStyle = '#ece3d0'; g.fillText(label, bx + 8, y - 26); }
+    g.fillStyle = '#1e1b17'; g.textAlign = 'right'; g.fillText('click a day to move the spike', W - pad, H - 22); g.textAlign = 'left';
+  },
+  /* catadye: three sub-blocks update at different speeds; click to switch to the learning-rate control that gets the same result */
+  catadye(g, t, W, H, P, S, st) {
+    g.fillStyle = P[0]; g.fillRect(0, 0, W, H); if (st.mode == null) st.mode = 0; S.clicks.forEach(() => { st.mode = 1 - st.mode; });
+    const pad = 28, K = [1, 8, 64], cols = 64, cw = (W - pad * 2) / cols, rowY = [H * .2, H * .32, H * .44], rh = Math.min(44, H * .07), step = Math.floor(t * 6), off = (t * 6) % 1;
+    g.font = mono; g.fillStyle = P[4]; g.fillText(st.mode ? 'LR-matched: every step, lr / k' : 'CMS: every k steps', pad, 40); g.textAlign = 'right'; g.fillText('click to switch', W - pad, 40); g.textAlign = 'left';
+    let hr = -1; K.forEach((k, r) => { if (S.mx >= 0 && S.my >= rowY[r] - 18 && S.my <= rowY[r] + rh + 4) hr = r; });
+    K.forEach((k, r) => { const y = rowY[r], hot = hr === r; g.fillStyle = P[4]; g.globalAlpha = hot || hr < 0 ? .9 : .4; g.fillText('sub-block ' + (k === 1 ? '1' : '1/' + k) + (hot ? (st.mode ? '  ·  every step at lr/' + k : '  ·  one update every ' + k + ' steps') : ''), pad, y - 10); g.globalAlpha = 1; let n = 0;
+      for (let c = 0; c < cols + 1; c++) { const s2 = step - c + Math.floor(cols / 1.4), on = st.mode ? true : ((s2 % k) + k) % k === 0, x = W - pad - (c + off) * cw - cw, a2 = st.mode ? Math.max(.12, 1 / k) : 1; if (x < pad - cw) continue; if (on) n++; g.fillStyle = on ? (hot ? '#fff' : P[3]) : P[1]; g.globalAlpha = (on ? a2 : .6) * (hr >= 0 && !hot ? .45 : 1); g.fillRect(Math.max(x, pad), y, cw - 1.4, rh); g.globalAlpha = 1; } });
+    const cx = W - pad - cw * Math.floor(cols / 1.4); g.strokeStyle = '#fff'; g.lineWidth = 1.2; g.setLineDash([4, 4]); g.beginPath(); g.moveTo(cx, rowY[0] - 24); g.lineTo(cx, rowY[2] + rh + 12); g.stroke(); g.setLineDash([]); g.fillStyle = '#fff'; g.fillText('now', cx + 6, rowY[2] + rh + 24);
+    const y0 = H * .62, h0 = H * .17, x0 = pad, w0 = W - pad * 2; g.strokeStyle = P[1]; g.lineWidth = 1; for (let i = 0; i <= 3; i++) { g.beginPath(); g.moveTo(x0, y0 + h0 * i / 3); g.lineTo(x0 + w0, y0 + h0 * i / 3); g.stroke(); }
+    const fy = (u, off2) => y0 + h0 - h0 * (.18 + .55 * (1 - Math.exp(-u * 3.2)) + .05 * Math.sin(u * 9 + off2) * (1 - u));
+    const curve = (off2, col, w2, dash) => { g.strokeStyle = col; g.lineWidth = w2; g.setLineDash(dash || []); g.beginPath(); for (let i = 0; i <= 80; i++) { const u = i / 80; i ? g.lineTo(x0 + w0 * u, fy(u, off2)) : g.moveTo(x0, fy(u, off2)); } g.stroke(); g.setLineDash([]); };
+    curve(0, P[4], 2.6); curve(.35, P[3], 2, [5, 4]); g.fillStyle = P[4]; g.fillText('forgetting vs new-domain loss', pad, y0 - 12);
+    if (S.mx >= x0 && S.mx <= x0 + w0 && S.my >= y0 - 14 && S.my <= y0 + h0 + 14) { const u = (S.mx - x0) / w0, ya = fy(u, 0), yb = fy(u, .35); g.fillStyle = P[4]; g.beginPath(); g.arc(S.mx, ya, 4.5, 0, 7); g.fill(); g.fillStyle = P[3]; g.beginPath(); g.arc(S.mx, yb, 4.5, 0, 7); g.fill(); g.fillStyle = '#fff'; g.textAlign = S.mx > W * .6 ? 'right' : 'left'; g.fillText('baseline vs CMS: same line', S.mx + (S.mx > W * .6 ? -10 : 10), Math.min(ya, yb) - 12); g.textAlign = 'left'; } else { g.fillStyle = P[4]; g.fillText('CMS and LR-matched overlap', x0 + w0 * .5, y0 + h0 + 22); }
+    const ci = H * .91, zx = x0 + w0 * .3, sc2 = w0 * 1.9, ax = v => zx + v * sc2; g.strokeStyle = P[1]; g.lineWidth = 1; g.beginPath(); g.moveTo(x0, ci); g.lineTo(x0 + w0, ci); g.stroke();
+    g.strokeStyle = '#fff'; g.lineWidth = 1; g.setLineDash([3, 3]); g.beginPath(); g.moveTo(zx, ci - 24); g.lineTo(zx, ci + 12); g.stroke(); g.setLineDash([]); g.fillStyle = '#fff'; g.fillText('0', zx - 3, ci + 26);
+    const grow = eio(clamp01((t % 8) / 1.2)); g.strokeStyle = P[4]; g.lineWidth = 4; g.beginPath(); g.moveTo(ax(-.013), ci); g.lineTo(ax(-.013 + .192 * grow), ci); g.stroke(); g.fillStyle = P[3]; g.beginPath(); g.arc(ax(.111 * grow), ci, 6, 0, 7); g.fill();
+    g.fillStyle = P[4]; g.fillText('CMS minus LR-matched  +0.111  [-0.013, +0.179]', x0, ci - 34); g.fillText('interval includes 0: no detectable gain', x0, ci + 44 > H - 8 ? H - 8 : ci + 44);
+  },
+  /* hawkeye: click inside a camera feed to drop debris on the runway; it gets detected */
+  hawkeye(g, t, W, H, P, S, st) {
+    g.fillStyle = P[0]; g.fillRect(0, 0, W, H); const gap = 12, fh = (H - gap * 4) / 3, x0 = gap, fw = W - gap * 2; if (!st.d) st.d = [[0, .4, .6, 0], [1, .65, .7, 0], [2, .3, .8, 0]];
+    const feedAt = y => { for (let c = 0; c < 3; c++) { const y0 = gap + c * (fh + gap); if (y >= y0 && y <= y0 + fh) return c; } return -1; };
+    S.clicks.forEach(([x, y]) => { const c = feedAt(y); if (c >= 0 && x >= x0 && x <= x0 + fw) { st.d.push([c, (x - x0) / fw, (y - (gap + c * (fh + gap))) / fh, t]); if (st.d.length > 9) st.d.shift(); } });
+    let found = 0;
+    for (let c = 0; c < 3; c++) { const y0 = gap + c * (fh + gap), vx = x0 + fw * (.5 + (c - 1) * .12), vy = y0 + fh * .28; g.save(); g.beginPath(); g.rect(x0, y0, fw, fh); g.clip(); g.fillStyle = P[1]; g.fillRect(x0, y0, fw, fh);
+      g.fillStyle = P[2]; g.beginPath(); g.moveTo(vx - 6, vy); g.lineTo(vx + 6, vy); g.lineTo(x0 + fw * .95, y0 + fh); g.lineTo(x0 + fw * .05, y0 + fh); g.fill();
+      g.fillStyle = P[4]; for (let k = 0; k < 9; k++) { const u = (k + (t * .35 + c * .3) % 1) / 9, y = vy + (y0 + fh - vy) * u * u, w = 1 + u * 7, h = 3 + u * 18; g.fillRect(vx - w / 2 + (u * (c - 1) * 22), y, w, h); }
+      for (let k = 0; k < 140; k++) { g.fillStyle = hsh(k, c + Math.floor(t * 12)) < .5 ? 'rgba(255,255,255,.06)' : 'rgba(0,0,0,.12)'; g.fillRect(x0 + hsh(k, c) * fw, y0 + hsh(c, k) * fh, 2, 2); }
+      st.d.filter(d => d[0] === c).forEach((d, k) => { const dx = x0 + d[1] * fw, dy = y0 + d[2] * fh, age = t - d[3], det = age > .35 || d[3] === 0; g.fillStyle = P[0]; g.fillRect(dx - 4, dy - 3, 8, 6);
+        if (det) { found++; const s = 22, cn = 8, sh = age < .7 && d[3] ? 1 + (1 - age / .7) * .6 : 1; g.strokeStyle = P[3]; g.lineWidth = 2; [[-1, -1], [1, -1], [1, 1], [-1, 1]].forEach(([a, b]) => { g.beginPath(); g.moveTo(dx + a * s * sh, dy + b * (s * sh - cn)); g.lineTo(dx + a * s * sh, dy + b * s * sh); g.lineTo(dx + a * (s * sh - cn), dy + b * s * sh); g.stroke(); }); g.fillStyle = P[3]; g.font = mono; g.fillText('FOD ' + (.86 + hsh(c + k, 3) * .13).toFixed(2), dx - s, dy - s - 6); } });
+      g.fillStyle = 'rgba(255,255,255,.16)'; g.fillRect(x0, y0 + ((t * 40 + c * 70) % (fh + 20)) - 10, fw, 3); g.fillStyle = P[4]; g.font = mono; g.fillText('CAM ' + (c + 1) + '   06:4' + (c + 1) + ':' + String(Math.floor(t) % 60).padStart(2, '0'), x0 + 10, y0 + 20); g.restore(); }
+    if (S.mx >= 0 && feedAt(S.my) >= 0) { g.strokeStyle = P[4]; g.lineWidth = 1; g.globalAlpha = .8; g.beginPath(); g.moveTo(S.mx - 14, S.my); g.lineTo(S.mx + 14, S.my); g.moveTo(S.mx, S.my - 14); g.lineTo(S.mx, S.my + 14); g.stroke(); g.globalAlpha = 1; }
+    g.fillStyle = P[4]; g.font = mono; g.textAlign = 'right'; g.fillText('objects on runway  ' + found + '   · click to drop debris', W - gap - 6, H - gap - 6); g.textAlign = 'left';
+  },
+  /* petally: a pet follows your cursor and leaves paw prints; click to toss a treat and keep the streak going */
+  petally(g, t, W, H, P, S, st) {
+    g.fillStyle = '#ece3d0'; g.fillRect(0, 0, W, H);
+    if (!st.pet) { st.pet = { x: W * .5, y: H * .72, d: 1, step: 0 }; st.treats = []; st.prints = []; st.hearts = []; st.streak = 0; st.last = t; st.way = [W * .3, H * .6]; st.patch = Array.from({ length: 26 }, (_, i) => [hsh(i, 1) * W, H * .18 + hsh(i, 2) * H * .8, 14 + hsh(i, 3) * 28]); }
+    const dt = Math.min(.05, t - st.last); st.last = t; const p = st.pet; S.clicks.forEach(([x, y]) => { st.treats.push([x, y]); if (st.treats.length > 4) st.treats.shift(); });
+    st.patch.forEach(([x, y, r], i) => { g.fillStyle = i % 2 ? 'rgba(161,71,43,.06)' : 'rgba(161,71,43,.1)'; g.beginPath(); g.ellipse(x, y, r * 1.6, r * .6, 0, 0, 7); g.fill(); });
+    let tx, ty, sp = 110; if (st.treats.length) { [tx, ty] = st.treats[0]; sp = 250; } else if (S.mx >= 0) { tx = S.mx; ty = S.my; sp = 160; } else { if (Math.hypot(st.way[0] - p.x, st.way[1] - p.y) < 20) st.way = [60 + Math.random() * (W - 120), H * .3 + Math.random() * H * .6]; [tx, ty] = st.way; }
+    const dx = tx - p.x, dy = ty - p.y, dist = Math.hypot(dx, dy); let moving = false; if (S.mx < 0 && !st.treats.length) { st.still = (st.still || 0) + dt; } else st.still = 0; const asleep = st.still > 6; if (!asleep && dist > (st.treats.length ? 6 : 50)) { p.x += dx / dist * sp * dt; p.y += dy / dist * sp * dt; moving = true; if (Math.abs(dx) > 4) p.d = dx > 0 ? 1 : -1; p.step += sp * dt; if (p.step > 32) { p.step = 0; st.prints.push([p.x, p.y + 22, Math.atan2(dy, dx) + Math.PI / 2, t, st.prints.length % 2]); if (st.prints.length > 36) st.prints.shift(); } }
+    if (st.treats.length && dist < 16) { st.treats.shift(); st.streak++; for (let k = 0; k < 7; k++) st.hearts.push([p.x, p.y - 46, (Math.random() - .5) * 70, -40 - Math.random() * 50, t]); }
+    st.prints.forEach(([x, y, a, t0, side]) => { const age = t - t0; if (age > 5) return; g.save(); g.globalAlpha = Math.max(0, 1 - age / 5) * .85; g.translate(x + (side ? 9 : -9) * Math.cos(a), y + (side ? 9 : -9) * Math.sin(a)); g.rotate(a); g.fillStyle = P[2]; g.beginPath(); g.ellipse(0, 4, 8, 6.5, 0, 0, 7); g.fill(); [[-8, -4], [-3, -9], [3, -9], [8, -4]].forEach(([a2, b2]) => { g.beginPath(); g.ellipse(a2, b2, 3, 4, 0, 0, 7); g.fill(); }); g.restore(); });
+    st.treats.forEach(([x, y]) => { g.fillStyle = '#fbd9b8'; g.strokeStyle = '#1e1b17'; g.lineWidth = 1.6; g.beginPath(); g.roundRect(x - 12, y - 4, 24, 8, 4); g.fill(); g.stroke(); [[-12, -4], [-12, 4], [12, -4], [12, 4]].forEach(([a, b]) => { g.beginPath(); g.arc(x + a, y + b, 4.4, 0, 7); g.fill(); g.stroke(); }); });
+    const wag = asleep ? 0 : Math.sin(t * (moving ? 20 : 8)) * .6, run = moving ? Math.sin(t * 16) : 0, bob = moving ? Math.abs(run) * 3.5 : asleep ? -4 + Math.sin(t * 1.6) * 1.2 : Math.sin(t * 2) * 1;
+    g.fillStyle = 'rgba(30,27,23,.16)'; g.beginPath(); g.ellipse(p.x, p.y + 26, 30, 7, 0, 0, 7); g.fill();
+    g.save(); g.translate(p.x, p.y - bob); g.scale(p.d, 1); g.lineWidth = 2.2; g.strokeStyle = '#1e1b17'; g.lineJoin = 'round';
+    g.save(); g.translate(-26, -4); g.rotate(-.9 + wag); g.fillStyle = P[1]; g.beginPath(); g.ellipse(-9, 0, 13, 5, 0, 0, 7); g.fill(); g.stroke(); g.restore();
+    [[-14, 1], [12, -1]].forEach(([a, ph]) => { g.fillStyle = P[2]; g.beginPath(); g.ellipse(a + run * 5 * ph, 20, 6, 8, 0, 0, 7); g.fill(); g.stroke(); });
+    g.fillStyle = P[3]; g.beginPath(); g.ellipse(0, 2, 28, 19, 0, 0, 7); g.fill(); g.stroke();
+    g.fillStyle = '#fbd9b8'; g.beginPath(); g.ellipse(2, 11, 16, 8, 0, 0, 7); g.fill();
+    [[-8, -1], [20, 1]].forEach(([a, ph]) => { g.fillStyle = P[2]; g.beginPath(); g.ellipse(a + run * 5 * ph, 21, 6, 8, 0, 0, 7); g.fill(); g.stroke(); });
+    g.fillStyle = P[3]; g.beginPath(); g.arc(24, -14, 19, 0, 7); g.fill(); g.stroke();
+    g.fillStyle = P[1]; g.beginPath(); g.ellipse(9, -22 + (moving ? run * 2 : 0), 7, 13, -.35, 0, 7); g.fill(); g.stroke(); g.beginPath(); g.ellipse(39, -23 + (moving ? run * 2 : 0), 6.5, 12, .4, 0, 7); g.fill(); g.stroke();
+    g.fillStyle = '#fbd9b8'; g.beginPath(); g.ellipse(33, -6, 10, 8, 0, 0, 7); g.fill(); g.stroke();
+    g.fillStyle = '#1e1b17'; g.beginPath(); g.ellipse(40, -9, 3.6, 3, 0, 0, 7); g.fill(); if (asleep) { g.strokeStyle = '#1e1b17'; g.lineWidth = 2; g.beginPath(); g.arc(23, -18, 3.4, .2, Math.PI - .2); g.stroke(); } else { g.beginPath(); g.arc(23, -18, 3.2, 0, 7); g.fill(); g.fillStyle = '#fff'; g.beginPath(); g.arc(24, -19, 1.1, 0, 7); g.fill(); }
+    g.fillStyle = 'rgba(224,80,100,.45)'; g.beginPath(); g.ellipse(18, -8, 4, 2.6, 0, 0, 7); g.fill();
+    if (moving) { g.fillStyle = '#e0506a'; g.strokeStyle = '#1e1b17'; g.lineWidth = 1.4; g.beginPath(); g.ellipse(34, 2, 3.2, 5 + Math.abs(run) * 1.5, 0, 0, 7); g.fill(); g.stroke(); }
+    g.strokeStyle = '#c4122c'; g.lineWidth = 4; g.beginPath(); g.arc(12, 0, 14, -.6, .9); g.stroke(); g.fillStyle = '#f2c94c'; g.strokeStyle = '#1e1b17'; g.lineWidth = 1.4; g.beginPath(); g.arc(17, 12, 3.6, 0, 7); g.fill(); g.stroke(); g.restore();
+    if (asleep) { g.fillStyle = '#1e1b17'; g.font = '700 15px "DM Mono",monospace'; for (let k = 0; k < 3; k++) { const a = ((t * .5 + k / 3) % 1); g.globalAlpha = 1 - a; g.fillText('z', p.x + 30 + k * 10 + a * 12, p.y - 36 - a * 40); } g.globalAlpha = 1; g.font = mono; }
+    st.hearts = st.hearts.filter(h => t - h[4] < 1.3); st.hearts.forEach(h => { const a = t - h[4], x = h[0] + h[2] * a, y = h[1] + h[3] * a; g.save(); g.globalAlpha = 1 - a / 1.3; g.translate(x, y); g.fillStyle = '#c4122c'; g.beginPath(); g.moveTo(0, 6); g.bezierCurveTo(-11, -3, -5, -11, 0, -5); g.bezierCurveTo(5, -11, 11, -3, 0, 6); g.fill(); g.restore(); });
+    g.fillStyle = '#1e1b17'; g.font = mono; g.fillText('walk streak', 28, 36); for (let d = 0; d < 7; d++) { g.fillStyle = d < st.streak % 8 ? P[2] : P[4]; g.beginPath(); g.arc(34 + d * 24, 56, 8, 0, 7); g.fill(); } g.fillStyle = '#1e1b17'; g.fillText(st.streak + ' treats', 34 + 7 * 24 + 8, 60); g.fillText('PawPoints  ' + st.streak * 10, 28, 82);
+    g.textAlign = 'right'; g.fillText(asleep ? 'shh, napping · move to wake' : S.mx >= 0 ? 'click to toss a treat' : 'hover to call the pup', W - 24, 36); g.textAlign = 'left';
+  },
+};
+function startStory(cv, r) {
+  const S = barS, d = devicePixelRatio || 1; S.W = r.width; S.H = r.height; S.d = d; S.w = S.h = 1; S.M = 1e6; S.cols = 1; cv.width = r.width * d; cv.height = r.height * d; S.mx = S.my = -1; S.clicks = S.clicks || []; S.sts = S.sts || {};
+  if (!S.storyEv) { S.storyEv = true; const pos = e => { const b = cv.getBoundingClientRect(); return [e.clientX - b.left, e.clientY - b.top]; };
+    cv.addEventListener('pointermove', e => { [S.mx, S.my] = pos(e); }); cv.addEventListener('pointerleave', () => { S.mx = S.my = -1; }); cv.addEventListener('pointerdown', e => { S.clicks.push(pos(e)); }); }
+  if (!S.storyLoop) { S.storyLoop = true; const t0 = performance.now(), still = matchMedia('(prefers-reduced-motion:reduce)').matches;
+    const fr = now => { if (S.style !== 'story') { S.storyLoop = false; return; } const c = $('#bar canvas').getContext('2d'), P = PAL[S.slug] || PAL.tread, key = S.slug in STORY ? S.slug : 'tread';
+      if (!document.hidden) { c.setTransform(S.d, 0, 0, S.d, 0, 0); c.lineCap = 'round'; c.textAlign = 'left'; c.textBaseline = 'alphabetic'; c.globalAlpha = 1; c.setLineDash([]); const st = S.sts[S.slug] || (S.sts[S.slug] = {});
+        try { STORY[key](c, still ? 5 : (now - t0) / 1000, S.W, S.H, P, S, st); } catch (e) { console.error(e); } S.clicks.length = 0; c.strokeStyle = 'rgba(30,27,23,.5)'; c.lineWidth = 1; c.strokeRect(.5, .5, S.W - 1, S.H - 1); }
+      requestAnimationFrame(fr); }; requestAnimationFrame(fr); }
+}
+{ const cv = $('#bar canvas'), cell = e => { const r = cv.getBoundingClientRect(), S = barS; return [(e.clientX - r.left) / r.width * S.w, (e.clientY - r.top) / r.height * S.h]; };
+  cv.addEventListener('pointermove', e => { const S = barS; if (S.style === 'story') return; const [x, y] = cell(e);
+    if (S.style === 'rd' && S.rd) { const q = S.rd, cx = Math.round(x), cy = Math.round(y); for (let yy = -2; yy <= 2; yy++) for (let xx = -2; xx <= 2; xx++) { const X = cx + xx, Y = cy + yy; if (X > 0 && X < q.w - 1 && Y > 0 && Y < q.h - 1) { q.V[Y * q.w + X] = .3; q.U[Y * q.w + X] = .5; } } return; }
+    if (S.style === 'lily') { const px = x * S.W, py = y * S.H; let best = null, bd = 1e9; (S.plants || []).forEach(p => { const d = Math.hypot(px - (p.x + p.lean * p.h), py - (S.H - p.h)); if (d < bd) { bd = d; best = p; } }); if (best && bd < 90 && S.last !== best) { S.last = best; best.pal = PALK[(PALK.indexOf(best.pal || S.slug) + 1) % PALK.length]; paintBar(); } else if (bd >= 90) S.last = -1; return; }
+    if (S.style === 'tiles') { const id = Math.floor(y / S.M) * S.cols + Math.floor(x / S.M); if (id === S.last) return; S.last = id; const cur = S.mods[id] || S.slug; S.mods[id] = PALK[(PALK.indexOf(cur) + 1) % PALK.length]; paintBar(); return; }
+    S.mx = x; S.my = y; if (!S.raf) S.raf = requestAnimationFrame(() => { S.raf = 0; paintBar(); }); });
+  cv.addEventListener('pointerleave', () => { barS.mx = barS.my = -99; paintBar(); });
+  cv.addEventListener('click', () => { const S = barS; if (S.style === 'tiles' || S.style === 'story') return; if (S.style === 'rd') { S.pal = PALK[(PALK.indexOf(S.pal || S.slug) + 1) % PALK.length]; return; } S.pal = PALK[(PALK.indexOf(S.pal || S.slug) + 1) % PALK.length]; paintBar(); }); }
+/* opening a write-up: a sheet of paper is wiped away top to bottom by a band of the project's ember colours, like a document scanner */
+let curEl;
+function curtain(p) {
+  if (matchMedia('(prefers-reduced-motion:reduce)').matches || !document.body.animate) return;
+  if (curEl) curEl.forEach(e => e.remove());
+  const pal = PAL[p.slug] || PAL.tread, H = innerHeight, bandH = Math.max(40, H * .07), dur = 1300, ease = 'cubic-bezier(.65,0,.25,1)';
+  const sheet = document.createElement('div'), band = document.createElement('div');
+  sheet.setAttribute('aria-hidden', 'true'); band.setAttribute('aria-hidden', 'true');
+  sheet.style.cssText = 'position:fixed;inset:0;z-index:60;pointer-events:none;background:var(--bg);display:flex;align-items:center;padding:0 6vw';
+  const stops = pal.map((c, i) => c + ' ' + i * 20 + '% ' + (i + 1) * 20 + '%').join(',');
+  band.style.cssText = 'position:fixed;left:0;right:0;top:0;height:' + bandH + 'px;z-index:61;pointer-events:none;background:linear-gradient(90deg,' + stops + ');box-shadow:0 0 0 2px var(--ink);will-change:transform';
+  document.body.append(sheet, band); curEl = [sheet, band];
+  const opt = { duration: dur, easing: ease, fill: 'both', delay: 250 };
+  sheet.animate([{ clipPath: 'inset(0 0 0 0)' }, { clipPath: 'inset(' + (H + bandH) + 'px 0 0 0)' }], opt);
+  const bd = band.animate([{ transform: 'translateY(' + -bandH + 'px)', opacity: 0 }, { transform: 'translateY(' + -bandH + 'px)', opacity: 1, offset: .001 }, { transform: 'translateY(' + H + 'px)', opacity: 1 }], opt);
+  bd.onfinish = () => { sheet.remove(); band.remove(); curEl = null; };
+}
+let rz; addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(() => drawBar((location.hash.match(/^#\/(.+)$/) || [0, 'tread'])[1]), 150); });
+
 /* ================= render ================= */
 function render() {
-  const m = location.hash.match(/^#\/(.+)$/), p = PROJECTS.find(x => x.slug === (m && m[1])) || PROJECTS[0], i = PROJECTS.indexOf(p), nx = PROJECTS[(i + 1) % 7], pv = PROJECTS[(i + 6) % 7];
+  const m = location.hash.match(/^#\/(.+)$/), p = PROJECTS.find(x => x.slug === (m && m[1])) || PROJECTS[0], i = PROJECTS.indexOf(p), nx = PROJECTS[(i + 1) % PROJECTS.length], pv = PROJECTS[(i + PROJECTS.length - 1) % PROJECTS.length];
   $('#tabs').innerHTML = PROJECTS.map(q => `<a href="#/${q.slug}"${q === p ? ' class="on"' : ''}>${q.name}</a>`).join('');
   $('#page').innerHTML = `<header class="top col"><h1>${p.name}</h1><div class="meta">${p.meta.map(esc).join('<span>·</span>')}<span>·</span>${p.repo ? `<a href="${GH}${p.repo}" target="_blank" rel="noopener">code on GitHub</a>` : '<span>private, no public repo</span>'}</div>
     <p class="abs">${p.abs}</p><div class="stat">${p.stat.map(s => `<div><b>${s[0]}</b><span>${s[1]}</span></div>`).join('')}</div></header>` +
     p.secs.map(s => `<section class="s col"><h2>${esc(s[0])}</h2>${s[1].join('')}</section>`).join('') +
-    `<nav class="pn col"><a href="#/${pv.slug}">← ${pv.name}</a><a href="#/${nx.slug}">${nx.name} →</a></nav>`;
+    `<nav class="pn col"><a href="#/${pv.slug}">← ${pv.name}</a><a href="#/${nx.slug}">${nx.name} →</a></nav><footer class="foot col"><a href="${GH}" target="_blank" rel="noopener">GitHub</a><a href="https://linkedin.com/in/durva-s" target="_blank" rel="noopener">LinkedIn</a><a href="https://x.com/dsrkiv" target="_blank" rel="noopener">X</a><a href="mailto:durva.s170@gmail.com">Email</a></footer>`;
   $$('[data-f]').forEach(f => { const b = B[f.dataset.f]; if (b) b($('.box', f)); });
-  document.title = `${p.name} · Durva Sharma`; scrollTo(0, 0);
+  drawBar(p.slug); curtain(p); document.title = `${p.name} · Durva Sharma`; scrollTo(0, 0);
 }
 addEventListener('hashchange', render); render();
 })();
