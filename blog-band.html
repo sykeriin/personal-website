@@ -144,7 +144,7 @@ const POSTS = [
 ];
 const HELLO = 'Welcome to my blog. Click the cassette tapes.';
 const POKES = [['wave', 'Hey.'], ['point', 'The tapes are on the shelf. Up there.'], ['walk', 'I also shoot, direct and write poems. It’s a lot.'], ['wave', 'Poke me again. I dare you.']];
-['idle','idle2','walk1','walk2','wave1','wave2','point','headphones','guard','guitar1','guitar2','dL','dR','dK','dance1','dance2','dance3','cross1','cross2','six1','six2','step1','step2','head1','head2','jump','hand1','hand2','sit'].forEach(p => { const im = new Image(); im.src = SPR(p); });
+['idle','idle2','walk1','walk2','wave1','wave2','point','headphones','guard','guitar1','guitar2','dL','dR','dK','dance1','dance2','dance3','cross1','cross2','six1','six2','step1','step2','head1','head2','pop1','pop2','moon1','moon2','floss1','floss2','dab','kick','jump','hand1','hand2','sit'].forEach(p => { const im = new Image(); im.src = SPR(p); });
 Object.entries({ ampBtn: 'Amp', boomBtn: 'Boombox', guitarBtn: 'Guitar', danceBtn: 'Dance floor', drumBtn: 'Drums' }).forEach(([id, t]) => { $(id).dataset.tip = t; });
 const live = POSTS.filter(p => !p.soon);
 
@@ -398,10 +398,11 @@ function moveCam(t2, ms) {
   const step = now => { const u = Math.min(1, (now - t0) / ms), e = u < .5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2; ['s', 'ox', 'oy'].forEach(k => cam[k] = from[k] + (t2[k] - from[k]) * e); drawBack(); placeAll(); if (u < 1) tween = requestAnimationFrame(step); }; tween = requestAnimationFrame(step);
 }
 const sprite = $('sprite'), me = $('me'), bubble = $('bubble'); let sayTimer = 0;
-let drumF = 'dL', shown = '', walking = false;
+let drumF = 'dL', shown = '', walking = false, danceFx = { mode: '', frac: 0 };
+const SEQ = [['dance1'], ['step1'], ['cross1'], ['step2'], ['cross2'], ['step1'], ['cross1'], ['step2'], ['cross2'], ['pop1'], ['pop2'], ['pop1'], ['pop2'], ['moon1'], ['moon2'], ['moon1'], ['moon2'], ['moon1'], ['moon2'], ['floss1'], ['floss2'], ['floss1'], ['floss2'], ['floss1'], ['floss2'], ['dab'], ['dab'], ['kick'], ['dance3'], ['kick'], ['jump'], ['six1'].slice(0, 0).length ? ['jump'] : ['hand1'], ['hand2'], ['hand1'], ['head1', 'spin'], ['head2', 'spin'], ['head1', 'spin'], ['head2', 'spin'], ['head1', 'spin'], ['head2', 'spin'], ['head1', 'spin'], ['head2', 'spin'], ['hand2'], ['hand1', 'roll'], ['head2', 'roll'], ['hand1', 'roll'], ['head2', 'roll'], ['hand1', 'roll'], ['head2', 'roll'], ['jump'], ['jump', 'flipA'], ['jump', 'flipB'], ['jump', 'flipA'], ['jump', 'flipB'], ['jump'], ['dance2']];
 const frameFor = t => { const k = reduce ? 0 : t;
   if (walking) return Math.floor(k * 8) % 2 ? 'walk1' : 'walk2';
-  if (state === 'dance') return ['dance1', 'step1', 'cross1', 'step2', 'cross2', 'step1', 'cross1', 'step2', 'cross2', 'jump', 'hand1', 'hand2', 'head1', 'head2', 'head1', 'head2', 'head1', 'head2', 'jump'][Math.floor(k * 5) % 19];
+  if (state === 'dance') { const i = Math.floor(k * 5), e = SEQ[i % SEQ.length]; danceFx = { mode: e[1] || '', frac: (k * 5) % 1 }; return e[0]; }
   if (state === 'guitar') return playing ? (Math.floor(k * 9) % 2 ? 'guitar1' : 'guitar2') : 'guitar1';
   if (state === 'drums') return drumF;
   if (state === 'reading') return 'headphones';
@@ -411,7 +412,7 @@ const frameFor = t => { const k = reduce ? 0 : t;
   if (['point', 'headphones', 'guard'].includes(curPose)) return curPose;
   return k % 4.2 < .14 ? 'idle2' : 'idle'; };
 const setPose = p => { curPose = p; showFrame(performance.now() / 1000); };
-const showFrame = t => { const f = frameFor(t); if (f !== shown) { shown = f; sprite.src = SPR(f); } me.style.transform = f.startsWith('head') && !reduce ? `scaleX(${Math.cos(t * 15).toFixed(2)})` : ''; };
+const showFrame = t => { const f = frameFor(t); if (f !== shown) { shown = f; sprite.src = SPR(f); } let tf = '', org = '50% 100%'; if (state === 'dance' && !reduce) { const fx = danceFx; if (fx.mode === 'spin') tf = `scaleX(${Math.cos(t * 15).toFixed(2)})`; else if (fx.mode === 'roll') { org = '50% 52%'; tf = `translateY(-16%) rotate(${(t * 11).toFixed(2)}rad)`; } else if (fx.mode === 'flipA' || fx.mode === 'flipB') { org = '50% 52%'; tf = `translateY(${(-26 * Math.sin(fx.frac * Math.PI)).toFixed(1)}%) rotate(${(fx.mode === 'flipA' ? 0 : 180) + fx.frac * 180}deg)`; } } me.style.transformOrigin = org; me.style.transform = tf; };
 function say(text, pose, ms = 3200) { bubble.textContent = text; bubble.classList.remove('pop'); void bubble.offsetWidth; bubble.classList.add('pop'); bubble.style.opacity = 1; if (pose) setPose(pose); placeBubble(); clearTimeout(sayTimer); if (ms) sayTimer = setTimeout(() => { if (state === 'idle') { bubble.style.opacity = 0; setPose('idle'); } }, ms); }
 let walk = 0; const moveMe = x => { cancelAnimationFrame(walk); const x0 = meX, t0 = performance.now(); if (reduce) { meX = x; placeAll(); return; } walking = true; const step = now => { const u = Math.min(1, (now - t0) / 650), e = u < .5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2; meX = x0 + (x - x0) * e; placeAll(); if (u < 1) walk = requestAnimationFrame(step); else { walking = false; placeAll(); } }; walk = requestAnimationFrame(step); };
 
@@ -469,7 +470,7 @@ $('drumBtn').addEventListener('click', async () => {
 });
 $('danceBtn').addEventListener('click', async () => {
   if (state !== 'idle') return; state = 'dance'; moveMe(L.me.dance); say('Okay. One song.', 'wave', 0); playing = true; discoOn = true; startLoop(); await sleep(reduce ? 0 : 500); me.classList.add('dance');
-  await sleep(reduce ? 0 : 9600);
+  await sleep(reduce ? 0 : 20000);
   me.classList.remove('dance'); playing = false; discoOn = false; state = 'idle'; moveMe(L.me.idle); pan(690); say('Okay, that’s enough.', 'idle', 2400); startLoop(true);
 });
 $('ampBtn').addEventListener('click', () => { if (state !== 'idle') return; playing = !playing; say(playing ? 'Turned up. Hum only, sorry.' : 'Turned it down.', 'point', 2400); startLoop(!playing); });
