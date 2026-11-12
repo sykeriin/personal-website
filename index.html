@@ -111,7 +111,10 @@ pre.art{flex:none;margin:0;padding:.5rem .55rem;border-radius:6px;background:var
 @media (max-width:800px){
   .name{top:21%}
   .deck{--w:min(80vw,34vh);left:calc(50vw + var(--w) * .106);top:41%}
-  .links{flex-direction:column;gap:.3rem;text-align:right}
+  .who{display:none}
+  .top{justify-content:flex-end}
+  .links{flex-direction:row;gap:1.4rem;white-space:nowrap}
+  .card.wide p:not(.lead){display:none}
   .bot{flex-direction:column;align-items:stretch;gap:.5rem}
   .right{order:-1;justify-content:flex-start}
   .right img{display:none}
@@ -148,7 +151,7 @@ html{overflow-x:clip;max-width:100%}body{max-width:100%}/*noscrollx*/
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="goo" x="-5%" y="-30%" width="110%" height="160%"><feGaussianBlur id="gb" in="SourceGraphic" stdDeviation="4"/><feColorMatrix values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 40 -18"/></filter></svg>
 <header class="top">
   <p class="px who">Durva Sharma<br>AI systems engineer. Inference, agent security, computer vision.</p>
-  <p class="px links"><a class="lnk" href="/blog-band.html">Grass Files</a><a href="https://github.com/sykeriin" target="_blank" rel="noopener">GitHub</a><a href="https://linkedin.com/in/durva-s" target="_blank" rel="noopener">LinkedIn</a><a href="https://x.com/dsrkiv" target="_blank" rel="noopener">X</a><a href="mailto:durva.s170@gmail.com">Say hi</a></p>
+  <p class="px links"><a class="lnk" href="/blog-band.html">Grass Files</a><a href="#" id="hi">Say hi</a></p>
 </header>
 
 <main>
@@ -253,7 +256,7 @@ function drawDisc() { const n = tracks().length, w = bw(); let o = '<circle r="4
   for (let i = 0; i < n; i++) o += `<circle class="band" data-i="${i}" r="${mid(i).toFixed(2)}" fill="none" stroke="${i === at ? '#232327' : '#111113'}" stroke-width="${(w - 0.7).toFixed(2)}"/>`;
   for (let r = IN + 1; r < OUT; r += 1.1) o += `<circle r="${r.toFixed(1)}" fill="none" stroke="#fff" stroke-opacity=".05" stroke-width=".18" pointer-events="none"/>`;
   o += `<circle r="${mid(at).toFixed(2)}" fill="none" stroke="#e0122d" stroke-width=".45" pointer-events="none"/>`;
-  o += `<circle r="15.5" fill="#e0122d"/><path id="lp" d="M-11 0a11 11 0 1 1 22 0a11 11 0 1 1-22 0" fill="none"/><text font-family="Pixelify Sans, monospace" font-size="3" fill="#fff" letter-spacing=".5"><textPath href="#lp">DURVA SHARMA · SIDE ${side ? 'B' : 'A'} · ${side ? 'THE PERSON' : 'THE WORK'} ·</textPath></text><circle r="5.4" fill="#0b0b0c"/><text y="1.4" text-anchor="middle" font-family="Archivo, sans-serif" font-weight="900" font-size="4" fill="#fff">${at + 1}</text><circle r=".9" cy="-3.6" fill="#e6e6e3"/>`;
+  o += `<circle class="lab" r="15.5" fill="#e0122d"/><path id="lp" d="M-11 0a11 11 0 1 1 22 0a11 11 0 1 1-22 0" fill="none"/><text font-family="Pixelify Sans, monospace" font-size="3" fill="#fff" letter-spacing=".5"><textPath href="#lp">DURVA SHARMA · SIDE ${side ? 'B' : 'A'} · ${side ? 'THE PERSON' : 'THE WORK'} ·</textPath></text><circle r="5.4" fill="#0b0b0c"/><text y="1.4" text-anchor="middle" font-family="Archivo, sans-serif" font-weight="900" font-size="4" fill="#fff">${at + 1}</text><circle r=".9" cy="-3.6" fill="#e6e6e3"/>`;
   $('disc').innerHTML = o; }
 function show() { const t = tracks()[at]; drawDisc(); $('disc').style.transform = `rotate(${spin}deg)`; $('arm').style.transform = `rotate(${armAngle(mid(at)).toFixed(2)}deg)`;
   $('card').classList.toggle('wide', !!t.wide); $('card').classList.toggle('work', t.kind === 'Work'); $('card').classList.toggle('lis', !!t.listen); $('card').classList.toggle('cols', !!t.cols); $('card').innerHTML = `<header class="px"><span>${String(at + 1).padStart(2, '0')} ${esc(t.n)}</span><span>${t.kind}</span></header><div class="body">${t.html}</div>`;
@@ -263,6 +266,7 @@ function go(d) { const n = tracks().length; at = (at + d + n) % n; spin += d * 4
 function flip() { const d = $('disc'); if (reduce) { side ^= 1; at = 0; return show(); } d.style.transform = `rotate(${spin}deg) scaleX(0)`; setTimeout(() => { side ^= 1; at = 0; show(); }, 350); }
 $('flip').addEventListener('click', flip); $('pv').addEventListener('click', () => go(-1)); $('nx').addEventListener('click', () => go(1));
 $('rec').addEventListener('click', e => { const b = e.target.closest('.band'); if (b && !moved) { const d = +b.dataset.i - at; at = +b.dataset.i; spin += d * 40; show(); } });
+$('hi').addEventListener('click', e => { e.preventDefault(); if (side === 1) { at = 0; spin += 40; show(); } else flip(); setTimeout(() => $('card').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'nearest' }), 420); });
 addEventListener('keydown', e => { if (e.target.closest('button,a,input')) return; if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { go(1); e.preventDefault(); } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { go(-1); e.preventDefault(); } else if (e.key === 'f' || e.key === 'F') flip(); });
 /* drag the record round */
 let drag = null, moved = false; const rec = $('rec');
@@ -428,5 +432,71 @@ openingShot();
 window.__pale = { go, flip, setSong, get s() { return { side, at }; } };
 })();
 </script>
+<script>
+/* easter egg: hold the red label of the record. The page goes away and the record becomes the ball in a block-breaker. */
+(() => {
+const rec = document.getElementById('rec'); if (!rec) return;
+let timer = 0, sx = 0, sy = 0, open = false;
+const inLabel = e => { const l = document.querySelector('#disc .lab'); if (!l) return false; const r = l.getBoundingClientRect(); return Math.hypot(e.clientX - (r.left + r.width / 2), e.clientY - (r.top + r.height / 2)) <= r.width / 2; };
+rec.addEventListener('pointerdown', e => { if (open || !inLabel(e)) return; sx = e.clientX; sy = e.clientY; clearTimeout(timer); timer = setTimeout(start, 900); });
+for (const t of ['pointerup', 'pointercancel']) addEventListener(t, () => clearTimeout(timer));
+addEventListener('pointermove', e => { if (timer && Math.hypot(e.clientX - sx, e.clientY - sy) > 26) clearTimeout(timer); });
+
+function start() {
+  if (open) return; open = true;
+  const box = document.createElement('div'); box.id = 'eggGame'; box.style.cssText = 'position:fixed;inset:0;z-index:2147483000;background:#0b0b0c;touch-action:none;opacity:0;transition:opacity .45s';
+  const cv = document.createElement('canvas'); cv.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:none;display:block'; box.appendChild(cv);
+  const x = document.createElement('button'); x.type = 'button'; x.textContent = '← Back to the record'; x.setAttribute('aria-label', 'Back to the record'); x.style.cssText = 'position:absolute;top:14px;right:14px;z-index:2;font:800 12px/1 Archivo,Arial,sans-serif;letter-spacing:.14em;text-transform:uppercase;padding:13px 18px;border-radius:999px;border:0;background:#f4f2ec;color:#0b0b0c;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.4)'; box.appendChild(x);
+  document.body.appendChild(box); document.documentElement.style.overflow = 'hidden'; requestAnimationFrame(() => { box.style.opacity = 1; });
+  const g = cv.getContext('2d'), dpr = Math.min(devicePixelRatio || 1, 2); let W = 0, H = 0;
+  const fit = () => { W = innerWidth; H = innerHeight; cv.width = W * dpr; cv.height = H * dpr; layout(); };
+  let best = 0; try { best = +localStorage.getItem('recordBest') || 0; } catch (e) {}
+  const COLS = ['#e0122d', '#f4f2ec', '#b9b9b5', '#8d8d89', '#26262a'];
+  const G = { score: 0, lives: 3, level: 1, bricks: [], px: 0, ball: null, stuck: true, over: false, spin: 0, flash: 0 };
+  const P = { w: 120, h: 12, y: 0 };
+  function layout() { P.w = W < 600 ? 96 : 130; P.y = H - (W < 600 ? 90 : 70); build(); if (!G.px) G.px = W / 2; }
+  function build() {
+    const rows = Math.min(8, 4 + G.level), bw = W < 600 ? Math.floor((W - 24) / 6) - 6 : 84, bh = W < 600 ? 22 : 26, gap = 6, cols = Math.max(4, Math.floor((W - 24) / (bw + gap))), left = (W - cols * (bw + gap) + gap) / 2, top = W < 600 ? 86 : 90;
+    G.bricks = []; for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) G.bricks.push({ x: left + c * (bw + gap), y: top + r * (bh + gap), w: bw, h: bh, col: COLS[r % COLS.length], hp: r === 0 ? 2 : 1, alive: true });
+  }
+  function serve() { G.stuck = true; G.ball = { x: G.px, y: P.y - 18, vx: 0, vy: 0, r: W < 600 ? 14 : 17 }; }
+  function reset() { G.score = 0; G.lives = 3; G.level = 1; G.over = false; build(); serve(); }
+  fit(); addEventListener('resize', fit); serve();
+  const speed = () => Math.min(560, (W < 600 ? 300 : 340) + G.level * 30);
+  let last = performance.now(), raf = 0;
+  function step(dt) {
+    const b = G.ball; G.spin += dt * 5; G.flash = Math.max(0, G.flash - dt);
+    if (G.stuck) { b.x = G.px; b.y = P.y - b.r - 2; return; }
+    b.x += b.vx * dt; b.y += b.vy * dt;
+    if (b.x < b.r) { b.x = b.r; b.vx = Math.abs(b.vx); } if (b.x > W - b.r) { b.x = W - b.r; b.vx = -Math.abs(b.vx); } if (b.y < b.r) { b.y = b.r; b.vy = Math.abs(b.vy); }
+    if (b.vy > 0 && b.y + b.r >= P.y && b.y + b.r <= P.y + P.h + 14 && b.x > G.px - P.w / 2 - 6 && b.x < G.px + P.w / 2 + 6) { const k = (b.x - G.px) / (P.w / 2), sp = speed(), ang = k * 1.05; b.vx = Math.sin(ang) * sp; b.vy = -Math.cos(ang) * sp; b.y = P.y - b.r; }
+    for (const br of G.bricks) { if (!br.alive) continue; const cx = Math.max(br.x, Math.min(b.x, br.x + br.w)), cy = Math.max(br.y, Math.min(b.y, br.y + br.h)), dx = b.x - cx, dy = b.y - cy; if (dx * dx + dy * dy <= b.r * b.r) { if (Math.abs(dx) > Math.abs(dy)) b.vx = dx > 0 ? Math.abs(b.vx) : -Math.abs(b.vx); else b.vy = dy > 0 ? Math.abs(b.vy) : -Math.abs(b.vy); br.hp--; G.flash = .08; if (br.hp <= 0) { br.alive = false; G.score += 10; } else G.score += 2; break; } }
+    if (!G.bricks.some(z => z.alive)) { G.level++; build(); serve(); }
+    if (b.y - b.r > H) { G.lives--; if (G.lives <= 0) { G.over = true; if (G.score > best) { best = G.score; try { localStorage.setItem('recordBest', best); } catch (e) {} } } else serve(); }
+  }
+  function frame(now) {
+    const dt = Math.min(.033, (now - last) / 1000); last = now; if (!G.over) step(dt);
+    g.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const bg = g.createRadialGradient(W / 2, H * .85, 20, W / 2, H * .5, Math.max(W, H) * .8); bg.addColorStop(0, '#2a0a10'); bg.addColorStop(.5, '#120a0c'); bg.addColorStop(1, '#050506'); g.fillStyle = bg; g.fillRect(0, 0, W, H);
+    g.strokeStyle = 'rgba(255,255,255,.035)'; g.lineWidth = 1; for (let gx = 0; gx < W; gx += 40) { g.beginPath(); g.moveTo(gx, 0); g.lineTo(gx, H); g.stroke(); } for (let gy = 0; gy < H; gy += 40) { g.beginPath(); g.moveTo(0, gy); g.lineTo(W, gy); g.stroke(); }
+    for (const br of G.bricks) { if (!br.alive) continue; g.fillStyle = br.col; g.beginPath(); g.roundRect(br.x, br.y, br.w, br.h, 4); g.fill(); g.fillStyle = 'rgba(255,255,255,.18)'; g.fillRect(br.x + 3, br.y + 2, br.w - 6, 3); g.fillStyle = 'rgba(0,0,0,.35)'; for (const dx of [.3, .7]) { g.beginPath(); g.arc(br.x + br.w * dx, br.y + br.h * .62, 3, 0, 6.283); g.fill(); } if (br.hp > 1) { g.strokeStyle = '#fff'; g.lineWidth = 2; g.beginPath(); g.roundRect(br.x + 1, br.y + 1, br.w - 2, br.h - 2, 4); g.stroke(); } }
+    const b = G.ball; g.save(); g.translate(b.x, b.y); g.rotate(G.spin); g.fillStyle = '#0b0b0c'; g.beginPath(); g.arc(0, 0, b.r, 0, 6.283); g.fill(); g.strokeStyle = 'rgba(255,255,255,.22)'; g.lineWidth = 1; for (const k of [.82, .64]) { g.beginPath(); g.arc(0, 0, b.r * k, 0, 6.283); g.stroke(); } g.strokeStyle = '#fff'; g.lineWidth = 2; g.beginPath(); g.arc(0, 0, b.r, 0, 6.283); g.stroke(); g.fillStyle = '#e0122d'; g.beginPath(); g.arc(0, 0, b.r * .42, 0, 6.283); g.fill(); g.fillStyle = '#fff'; g.fillRect(b.r * .1, -b.r * .06, b.r * .28, b.r * .12); g.restore();
+    g.fillStyle = '#f4f2ec'; g.beginPath(); g.roundRect(G.px - P.w / 2, P.y, P.w, P.h, 6); g.fill(); g.fillStyle = '#e0122d'; g.beginPath(); g.roundRect(G.px - P.w / 2, P.y, 22, P.h, 6); g.fill(); g.beginPath(); g.roundRect(G.px + P.w / 2 - 22, P.y, 22, P.h, 6); g.fill();
+    g.textAlign = 'left'; g.fillStyle = '#f4f2ec'; g.font = '800 14px Archivo, Arial, sans-serif'; g.fillText('SCORE ' + G.score, 18, 34); g.fillStyle = '#8d8d89'; g.fillText('BEST ' + best + '  ·  LEVEL ' + G.level, 18, 56); g.fillStyle = '#e0122d'; g.font = '800 20px Arial'; g.fillText('♥'.repeat(Math.max(0, G.lives)), 18, 82);
+    g.textAlign = 'center'; g.fillStyle = '#b9b9b5'; g.font = '600 13px Archivo, Arial, sans-serif';
+    if (G.stuck && !G.over) g.fillText('Move to steer. Tap to launch the record.', W / 2, P.y + 46);
+    if (G.over) { g.fillStyle = 'rgba(5,5,6,.78)'; g.fillRect(0, 0, W, H); g.fillStyle = '#fff'; g.font = '900 46px Archivo, Arial, sans-serif'; g.fillText(G.score + ' points', W / 2, H / 2 - 6); g.font = '700 15px Archivo, Arial, sans-serif'; g.fillStyle = '#d9d9d4'; g.fillText(G.score >= best && G.score > 0 ? 'New best. Tap to play again.' : 'Tap to play again.', W / 2, H / 2 + 30); }
+    raf = requestAnimationFrame(frame);
+  }
+  const move = e => { const r = cv.getBoundingClientRect(); G.px = Math.max(P.w / 2, Math.min(W - P.w / 2, e.clientX - r.left)); };
+  cv.addEventListener('pointermove', move);
+  cv.addEventListener('pointerdown', e => { move(e); if (G.over) { reset(); return; } if (G.stuck) { G.stuck = false; const sp = speed(); G.ball.vx = (Math.random() - .5) * sp * .5; G.ball.vy = -Math.sqrt(sp * sp - G.ball.vx * G.ball.vx); } });
+  const key = e => { if (e.key === 'Escape') leave(); else if (e.key === ' ') { e.preventDefault(); if (G.over) reset(); else if (G.stuck) { G.stuck = false; const sp = speed(); G.ball.vx = (Math.random() - .5) * sp * .5; G.ball.vy = -Math.sqrt(sp * sp - G.ball.vx * G.ball.vx); } } else if (e.key === 'ArrowLeft') G.px = Math.max(P.w / 2, G.px - 40); else if (e.key === 'ArrowRight') G.px = Math.min(W - P.w / 2, G.px + 40); };
+  const leave = () => { cancelAnimationFrame(raf); removeEventListener('resize', fit); removeEventListener('keydown', key); box.style.opacity = 0; setTimeout(() => { box.remove(); document.documentElement.style.overflow = ''; open = false; }, 450); };
+  addEventListener('keydown', key); x.addEventListener('click', leave); raf = requestAnimationFrame(frame);
+}
+})();
+</script>
+
 </body>
 </html>

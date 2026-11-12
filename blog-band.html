@@ -85,14 +85,14 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .foot{position:absolute;z-index:40;right:clamp(1rem,2.4vw,2rem);bottom:1.1rem;font-weight:700;font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:#3b3b38;padding:.5rem .85rem;border-radius:999px;background:rgba(244,242,236,.78);backdrop-filter:blur(8px)}
 
 @media (max-width:1000px){
-  .chips{display:flex;gap:.6rem;padding:1rem 1rem 0}.chips button{flex:1;background:var(--ink);color:var(--paper);padding:.85rem 0;font-weight:800;font-size:.74rem;letter-spacing:.14em;text-transform:uppercase}.chips button:active{background:var(--red)}
+  .chips{display:flex;gap:.5rem;padding:1rem 1rem 0;justify-content:center}.chips button{flex:0 1 auto;background:var(--ink);color:var(--paper);padding:.7rem 1.3rem;border-radius:999px;font-weight:800;font-size:.68rem;letter-spacing:.14em;text-transform:uppercase}.chips button:active{background:var(--red)}
   .stage{height:auto;min-height:0;margin-top:4.2rem}
   .intro{position:static;padding:3.6rem 1rem 0;font-size:1rem;max-width:none}
   .rack{position:static;display:grid;justify-content:stretch;grid-template-columns:1fr 1fr;gap:1.6rem 1rem;padding:1rem 1rem 3rem}
   .tape{--tf:.95rem;width:100%}
   .tape .cap{display:block;position:absolute;top:104%;left:0;right:0;font-weight:700;font-size:.85rem;line-height:1.2}
   .rack .tape{margin-bottom:2.2rem}
-  .tapes-h{display:block;padding:1.6rem 1rem 0;font-family:var(--disp);font-weight:400;text-transform:uppercase;font-size:2.2rem;letter-spacing:.01em}
+  .tapes-h{display:block;padding:1.8rem 1rem 0;font-family:var(--sans);font-weight:800;text-transform:uppercase;font-size:.7rem;letter-spacing:.18em;color:#5b5b57}
   .deck{width:100%}
   .bubble{font-size:.9rem;max-width:11rem}
   .foot{position:static;display:block;padding:0 1rem 2rem}
@@ -399,7 +399,7 @@ function placeAll() {
   const f = Math.max(.52, Math.min(.9, (L.shelf.x1 - L.shelf.x0) * cam.s / 700)); $('rack').style.setProperty('--tf', f + 'rem');
   placeBubble(); drawFx(performance.now() / 1000);
 }
-function placeBubble() { const b = $('bubble'); if (phone) { b.style.left = Math.max(8, W - b.offsetWidth - 14) + 'px'; b.style.top = '14px'; return; } const[x, y] = P(meX - 30, L.meB - L.meH + 24); b.style.left = Math.max(8, Math.min(W - b.offsetWidth - 8, x)) + 'px'; b.style.top = Math.max(60, y - b.offsetHeight - 14) + 'px'; }
+function placeBubble() { const b = $('bubble'); const[x, y] = P(meX - 30, L.meB - L.meH + 30); b.style.left = Math.max(8, Math.min(W - b.offsetWidth - 8, x)) + 'px'; b.style.top = Math.max(phone ? 6 : 60, y - b.offsetHeight - 12) + 'px'; }
 let tween = 0;
 function moveCam(t2, ms) {
   const from = { ...cam }, t0 = performance.now(); cancelAnimationFrame(tween);
