@@ -120,10 +120,9 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 <div class="chips" id="chips" role="group" aria-label="Play with the band"><button data-go="guitar">Guitar</button><button data-go="drum">Drums</button><button data-go="dance">Dance</button></div>
 <h2 class="tapes-h" id="tapesH">Tapes</h2>
 <div class="rack" id="rack" aria-labelledby="tapesH"></div>
-<p class="foot" id="foot"></p>
+
 
 <aside class="deck" id="deck" aria-label="Now playing" aria-hidden="true">
-  <div class="spine" id="spine"></div>
   <div class="jc" id="jc"></div>
 </aside>
 
@@ -145,10 +144,9 @@ const POSTS = [
 ];
 const HELLO = 'Welcome to my blog. Click the cassette tapes.';
 const POKES = [['wave', 'Hey.'], ['point', 'The tapes are on the shelf. Up there.'], ['walk', 'I also shoot, direct and write poems. It’s a lot.'], ['wave', 'Poke me again. I dare you.']];
-['idle','idle2','walk1','walk2','wave1','wave2','point','headphones','guard','guitar1','guitar2','dL','dR','dK','dance1','dance2','dance3','sit'].forEach(p => { const im = new Image(); im.src = SPR(p); });
+['idle','idle2','walk1','walk2','wave1','wave2','point','headphones','guard','guitar1','guitar2','dL','dR','dK','dance1','dance2','dance3','cross1','cross2','six1','six2','jump','sit'].forEach(p => { const im = new Image(); im.src = SPR(p); });
 Object.entries({ ampBtn: 'Amp', boomBtn: 'Boombox', guitarBtn: 'Guitar', danceBtn: 'Dance floor', drumBtn: 'Drums' }).forEach(([id, t]) => { $(id).dataset.tip = t; });
 const live = POSTS.filter(p => !p.soon);
-$('foot').textContent = `${live.length} tape recorded, ${POSTS.length - live.length} still blank.`;
 
 /* ---------- the room: 1600 x 860 units, scaled to the screen ---------- */
 const back = $('back'), fx = $('fx'), bg = back.getContext('2d'), fg = fx.getContext('2d');
@@ -403,7 +401,7 @@ const sprite = $('sprite'), me = $('me'), bubble = $('bubble'); let sayTimer = 0
 let drumF = 'dL', shown = '', walking = false;
 const frameFor = t => { const k = reduce ? 0 : t;
   if (walking) return Math.floor(k * 8) % 2 ? 'walk1' : 'walk2';
-  if (state === 'dance') return ['dance1', 'dance2', 'dance3', 'dance2'][Math.floor(k * 6) % 4];
+  if (state === 'dance') return ['dance1', 'cross1', 'cross2', 'cross1', 'cross2', 'dance2', 'six1', 'six2', 'six1', 'six2', 'jump', 'dance3', 'dance2', 'jump'][Math.floor(k * 5.5) % 14];
   if (state === 'guitar') return playing ? (Math.floor(k * 9) % 2 ? 'guitar1' : 'guitar2') : 'guitar1';
   if (state === 'drums') return drumF;
   if (state === 'reading') return 'headphones';
@@ -444,7 +442,6 @@ async function playTape(el, p) {
 }
 function openDeck(p) {
   const reel = '<svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18" fill="#f4f2ec"/><circle cx="20" cy="20" r="7" fill="#0b0b0c"/>' + [0, 1, 2].map(k => `<rect x="18.4" y="1.6" width="3.2" height="9" fill="#0b0b0c" transform="rotate(${k * 120} 20 20)"/>`).join('') + '</svg>';
-  $('spine').innerHTML = `<span>Grass Files</span><span>${esc(p.tag)}</span>`;
   $('jc').innerHTML = `<div class="reels">${reel}<span>Now playing</span>${reel}</div><h2>${esc(p.title)}</h2><p class="meta">${esc(p.date)} · ${esc(p.tag)}</p><div class="body">${p.body.map(t => `<p>${esc(t)}</p>`).join('')}</div><div class="ctl"><button id="eject" type="button">Eject the tape</button><a href="/blog.html">Quiet version</a></div>`;
   const d = $('deck'); d.classList.add('open'); d.setAttribute('aria-hidden', 'false'); d.scrollTop = 0; history.replaceState(null, '', '#/' + p.slug); $('eject').onclick = closeDeck; setTimeout(() => $('eject').focus({ preventScroll: true }), 600);
 }
@@ -472,7 +469,7 @@ $('drumBtn').addEventListener('click', async () => {
 });
 $('danceBtn').addEventListener('click', async () => {
   if (state !== 'idle') return; state = 'dance'; moveMe(L.me.dance); say('Okay. One song.', 'wave', 0); playing = true; discoOn = true; startLoop(); await sleep(reduce ? 0 : 500); me.classList.add('dance');
-  const poses = ['wave', 'walk', 'point', 'headphones', 'wave', 'guard']; for (let n = 0; n < (reduce ? 0 : 20); n++) { setPose(poses[n % poses.length]); await sleep(300); }
+  await sleep(reduce ? 0 : 7600);
   me.classList.remove('dance'); playing = false; discoOn = false; state = 'idle'; moveMe(L.me.idle); pan(690); say('Okay, that’s enough.', 'idle', 2400); startLoop(true);
 });
 $('ampBtn').addEventListener('click', () => { if (state !== 'idle') return; playing = !playing; say(playing ? 'Turned up. Hum only, sorry.' : 'Turned it down.', 'point', 2400); startLoop(!playing); });
