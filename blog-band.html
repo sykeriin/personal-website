@@ -96,7 +96,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 </head>
 <body>
 <nav class="bar"><a href="/">← Back to the record</a><a href="/blog.html">Quiet version</a></nav>
-<p class="intro">Notes on builds, security, shoots and poems. Put a tape in the boombox.</p>
+<p class="intro">Notes on builds, security, shoots and poems. Put a tape in the boombox, or hit the drums.</p>
 
 <section class="stage" id="stage" aria-label="Band room">
   <canvas id="back" aria-hidden="true"></canvas>
@@ -106,6 +106,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   <button class="spot" id="boomBtn" aria-label="The boombox: click to play or stop"></button>
   <button class="spot" id="guitarBtn" aria-label="Play the guitar"></button>
   <button class="spot" id="danceBtn" aria-label="Dance"></button>
+  <button class="spot" id="drumBtn" aria-label="Play the drums"></button>
   <div class="bubble" id="bubble" aria-live="polite"></div>
 </section>
 <h2 class="tapes-h" id="tapesH">Tapes</h2>
@@ -133,18 +134,18 @@ const POSTS = [
   { slug: 'skillfuzz', short: 'SkillFuzz', title: 'Fuzzing the tools agents trust', tag: 'Security', soon: true, say: 'Running sketchy plugins ninety times so you don’t have to. Soon.' },
   { slug: 'runway', short: 'Runway', title: 'Clean frames from three runway cameras', tag: 'Vision', soon: true, say: 'Three cameras, one runway, a lot of noise. Soon.' }
 ];
-const HELLO = 'Hi. Put a tape in the boombox. Guitar’s over there, and there’s a dance floor.';
+const HELLO = 'Hi. Put a tape in the boombox, grab the guitar, hit the drums, or dance.';
 const POKES = [['wave', 'Hey.'], ['point', 'The tapes are on the shelf. Up there.'], ['walk', 'I also shoot, direct and write poems. It’s a lot.'], ['wave', 'Poke me again. I dare you.']];
-['idle', 'point', 'guitar', 'walk', 'sit', 'wave', 'headphones', 'guard'].forEach(p => { const im = new Image(); im.src = SPR(p); });
+['idle', 'point', 'guitar', 'walk', 'sit', 'wave', 'headphones', 'guard', 'drums', 'drums2'].forEach(p => { const im = new Image(); im.src = SPR(p); });
 const live = POSTS.filter(p => !p.soon);
 $('foot').textContent = `${live.length} tape recorded, ${POSTS.length - live.length} still blank.`;
 
 /* ---------- the room: 1100 x 860 units, scaled to the screen ---------- */
 const back = $('back'), fx = $('fx'), bg = back.getContext('2d'), fg = fx.getContext('2d');
 let W = 0, H = 0, dpr = 1, phone = false, state = 'idle', playing = false, guitarOut = false, reading = null;
-const cam = { s: 1, ox: 0, oy: 0 }, WORLD = 1200, WH = 860;
-const L = { floor: 690, shelf: { x0: 24, x1: 540, y: 318 }, crate: { x: 70, y: 580, w: 290, h: 110 }, box: { x: 40, y: 430, w: 350, h: 150 }, deckC: [215, 492], guitar: 600, disco: [990, 0], word: { x: 36, y: 120, h: 150 },
-  me: { idle: 770, guitar: 745, dance: 1010, read: 800 }, meH: 470, meB: 702, dance: { x: 930, y: 650, w: 190, h: 40 } };
+const cam = { s: 1, ox: 0, oy: 0 }, WORLD = 1500, WH = 860;
+const L = { floor: 690, shelf: { x0: 24, x1: 540, y: 318 }, crate: { x: 70, y: 580, w: 290, h: 110 }, box: { x: 40, y: 430, w: 350, h: 150 }, deckC: [215, 492], guitar: 560, drum: 1170, disco: [990, 0], word: { x: 36, y: 120, h: 150 },
+  me: { idle: 760, guitar: 725, dance: 760, read: 760, drum: 1175 }, meH: 470, meB: 702, dance: { x: 650, y: 650, w: 190, h: 40 } };
 
 /* the brush: seeded, so every redraw lands in the same place and the lines never boil */
 let seed = 1; const R = () => (seed = seed * 16807 % 2147483647) / 2147483647;
@@ -204,14 +205,27 @@ function drawBoombox(g, t) {
   for (let k = 0; k < 4; k++) { const on = play && Math.sin(t * 9 + k * 1.7) > k * .35 - .7; fill(g, ell(px + 8 + k * 16, b.y + 106, 4.5, 4.5), on ? RED : '#55555b'); }
   g.fillStyle = PAPER; g.font = '900 13px Archivo'; g.textAlign = 'center'; g.fillText('GRASS FILES', b.x + b.w / 2, b.y + b.h - 10); g.textAlign = 'left';
 }
-let inserted = false;
+let inserted = false; const hit = {};
+function drawKit(g) {
+  const K = L.drum; seed = 303; const sh = k => (hit[k] || 0) * (Math.sin(performance.now() / 18) * 3);
+  /* throne is behind Durva; cymbal stands and the kit are drawn over him */
+  const cym = (x, y, r, k) => { ink(g, [[x, y + 10], [x, 690]], 2.4); fill(g, ell(x, y + sh(k), r, r * .16), '#d9cf9a'); ink(g, ell(x, y + sh(k), r, r * .16), 2.2); };
+  cym(K - 120, 360, 62, 'crash'); cym(K + 260, 430, 70, 'ride');
+  ink(g, [[K - 190, 500], [K - 190, 690]], 2.4); ink(g, [[K - 215, 690], [K - 190, 650], [K - 165, 690]], 2); fill(g, ell(K - 190, 495 + sh('hat'), 46, 8), '#d9cf9a'); ink(g, ell(K - 190, 495 + sh('hat'), 46, 8), 2); fill(g, ell(K - 190, 480 + sh('hat') * .5, 46, 8), '#e6dca8'); ink(g, ell(K - 190, 480 + sh('hat') * .5, 46, 8), 2);
+  const drum = (cx, cy, rx, h, k, col) => { const dy = sh(k); fill(g, box(cx - rx, cy + dy, rx * 2, h), col); ink(g, box(cx - rx, cy + dy, rx * 2, h), 2.6); for (let i = -2; i <= 2; i++) ink(g, [[cx + i * rx * .38, cy + dy], [cx + i * rx * .38, cy + dy + h]], 1, 'rgba(11,11,12,.3)'); fill(g, ell(cx, cy + dy, rx, rx * .22), PAPER); ink(g, ell(cx, cy + dy, rx, rx * .22), 2.4); };
+  drum(K + 70, 470, 50, 56, 'tom', RED); drum(K + 210, 560, 62, 80, 'floor', RED); ink(g, [[K + 160, 640], [K + 150, 690]], 2); ink(g, [[K + 270, 640], [K + 285, 690]], 2);
+  drum(K - 80, 560, 50, 40, 'snare', SILVER); ink(g, [[K - 80, 600], [K - 80, 690]], 2.2);
+  const kx = K + 20, ky = 610, kr = 86 + (hit.kick || 0) * 4; fill(g, ell(kx, ky, kr, kr), '#16161a'); ink(g, ell(kx, ky, kr, kr), 3); fill(g, ell(kx, ky, kr - 10, kr - 10), RED); ink(g, ell(kx, ky, kr - 10, kr - 10), 2); g.fillStyle = PAPER; g.font = '900 20px Archivo'; g.textAlign = 'center'; g.fillText('GRASS', kx, ky - 2); g.fillText('FILES', kx, ky + 20); g.textAlign = 'left';
+  ink(g, [[kx - kr + 6, ky + kr - 20], [kx - kr - 20, 690]], 2.2); ink(g, [[kx + kr - 6, ky + kr - 20], [kx + kr + 20, 690]], 2.2);
+  for (const k in hit) hit[k] = Math.max(0, hit[k] - .08);
+}
 function drawFx(t) {
   const g = fg; g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, W, H); camTransform(g);
-  drawBoombox(g, t);
+  drawBoombox(g, t); drawKit(g);
   if (playing && !reduce) { g.fillStyle = INK; g.font = '800 26px Archivo'; for (let k = 0; k < 4; k++) { const a = ((t * .55 + k / 4) % 1), x = L.box.x + 70 + k * 80 + Math.sin(a * 6 + k) * 14, y = L.box.y - 30 - a * 150; g.globalAlpha = 1 - a; g.fillText(k % 2 ? '♫' : '♪', x, y); } g.globalAlpha = 1; }
   if (state === 'guitar' && !reduce) { const cx = L.me.guitar + 34, cy = 560; g.strokeStyle = RED; g.lineWidth = 3; g.lineCap = 'round'; for (let k = 0; k < 3; k++) { const a = ((t * 1.2 + k / 3) % 1); g.globalAlpha = 1 - a; g.beginPath(); g.arc(cx + 40, cy, 30 + a * 90, -.7, .7); g.stroke(); } g.globalAlpha = 1; }
   if (state === 'dance' || (discoOn)) {
-    const bx = 990, by = 190; ink(g, [[bx, -20], [bx, by - 38]], 2); const sp = t * 1.4; fill(g, ell(bx, by, 38, 38), '#d6d6d1'); ink(g, ell(bx, by, 38, 38), 2.6);
+    const bx = 760, by = 190; ink(g, [[bx, -20], [bx, by - 38]], 2); const sp = t * 1.4; fill(g, ell(bx, by, 38, 38), '#d6d6d1'); ink(g, ell(bx, by, 38, 38), 2.6);
     for (let k = -2; k <= 2; k++) { const w = Math.cos(sp + k * .6) * 38; ink(g, [[bx + w * .95, by - Math.sqrt(Math.max(0, 1444 - w * w))], [bx + w * .95, by + Math.sqrt(Math.max(0, 1444 - w * w))]], 1, 'rgba(11,11,12,.5)'); }
     for (let k = -2; k <= 2; k++) ink(g, [[bx - 36, by + k * 14], [bx + 36, by + k * 14]], 1, 'rgba(11,11,12,.35)');
     for (let k = 0; k < 18; k++) { const a = sp * .9 + k * 2.4, rr = 90 + (k % 5) * 70, x = bx + Math.cos(a) * rr * 1.2, y = 330 + Math.abs(Math.sin(a * 1.3)) * 360; g.fillStyle = k % 3 ? 'rgba(224,18,45,.55)' : 'rgba(244,242,236,.9)'; g.beginPath(); g.arc(x, y, 8 + (k % 3) * 4, 0, 7); g.fill(); }
@@ -238,7 +252,7 @@ function layout() {
 function placeAll() {
   const w = L.meH * 2 / 3; place($('me'), meX - w / 2, L.meB - L.meH, w, L.meH);
   const wd = $('word'); const [wx, wy] = P(L.word.x, L.word.y); Object.assign(wd.style, { left: wx + 'px', top: wy + 'px', fontSize: L.word.h * .56 * cam.s + 'px', display: phone ? 'block' : 'block' });
-  place($('boomBtn'), L.box.x, L.box.y - 70, L.box.w, L.box.h + 70); place($('guitarBtn'), L.guitar - 70, 255, 140, 440); $('guitarBtn').hidden = guitarOut; place($('danceBtn'), L.dance.x - 10, 120, 220, 600);
+  place($('boomBtn'), L.box.x, L.box.y - 70, L.box.w, L.box.h + 70); place($('guitarBtn'), L.guitar - 70, 255, 140, 440); $('guitarBtn').hidden = guitarOut; place($('danceBtn'), L.dance.x - 10, 650, 230, 70); place($('drumBtn'), L.drum - 200, 330, 470, 370);
   if (!phone) { const { x0, x1, y } = L.shelf, [rx, ry] = P(x0 + 10, y), rw = (x1 - x0 - 20) * cam.s; Object.assign($('rack').style, { left: rx + 'px', width: rw + 'px', top: ry - rw * .186 * 1.0 * 1.58 / 1.58 + 'px' }); $('rack').style.top = ''; $('rack').style.bottom = ''; const h = rw * .186 / 1.58 * 1; $('rack').style.top = ry - h - 2 + 'px'; }
   else { const r = $('rack').style; r.left = r.top = r.width = ''; }
   const f = Math.max(.52, Math.min(.9, (L.shelf.x1 - L.shelf.x0) * cam.s / 700)); $('rack').style.setProperty('--tf', f + 'rem');
@@ -300,6 +314,12 @@ $('guitarBtn').addEventListener('click', async () => {
   if (state !== 'idle') return; state = 'guitar'; guitarOut = true; drawBack(); $('guitarBtn').hidden = true; moveMe(L.me.guitar + 90); say('Okay. Listen.', 'guitar', 0); startLoop();
   await sleep(reduce ? 0 : 700); me.classList.add('strum'); playing = true; await sleep(reduce ? 0 : 5200); me.classList.remove('strum');
   guitarOut = false; playing = false; state = 'idle'; drawBack(); placeAll(); moveMe(L.me.idle); say('That’s the one I know.', 'wave', 2600); startLoop(true);
+});
+const PIECES = ['snare', 'hat', 'kick', 'tom', 'crash', 'floor', 'snare', 'ride'];
+$('drumBtn').addEventListener('click', async () => {
+  if (state !== 'idle') return; state = 'drums'; moveMe(L.me.drum); say('Okay. One fill.', 'sit', 0); startLoop(); await sleep(reduce ? 0 : 600);
+  for (let n = 0; n < (reduce ? 0 : 16); n++) { setPose(n % 2 ? 'drums2' : 'drums'); if (n % 2) { hit[PIECES[(n >> 1) % PIECES.length]] = 1; if (n % 4 === 1) hit.kick = 1; } await sleep(240); }
+  setPose('drums'); await sleep(reduce ? 0 : 500); state = 'idle'; moveMe(L.me.idle); say('Right. The tapes.', 'point', 2400); startLoop(true);
 });
 $('danceBtn').addEventListener('click', async () => {
   if (state !== 'idle') return; state = 'dance'; moveMe(L.me.dance); say('Okay. One song.', 'wave', 0); playing = true; discoOn = true; startLoop(); await sleep(reduce ? 0 : 500); me.classList.add('dance');
