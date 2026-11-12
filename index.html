@@ -111,10 +111,8 @@ pre.art{flex:none;margin:0;padding:.5rem .55rem;border-radius:6px;background:var
 @media (max-width:800px){
   .name{top:21%}
   .deck{--w:min(80vw,34vh);left:calc(50vw + var(--w) * .106);top:41%}
-  .who{display:none}
-  .top{justify-content:flex-end}
-  .links{flex-direction:row;gap:1.4rem;white-space:nowrap}
-  .card.wide p:not(.lead){display:none}
+  .links{flex-direction:column;gap:.3rem;text-align:right}
+  .links a{white-space:nowrap}
   .bot{flex-direction:column;align-items:stretch;gap:.5rem}
   .right{order:-1;justify-content:flex-start}
   .right img{display:none}
@@ -433,7 +431,7 @@ window.__pale = { go, flip, setSong, get s() { return { side, at }; } };
 })();
 </script>
 <script>
-/* easter egg: hold the red label of the record. The page goes away and the record becomes the ball in a block-breaker. */
+/* easter egg: hold the red label of the record. The page goes away and you play a tiles game. */
 (() => {
 const rec = document.getElementById('rec'); if (!rec) return;
 let timer = 0, sx = 0, sy = 0, open = false;
@@ -444,54 +442,59 @@ addEventListener('pointermove', e => { if (timer && Math.hypot(e.clientX - sx, e
 
 function start() {
   if (open) return; open = true;
-  const box = document.createElement('div'); box.id = 'eggGame'; box.style.cssText = 'position:fixed;inset:0;z-index:2147483000;background:#0b0b0c;touch-action:none;opacity:0;transition:opacity .45s';
-  const cv = document.createElement('canvas'); cv.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:none;display:block'; box.appendChild(cv);
-  const x = document.createElement('button'); x.type = 'button'; x.textContent = '← Back to the record'; x.setAttribute('aria-label', 'Back to the record'); x.style.cssText = 'position:absolute;top:14px;right:14px;z-index:2;font:800 12px/1 Archivo,Arial,sans-serif;letter-spacing:.14em;text-transform:uppercase;padding:13px 18px;border-radius:999px;border:0;background:#f4f2ec;color:#0b0b0c;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.4)'; box.appendChild(x);
+  const box = document.createElement('div'); box.id = 'eggGame'; box.style.cssText = 'position:fixed;inset:0;z-index:2147483000;background:#f4f2ec;touch-action:none;opacity:0;transition:opacity .45s;user-select:none;-webkit-user-select:none';
+  const cv = document.createElement('canvas'); cv.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;touch-action:none;display:block'; box.appendChild(cv);
+  const x = document.createElement('button'); x.type = 'button'; x.textContent = '← Back to the record'; x.setAttribute('aria-label', 'Back to the record'); x.style.cssText = 'position:absolute;top:14px;right:14px;z-index:2;font:800 12px/1 Archivo,Arial,sans-serif;letter-spacing:.14em;text-transform:uppercase;padding:13px 18px;border-radius:999px;border:0;background:#0b0b0c;color:#f4f2ec;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.25)'; box.appendChild(x);
   document.body.appendChild(box); document.documentElement.style.overflow = 'hidden'; requestAnimationFrame(() => { box.style.opacity = 1; });
-  const g = cv.getContext('2d'), dpr = Math.min(devicePixelRatio || 1, 2); let W = 0, H = 0;
-  const fit = () => { W = innerWidth; H = innerHeight; cv.width = W * dpr; cv.height = H * dpr; layout(); };
-  let best = 0; try { best = +localStorage.getItem('recordBest') || 0; } catch (e) {}
-  const COLS = ['#e0122d', '#f4f2ec', '#b9b9b5', '#8d8d89', '#26262a'];
-  const G = { score: 0, lives: 3, level: 1, bricks: [], px: 0, ball: null, stuck: true, over: false, spin: 0, flash: 0 };
-  const P = { w: 120, h: 12, y: 0 };
-  function layout() { P.w = W < 600 ? 96 : 130; P.y = H - (W < 600 ? 90 : 70); build(); if (!G.px) G.px = W / 2; }
-  function build() {
-    const rows = Math.min(8, 4 + G.level), bw = W < 600 ? Math.floor((W - 24) / 6) - 6 : 84, bh = W < 600 ? 22 : 26, gap = 6, cols = Math.max(4, Math.floor((W - 24) / (bw + gap))), left = (W - cols * (bw + gap) + gap) / 2, top = W < 600 ? 86 : 90;
-    G.bricks = []; for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) G.bricks.push({ x: left + c * (bw + gap), y: top + r * (bh + gap), w: bw, h: bh, col: COLS[r % COLS.length], hp: r === 0 ? 2 : 1, alive: true });
+  const g = cv.getContext('2d'), dpr = Math.min(devicePixelRatio || 1, 2); let W = 0, H = 0, RH = 0; const N = 4;
+  const fit = () => { W = innerWidth; H = innerHeight; cv.width = W * dpr; cv.height = H * dpr; RH = H / 4.2; };
+  let best = 0; try { best = +localStorage.getItem('tilesBest') || 0; } catch (e) {}
+  const G = { rows: [], score: 0, running: false, over: false, speed: 0, wrong: -1, miss: null, flash: [0, 0, 0, 0], t0: 0 };
+  const rnd = prev => { let l; do { l = Math.floor(Math.random() * N); } while (l === prev && Math.random() < .6); return l; };
+  function reset() {
+    fit(); G.rows = []; G.score = 0; G.running = false; G.over = false; G.wrong = -1; G.miss = null; G.speed = RH * 2.4;
+    let prev = -1; for (let i = 0; i < 7; i++) { const l = rnd(prev); prev = l; G.rows.push({ lane: l, y: H - RH * 1.7 - i * RH, done: false, start: i === 0 }); }
   }
-  function serve() { G.stuck = true; G.ball = { x: G.px, y: P.y - 18, vx: 0, vy: 0, r: W < 600 ? 14 : 17 }; }
-  function reset() { G.score = 0; G.lives = 3; G.level = 1; G.over = false; build(); serve(); }
-  fit(); addEventListener('resize', fit); serve();
-  const speed = () => Math.min(560, (W < 600 ? 300 : 340) + G.level * 30);
+  reset(); addEventListener('resize', fit);
+  const target = () => { let t = null; for (const r of G.rows) if (!r.done && (!t || r.y > t.y)) t = r; return t; };
+  function lose(wrong, miss) { G.over = true; G.running = false; G.wrong = wrong; G.miss = miss || null; if (G.score > best) { best = G.score; try { localStorage.setItem('tilesBest', best); } catch (e) {} } }
+  function tap(lane) {
+    if (G.over) { reset(); return; }
+    const t = target(); if (!t) return;
+    if (lane !== t.lane) { lose(lane, t); return; }
+    t.done = true; t.hit = performance.now(); G.flash[lane] = 1; if (!G.running) { G.running = true; } else { G.score++; G.speed = Math.min(RH * 7.5, G.speed + RH * .055); }
+  }
   let last = performance.now(), raf = 0;
-  function step(dt) {
-    const b = G.ball; G.spin += dt * 5; G.flash = Math.max(0, G.flash - dt);
-    if (G.stuck) { b.x = G.px; b.y = P.y - b.r - 2; return; }
-    b.x += b.vx * dt; b.y += b.vy * dt;
-    if (b.x < b.r) { b.x = b.r; b.vx = Math.abs(b.vx); } if (b.x > W - b.r) { b.x = W - b.r; b.vx = -Math.abs(b.vx); } if (b.y < b.r) { b.y = b.r; b.vy = Math.abs(b.vy); }
-    if (b.vy > 0 && b.y + b.r >= P.y && b.y + b.r <= P.y + P.h + 14 && b.x > G.px - P.w / 2 - 6 && b.x < G.px + P.w / 2 + 6) { const k = (b.x - G.px) / (P.w / 2), sp = speed(), ang = k * 1.05; b.vx = Math.sin(ang) * sp; b.vy = -Math.cos(ang) * sp; b.y = P.y - b.r; }
-    for (const br of G.bricks) { if (!br.alive) continue; const cx = Math.max(br.x, Math.min(b.x, br.x + br.w)), cy = Math.max(br.y, Math.min(b.y, br.y + br.h)), dx = b.x - cx, dy = b.y - cy; if (dx * dx + dy * dy <= b.r * b.r) { if (Math.abs(dx) > Math.abs(dy)) b.vx = dx > 0 ? Math.abs(b.vx) : -Math.abs(b.vx); else b.vy = dy > 0 ? Math.abs(b.vy) : -Math.abs(b.vy); br.hp--; G.flash = .08; if (br.hp <= 0) { br.alive = false; G.score += 10; } else G.score += 2; break; } }
-    if (!G.bricks.some(z => z.alive)) { G.level++; build(); serve(); }
-    if (b.y - b.r > H) { G.lives--; if (G.lives <= 0) { G.over = true; if (G.score > best) { best = G.score; try { localStorage.setItem('recordBest', best); } catch (e) {} } } else serve(); }
-  }
   function frame(now) {
-    const dt = Math.min(.033, (now - last) / 1000); last = now; if (!G.over) step(dt);
-    g.setTransform(dpr, 0, 0, dpr, 0, 0);
-    const bg = g.createRadialGradient(W / 2, H * .85, 20, W / 2, H * .5, Math.max(W, H) * .8); bg.addColorStop(0, '#2a0a10'); bg.addColorStop(.5, '#120a0c'); bg.addColorStop(1, '#050506'); g.fillStyle = bg; g.fillRect(0, 0, W, H);
-    g.strokeStyle = 'rgba(255,255,255,.035)'; g.lineWidth = 1; for (let gx = 0; gx < W; gx += 40) { g.beginPath(); g.moveTo(gx, 0); g.lineTo(gx, H); g.stroke(); } for (let gy = 0; gy < H; gy += 40) { g.beginPath(); g.moveTo(0, gy); g.lineTo(W, gy); g.stroke(); }
-    for (const br of G.bricks) { if (!br.alive) continue; g.fillStyle = br.col; g.beginPath(); g.roundRect(br.x, br.y, br.w, br.h, 4); g.fill(); g.fillStyle = 'rgba(255,255,255,.18)'; g.fillRect(br.x + 3, br.y + 2, br.w - 6, 3); g.fillStyle = 'rgba(0,0,0,.35)'; for (const dx of [.3, .7]) { g.beginPath(); g.arc(br.x + br.w * dx, br.y + br.h * .62, 3, 0, 6.283); g.fill(); } if (br.hp > 1) { g.strokeStyle = '#fff'; g.lineWidth = 2; g.beginPath(); g.roundRect(br.x + 1, br.y + 1, br.w - 2, br.h - 2, 4); g.stroke(); } }
-    const b = G.ball; g.save(); g.translate(b.x, b.y); g.rotate(G.spin); g.fillStyle = '#0b0b0c'; g.beginPath(); g.arc(0, 0, b.r, 0, 6.283); g.fill(); g.strokeStyle = 'rgba(255,255,255,.22)'; g.lineWidth = 1; for (const k of [.82, .64]) { g.beginPath(); g.arc(0, 0, b.r * k, 0, 6.283); g.stroke(); } g.strokeStyle = '#fff'; g.lineWidth = 2; g.beginPath(); g.arc(0, 0, b.r, 0, 6.283); g.stroke(); g.fillStyle = '#e0122d'; g.beginPath(); g.arc(0, 0, b.r * .42, 0, 6.283); g.fill(); g.fillStyle = '#fff'; g.fillRect(b.r * .1, -b.r * .06, b.r * .28, b.r * .12); g.restore();
-    g.fillStyle = '#f4f2ec'; g.beginPath(); g.roundRect(G.px - P.w / 2, P.y, P.w, P.h, 6); g.fill(); g.fillStyle = '#e0122d'; g.beginPath(); g.roundRect(G.px - P.w / 2, P.y, 22, P.h, 6); g.fill(); g.beginPath(); g.roundRect(G.px + P.w / 2 - 22, P.y, 22, P.h, 6); g.fill();
-    g.textAlign = 'left'; g.fillStyle = '#f4f2ec'; g.font = '800 14px Archivo, Arial, sans-serif'; g.fillText('SCORE ' + G.score, 18, 34); g.fillStyle = '#8d8d89'; g.fillText('BEST ' + best + '  ·  LEVEL ' + G.level, 18, 56); g.fillStyle = '#e0122d'; g.font = '800 20px Arial'; g.fillText('♥'.repeat(Math.max(0, G.lives)), 18, 82);
-    g.textAlign = 'center'; g.fillStyle = '#b9b9b5'; g.font = '600 13px Archivo, Arial, sans-serif';
-    if (G.stuck && !G.over) g.fillText('Move to steer. Tap to launch the record.', W / 2, P.y + 46);
-    if (G.over) { g.fillStyle = 'rgba(5,5,6,.78)'; g.fillRect(0, 0, W, H); g.fillStyle = '#fff'; g.font = '900 46px Archivo, Arial, sans-serif'; g.fillText(G.score + ' points', W / 2, H / 2 - 6); g.font = '700 15px Archivo, Arial, sans-serif'; g.fillStyle = '#d9d9d4'; g.fillText(G.score >= best && G.score > 0 ? 'New best. Tap to play again.' : 'Tap to play again.', W / 2, H / 2 + 30); }
+    const dt = Math.min(.033, (now - last) / 1000); last = now; const lw = W / N;
+    if (G.running && !G.over) {
+      for (const r of G.rows) r.y += G.speed * dt;
+      const t = target(); if (t && t.y > H) lose(-1, t);
+      let top = Math.min(...G.rows.map(r => r.y)); let prev = G.rows.reduce((a, r) => r.y === top ? r.lane : a, -1);
+      while (top > -RH) { top -= RH; const l = rnd(prev); prev = l; G.rows.push({ lane: l, y: top, done: false }); }
+      G.rows = G.rows.filter(r => r.y < H + RH);
+    }
+    for (let i = 0; i < N; i++) G.flash[i] = Math.max(0, G.flash[i] - dt * 4);
+    g.setTransform(dpr, 0, 0, dpr, 0, 0); g.fillStyle = '#f4f2ec'; g.fillRect(0, 0, W, H);
+    for (let i = 0; i < N; i++) { if (G.flash[i] > 0) { g.fillStyle = 'rgba(224,18,45,' + G.flash[i] * .14 + ')'; g.fillRect(i * lw, 0, lw, H); } if (G.over && G.wrong === i) { g.fillStyle = 'rgba(224,18,45,.35)'; g.fillRect(i * lw, 0, lw, H); } if (i) { g.fillStyle = 'rgba(11,11,12,.16)'; g.fillRect(i * lw - .5, 0, 1, H); } }
+    for (const r of G.rows) {
+      const px = r.lane * lw + 3, w = lw - 6;
+      if (r.done) { const a = Math.max(0, 1 - (now - r.hit) / 260); if (a > 0) { g.fillStyle = 'rgba(224,18,45,' + a * .6 + ')'; g.beginPath(); g.roundRect(px, r.y + 3, w, RH - 6, 8); g.fill(); } continue; }
+      g.fillStyle = '#0b0b0c'; g.beginPath(); g.roundRect(px, r.y + 3, w, RH - 6, 8); g.fill();
+      g.fillStyle = 'rgba(255,255,255,.08)'; g.beginPath(); g.roundRect(px + 6, r.y + 9, w - 12, 5, 3); g.fill();
+      g.strokeStyle = 'rgba(255,255,255,.1)'; g.lineWidth = 1; for (const k of [.18, .3, .42]) { g.beginPath(); g.arc(px + w / 2, r.y + RH / 2, Math.min(w, RH) * k, 0, 6.283); g.stroke(); }
+      g.fillStyle = '#e0122d'; g.beginPath(); g.arc(px + w / 2, r.y + RH / 2, Math.min(w, RH) * .1, 0, 6.283); g.fill();
+      if (r.start && !G.running && !G.over) { g.fillStyle = '#fff'; g.font = '800 13px Archivo, Arial, sans-serif'; g.textAlign = 'center'; g.fillText('TAP', px + w / 2, r.y + RH - 16); }
+    }
+    if (G.over && G.miss) { const r = G.miss, px = r.lane * lw + 3, w = lw - 6; g.strokeStyle = '#e0122d'; g.lineWidth = 4; g.beginPath(); g.roundRect(px, r.y + 3, w, RH - 6, 8); g.stroke(); }
+    g.textAlign = 'center'; g.fillStyle = '#0b0b0c'; g.font = '900 64px Archivo, Arial, sans-serif'; g.fillText(G.score, W / 2, 96); g.font = '800 12px Archivo, Arial, sans-serif'; g.fillStyle = '#6d6d69'; g.fillText('BEST ' + best, W / 2, 124);
+    if (!G.running && !G.over) { g.font = '600 14px Archivo, Arial, sans-serif'; g.fillStyle = '#3b3b38'; g.fillText('Tap the black tiles. Don’t miss one.', W / 2, 160); }
+    if (G.over) { g.fillStyle = 'rgba(244,242,236,.82)'; g.fillRect(0, H / 2 - 90, W, 170); g.fillStyle = '#0b0b0c'; g.font = '900 46px Archivo, Arial, sans-serif'; g.fillText(G.score + (G.score === 1 ? ' tile' : ' tiles'), W / 2, H / 2 - 20); g.font = '700 15px Archivo, Arial, sans-serif'; g.fillStyle = '#3b3b38'; g.fillText(G.score >= best && G.score > 0 ? 'New best. Tap to go again.' : 'Tap to go again.', W / 2, H / 2 + 20); }
     raf = requestAnimationFrame(frame);
   }
-  const move = e => { const r = cv.getBoundingClientRect(); G.px = Math.max(P.w / 2, Math.min(W - P.w / 2, e.clientX - r.left)); };
-  cv.addEventListener('pointermove', move);
-  cv.addEventListener('pointerdown', e => { move(e); if (G.over) { reset(); return; } if (G.stuck) { G.stuck = false; const sp = speed(); G.ball.vx = (Math.random() - .5) * sp * .5; G.ball.vy = -Math.sqrt(sp * sp - G.ball.vx * G.ball.vx); } });
-  const key = e => { if (e.key === 'Escape') leave(); else if (e.key === ' ') { e.preventDefault(); if (G.over) reset(); else if (G.stuck) { G.stuck = false; const sp = speed(); G.ball.vx = (Math.random() - .5) * sp * .5; G.ball.vy = -Math.sqrt(sp * sp - G.ball.vx * G.ball.vx); } } else if (e.key === 'ArrowLeft') G.px = Math.max(P.w / 2, G.px - 40); else if (e.key === 'ArrowRight') G.px = Math.min(W - P.w / 2, G.px + 40); };
+  cv.addEventListener('pointerdown', e => { e.preventDefault(); const r = cv.getBoundingClientRect(); tap(Math.max(0, Math.min(N - 1, Math.floor((e.clientX - r.left) / (r.width / N))))); });
+  const LANEKEY = { d: 0, f: 1, j: 2, k: 3, 1: 0, 2: 1, 3: 2, 4: 3, ArrowLeft: 0, ArrowDown: 1, ArrowUp: 2, ArrowRight: 3 };
+  const key = e => { if (e.key === 'Escape') { leave(); return; } if (e.key in LANEKEY && !e.repeat) { e.preventDefault(); tap(LANEKEY[e.key]); } else if (e.key.length === 1 && e.key.toLowerCase() in LANEKEY && !e.repeat) { tap(LANEKEY[e.key.toLowerCase()]); } };
   const leave = () => { cancelAnimationFrame(raf); removeEventListener('resize', fit); removeEventListener('keydown', key); box.style.opacity = 0; setTimeout(() => { box.remove(); document.documentElement.style.overflow = ''; open = false; }, 450); };
   addEventListener('keydown', key); x.addEventListener('click', leave); raf = requestAnimationFrame(frame);
 }
