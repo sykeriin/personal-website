@@ -399,7 +399,7 @@ function moveCam(t2, ms) {
 }
 const sprite = $('sprite'), me = $('me'), bubble = $('bubble'); let sayTimer = 0;
 let drumF = 'dL', shown = '', walking = false, danceFx = { mode: '', frac: 0 };
-const SEQ = [['dance1'], ['step1'], ['cross1'], ['step2'], ['cross2'], ['step1'], ['cross1'], ['step2'], ['cross2'], ['pop1'], ['pop2'], ['pop1'], ['pop2'], ['moon1'], ['moon2'], ['moon1'], ['moon2'], ['moon1'], ['moon2'], ['floss1'], ['floss2'], ['floss1'], ['floss2'], ['floss1'], ['floss2'], ['dab'], ['dab'], ['kick'], ['dance3'], ['kick'], ['jump'], ['six1'].slice(0, 0).length ? ['jump'] : ['hand1'], ['hand2'], ['hand1'], ['head1', 'spin'], ['head2', 'spin'], ['head1', 'spin'], ['head2', 'spin'], ['head1', 'spin'], ['head2', 'spin'], ['head1', 'spin'], ['head2', 'spin'], ['hand2'], ['hand1', 'roll'], ['head2', 'roll'], ['hand1', 'roll'], ['head2', 'roll'], ['hand1', 'roll'], ['head2', 'roll'], ['jump'], ['jump', 'flipA'], ['jump', 'flipB'], ['jump', 'flipA'], ['jump', 'flipB'], ['jump'], ['dance2']];
+const SEQ = [['dance1'], ['step1'], ['cross1'], ['step2'], ['cross2'], ['step1'], ['cross1'], ['step2'], ['cross2'], ['pop1'], ['pop2'], ['pop1'], ['pop2'], ['moon1'], ['moon2'], ['moon1'], ['moon2'], ['moon1'], ['moon2'], ['floss1'], ['floss2'], ['floss1'], ['floss2'], ['floss1'], ['floss2'], ['dab'], ['dab'], ['kick'], ['dance3'], ['kick'], ['jump'], ['six1'].slice(0, 0).length ? ['jump'] : ['hand1'], ['hand2'], ['hand1'], ['head1', 'spin'], ['head2', 'spin'], ['head1', 'spin'], ['head2', 'spin'], ['head1', 'spin'], ['head2', 'spin'], ['head1', 'spin'], ['head2', 'spin'], ['hand2'], ['hand1'], ['hand2'], ['jump'], ['dance2']];
 const frameFor = t => { const k = reduce ? 0 : t;
   if (walking) return Math.floor(k * 8) % 2 ? 'walk1' : 'walk2';
   if (state === 'dance') { const i = Math.floor(k * 5), e = SEQ[i % SEQ.length]; danceFx = { mode: e[1] || '', frac: (k * 5) % 1 }; return e[0]; }
@@ -429,7 +429,7 @@ tapes.forEach((el, i) => { const p = POSTS[i];
 function soon(el, p) { el.classList.remove('shake'); void el.offsetWidth; el.classList.add('shake'); say(p.say, 'point', 3200); }
 
 async function playTape(el, p) {
-  if (state === 'reading') return; state = 'reading'; reading = { el, p }; guitarOut = false; discoOn = false;
+  if (state !== 'idle') return; state = 'reading'; reading = { el, p }; guitarOut = false; discoOn = false;
   say(p.say, 'headphones', 0);
   const r = el.getBoundingClientRect(), [tx, ty] = P(L.deckC[0], L.deckC[1]), st = $('stage').getBoundingClientRect();
   if (!phone && !reduce) { /* the tape rides over to the boombox */
@@ -470,7 +470,7 @@ $('drumBtn').addEventListener('click', async () => {
 });
 $('danceBtn').addEventListener('click', async () => {
   if (state !== 'idle') return; state = 'dance'; moveMe(L.me.dance); say('Okay. One song.', 'wave', 0); playing = true; discoOn = true; startLoop(); await sleep(reduce ? 0 : 500); me.classList.add('dance');
-  await sleep(reduce ? 0 : 20000);
+  await sleep(reduce ? 0 : 14000);
   me.classList.remove('dance'); playing = false; discoOn = false; state = 'idle'; moveMe(L.me.idle); pan(690); say('Okay, that’s enough.', 'idle', 2400); startLoop(true);
 });
 $('ampBtn').addEventListener('click', () => { if (state !== 'idle') return; playing = !playing; say(playing ? 'Turned up. Hum only, sorry.' : 'Turned it down.', 'point', 2400); startLoop(!playing); });
