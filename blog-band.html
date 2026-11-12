@@ -22,6 +22,16 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .intro{position:absolute;z-index:40;left:clamp(1rem,2.4vw,2rem);top:3.6rem;font-size:1.05rem;line-height:1.5;font-weight:500;color:#3b3b38;max-width:21rem;text-wrap:balance}
 .intro .kick{display:block;margin-bottom:.5rem;font-size:.7rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--red)}
 
+/* the opening */
+.open{position:fixed;inset:0;z-index:100;background:var(--paper);display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:1.4rem;padding:clamp(1.5rem,6vw,5rem);transition:transform .8s cubic-bezier(.7,0,.2,1)}
+.open.go{transform:translateY(-101%)}
+.open .ok{font-weight:800;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:#5b5b57}
+.open .ot{font-family:var(--disp);font-weight:400;text-transform:uppercase;font-size:clamp(5.4rem,28vw,15rem);line-height:.86;letter-spacing:.005em;color:var(--red)}
+.open .ot span{display:block}.open .ot span+span{color:var(--ink)}
+.open .os{max-width:24rem;font-size:1.05rem;line-height:1.5;color:#3b3b38}
+.open button{margin-top:.6rem;background:var(--ink);color:var(--paper);padding:1rem 1.7rem;border-radius:999px;font-weight:800;font-size:.74rem;letter-spacing:.16em;text-transform:uppercase;transition:background .2s}
+.open button:hover,.open button:focus-visible{background:var(--red)}
+.open .reels{display:flex;gap:.8rem}.open .reels svg{width:2.6rem;height:2.6rem;animation:spin 3s linear infinite}
 /* the room */
 .stage{position:relative;height:100svh;min-height:560px;overflow:hidden}
 .stage::after{content:'';position:absolute;inset:0;z-index:5;pointer-events:none;background:radial-gradient(120% 90% at 50% 45%,transparent 55%,rgba(11,11,12,.13) 100%)}
@@ -88,8 +98,9 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   .chips{display:flex;gap:.5rem;padding:1rem 1rem 0;justify-content:center}.chips button{flex:0 1 auto;background:var(--ink);color:var(--paper);padding:.7rem 1.3rem;border-radius:999px;font-weight:800;font-size:.68rem;letter-spacing:.14em;text-transform:uppercase}.chips button:active{background:var(--red)}
   .stage{height:auto;min-height:0;margin-top:4.2rem}
   .intro{position:static;padding:3.6rem 1rem 0;font-size:1rem;max-width:none}
-  .rack{position:static;display:grid;justify-content:stretch;grid-template-columns:1fr 1fr;gap:1.6rem 1rem;padding:1rem 1rem 3rem}
-  .tape{--tf:.95rem;width:100%}
+  .rack{position:static;display:flex;justify-content:flex-start;gap:1rem;overflow-x:auto;scroll-snap-type:x mandatory;padding:1rem 1rem 3.4rem;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .rack::-webkit-scrollbar{display:none}
+  .tape{--tf:1.05rem;flex:0 0 68%;width:68%;scroll-snap-align:start}
   .tape .cap{display:block;position:absolute;top:104%;left:0;right:0;font-weight:700;font-size:.85rem;line-height:1.2}
   .rack .tape{margin-bottom:2.2rem}
   .tapes-h{display:block;padding:1.8rem 1rem 0;font-family:var(--sans);font-weight:800;text-transform:uppercase;font-size:.7rem;letter-spacing:.18em;color:#5b5b57}
@@ -103,6 +114,13 @@ html{overflow-x:clip;max-width:100%}body{max-width:100%}/*noscrollx*/
 </style>
 </head>
 <body>
+<div class="open" id="open" role="dialog" aria-label="Grass Files">
+  <div class="reels" aria-hidden="true"><svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" fill="#0b0b0c"/><circle cx="20" cy="20" r="7" fill="#f4f2ec"/><rect x="18.4" y="2" width="3.2" height="9" fill="#f4f2ec"/><rect x="18.4" y="2" width="3.2" height="9" fill="#f4f2ec" transform="rotate(120 20 20)"/><rect x="18.4" y="2" width="3.2" height="9" fill="#f4f2ec" transform="rotate(240 20 20)"/></svg><svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" fill="#0b0b0c"/><circle cx="20" cy="20" r="7" fill="#f4f2ec"/><rect x="18.4" y="2" width="3.2" height="9" fill="#f4f2ec"/><rect x="18.4" y="2" width="3.2" height="9" fill="#f4f2ec" transform="rotate(120 20 20)"/><rect x="18.4" y="2" width="3.2" height="9" fill="#f4f2ec" transform="rotate(240 20 20)"/></svg></div>
+  <p class="ok">Durva Sharma presents</p>
+  <h1 class="ot"><span>Grass</span><span>Files</span></h1>
+  <p class="os">Builds, security, shoots and poems, kept on tapes in a little band room.</p>
+  <button type="button" id="enter">Enter the room</button>
+</div>
 <nav class="bar"><a href="/">← Back to the record</a><a href="/blog.html">Quiet version</a></nav>
 
 <section class="stage" id="stage" aria-label="Band room">
@@ -494,7 +512,11 @@ function boot() { Object.assign(cam, target(state === 'reading')); layout(); }
 let lastW = 0, lastH = 0; new ResizeObserver(() => { const st = $('stage'); if (st.clientWidth === lastW && st.clientHeight === lastH) return; lastW = st.clientWidth; lastH = st.clientHeight; boot(); }).observe($('stage')); addEventListener('resize', boot); boot();
 (document.fonts ? document.fonts.ready : Promise.resolve()).then(() => { layout(); });
 sprite.addEventListener('load', () => placeAll());
-setTimeout(() => say(HELLO, 'wave', 5600), 500); startLoop(true);
+const opening = $('open'), greetNow = () => say(HELLO, 'wave', 5600);
+let seen = false; try { seen = !!sessionStorage.getItem('bandOpened'); } catch (e) {}
+if (seen || location.hash.length > 2) { opening.remove(); setTimeout(greetNow, 500); }
+else { document.documentElement.style.overflow = 'hidden'; const enter = () => { opening.classList.add('go'); try { sessionStorage.setItem('bandOpened', '1'); } catch (e) {} setTimeout(() => { opening.remove(); document.documentElement.style.overflow = ''; }, 900); setTimeout(greetNow, 700); }; $('enter').addEventListener('click', enter); setTimeout(() => { try { $('enter').focus({ preventScroll: true }); } catch (e) {} }, 100); }
+startLoop(true);
 const hash = location.hash.replace(/^#\/?/, ''); if (hash) { const i = POSTS.findIndex(p => p.slug === hash && !p.soon); if (i >= 0) setTimeout(() => playTape(tapes[i], POSTS[i]), 900); }
 })();
 </script>
