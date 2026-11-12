@@ -22,17 +22,9 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .intro{position:absolute;z-index:40;left:clamp(1rem,2.4vw,2rem);top:3.6rem;font-size:1.05rem;line-height:1.5;font-weight:500;color:#3b3b38;max-width:21rem;text-wrap:balance}
 .intro .kick{display:block;margin-bottom:.5rem;font-size:.7rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--red)}
 
-/* the opening */
-.open{position:fixed;inset:0;z-index:100;background:var(--paper);display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:1.4rem;padding:clamp(1.5rem,6vw,5rem);transition:transform .8s cubic-bezier(.7,0,.2,1)}
-.open.go{transform:translateY(-101%)}
-.open .ok{font-weight:800;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:#5b5b57}
-.open .ot{font-family:var(--disp);font-weight:400;text-transform:uppercase;font-size:clamp(5.4rem,28vw,15rem);line-height:.86;letter-spacing:.005em;color:var(--red)}
-.open .ot span{display:block}.open .ot span+span{color:var(--ink)}
-.open .os{max-width:24rem;font-size:1.05rem;line-height:1.5;color:#3b3b38}
-.open button{margin-top:.6rem;background:var(--ink);color:var(--paper);padding:1rem 1.7rem;border-radius:999px;font-weight:800;font-size:.74rem;letter-spacing:.16em;text-transform:uppercase;transition:background .2s}
-.open button:hover,.open button:focus-visible{background:var(--red)}
-.open .reels{display:flex;gap:.8rem}.open .reels svg{width:2.6rem;height:2.6rem;animation:spin 3s linear infinite}
-/* the room */
+/* the opening: the cover burns away in many colours */
+#burn{position:fixed;inset:0;width:100%;height:100%;z-index:100;display:block}
+
 .stage{position:relative;height:100svh;min-height:560px;overflow:hidden}
 .stage::after{content:'';position:absolute;inset:0;z-index:5;pointer-events:none;background:radial-gradient(120% 90% at 50% 45%,transparent 55%,rgba(11,11,12,.13) 100%)}
 .stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
@@ -112,15 +104,10 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 html{overflow-x:clip;max-width:100%}body{max-width:100%}/*noscrollx*/
 </style>
+<script>try{if(sessionStorage.getItem('bandBurned')||location.hash.length>2){var st=document.createElement('style');st.textContent='#burn{display:none}';document.head.appendChild(st)}}catch(e){}</script>
 </head>
 <body>
-<div class="open" id="open" role="dialog" aria-label="Grass Files">
-  <div class="reels" aria-hidden="true"><svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" fill="#0b0b0c"/><circle cx="20" cy="20" r="7" fill="#f4f2ec"/><rect x="18.4" y="2" width="3.2" height="9" fill="#f4f2ec"/><rect x="18.4" y="2" width="3.2" height="9" fill="#f4f2ec" transform="rotate(120 20 20)"/><rect x="18.4" y="2" width="3.2" height="9" fill="#f4f2ec" transform="rotate(240 20 20)"/></svg><svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" fill="#0b0b0c"/><circle cx="20" cy="20" r="7" fill="#f4f2ec"/><rect x="18.4" y="2" width="3.2" height="9" fill="#f4f2ec"/><rect x="18.4" y="2" width="3.2" height="9" fill="#f4f2ec" transform="rotate(120 20 20)"/><rect x="18.4" y="2" width="3.2" height="9" fill="#f4f2ec" transform="rotate(240 20 20)"/></svg></div>
-  <p class="ok">Durva Sharma presents</p>
-  <h1 class="ot"><span>Grass</span><span>Files</span></h1>
-  <p class="os">Builds, security, shoots and poems, kept on tapes in a little band room.</p>
-  <button type="button" id="enter">Enter the room</button>
-</div>
+<canvas id="burn" aria-hidden="true"></canvas>
 <nav class="bar"><a href="/">← Back to the record</a><a href="/blog.html">Quiet version</a></nav>
 
 <section class="stage" id="stage" aria-label="Band room">
@@ -512,11 +499,46 @@ function boot() { Object.assign(cam, target(state === 'reading')); layout(); }
 let lastW = 0, lastH = 0; new ResizeObserver(() => { const st = $('stage'); if (st.clientWidth === lastW && st.clientHeight === lastH) return; lastW = st.clientWidth; lastH = st.clientHeight; boot(); }).observe($('stage')); addEventListener('resize', boot); boot();
 (document.fonts ? document.fonts.ready : Promise.resolve()).then(() => { layout(); });
 sprite.addEventListener('load', () => placeAll());
-const opening = $('open'), greetNow = () => say(HELLO, 'wave', 5600);
-let seen = false; try { seen = !!sessionStorage.getItem('bandOpened'); } catch (e) {}
-if (seen || location.hash.length > 2) { opening.remove(); setTimeout(greetNow, 500); }
-else { document.documentElement.style.overflow = 'hidden'; const enter = () => { opening.classList.add('go'); try { sessionStorage.setItem('bandOpened', '1'); } catch (e) {} setTimeout(() => { opening.remove(); document.documentElement.style.overflow = ''; }, 900); setTimeout(greetNow, 700); }; $('enter').addEventListener('click', enter); setTimeout(() => { try { $('enter').focus({ preventScroll: true }); } catch (e) {} }, 100); }
-startLoop(true);
+function burnOpening(after) {
+  const root = document.documentElement, cv = $('burn'); let cued = false;
+  const done = () => { cv.remove(); root.style.overflow = ''; if (!cued) { cued = true; after(); } };
+  try { if (sessionStorage.getItem('bandBurned')) return done(); sessionStorage.setItem('bandBurned', '1'); } catch (e) { /* storage blocked: just play it */ }
+  let gl = null; if (!reduce) { try { gl = cv.getContext('webgl', { premultipliedAlpha: true, alpha: true }); } catch (e) { gl = null; } }
+  if (!gl) return done();
+  root.style.overflow = 'hidden';
+  const vs = 'attribute vec2 a;void main(){gl_Position=vec4(a,0.,1.);}';
+  const fs = `precision highp float;uniform vec2 r;uniform float t;
+float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(h(i),h(i+vec2(1.,0.)),f.x),mix(h(i+vec2(0.,1.)),h(i+vec2(1.,1.)),f.x),f.y);}
+float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*n(p);p*=2.03;a*=.5;}return v;}
+vec3 pal(float k){vec3 c=mix(vec3(1.,.97,.82),vec3(1.,.78,.18),smoothstep(0.,.1,k));c=mix(c,vec3(1.,.32,.04),smoothstep(.08,.26,k));c=mix(c,vec3(.88,.06,.18),smoothstep(.22,.44,k));c=mix(c,vec3(.8,.08,.72),smoothstep(.4,.62,k));c=mix(c,vec3(.22,.24,.98),smoothstep(.58,.78,k));c=mix(c,vec3(.08,.86,.92),smoothstep(.74,.95,k));return c;}
+void main(){vec2 uv=gl_FragCoord.xy/r;float asp=r.x/r.y;vec2 p=uv*vec2(asp,1.);
+float f=fbm(p*3.4+vec2(t*.5,t*.3))*.55+length(p-vec2(asp*.8,.5))*.6;
+float b=mix(-.25,1.55,t);float d=f-b;float W=.2;
+if(d<0.){float s=step(.9,h(floor(p*90.)+floor(t*16.)))*smoothstep(-.14,0.,d);vec3 sc=pal(.1+h(floor(p*90.))*.8);gl_FragColor=vec4(sc*s,s);return;}
+if(d<W){float k=d/W;vec3 c=pal(k)*mix(1.7,1.,k);float fade=smoothstep(.88,1.,k);c=mix(c,vec3(0.),fade);gl_FragColor=vec4(c,1.);return;}
+float e=step(.84,n(p*58.+floor(t*10.)))*smoothstep(W+.3,W,d)*.9;vec3 ec=pal(h(floor(p*58.))*.95);
+gl_FragColor=vec4(mix(vec3(0.),ec,e),1.);}`;
+  const sh = (type, src) => { const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); return gl.getShaderParameter(s, gl.COMPILE_STATUS) ? s : null; };
+  const v = sh(gl.VERTEX_SHADER, vs), f = sh(gl.FRAGMENT_SHADER, fs); if (!v || !f) return done();
+  const pr = gl.createProgram(); gl.attachShader(pr, v); gl.attachShader(pr, f); gl.linkProgram(pr); if (!gl.getProgramParameter(pr, gl.LINK_STATUS)) return done(); gl.useProgram(pr);
+  const buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+  const la = gl.getAttribLocation(pr, 'a'); gl.enableVertexAttribArray(la); gl.vertexAttribPointer(la, 2, gl.FLOAT, false, 0, 0);
+  const ur = gl.getUniformLocation(pr, 'r'), ut = gl.getUniformLocation(pr, 't');
+  const size = () => { const k = 0.6; cv.width = Math.max(2, Math.round(innerWidth * k)); cv.height = Math.max(2, Math.round(innerHeight * k)); gl.viewport(0, 0, cv.width, cv.height); gl.uniform2f(ur, cv.width, cv.height); };
+  size(); addEventListener('resize', size);
+  let skipped = false; const skip = () => { skipped = true; }; addEventListener('pointerdown', skip, { once: true }); addEventListener('keydown', skip, { once: true });
+  const T0 = performance.now(), HOLD = 1.0, BURN = 2.8;
+  (function frame(now) { const el = (now - T0) / 1000, t = Math.min(1, Math.max(0, (el - HOLD) / BURN));
+    if (t > 0.3 && !cued) { cued = true; after(); }
+    if (skipped || t >= 1) { removeEventListener('resize', size); return done(); }
+    gl.uniform1f(ut, t); gl.drawArrays(gl.TRIANGLES, 0, 3); requestAnimationFrame(frame); })(T0);
+}
+const greetNow = () => say(HELLO, 'wave', 5600);
+const afterBurn = () => { playing = true; startLoop(); setTimeout(() => { playing = false; startLoop(true); }, 2800); setTimeout(greetNow, 700); };
+if (location.hash.length > 2 || reduce) { $('burn').remove(); setTimeout(greetNow, 500); startLoop(true); }
+else { burnOpening(afterBurn); startLoop(true); }
+
 const hash = location.hash.replace(/^#\/?/, ''); if (hash) { const i = POSTS.findIndex(p => p.slug === hash && !p.soon); if (i >= 0) setTimeout(() => playTape(tapes[i], POSTS[i]), 900); }
 })();
 </script>
