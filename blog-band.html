@@ -18,8 +18,7 @@ a{color:inherit}
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 :focus-visible{outline:3px solid var(--red);outline-offset:3px}
 .bar{position:absolute;top:0;left:0;right:0;z-index:40;display:flex;justify-content:space-between;align-items:baseline;gap:1.5rem;padding:1.1rem clamp(1rem,2.4vw,2rem);pointer-events:none}
-.bar a{pointer-events:auto;font-weight:700;font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;padding-bottom:.25rem;border-bottom:1px solid currentColor}
-.bar a:hover{color:var(--red)}
+.bar a{pointer-events:auto;font-weight:700;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;padding:.55rem .95rem;border-radius:999px;background:rgba(244,242,236,.78);backdrop-filter:blur(8px);box-shadow:0 1px 0 rgba(11,11,12,.06),0 4px 14px rgba(11,11,12,.1);transition:background .2s,color .2s}.bar a:hover{background:var(--ink);color:var(--paper)}
 .intro{position:absolute;z-index:40;left:clamp(1rem,2.4vw,2rem);top:3.6rem;font-size:1.05rem;line-height:1.5;font-weight:500;color:#3b3b38;max-width:21rem;text-wrap:balance}
 .intro .kick{display:block;margin-bottom:.5rem;font-size:.7rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--red)}
 
@@ -47,6 +46,8 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 @keyframes pop{from{transform:scale(.6);opacity:0}}
 .spot{position:absolute;z-index:7;border-radius:12px}
 .spot:focus-visible{outline:3px dashed var(--red);outline-offset:-4px}
+.spot::after{content:attr(data-tip);position:absolute;left:50%;top:6px;transform:translate(-50%,0);padding:.35rem .7rem;border-radius:999px;background:var(--ink);color:var(--paper);font-size:.64rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .15s,transform .15s}
+.spot:hover::after,.spot:focus-visible::after{opacity:1;transform:translate(-50%,-6px)}
 
 /* tapes on the shelf */
 .rack{position:absolute;z-index:9;display:flex;align-items:flex-end;gap:1.4%}
@@ -81,7 +82,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .jc .ctl{display:flex;gap:.7rem;flex-wrap:wrap;margin-top:2rem}
 .jc .ctl button,.jc .ctl a{background:var(--ink);color:var(--paper);padding:.75rem 1.3rem;font-weight:800;font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;transition:background .2s}
 .jc .ctl button:hover,.jc .ctl a:hover{background:var(--red)}
-.foot{position:absolute;z-index:40;right:clamp(1rem,2.4vw,2rem);bottom:1rem;font-weight:700;font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:#5b5b57}
+.foot{position:absolute;z-index:40;right:clamp(1rem,2.4vw,2rem);bottom:1.1rem;font-weight:700;font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:#3b3b38;padding:.5rem .85rem;border-radius:999px;background:rgba(244,242,236,.78);backdrop-filter:blur(8px)}
 
 @media (max-width:760px){
   .chips{display:flex;gap:.6rem;padding:1rem 1rem 0}.chips button{flex:1;background:var(--ink);color:var(--paper);padding:.85rem 0;font-weight:800;font-size:.74rem;letter-spacing:.14em;text-transform:uppercase}.chips button:active{background:var(--red)}
@@ -96,7 +97,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   .bubble{font-size:.9rem;max-width:11rem}
   .foot{position:static;display:block;padding:0 1rem 2rem}
 }
-@media (min-width:761px){.intro{display:none}.chips{display:none}.tapes-h{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}.tape .cap{display:none}}
+@media (min-width:761px){.intro{display:none}.chips{position:fixed;z-index:41;left:50%;bottom:1.1rem;transform:translateX(-50%);display:flex;gap:.25rem;padding:.3rem;border-radius:999px;background:rgba(11,11,12,.9);backdrop-filter:blur(10px);box-shadow:0 8px 28px rgba(11,11,12,.28)}.chips button{padding:.6rem 1.15rem;border-radius:999px;color:var(--paper);font-weight:800;font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;transition:background .2s}.chips button:hover,.chips button:focus-visible{background:var(--red)}.tapes-h{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}.tape .cap{display:none}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -116,7 +117,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   <button class="spot" id="drumBtn" aria-label="Play the drums"></button>
   <div class="bubble" id="bubble" aria-live="polite"></div>
 </section>
-<div class="chips" id="chips"><button data-go="guitar">Guitar</button><button data-go="drum">Drums</button><button data-go="dance">Dance</button></div>
+<div class="chips" id="chips" role="group" aria-label="Play with the band"><button data-go="guitar">Guitar</button><button data-go="drum">Drums</button><button data-go="dance">Dance</button></div>
 <h2 class="tapes-h" id="tapesH">Tapes</h2>
 <div class="rack" id="rack" aria-labelledby="tapesH"></div>
 <p class="foot" id="foot"></p>
@@ -145,6 +146,7 @@ const POSTS = [
 const HELLO = 'Hi. Put a tape in the boombox, grab the guitar, hit the drums, or dance.';
 const POKES = [['wave', 'Hey.'], ['point', 'The tapes are on the shelf. Up there.'], ['walk', 'I also shoot, direct and write poems. It’s a lot.'], ['wave', 'Poke me again. I dare you.']];
 ['idle','idle2','walk1','walk2','wave1','wave2','point','headphones','guard','guitar1','guitar2','dL','dR','dK','dance1','dance2','dance3','sit'].forEach(p => { const im = new Image(); im.src = SPR(p); });
+Object.entries({ ampBtn: 'Amp', boomBtn: 'Boombox', guitarBtn: 'Guitar', danceBtn: 'Dance floor', drumBtn: 'Drums' }).forEach(([id, t]) => { $(id).dataset.tip = t; });
 const live = POSTS.filter(p => !p.soon);
 $('foot').textContent = `${live.length} tape recorded, ${POSTS.length - live.length} still blank.`;
 
@@ -260,7 +262,7 @@ function drawBack() {
   /* tour poster, string lights, plant, records */
   { const yy = -10; g.beginPath(); g.moveTo(x0, 34); for (let k = 0; k <= 12; k++) { const xx = x0 + (x1 - x0) * k / 12; g.lineTo(xx, 34 + Math.sin(k * Math.PI) * 0 + (k % 2 ? 22 : 8)); } g.strokeStyle = 'rgba(11,11,12,.55)'; g.lineWidth = 1.4; g.stroke(); for (let k = 1; k < 12; k += 1) { const xx = x0 + (x1 - x0) * k / 12, yb = 34 + (k % 2 ? 22 : 8) + 6; g.fillStyle = rg(g, xx, yb, 0, 26, [[0, 'rgba(255,236,170,.55)'], [1, 'rgba(255,236,170,0)']]); g.fillRect(xx - 26, yb - 26, 52, 52); oval(g, xx, yb, 4, 5.5); paint(g, '#fff4c8', .8); } }
   { const pxx = 972, base = FL - 2; g.fillStyle = lg(g, pxx - 30, 0, pxx + 30, 0, [[0, '#8a8a85'], [.5, '#b9b9b5'], [1, '#6f6f6a']]); g.beginPath(); g.moveTo(pxx - 26, base - 52); g.lineTo(pxx + 26, base - 52); g.lineTo(pxx + 20, base); g.lineTo(pxx - 20, base); g.closePath(); paint(g, g.fillStyle, 1.8); for (let k = 0; k < 9; k++) { const a = -2.6 + k * .42, len = 60 + (k % 3) * 24; g.beginPath(); g.moveTo(pxx, base - 52); g.quadraticCurveTo(pxx + Math.cos(a) * len * .5, base - 52 - Math.abs(Math.sin(a)) * len * .9, pxx + Math.cos(a) * len, base - 52 - Math.abs(Math.sin(a)) * len * .7 + 14); g.lineTo(pxx + Math.cos(a) * len * .55 + 6, base - 52 - Math.abs(Math.sin(a)) * len * .3); g.closePath(); paint(g, k % 2 ? '#2b2b30' : '#4b4b50', 1.2); } }
-  { const rxx = 640; for (let k = 0; k < 5; k++) { rrect(g, rxx - 4 + (k % 2) * 3, L.floor - 8 - k * 9, 70, 8, 1); paint(g, ['#0b0b0c', RED, '#26262a', '#f4f2ec', '#0b0b0c'][k], 1.2); } oval(g, rxx + 33, L.floor - 49, 31, 5); paint(g, '#101012', 1.2); oval(g, rxx + 33, L.floor - 49, 9, 1.6); paint(g, RED, .6); }
+  { const rxx = 716; for (let k = 0; k < 5; k++) { rrect(g, rxx - 2 + (k % 2) * 2, L.floor - 8 - k * 9, 52, 8, 1); paint(g, ['#0b0b0c', RED, '#26262a', '#f4f2ec', '#0b0b0c'][k], 1.2); } oval(g, rxx + 24, L.floor - 49, 24, 4); paint(g, '#101012', 1.2); oval(g, rxx + 24, L.floor - 49, 7, 1.4); paint(g, RED, .6); }
   /* guitar lead */
   g.beginPath(); g.moveTo(gx - 64, 640); g.bezierCurveTo(gx - 120, 720, L.amp.x + L.amp.w + 90, 730, L.amp.x + L.amp.w - 6, 668); g.lineWidth = 2.4; g.strokeStyle = '#26262a'; g.stroke();
 }
@@ -343,7 +345,7 @@ function drawKit(g) {
   for (let i = 0; i < 12; i++) { const a = i * TAU / 12; g.save(); g.translate(kx + Math.cos(a) * (kr - 3), ky + Math.sin(a) * (kr - 3)); g.rotate(a); rrect(g, -4, -2.4, 8, 4.8, 1.5); paint(g, CHROME(g, -4, 0, 4, 0), .7); g.restore(); }
   oval(g, kx, ky, kr - 14, kr - 14); paint(g, rg(g, kx - 20, ky - 24, 4, kr, [[0, '#4d4d53'], [1, '#17171a']]), 1.4); oval(g, kx, ky + 8, 24, 14); g.lineWidth = 0; g.fillStyle = 'rgba(0,0,0,.35)'; g.fill();
   g.fillStyle = '#f4f2ec'; g.font = '400 30px Anton'; g.letterSpacing = '3px'; g.textAlign = 'center'; g.fillText('GRASS', kx, ky - 2); g.fillStyle = RED; g.fillText('FILES', kx, ky + 28); g.letterSpacing = '0px'; g.textAlign = 'left';
-  oval(g, kx + 40, ky + 44, 13, 13); paint(g, '#050506', 1.6); oval(g, kx + 40, ky + 44, 13, 13); paint(g, null, 2.4, '#c8c8c4'); g.save(); oval(g, kx, ky, kr, kr); g.clip(); g.fillStyle = lg(g, kx - kr, ky - kr, kx + kr * .2, ky + kr * .2, [[0, 'rgba(255,255,255,.32)'], [1, 'rgba(255,255,255,0)']]); g.fillRect(kx - kr, ky - kr, kr * 2, kr * 2); g.restore(); rrect(g, kx - 12, ky + kr - 14, 24, 10, 2); paint(g, CHROME(g, kx - 12, 0, kx + 12, 0), 1);
+  g.save(); oval(g, kx, ky, kr, kr); g.clip(); g.fillStyle = lg(g, kx - kr, ky - kr, kx + kr * .2, ky + kr * .2, [[0, 'rgba(255,255,255,.32)'], [1, 'rgba(255,255,255,0)']]); g.fillRect(kx - kr, ky - kr, kr * 2, kr * 2); g.restore(); rrect(g, kx - 12, ky + kr - 14, 24, 10, 2); paint(g, CHROME(g, kx - 12, 0, kx + 12, 0), 1);
   rrect(g, kx - 18, 681, 36, 8, 2); paint(g, '#26262a', 1); line(g, [[kx, 681], [kx + 12, ky + 30]], 3, '#5d5d59');
   for (const k in hit) hit[k] = Math.max(0, hit[k] - .08);
 }
