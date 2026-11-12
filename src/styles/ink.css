@@ -1400,3 +1400,63 @@ button {
   background: var(--accent);
   transition: width 0.15s linear;
 }
+
+/* Phone layout: leave the text unobstructed and keep controls reachable. */
+@media (max-width: 47.99rem) {
+  .chapter { padding: 1.2rem 1rem 2.5rem; gap: 1.5rem; min-width: 0; }
+  .chapter-head { grid-template-columns: minmax(0, 1fr) auto; }
+  .chapter-head__eyebrow { max-width: 100%; overflow-wrap: anywhere; letter-spacing: .12em; }
+  .chapter-head__title, .panel, .panel h2, .panel h3 { overflow-wrap: anywhere; }
+  .panel-grid, .fork { grid-template-columns: minmax(0, 1fr); }
+  .fork__side { min-height: 9rem; }
+  .index-strip a { grid-template-columns: 2rem minmax(0, 1fr); min-height: 44px; align-items: center; }
+  .index-strip__tag { grid-column: 2; white-space: normal; overflow: visible; }
+  .shell[data-chrome='paper'] .page-turn { display: none; }
+  .edge-tabs { padding-bottom: env(safe-area-inset-bottom); height: calc(3.2rem + env(safe-area-inset-bottom)); overscroll-behavior-x: contain; }
+  .edge-tabs a { min-height: 44px; }
+  .ink-dom { padding-bottom: calc(4rem + env(safe-area-inset-bottom)); }
+  .tier-switch { max-width: calc(100vw - 1.5rem); flex-wrap: wrap; }
+  .shell[data-chrome='paper'] .tier-switch { position: static; width: fit-content; margin: 0 1rem calc(4rem + env(safe-area-inset-bottom)); }
+  .shell[data-chrome='paper'] .explore-help { margin: 0 1rem 1rem; }
+  .beats { flex-wrap: wrap; }
+  .beats__btn, .cta { min-height: 44px; display: inline-flex; align-items: center; }
+  .entry { overflow-y: auto; display: block; }
+  .entry__stack { min-height: 100dvh; padding: 2rem 1rem; justify-content: center; }
+  .entry__choices { width: min(100%, 22rem); margin-inline: auto; }
+  .entry__choices button { flex: 1 1 100%; min-height: 48px; }
+  .entry__skip { min-height: 44px; }
+}
+
+.project-section { min-width: 0; }
+.project-section__title { font-family: var(--font-mono); font-size: .9rem; text-transform: uppercase; letter-spacing: .09em; border-bottom: 2px solid var(--ink); padding-bottom: .5rem; margin: 0 0 1rem; }
+
+/* The paper cover: an editorial introduction, with two clear doors. */
+.cover-edition, .cover-intro__eyebrow, .cover-intro__headline { display: none; }
+.shell[data-chrome='paper'] .cover-chapter { max-width: 76rem; gap: 1.5rem; padding-top: 1.25rem; }
+.shell[data-chrome='paper'] .cover-edition { display: flex; justify-content: space-between; gap: 1rem; border-bottom: 2px solid var(--ink); padding-bottom: .65rem; font: .68rem var(--font-mono); letter-spacing: .08em; }
+.shell[data-chrome='paper'] .cover-chapter .chapter-head { border: 0; padding: 0; display: flex; align-items: center; gap: .8rem; }
+.shell[data-chrome='paper'] .cover-chapter .chapter-head__eyebrow { font-size: .6rem; letter-spacing: .08em; }
+.shell[data-chrome='paper'] .cover-chapter .chapter-head__title { font-family: var(--font-mono); font-size: .8rem; text-shadow: none; text-transform: uppercase; letter-spacing: .1em; }
+.shell[data-chrome='paper'] .cover-intro { position: relative; padding: clamp(1rem, 3vw, 2.5rem) 0 .5rem; }
+.shell[data-chrome='paper'] .cover-intro__eyebrow { display: block; margin: 0 0 .4rem; color: var(--accent); font: .72rem var(--font-mono); letter-spacing: .1em; }
+.shell[data-chrome='paper'] .cover-intro__headline { display: block; margin: 0 0 1rem; font: clamp(3.3rem, 10vw, 8rem)/.86 var(--font-display); letter-spacing: -.025em; color: var(--ink); }
+.shell[data-chrome='paper'] .cover-intro__headline em { color: var(--accent); font-style: normal; }
+.shell[data-chrome='paper'] .cover-intro .lede { max-width: 58ch; font-size: clamp(1rem, 1.6vw, 1.2rem); }
+.shell[data-chrome='paper'] .cover-chapter .fork { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+.shell[data-chrome='paper'] .cover-chapter .fork__side { position: relative; overflow: hidden; min-height: 15rem; padding: 1.35rem; border: 2px solid var(--ink); box-shadow: .35rem .35rem 0 var(--ink); }
+.shell[data-chrome='paper'] .cover-chapter .fork__side::after { content: '01'; position: absolute; right: -.05em; bottom: -.3em; font: 11rem/.8 var(--font-display); color: transparent; -webkit-text-stroke: 1px rgba(255,255,255,.3); pointer-events: none; }
+.shell[data-chrome='paper'] .cover-chapter .fork__side:nth-child(2)::after { content: '02'; }
+.shell[data-chrome='paper'] .cover-chapter .fork__title { font: clamp(2.5rem, 5vw, 4.5rem)/1 var(--font-display); font-style: normal; }
+.shell[data-chrome='paper'] .cover-chapter .fork__title span { font-size: .45em; vertical-align: top; }
+.shell[data-chrome='paper'] .cover-chapter .fork__blurb, .shell[data-chrome='paper'] .cover-chapter .fork__go { position: relative; z-index: 1; }
+.shell[data-chrome='paper'] .cover-chapter .fork__go { width: fit-content; padding: .4rem .6rem; background: var(--paper); color: var(--ink); font-weight: bold; }
+.shell[data-chrome='paper'] .cover-chapter .fork__hint { font-size: .9rem; }
+@media (max-width: 47.99rem) {
+  .shell[data-chrome='paper'] .cover-chapter { padding-top: 1rem; gap: 1.1rem; }
+  .shell[data-chrome='paper'] .cover-edition { font-size: .58rem; }
+  .shell[data-chrome='paper'] .cover-intro { padding: .7rem 0; }
+  .shell[data-chrome='paper'] .cover-intro__headline { font-size: clamp(3rem, 15vw, 5.5rem); }
+  .shell[data-chrome='paper'] .cover-chapter .fork { grid-template-columns: minmax(0, 1fr); }
+  .shell[data-chrome='paper'] .cover-chapter .fork__side { min-height: 11rem; }
+  .shell[data-chrome='paper'] .cover-chapter .fork__side::after { font-size: 8rem; }
+}

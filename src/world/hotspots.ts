@@ -116,7 +116,7 @@ function build(): Record<string, Reveal> {
       body: project.story,
       tags: project.stack,
       link: project.url
-        ? { to: project.url, label: 'open the live thing', external: true }
+        ? { to: project.url, label: project.url.includes('github.com/') ? 'see the code on github' : 'open the live thing', external: true }
         : { to: '/projects', label: 'put it back' },
     }
   })

@@ -27,10 +27,10 @@ export const site = {
   email: 'durva.s170@gmail.com',
   linkedin: 'https://www.linkedin.com/in/durva-s/',
   github: 'https://github.com/sykeriin',
-  coverHook: 'year two. still messing around.',
+  coverHook: 'building the parts of ai systems that tend to break.',
   coverLine:
-    "cse at mahe blr. i build apps, agents, and half-broken pipelines until they behave. sometimes they do. sometimes i learn why they didn't.",
-  currentlyBuilding: 'petally internship, voice os experiments, sleep (eventually)',
+    "cse at manipal institute of technology, bengaluru. i build ai systems, learn by making projects, and keep exploring the questions that could lead me into research.",
+  currentlyBuilding: 'ai systems, agent security, inference, and research experiments',
 }
 
 export const sfxTags = ['BAM', 'CLANG', 'THWIP', 'ZING', 'GASP', 'SNAP'] as const
@@ -88,19 +88,19 @@ export const origin = {
   panels: [
     {
       title: 'hi, i’m durva',
-      body: "second year cse at mahe blr. i like making things people can actually use. an app someone opens. a model that finds junk on a runway. a hackathon demo that doesn't die mid-pitch.",
+      body: "i study computer science at manipal institute of technology, bengaluru. i learn by building: from agent tools and inference systems to a pipeline that spots debris on a runway.",
     },
     {
       title: 'what i’m into',
-      body: "ai and software, mostly. sometimes a paper rabbit hole. sometimes i just ship so my brain shuts up. i change my mind a lot. that's allowed.",
+      body: "ai research and the systems around it. i like reading a paper, rebuilding an idea, and finding out where it breaks. i'm still exploring what else in tech excites me.",
     },
     {
       title: 'school',
-      body: 'b.tech cse, mahe bengaluru. around may 2029. year two feels less like surviving orientation and more like “wait, i can build stuff now.”',
+      body: 'b.tech in computer science and engineering at manipal institute of technology, bengaluru. expected may 2029.',
     },
     {
       title: 'outside class',
-      body: "neuraai + innovation centre committees. random visual work for the pvc's office. volunteered at supercomputing india. founded a mun club in school because of course i did.",
+      body: "vice president at neuraai and working committee member at the mahe innovation centre. i also make visual work, play guitar, and train muay thai.",
     },
   ],
   pullQuote: 'i stay up because one more fix feels closer than sleep.',
@@ -111,12 +111,12 @@ export const experiences: Experience[] = [
     id: 'petally',
     role: 'Founding Software and AI Integration Engineer',
     org: 'PetAlly',
-    period: '2026 - Present',
-    headline: 'helping pet people find other pet people (and useful stuff nearby).',
+    period: 'Mar 2026 - Sep 2026',
+    headline: 'recommendations and ai features for a pet-owner community.',
     url: 'https://mypetally.com/',
     story: [
-      "interning at petally. community app for pet owners. recommendations, local services, that whole find-your-people thing.",
-      "lots of screens and flows and making sure it doesn't feel empty. nice building something someone might open after work.",
+      "built the recommendation system and integrated ai features across petally's website and mobile app, including a chatbot and pet mood journal.",
+      "developed pet-health tracking, engagement scoring, activity streaks and pawpoints rewards. contributed to app ui, the landing page, and aws ci/cd.",
     ],
   },
   {
@@ -124,16 +124,248 @@ export const experiences: Experience[] = [
     role: 'OpenCV Preprocessing Lead',
     org: 'HAWKEYE',
     period: 'May 2026 - Present',
-    headline: 'finding debris on iaf runways. from a moving vehicle. stressful in a cool way.',
+    headline: 'computer-vision preprocessing for an indian air force runway debris detection system.',
     story: [
-      "worked with the indian air force on fod detection. three raspberry pi camera feeds, three yolov26 models (yolov26n, yolov26n, yolov26m) running under a single-inference-engine scheduler that round-robins between them. if the frames going in are trash, the model is just confidently wrong.",
-      "old motion pipeline was broken. i led opencv preprocessing, ripped it out, rebuilt a static-frame path: bilateral filter, clahe, crop the useless top, skip frames so the jetson doesn't melt.",
+      "led the preprocessing pipeline for an indian air force runway foreign-object-debris detection project, integrating three raspberry pi camera feeds into a consistent stream for downstream detection.",
+      "built a modular preprocessing and visualisation workflow with bilateral denoising, clahe, region-of-interest cropping and frame skipping; structured the frontend for model integration and live feed inspection.",
       "that's my favorite kind of problem. something stuck in the real world, and you get to unstick it.",
     ],
   },
 ]
 
 export const projects: Project[] = [
+{
+    "slug": "tread",
+    "title": "Tread",
+    "tagline": "reuse llm cache when the prompt moves around",
+    "blurb": "content-addressed kv blocks, exact rope re-rotation, and selective recompute.",
+    "story": [
+        "reuses cached document chunks at new positions in a prompt, instead of requiring an identical prefix.",
+        "working engine and http server, with a laptop-scale benchmark. large-model timings and serving-engine comparisons have not been run."
+    ],
+    "stack": [
+        "Python",
+        "KV cache",
+        "RoPE",
+        "FastAPI"
+    ],
+    "page": 57,
+    "url": "https://github.com/sykeriin/tread"
+},
+{
+    "slug": "skillfuzz",
+    "title": "SkillFuzz",
+    "tagline": "find what an agent skill does under different conditions",
+    "blurb": "dynamic execution and version comparisons for agent skills.",
+    "story": [
+        "runs skills under varied tasks and environments, records their behaviour, and flags undeclared capability growth between versions.",
+        "sandbox, recorder, fuzzer, and attestation are implemented. the first evaluation found no measured advantage for coverage-guided search over random mutation."
+    ],
+    "stack": [
+        "Python",
+        "Linux",
+        "Sandboxing",
+        "Dynamic analysis"
+    ],
+    "page": 61,
+    "url": "https://github.com/sykeriin/SkillFuzz"
+},
+{
+    "slug": "taintmem",
+    "title": "TaintMem",
+    "tagline": "remember where an agent memory came from",
+    "blurb": "a research prototype for tracking trust through memory rewrites.",
+    "story": [
+        "tracks provenance and integrity labels through stored memories and rewrites, with policy gates and an audit trail.",
+        "tested with rule-based stand-ins. real-llm evaluations are still pending; this is not a proven defence against memory poisoning."
+    ],
+    "stack": [
+        "Python",
+        "SQLite",
+        "Provenance",
+        "Agent memory"
+    ],
+    "page": 65,
+    "url": "https://github.com/sykeriin/TaintMem"
+},
+{
+    "slug": "bci-steadyvoice",
+    "title": "SteadyVoice",
+    "tagline": "keep a speech decoder steady across days",
+    "blurb": "speech-bci recalibration with an adapter and a collapse guard.",
+    "story": [
+        "combines label-free adaptation with a guard that can roll back or request a small calibration when the decoder drifts.",
+        "evaluated on synthetic drifting data only. real neural recordings remain untested, and long gaps between sessions are a known weakness."
+    ],
+    "stack": [
+        "Python",
+        "GRU",
+        "CTC",
+        "BCI"
+    ],
+    "page": 69,
+    "url": "https://github.com/sykeriin/bci-steadyvoice"
+},
+{
+    "slug": "earsim",
+    "title": "earsim",
+    "tagline": "can scalp eeg tell us what an ear sensor would hear?",
+    "blurb": "physics-informed spatial extrapolation for wearable eeg layouts.",
+    "story": [
+        "uses a linear inverse and forward model to transfer scalp recordings to candidate electrode positions.",
+        "the experiments found a small benefit inside the scalp cap, but no benefit on real ear-eeg. zero-shot attention decoding from synthetic ear data failed."
+    ],
+    "stack": [
+        "Python",
+        "MNE",
+        "EEG",
+        "Signal processing"
+    ],
+    "page": 73,
+    "url": "https://github.com/sykeriin/earsim"
+},
+{
+    "slug": "mondecay",
+    "title": "MonDecay",
+    "tagline": "what does post-training do to model monitorability?",
+    "blurb": "an experiment harness for measuring changes in reasoning visibility.",
+    "story": [
+        "compares interventions such as shorter reasoning, distillation, and quantisation through dose-response experiments.",
+        "the harness is built and cpu-tested. no real experiment has been run yet, so there are no empirical monitorability results to claim."
+    ],
+    "stack": [
+        "Python",
+        "LLM evaluation",
+        "Post-training"
+    ],
+    "page": 77,
+    "url": "https://github.com/sykeriin/MonDecay"
+},
+{
+    "slug": "vdrift",
+    "title": "VersionDrift",
+    "tagline": "when an app updates, can an agent still find its way?",
+    "blurb": "task replay across gitea releases, with a semantic re-grounding layer.",
+    "story": [
+        "compares coordinate replay, dom matching, and reground across two releases and nine tasks.",
+        "coordinate replay broke across versions. simple dom matching recovered more tasks than reground; this small pilot does not show an advantage for the new method."
+    ],
+    "stack": [
+        "Python",
+        "UI automation",
+        "Gitea",
+        "Evaluation"
+    ],
+    "page": 81,
+    "url": "https://github.com/sykeriin/VDrift"
+},
+{
+    "slug": "dpdp-guard",
+    "title": "DPDP Guard",
+    "tagline": "consent, deletion requests, and an audit trail for agents",
+    "blurb": "a prototype privacy workflow for chatbots and ai agents.",
+    "story": [
+        "captures consent by purpose, masks personal data in logs, and routes rights requests into a ledger and erasure workflow. includes python and node clients plus a dashboard.",
+        "local integration checks cover the core workflows. deployment templates and the real-model intent fallback remain unverified; legal templates require review."
+    ],
+    "stack": [
+        "Python",
+        "FastAPI",
+        "PostgreSQL",
+        "Next.js"
+    ],
+    "page": 85,
+    "url": "https://github.com/sykeriin/dpdp-guard"
+},
+{
+    "slug": "swapcert",
+    "title": "swapcert",
+    "tagline": "measure the trade-off before swapping an agent model",
+    "blurb": "statistics and simulation tools for comparing model swaps.",
+    "story": [
+        "combines simulated rollouts with sampled real outcomes to estimate a change in task success and report uncertainty.",
+        "the statistics core and toy workflow are implemented. no real agent or tau2 experiment has run, and small samples can make intervals unreliable."
+    ],
+    "stack": [
+        "Python",
+        "Statistics",
+        "Simulation",
+        "Agent evaluation"
+    ],
+    "page": 89,
+    "url": "https://github.com/sykeriin/swapcert"
+},
+{
+    "slug": "intentcheck",
+    "title": "IntentCheck",
+    "tagline": "does an agent purchase match what you asked for?",
+    "blurb": "a simulated market and decision-integrity verifier for agent payments.",
+    "story": [
+        "checks proposed purchases against constraints and alternatives before a simulated payment is approved.",
+        "evaluations use scripted buyers and offline stand-ins. no real llm buyer has been evaluated, and the payment flow does not settle funds."
+    ],
+    "stack": [
+        "Python",
+        "Ed25519",
+        "Agent payments",
+        "Evaluation"
+    ],
+    "page": 93,
+    "url": "https://github.com/sykeriin/intentcheck"
+},
+{
+    "slug": "beliefscreen",
+    "title": "beliefscreen",
+    "tagline": "screen fine-tuning data before training",
+    "blurb": "a research pipeline testing whether belief-conflict scores predict misalignment.",
+    "story": [
+        "scores prompt-target pairs with a frozen model and includes filtering, fine-tuning, and evaluation tooling.",
+        "the first cpu pilot was negative: the scores did not separate secure from insecure code. misalignment experiments and gpu paths remain untested."
+    ],
+    "stack": [
+        "Python",
+        "LoRA",
+        "LLM evaluation"
+    ],
+    "page": 97,
+    "url": "https://github.com/sykeriin/beliefscreen"
+},
+{
+    "slug": "commons",
+    "title": "Commons",
+    "tagline": "a campus, with everyone in the right place",
+    "blurb": "classes, clubs, events, and administration with role-based access.",
+    "story": [
+        "react campus app with student, faculty, department, and admin workflows. includes timetables, enrolment, attendance, clubs, and event tickets.",
+        "web demo and firestore rules were tested. native projects are generated but untested on devices; production cloud-function integration is still pending."
+    ],
+    "stack": [
+        "React",
+        "Firebase",
+        "Capacitor",
+        "TypeScript"
+    ],
+    "page": 101,
+    "url": "https://github.com/sykeriin/commons"
+},
+{
+    "slug": "hike-m",
+    "title": "hike-m",
+    "tagline": "a little hiker, a very long walk",
+    "blurb": "a procedural walk through rainbow mountains to a mirror lake.",
+    "story": [
+        "terrain, weather, wildlife, and sound are generated in code and bundled into one html file.",
+        "the hiker walks automatically; you can take over, look around, and watch the scene move from dawn to a starry night."
+    ],
+    "stack": [
+        "Three.js",
+        "WebGL2",
+        "Procedural art",
+        "Web Audio"
+    ],
+    "page": 105,
+    "url": "https://github.com/sykeriin/hike-m"
+},
   {
     slug: 'alter',
     title: 'ALTER',
@@ -256,6 +488,17 @@ export const projects: Project[] = [
     stack: ['React', 'Vite', 'PWA', 'Local-first'],
     page: 53,
   },
+  {
+    slug: 'nidan-tdt', title: 'Nidan TDT',
+    tagline: 'a digital twin for distribution transformers',
+    blurb: 'a software twin that compares operating data against a thermal and ageing model.',
+    story: [
+      'built for PowerNext-AI 2026: import transformer readings and explore a 3D twin, health indicators, diagnosis, and maintenance advice.',
+      'uses an IEC 60076-7 thermal and ageing model, with simulated scenarios and a dashboard for replaying the data. generated data is labelled as simulated.',
+    ],
+    stack: ['Python', 'FastAPI', 'React', 'Digital twin'], award: '2ND', page: 109,
+  },
+
 ]
 
 export const skills = {
@@ -265,6 +508,8 @@ export const skills = {
     'Agentic AI',
     'PyTorch',
     'OpenCV',
+    'PyTorch',
+    'Hugging Face Transformers',
     'YOLOv8',
     'scikit-learn',
     'Prophet',
@@ -278,6 +523,7 @@ export const skills = {
     'Flutter',
     'React.js',
     'FastAPI',
+    'Next.js',
     'Flask',
     'Playwright',
     'SQLAlchemy',
@@ -288,6 +534,8 @@ export const skills = {
     'AWS',
     'Docker',
     'PostgreSQL',
+    'SQLite',
+    'Linux',
     'Redis',
     'Supabase',
     'SQLCipher',
@@ -299,13 +547,15 @@ export const skills = {
 export const achievements = [
   { stamp: 'TOP 32', label: 'Zenith26. Top 32 / 1,000+ teams. 2026' },
   { stamp: '1ST', label: 'ChainGuard OTA. MAHE Mobility Hackathon 2026' },
+  { stamp: '2ND', label: 'PowerNext (CPRI) 2026' },
   { stamp: '2ND', label: 'UI/UX Sprint. Tech Solstice 2026' },
   { stamp: 'TOP 10', label: 'IQOO Hackathon. 2026' },
   { stamp: 'TOP 10', label: 'Point Blank CTF' },
 ]
 
 export const leadership = [
-  'Vice President — NeuraAI & ALT+R (Fashion Club), MIT Bengaluru',
+  'Vice President — NeuraAI, MIT Bengaluru',
+  'Working Committee — MAHE Innovation Centre',
   "Visual assets for the Pro-Vice Chancellor's office, MAHE (2025-2026)",
   'Sergeant at Arms — MAHE Bengaluru Toastmasters Club',
   'Volunteer: SuperComputing India (Dec 2025)',
@@ -376,7 +626,7 @@ export const creative = {
 } as const
 
 export const funThings =
-  'muay thai, guitar, runs, hikes, fashion tech, cosplay. when my brain is soup i hit pads or a trail until it un-soups a little.'
+  'muay thai, guitar, dance, fashion and visual design, poetry — and a long walk when i need to clear my head.'
 
 /**
  * Socials, one place. Empty string = not published yet; UI skips it. Twitter

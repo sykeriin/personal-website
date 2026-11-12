@@ -7,7 +7,6 @@ import type { RenderTier } from '../hooks/useRenderTier'
  */
 const OPTIONS: Array<{ tier: RenderTier; label: string; hint: string }> = [
   { tier: 'inked', label: 'heavy', hint: 'the full inked world' },
-  { tier: 'flat', label: 'light', hint: 'less fancy, still 3d' },
   { tier: 'paper', label: 'just the words', hint: 'flat, no 3d at all' },
 ]
 
