@@ -18,7 +18,7 @@ a{color:inherit}
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 :focus-visible{outline:3px solid var(--red);outline-offset:3px}
 .bar{position:absolute;top:0;left:0;right:0;z-index:40;display:flex;justify-content:space-between;align-items:baseline;gap:1.5rem;padding:1.1rem clamp(1rem,2.4vw,2rem);pointer-events:none}
-.bar a{pointer-events:auto;font-weight:700;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;padding:.55rem .95rem;border-radius:999px;background:rgba(244,242,236,.78);backdrop-filter:blur(8px);box-shadow:0 1px 0 rgba(11,11,12,.06),0 4px 14px rgba(11,11,12,.1);transition:background .2s,color .2s}.bar a:hover{background:var(--ink);color:var(--paper)}
+.bar a{white-space:nowrap;pointer-events:auto;font-weight:700;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;padding:.55rem .95rem;border-radius:999px;background:rgba(244,242,236,.78);backdrop-filter:blur(8px);box-shadow:0 1px 0 rgba(11,11,12,.06),0 4px 14px rgba(11,11,12,.1);transition:background .2s,color .2s}.bar a:hover{background:var(--ink);color:var(--paper)}
 .intro{position:absolute;z-index:40;left:clamp(1rem,2.4vw,2rem);top:3.6rem;font-size:1.05rem;line-height:1.5;font-weight:500;color:#3b3b38;max-width:21rem;text-wrap:balance}
 .intro .kick{display:block;margin-bottom:.5rem;font-size:.7rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--red)}
 
@@ -86,7 +86,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 
 @media (max-width:1000px){
   .chips{display:flex;gap:.6rem;padding:1rem 1rem 0}.chips button{flex:1;background:var(--ink);color:var(--paper);padding:.85rem 0;font-weight:800;font-size:.74rem;letter-spacing:.14em;text-transform:uppercase}.chips button:active{background:var(--red)}
-  .stage{height:auto;min-height:0}
+  .stage{height:auto;min-height:0;margin-top:4.2rem}
   .intro{position:static;padding:3.6rem 1rem 0;font-size:1rem;max-width:none}
   .rack{position:static;display:grid;justify-content:stretch;grid-template-columns:1fr 1fr;gap:1.6rem 1rem;padding:1rem 1rem 3rem}
   .tape{--tf:.95rem;width:100%}
@@ -104,7 +104,6 @@ html{overflow-x:clip;max-width:100%}body{max-width:100%}/*noscrollx*/
 </head>
 <body>
 <nav class="bar"><a href="/">← Back to the record</a><a href="/blog.html">Quiet version</a></nav>
-<p class="intro"><span class="kick">The band room</span>Notes on builds, security, shoots and poems. Put a tape in the boombox, or hit the drums.</p>
 
 <section class="stage" id="stage" aria-label="Band room">
   <canvas id="back" aria-hidden="true"></canvas>
@@ -145,7 +144,7 @@ const POSTS = [
 ];
 const HELLO = 'Welcome to my blog. Click the cassette tapes.';
 const POKES = [['wave', 'Hey.'], ['point', 'The tapes are on the shelf. Up there.'], ['walk', 'I also shoot, direct and write poems. It’s a lot.'], ['wave', 'Poke me again. I dare you.']];
-['idle','idle2','walk1','walk2','wave1','wave2','point','headphones','guard','guitar1','guitar2','dL','dR','dK','dance1','dance2','dance3','cross1','cross2','six1','six2','jump','hand1','hand2','sit'].forEach(p => { const im = new Image(); im.src = SPR(p); });
+['idle','idle2','walk1','walk2','wave1','wave2','point','headphones','guard','guitar1','guitar2','dL','dR','dK','dance1','dance2','dance3','cross1','cross2','six1','six2','step1','step2','head1','head2','jump','hand1','hand2','sit'].forEach(p => { const im = new Image(); im.src = SPR(p); });
 Object.entries({ ampBtn: 'Amp', boomBtn: 'Boombox', guitarBtn: 'Guitar', danceBtn: 'Dance floor', drumBtn: 'Drums' }).forEach(([id, t]) => { $(id).dataset.tip = t; });
 const live = POSTS.filter(p => !p.soon);
 
@@ -402,7 +401,7 @@ const sprite = $('sprite'), me = $('me'), bubble = $('bubble'); let sayTimer = 0
 let drumF = 'dL', shown = '', walking = false;
 const frameFor = t => { const k = reduce ? 0 : t;
   if (walking) return Math.floor(k * 8) % 2 ? 'walk1' : 'walk2';
-  if (state === 'dance') return ['dance1', 'cross1', 'cross2', 'cross1', 'cross2', 'six1', 'six2', 'six1', 'six2', 'jump', 'hand1', 'hand1', 'hand2', 'hand2', 'hand1', 'jump', 'dance3'][Math.floor(k * 5) % 17];
+  if (state === 'dance') return ['dance1', 'step1', 'cross1', 'step2', 'cross2', 'step1', 'cross1', 'step2', 'cross2', 'jump', 'hand1', 'hand2', 'head1', 'head2', 'head1', 'head2', 'head1', 'head2', 'jump'][Math.floor(k * 5) % 19];
   if (state === 'guitar') return playing ? (Math.floor(k * 9) % 2 ? 'guitar1' : 'guitar2') : 'guitar1';
   if (state === 'drums') return drumF;
   if (state === 'reading') return 'headphones';
@@ -412,7 +411,7 @@ const frameFor = t => { const k = reduce ? 0 : t;
   if (['point', 'headphones', 'guard'].includes(curPose)) return curPose;
   return k % 4.2 < .14 ? 'idle2' : 'idle'; };
 const setPose = p => { curPose = p; showFrame(performance.now() / 1000); };
-const showFrame = t => { const f = frameFor(t); if (f !== shown) { shown = f; sprite.src = SPR(f); } };
+const showFrame = t => { const f = frameFor(t); if (f !== shown) { shown = f; sprite.src = SPR(f); } me.style.transform = f.startsWith('head') && !reduce ? `scaleX(${Math.cos(t * 15).toFixed(2)})` : ''; };
 function say(text, pose, ms = 3200) { bubble.textContent = text; bubble.classList.remove('pop'); void bubble.offsetWidth; bubble.classList.add('pop'); bubble.style.opacity = 1; if (pose) setPose(pose); placeBubble(); clearTimeout(sayTimer); if (ms) sayTimer = setTimeout(() => { if (state === 'idle') { bubble.style.opacity = 0; setPose('idle'); } }, ms); }
 let walk = 0; const moveMe = x => { cancelAnimationFrame(walk); const x0 = meX, t0 = performance.now(); if (reduce) { meX = x; placeAll(); return; } walking = true; const step = now => { const u = Math.min(1, (now - t0) / 650), e = u < .5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2; meX = x0 + (x - x0) * e; placeAll(); if (u < 1) walk = requestAnimationFrame(step); else { walking = false; placeAll(); } }; walk = requestAnimationFrame(step); };
 
@@ -470,7 +469,7 @@ $('drumBtn').addEventListener('click', async () => {
 });
 $('danceBtn').addEventListener('click', async () => {
   if (state !== 'idle') return; state = 'dance'; moveMe(L.me.dance); say('Okay. One song.', 'wave', 0); playing = true; discoOn = true; startLoop(); await sleep(reduce ? 0 : 500); me.classList.add('dance');
-  await sleep(reduce ? 0 : 8400);
+  await sleep(reduce ? 0 : 9600);
   me.classList.remove('dance'); playing = false; discoOn = false; state = 'idle'; moveMe(L.me.idle); pan(690); say('Okay, that’s enough.', 'idle', 2400); startLoop(true);
 });
 $('ampBtn').addEventListener('click', () => { if (state !== 'idle') return; playing = !playing; say(playing ? 'Turned up. Hum only, sorry.' : 'Turned it down.', 'point', 2400); startLoop(!playing); });
