@@ -96,7 +96,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   .bubble{font-size:.9rem;max-width:11rem}
   .foot{position:static;display:block;padding:0 1rem 2rem}
 }
-@media (min-width:761px){.chips{display:none}.tapes-h{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}.tape .cap{display:none}}
+@media (min-width:761px){.intro{display:none}.chips{display:none}.tapes-h{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}.tape .cap{display:none}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -153,7 +153,7 @@ const back = $('back'), fx = $('fx'), bg = back.getContext('2d'), fg = fx.getCon
 let focus = 690; let W = 0, H = 0, dpr = 1, phone = false, state = 'idle', playing = false, guitarOut = false, reading = null;
 const cam = { s: 1, ox: 0, oy: 0 }, WORLD = 1600, WH = 860;
 const L = { floor: 690, shelf: { x0: 24, x1: 540, y: 318 }, crate: { x: 70, y: 580, w: 290, h: 110 }, box: { x: 40, y: 430, w: 350, h: 150 }, deckC: [215, 492],
-  amp: { x: 420, y: 505, w: 180, h: 185 }, guitar: 668, drum: 1290, word: { x: 36, y: 84, h: 150 },
+  amp: { x: 420, y: 505, w: 180, h: 185 }, guitar: 668, drum: 1290, word: { x: 36, y: 60, h: 150 },
   me: { idle: 885, guitar: 850, dance: 885, read: 885, drum: 1295 }, meH: 520, meB: 704, dance: { x: 775, y: 650 } };
 
 /* clean vector drawing: soft gradients, thin dark outlines, no wobble */
@@ -381,7 +381,7 @@ function layout() {
 }
 function placeAll() {
   const w = L.meH * 2 / 3; place($('me'), meX - w / 2, L.meB - L.meH, w, L.meH);
-  const wd = $('word'); const [wx, wy] = P(L.word.x, L.word.y); Object.assign(wd.style, phone ? { left: '16px', top: '16px', fontSize: '3.2rem' } : { left: wx + 'px', top: wy + 'px', fontSize: L.word.h * .74 * cam.s + 'px' });
+  const wd = $('word'); const [wx, wy] = P(L.word.x, L.word.y); Object.assign(wd.style, phone ? { left: '16px', top: '16px', fontSize: '3.2rem' } : { left: wx + 'px', top: wy + 'px', fontSize: L.word.h * .68 * cam.s + 'px' });
   place($('boomBtn'), L.box.x, L.box.y - 70, L.box.w, L.box.h + 70); place($('ampBtn'), L.amp.x, L.amp.y - 20, L.amp.w, L.amp.h + 20); place($('guitarBtn'), L.guitar - 70, 255, 140, 440); $('guitarBtn').hidden = guitarOut; place($('danceBtn'), L.dance.x - 10, 650, 230, 70); place($('drumBtn'), L.drum - 270, 300, 620, 400);
   if (!phone) { const { x0, x1, y } = L.shelf, [rx, ry] = P(x0 + 10, y), rw = (x1 - x0 - 20) * cam.s; Object.assign($('rack').style, { left: rx + 'px', width: rw + 'px', top: ry - rw * .186 * 1.0 * 1.58 / 1.58 + 'px' }); $('rack').style.top = ''; $('rack').style.bottom = ''; const h = rw * .186 / 1.58 * 1; $('rack').style.top = ry - h - 2 + 'px'; }
   else { const r = $('rack').style; r.left = r.top = r.width = ''; }
