@@ -8,9 +8,9 @@
 <link rel="icon" href="/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Pixelify+Sans:wght@400..600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Anton&family=Instrument+Sans:wght@400..700&family=Pixelify+Sans:wght@400..600&display=swap" rel="stylesheet">
 <style>
-:root{color-scheme:light;--wall:#e7e7e3;--floor:#d3d3ce;--ink:#0b0b0c;--red:#e0122d;--silver:#b9b9b5;--paper:#f4f2ec;--sans:Archivo,Arial,sans-serif;--px:"Pixelify Sans",Archivo,sans-serif;--dw:min(36rem,42vw)}
+:root{color-scheme:light;--wall:#e7e7e3;--floor:#d3d3ce;--ink:#0b0b0c;--red:#e0122d;--silver:#b9b9b5;--paper:#f4f2ec;--sans:"Instrument Sans",Archivo,Arial,sans-serif;--disp:Anton,Impact,"Archivo",sans-serif;--px:"Pixelify Sans",Archivo,sans-serif;--dw:min(36rem,42vw)}
 *{box-sizing:border-box;margin:0;padding:0}
 html{background:var(--wall)}
 body{background:var(--wall);color:var(--ink);font-family:var(--sans);overflow-x:hidden}
@@ -20,7 +20,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .bar{position:absolute;top:0;left:0;right:0;z-index:40;display:flex;justify-content:space-between;align-items:baseline;gap:1.5rem;padding:1.1rem clamp(1rem,2.4vw,2rem);pointer-events:none}
 .bar a{pointer-events:auto;font-weight:700;font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;padding-bottom:.25rem;border-bottom:1px solid currentColor}
 .bar a:hover{color:var(--red)}
-.intro{position:absolute;z-index:40;left:clamp(1rem,2.4vw,2rem);top:3.6rem;font-size:1.02rem;line-height:1.5;font-weight:450;color:#3b3b38;max-width:21rem;text-wrap:balance}
+.intro{position:absolute;z-index:40;left:clamp(1rem,2.4vw,2rem);top:3.6rem;font-size:1.05rem;line-height:1.5;font-weight:500;color:#3b3b38;max-width:21rem;text-wrap:balance}
 .intro .kick{display:block;margin-bottom:.5rem;font-size:.7rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--red)}
 
 /* the room */
@@ -28,7 +28,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .stage::after{content:'';position:absolute;inset:0;z-index:5;pointer-events:none;background:radial-gradient(120% 90% at 50% 45%,transparent 55%,rgba(11,11,12,.13) 100%)}
 .stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
 #fx{pointer-events:none;z-index:6}
-.word{position:absolute;z-index:3;font-weight:900;font-stretch:100%;text-transform:uppercase;letter-spacing:-.045em;line-height:.86;color:var(--red);pointer-events:none;font-kerning:normal}
+.word{position:absolute;z-index:3;font-family:var(--disp);font-weight:400;text-transform:uppercase;letter-spacing:.01em;line-height:.9;color:var(--red);pointer-events:none;font-kerning:normal}
 .word i{font-style:normal;color:var(--ink)}
 .me{position:absolute;z-index:4;transform-origin:50% 100%}
 .me img{display:block;width:100%;height:100%;image-rendering:pixelated;pointer-events:none;filter:drop-shadow(0 6px 6px rgba(11,11,12,.28)) contrast(1.04) saturate(.92)}
@@ -53,7 +53,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .tape{position:relative;flex:0 0 18.6%;min-width:0;aspect-ratio:1.58;background:var(--ink);border-radius:7%/11%;color:var(--ink);display:block;transform:rotate(var(--r,0deg));transition:transform .25s cubic-bezier(.3,1.3,.5,1);text-align:left}
 .tape .lbl{position:absolute;left:7%;right:7%;top:9%;height:44%;background:var(--paper);border-radius:3px;padding:0 6% 4%;overflow:hidden;display:flex;align-items:flex-end}
 .tape .lbl::before{content:"";position:absolute;left:0;right:0;top:0;height:26%;background:var(--red)}
-.tape .lbl b{position:relative;display:block;font-weight:800;font-stretch:75%;text-transform:uppercase;letter-spacing:.02em;font-size:var(--tf,.72rem);line-height:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tape .lbl b{position:relative;display:block;font-family:var(--disp);font-weight:400;text-transform:uppercase;letter-spacing:.04em;font-size:var(--tf,.72rem);line-height:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tape .win{position:absolute;left:24%;right:24%;bottom:14%;height:24%;background:#3a3a3f;border-radius:99px;display:flex;justify-content:space-between;align-items:center;padding:0 8%}
 .tape .win i{width:26%;aspect-ratio:1;border-radius:50%;background:var(--paper);border:2px dotted var(--ink)}
 .tape.soon .lbl{background:#d8d8d3}
@@ -74,10 +74,10 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .jc .reels svg{width:2.8rem;height:2.8rem;animation:spin 2.4s linear infinite}
 .jc .reels span{color:var(--paper);font-weight:800;font-size:.7rem;letter-spacing:.18em;text-transform:uppercase}
 @keyframes spin{to{transform:rotate(360deg)}}
-.jc h2{font-weight:900;font-stretch:90%;font-size:clamp(2rem,3.6vw,3.2rem);line-height:1;letter-spacing:-.03em;text-wrap:balance}
+.jc h2{font-family:var(--disp);font-weight:400;text-transform:uppercase;font-size:clamp(2.4rem,4.4vw,4rem);line-height:.98;letter-spacing:.005em;text-wrap:balance}
 .jc .meta{margin:1rem 0 1.8rem;font-weight:800;font-size:.74rem;letter-spacing:.16em;text-transform:uppercase;color:var(--red)}
 .jc .body p{font-size:1.1rem;line-height:1.6;max-width:34rem;margin-bottom:1em}
-.jc .body p:first-child{font-weight:700;font-size:1.25rem;line-height:1.4}
+.jc .body p:first-child{font-weight:600;font-size:1.25rem;line-height:1.4}
 .jc .ctl{display:flex;gap:.7rem;flex-wrap:wrap;margin-top:2rem}
 .jc .ctl button,.jc .ctl a{background:var(--ink);color:var(--paper);padding:.75rem 1.3rem;font-weight:800;font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;transition:background .2s}
 .jc .ctl button:hover,.jc .ctl a:hover{background:var(--red)}
@@ -91,7 +91,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   .tape{--tf:.95rem;width:100%}
   .tape .cap{display:block;position:absolute;top:104%;left:0;right:0;font-weight:700;font-size:.85rem;line-height:1.2}
   .rack .tape{margin-bottom:2.2rem}
-  .tapes-h{display:block;padding:1.4rem 1rem 0;font-weight:900;font-stretch:90%;font-size:1.8rem;letter-spacing:-.03em}
+  .tapes-h{display:block;padding:1.6rem 1rem 0;font-family:var(--disp);font-weight:400;text-transform:uppercase;font-size:2.2rem;letter-spacing:.01em}
   .deck{width:100%;grid-template-columns:2rem 1fr}
   .bubble{font-size:.9rem;max-width:11rem}
   .foot{position:static;display:block;padding:0 1rem 2rem}
@@ -153,7 +153,7 @@ const back = $('back'), fx = $('fx'), bg = back.getContext('2d'), fg = fx.getCon
 let focus = 690; let W = 0, H = 0, dpr = 1, phone = false, state = 'idle', playing = false, guitarOut = false, reading = null;
 const cam = { s: 1, ox: 0, oy: 0 }, WORLD = 1600, WH = 860;
 const L = { floor: 690, shelf: { x0: 24, x1: 540, y: 318 }, crate: { x: 70, y: 580, w: 290, h: 110 }, box: { x: 40, y: 430, w: 350, h: 150 }, deckC: [215, 492],
-  amp: { x: 420, y: 505, w: 180, h: 185 }, guitar: 668, drum: 1290, word: { x: 36, y: 120, h: 150 },
+  amp: { x: 420, y: 505, w: 180, h: 185 }, guitar: 668, drum: 1290, word: { x: 36, y: 84, h: 150 },
   me: { idle: 885, guitar: 850, dance: 885, read: 885, drum: 1295 }, meH: 520, meB: 704, dance: { x: 775, y: 650 } };
 
 /* clean vector drawing: soft gradients, thin dark outlines, no wobble */
@@ -190,6 +190,28 @@ function drawGuitar(g, gx) {
     rrect(g, gx - 14, 651, 28, 4, 1); paint(g, '#f4f4ef', .8);
 }
 
+function drawArt(g) {
+  const frame = (x, y, w, h, c1, c2, m) => { soft(g, x + w / 2 + 5, y + h + 8, w * .6, 8, .2); g.fillStyle = 'rgba(11,11,12,.1)'; g.fillRect(x + 6, y + 8, w, h); rrect(g, x, y, w, h, 2); paint(g, lg(g, x, y, x + w, y + h, [[0, c1], [1, c2]]), 1.8); line(g, [[x + 2, y + 2], [x + w - 2, y + 2]], 1.2, 'rgba(255,255,255,.4)'); rrect(g, x + m, y + m, w - 2 * m, h - 2 * m, 1); paint(g, '#f6f4ee', 1.2, 'rgba(11,11,12,.4)'); line(g, [[x + m, y + m + 1.5], [x + w - m, y + m + 1.5]], 3, 'rgba(11,11,12,.12)'); return [x + m + 7, y + m + 7, w - 2 * m - 14, h - 2 * m - 14]; };
+  const glare = (x, y, w, h) => { g.save(); g.beginPath(); g.rect(x, y, w, h); g.clip(); g.fillStyle = 'rgba(255,255,255,.2)'; g.beginPath(); g.moveTo(x + w * .18, y); g.lineTo(x + w * .5, y); g.lineTo(x + w * .05, y + h); g.lineTo(x - w * .27, y + h); g.closePath(); g.fill(); g.restore(); };
+  const cone = (cx, y, w, len) => { g.fillStyle = lg(g, 0, y, 0, y + len, [[0, 'rgba(255,240,196,.5)'], [1, 'rgba(255,240,196,0)']]); g.beginPath(); g.moveTo(cx - w / 2, y); g.lineTo(cx + w / 2, y); g.lineTo(cx + w * .85, y + len); g.lineTo(cx - w * .85, y + len); g.closePath(); g.fill(); };
+  const plight = (cx, y, w) => { line(g, [[cx, y - 8], [cx, y]], 2, '#5d5d59'); rrect(g, cx - w / 2, y - 18, w, 8, 4); paint(g, CHROME(g, cx - w / 2, 0, cx + w / 2, 0), 1.2); };
+  /* A: spider lilies, ink and wash */
+  { const x = 566, y = 76, w = 142, h = 176; cone(x + w / 2, y - 10, w * .8, h + 40); const [ix, iy, iw, ih] = frame(x, y, w, h, '#2b2b30', '#0d0d0f', 11);
+    g.save(); g.beginPath(); g.rect(ix, iy, iw, ih); g.clip(); g.fillStyle = rg(g, ix + iw * .5, iy + ih * .38, 6, iw * .9, [[0, 'rgba(224,18,45,.16)'], [.6, 'rgba(224,18,45,.05)'], [1, 'rgba(11,11,12,.07)']]); g.fillRect(ix, iy, iw, ih);
+    const bloom = (cx, cy, r, rot) => { for (let k = 0; k < 6; k++) { const a = rot - Math.PI * .5 + (k - 2.5) * .34, ex = cx + Math.cos(a) * r, ey = cy + Math.sin(a) * r * .8; g.beginPath(); g.moveTo(cx, cy); g.quadraticCurveTo(cx + Math.cos(a) * r * .55, cy + Math.sin(a) * r * .55 - r * .22, ex, ey); g.quadraticCurveTo(cx + Math.cos(a + .1) * r * .62, cy + Math.sin(a + .1) * r * .62, ex + Math.cos(a + 1.5) * r * .22, ey + Math.sin(a + 1.5) * r * .22 + r * .12); g.quadraticCurveTo(cx + Math.cos(a - .12) * r * .5, cy + Math.sin(a - .12) * r * .5, cx, cy); g.fillStyle = k % 2 ? '#e0122d' : '#c40f27'; g.fill(); g.lineWidth = .8; g.strokeStyle = 'rgba(80,0,10,.55)'; g.stroke(); }
+      for (let k = 0; k < 7; k++) { const a = rot - Math.PI * .5 + (k - 3) * .3, len = r * 1.35; g.beginPath(); g.moveTo(cx, cy); g.quadraticCurveTo(cx + Math.cos(a) * len * .5, cy + Math.sin(a) * len * .5 - r * .35, cx + Math.cos(a) * len, cy + Math.sin(a) * len * .8 - r * .1); g.lineWidth = 1; g.strokeStyle = '#7d0818'; g.stroke(); oval(g, cx + Math.cos(a) * len, cy + Math.sin(a) * len * .8 - r * .1, 1.7, 1.7); g.fillStyle = '#26161a'; g.fill(); } };
+    line(g, [[ix + iw * .5, iy + ih], [ix + iw * .52, iy + ih * .72], [ix + iw * .5, iy + ih * .5]], 2.4, '#3d3d3a'); bloom(ix + iw * .5, iy + ih * .44, 30, 0);
+    line(g, [[ix + iw * .82, iy + ih], [ix + iw * .8, iy + ih * .78], [ix + iw * .74, iy + ih * .66]], 1.8, '#3d3d3a'); bloom(ix + iw * .74, iy + ih * .62, 15, .5);
+    g.font = 'italic 600 7px Archivo'; g.fillStyle = 'rgba(11,11,12,.55)'; g.fillText('D.S.', ix + 4, iy + ih - 4); g.restore(); grain(g, ix, iy, iw, ih, .12); glare(x + 11, y + 11, w - 22, h - 22); plight(x + w / 2, y - 12, 44); }
+  /* B: sun over the city, screenprint */
+  { const x = 1330, y = 104, w = 122, h = 160; cone(x + w / 2, y - 10, w * .7, h + 40); const [ix, iy, iw, ih] = frame(x, y, w, h, '#e6e6e2', '#8d8d89', 9);
+    g.save(); g.beginPath(); g.rect(ix, iy, iw, ih); g.clip(); g.fillStyle = '#efece3'; g.fillRect(ix, iy, iw, ih); g.fillStyle = RED; g.beginPath(); g.arc(ix + iw * .5, iy + ih * .42, iw * .34, 0, TAU); g.fill();
+    g.fillStyle = INK; const bs = [[0, .66, .18], [.18, .54, .14], [.32, .7, .12], [.44, .5, .16], [.6, .62, .13], [.73, .46, .14], [.87, .68, .13]]; for (const [bx, top, bw] of bs) g.fillRect(ix + bx * iw, iy + ih * top, bw * iw + 1, ih * (1 - top)); g.fillStyle = '#efece3'; for (const [bx, top, bw] of bs) for (let r = 0; r < 5; r++) for (let c = 0; c < 2; c++) if ((r + c + (bx * 10 | 0)) % 3) g.fillRect(ix + bx * iw + 3 + c * bw * iw * .4, iy + ih * top + 5 + r * 8, 2.4, 3);
+    g.fillStyle = INK; g.font = '400 9px Anton'; g.letterSpacing = '2px'; g.fillText('NO. 3', ix + 5, iy + 13); g.letterSpacing = '0px'; g.restore(); grain(g, ix, iy, iw, ih, .14); glare(x + 8, y + 8, w - 16, h - 16); plight(x + w / 2, y - 12, 38); }
+  /* C: a record, framed */
+  { const x = 1484, y = 176, w = 70, [ix, iy, iw, ih] = frame(x, y, w, w, '#26262a', '#0d0d0f', 7), cx = ix + iw / 2, cy = iy + ih / 2; g.save(); g.beginPath(); g.rect(ix, iy, iw, ih); g.clip(); g.fillStyle = '#101012'; g.fillRect(ix, iy, iw, ih); oval(g, cx, cy, iw * .49, iw * .49); g.fillStyle = '#1b1b1e'; g.fill(); for (let r = iw * .45; r > 10; r -= 3) { oval(g, cx, cy, r, r); paint(g, null, .6, 'rgba(255,255,255,.1)'); } oval(g, cx, cy, 9, 9); g.fillStyle = RED; g.fill(); oval(g, cx, cy, 1.5, 1.5); g.fillStyle = INK; g.fill(); g.fillStyle = 'rgba(255,255,255,.1)'; g.beginPath(); g.moveTo(cx, cy); g.arc(cx, cy, iw * .48, -.9, -.4); g.fill(); g.restore(); glare(x + 6, y + 6, w - 12, w - 12); }
+}
+
 /* the still room: wall, floor, window light, shelf, crate, stand, rug, floor tiles */
 function drawBack() {
   const g = bg; g.setTransform(dpr, 0, 0, dpr, 0, 0); g.fillStyle = WALL; g.fillRect(0, 0, W, H); camTransform(g);
@@ -219,9 +241,7 @@ function drawBack() {
   g.fillStyle = 'rgba(120,134,128,.5)'; oval(g, wx + 196, wy + wh - 10, 52, 38); g.fill(); g.fillStyle = 'rgba(255,255,255,.35)'; g.fillRect(wx, wy + wh - 70, ww, 70); g.restore();
   line(g, [[wx + ww / 2, wy], [wx + ww / 2, wy + wh]], 6, '#d6d6d1'); line(g, [[wx, wy + wh * .5], [wx + ww, wy + wh * .5]], 6, '#d6d6d1'); line(g, [[wx + ww / 2 - 2.5, wy], [wx + ww / 2 - 2.5, wy + wh]], 1, 'rgba(255,255,255,.9)'); line(g, [[wx + ww / 2 + 3, wy], [wx + ww / 2 + 3, wy + wh]], 1, 'rgba(11,11,12,.25)'); rrect(g, wx, wy, ww, wh, 0); paint(g, null, 2); rrect(g, wx - 16, wy + wh + 10, ww + 32, 12, 2); paint(g, lg(g, 0, wy + wh + 10, 0, wy + wh + 22, [[0, '#e4e4df'], [1, '#bdbdb8']]), 1.4); soft(g, wx + ww / 2, wy + wh + 40, ww * .6, 10, .16);
   for (let k = 0; k < 46; k++) { g.fillStyle = `rgba(255,255,255,${.3 + rnd(k, 2) * .5})`; g.beginPath(); g.arc(wx - 280 + rnd(k, 5) * 520, 400 + rnd(k, 9) * 330, .8 + rnd(k, 3) * 1.8, 0, TAU); g.fill(); }
-  /* framed spider lily */
-  g.fillStyle = 'rgba(11,11,12,.12)'; g.fillRect(566, 104, 124, 156); rrect(g, 560, 96, 124, 156, 3); paint(g, '#f4f2ec', 2.4); rrect(g, 574, 110, 96, 128, 1); paint(g, '#ebe8e0', 1, 'rgba(11,11,12,.3)');
-  line(g, [[622, 226], [622, 168]], 2, '#4b4b48'); for (let k = -3; k <= 3; k++) { g.beginPath(); g.moveTo(622, 168); g.quadraticCurveTo(622 + k * 15, 120, 622 + k * 24, 138 + Math.abs(k) * 5); g.lineWidth = 2.2; g.strokeStyle = RED; g.lineCap = 'round'; g.stroke(); }
+  drawArt(g);
   /* shadows on the floor */
   shadow(g, L.crate.x + L.crate.w / 2, 190); shadow(g, L.amp.x + L.amp.w / 2, 110); shadow(g, L.guitar, 74); shadow(g, L.drum + 40, 330); shadow(g, L.me.idle, 150, .16);
   /* shelf */
@@ -238,7 +258,6 @@ function drawBack() {
   const gx = L.guitar; line(g, [[gx - 44, 690], [gx, 600], [gx + 44, 690]], 3, '#4b4b48'); line(g, [[gx - 20, 650], [gx + 20, 650]], 2.6, '#4b4b48');
   if (!guitarOut) drawGuitar(g, gx);
   /* tour poster, string lights, plant, records */
-  { const px = 1330, py = 110, pw = 118, ph = 168; g.fillStyle = 'rgba(11,11,12,.14)'; g.fillRect(px + 5, py + 6, pw, ph); g.fillStyle = INK; g.fillRect(px, py, pw, ph); g.fillStyle = RED; g.beginPath(); g.arc(px + pw / 2, py + 62, 38, 0, TAU); g.fill(); g.fillStyle = INK; g.beginPath(); g.arc(px + pw / 2 + 12, py + 62, 38, 0, TAU); g.fill(); g.fillStyle = PAPER; g.font = '900 15px Archivo'; g.letterSpacing = '3px'; g.textAlign = 'center'; g.fillText('GRASS FILES', px + pw / 2, py + 130); g.font = '700 8px Archivo'; g.letterSpacing = '2px'; g.fillStyle = '#b9b9b5'; g.fillText('LIVE IN THE ROOM', px + pw / 2, py + 148); g.textAlign = 'left'; g.letterSpacing = '0px'; g.strokeStyle = 'rgba(255,255,255,.35)'; g.lineWidth = 1; g.strokeRect(px + 6, py + 6, pw - 12, ph - 12); for (const tx of [px + 8, px + pw - 8]) { g.fillStyle = 'rgba(244,242,236,.8)'; g.fillRect(tx - 7, py - 3, 14, 7); } }
   { const yy = -10; g.beginPath(); g.moveTo(x0, 34); for (let k = 0; k <= 12; k++) { const xx = x0 + (x1 - x0) * k / 12; g.lineTo(xx, 34 + Math.sin(k * Math.PI) * 0 + (k % 2 ? 22 : 8)); } g.strokeStyle = 'rgba(11,11,12,.55)'; g.lineWidth = 1.4; g.stroke(); for (let k = 1; k < 12; k += 1) { const xx = x0 + (x1 - x0) * k / 12, yb = 34 + (k % 2 ? 22 : 8) + 6; g.fillStyle = rg(g, xx, yb, 0, 26, [[0, 'rgba(255,236,170,.55)'], [1, 'rgba(255,236,170,0)']]); g.fillRect(xx - 26, yb - 26, 52, 52); oval(g, xx, yb, 4, 5.5); paint(g, '#fff4c8', .8); } }
   { const pxx = 972, base = FL - 2; g.fillStyle = lg(g, pxx - 30, 0, pxx + 30, 0, [[0, '#8a8a85'], [.5, '#b9b9b5'], [1, '#6f6f6a']]); g.beginPath(); g.moveTo(pxx - 26, base - 52); g.lineTo(pxx + 26, base - 52); g.lineTo(pxx + 20, base); g.lineTo(pxx - 20, base); g.closePath(); paint(g, g.fillStyle, 1.8); for (let k = 0; k < 9; k++) { const a = -2.6 + k * .42, len = 60 + (k % 3) * 24; g.beginPath(); g.moveTo(pxx, base - 52); g.quadraticCurveTo(pxx + Math.cos(a) * len * .5, base - 52 - Math.abs(Math.sin(a)) * len * .9, pxx + Math.cos(a) * len, base - 52 - Math.abs(Math.sin(a)) * len * .7 + 14); g.lineTo(pxx + Math.cos(a) * len * .55 + 6, base - 52 - Math.abs(Math.sin(a)) * len * .3); g.closePath(); paint(g, k % 2 ? '#2b2b30' : '#4b4b50', 1.2); } }
   { const rxx = 640; for (let k = 0; k < 5; k++) { rrect(g, rxx - 4 + (k % 2) * 3, L.floor - 8 - k * 9, 70, 8, 1); paint(g, ['#0b0b0c', RED, '#26262a', '#f4f2ec', '#0b0b0c'][k], 1.2); } oval(g, rxx + 33, L.floor - 49, 31, 5); paint(g, '#101012', 1.2); oval(g, rxx + 33, L.floor - 49, 9, 1.6); paint(g, RED, .6); }
@@ -266,7 +285,7 @@ function drawAmp(g, t) {
   g.save(); rrect(g, gx, gy, gw, gh, 3); g.clip(); g.strokeStyle = 'rgba(11,11,12,.3)'; g.lineWidth = .8; for (let k = 0; k < gw + gh; k += 5) { line(g, [[gx + k, gy], [gx + k - gh, gy + gh]], .8, 'rgba(11,11,12,.28)'); line(g, [[gx + k - gh, gy], [gx + k, gy + gh]], .8, 'rgba(11,11,12,.28)'); }
   const cx = gx + gw / 2, cy = gy + gh / 2; g.strokeStyle = `rgba(11,11,12,${.18 + pulse * .12})`; g.lineWidth = 1.4; for (const r of [20, 31, 41]) { oval(g, cx, cy, r + pulse * 2.4, r + pulse * 2.4); g.stroke(); } g.restore();
   rrect(g, gx + 2, gy + 2, gw - 4, gh - 4, 2); paint(g, null, 2.6, RED);
-  rrect(g, a.x + a.w - 62, a.y + a.h - 12, 50, 8, 2); paint(g, CHROME(g, a.x, 0, a.x + a.w, 0), .8); g.fillStyle = '#151518'; g.font = '800 6.5px Archivo'; g.letterSpacing = '1.2px'; g.fillText('GRASS 30', a.x + a.w - 58, a.y + a.h - 6); g.letterSpacing = '0px';
+  rrect(g, a.x + a.w - 62, a.y + a.h - 12, 50, 8, 2); paint(g, CHROME(g, a.x, 0, a.x + a.w, 0), .8); g.fillStyle = '#151518'; g.font = '400 8px Anton'; g.letterSpacing = '1.5px'; g.fillText('GRASS 30', a.x + a.w - 58, a.y + a.h - 6); g.letterSpacing = '0px';
   for (const fx2 of [a.x + 12, a.x + a.w - 24]) { rrect(g, fx2, a.y + a.h, 12, 6, 2); paint(g, '#101012', 1); }
 }
 
@@ -285,7 +304,7 @@ function drawBoombox(g, t) {
   if (!inserted) { rrect(g, px + 4, b.y + 32, pw - 8, 30, 2); g.fillStyle = '#0b0b0c'; g.fill(); }
   for (let k = 0; k < 4; k++) { rrect(g, px + k * 17, b.y + 82, 14, 12, 2); paint(g, CHROME(g, px + k * 17, 0, px + k * 17 + 14, 0), 1); } g.fillStyle = RED; g.beginPath(); g.moveTo(px + 36, b.y + 85); g.lineTo(px + 44, b.y + 88); g.lineTo(px + 36, b.y + 91); g.fill();
   for (let k = 0; k < 4; k++) { const on = play && Math.sin(t * 9 + k * 1.7) > k * .35 - .7; oval(g, px + 8 + k * 16, b.y + 112, 4.2, 4.2); paint(g, on ? '#ff3b55' : '#4b4b50', .8); if (on) { g.fillStyle = 'rgba(224,18,45,.25)'; oval(g, px + 8 + k * 16, b.y + 112, 9, 9); g.fill(); } }
-  g.fillStyle = '#d9d9d4'; g.font = '800 11px Archivo'; g.letterSpacing = '3px'; g.textAlign = 'center'; g.fillText('GRASS FILES', b.x + b.w / 2, b.y + b.h - 9); g.textAlign = 'left'; g.letterSpacing = '0px';
+  g.fillStyle = '#d9d9d4'; g.font = '400 14px Anton'; g.letterSpacing = '3px'; g.textAlign = 'center'; g.fillText('GRASS FILES', b.x + b.w / 2, b.y + b.h - 9); g.textAlign = 'left'; g.letterSpacing = '0px';
 }
 
 function cymbal(g, x, y, r, k, tilt = 0) {
@@ -294,17 +313,17 @@ function cymbal(g, x, y, r, k, tilt = 0) {
   oval(g, 0, 0, r, r * .15); paint(g, rg(g, 0, -2, r * .05, r, [[0, '#fff1b0'], [.4, '#d9b957'], [1, '#8d7228']]), 1.6);
   g.save(); oval(g, 0, 0, r, r * .15); g.clip(); const cg = g.createConicGradient(0, 0, 0); [[0, '#fff6c8'], [.12, '#b8962f'], [.25, '#f1d97a'], [.38, '#9a7a24'], [.5, '#fff0b0'], [.62, '#a98a2b'], [.75, '#f1d97a'], [.88, '#9a7a24'], [1, '#fff6c8']].forEach(([p, c]) => cg.addColorStop(p, c)); g.globalAlpha = .55; g.fillStyle = cg; g.fillRect(-r, -r * .2, r * 2, r * .4); g.restore();
   for (let f = .94; f > .2; f -= .075) { oval(g, 0, 0, r * f, r * .15 * f); paint(g, null, .6, `rgba(70,52,10,${.18 + (f * 7 % 1) * .2})`); }
-  oval(g, 0, -1, r * .17, r * .06); paint(g, '#f4dd86', 1); g.restore();
+  oval(g, 0, -2, r * .2, r * .085); paint(g, rg(g, -r * .05, -4, 1, r * .2, [[0, '#fff8d4'], [1, '#c9a940']]), 1); oval(g, 0, -2.5, 2.2, 1.2); paint(g, '#5d5d59', .6); g.restore(); g.fillStyle = '#26262a'; g.fillRect(x - 3, y - 3 + kick(k), 6, 5);
 }
 function tomDrum(g, cx, topY, rx, h, k, shellA, shellB, legs) {
   const dy = kick(k), ry = rx * .24, y = topY + dy;
-  if (legs) for (const dx of [-rx * .75, rx * .75, 0]) line(g, [[cx + dx, y + h - 4], [cx + dx * 1.2, 688]], 3, '#5d5d59');
+  if (legs) for (const dx of [-rx * .75, rx * .75, 0]) { line(g, [[cx + dx, y + h - 4], [cx + dx * 1.2, 688]], 4, '#4b4b48'); line(g, [[cx + dx, y + h - 4], [cx + dx * 1.2, 688]], 1.4, '#c8c8c4'); rrect(g, cx + dx * 1.2 - 6, 684, 12, 6, 2); paint(g, '#17171a', .8); }
   g.beginPath(); g.rect(cx - rx, y, rx * 2, h); g.ellipse(cx, y + h, rx, ry, 0, 0, Math.PI); g.fillStyle = lg(g, cx - rx, 0, cx + rx, 0, [[0, shellB], [.28, shellA], [.5, shellA], [1, shellB]]); g.fill();
-  g.save(); g.beginPath(); g.rect(cx - rx, y, rx * 2, h); g.ellipse(cx, y + h, rx, ry, 0, 0, Math.PI); g.clip(); g.fillStyle = lg(g, cx - rx * .55, 0, cx - rx * .3, 0, [[0, 'rgba(255,255,255,0)'], [.5, 'rgba(255,255,255,.42)'], [1, 'rgba(255,255,255,0)']]); g.fillRect(cx - rx, y, rx * 2, h + ry); g.fillStyle = lg(g, 0, y, 0, y + h + ry, [[0, 'rgba(0,0,0,0)'], [1, 'rgba(0,0,0,.28)']]); g.fillRect(cx - rx, y, rx * 2, h + ry); g.restore();
+  g.save(); g.beginPath(); g.rect(cx - rx, y, rx * 2, h); g.ellipse(cx, y + h, rx, ry, 0, 0, Math.PI); g.clip(); g.fillStyle = lg(g, cx - rx * .55, 0, cx - rx * .3, 0, [[0, 'rgba(255,255,255,0)'], [.5, 'rgba(255,255,255,.42)'], [1, 'rgba(255,255,255,0)']]); g.fillRect(cx - rx, y, rx * 2, h + ry); g.fillStyle = lg(g, 0, y, 0, y + h + ry, [[0, 'rgba(0,0,0,0)'], [1, 'rgba(0,0,0,.28)']]); g.fillRect(cx - rx, y, rx * 2, h + ry); for (let k = 0; k < 34; k++) { g.fillStyle = `rgba(255,255,255,${.25 + rnd(k, cx) * .5})`; g.fillRect(cx - rx + rnd(k, 3) * rx * 2, y + rnd(k, 7) * (h + ry), 1.3, 1.3); } line(g, [[cx - rx, y + 5], [cx + rx, y + 5]], 1, 'rgba(255,255,255,.25)'); line(g, [[cx - rx, y + h - 3], [cx + rx, y + h - 3]], 1, 'rgba(0,0,0,.3)'); g.restore();
   g.beginPath(); g.moveTo(cx - rx, y); g.lineTo(cx - rx, y + h); g.ellipse(cx, y + h, rx, ry, 0, Math.PI, 0, true); g.lineTo(cx + rx, y); g.lineWidth = 1.6; g.strokeStyle = LINE; g.stroke();
   for (let i = 0; i < 6; i++) { const lx = cx - rx * .82 + i * (rx * 1.64 / 5), ly = y + h * .5 + Math.sqrt(Math.max(0, 1 - ((lx - cx) / rx) ** 2)) * ry * .7; rrect(g, lx - 2.2, ly - 6, 4.4, 12, 1.5); paint(g, CHROME(g, lx - 2, 0, lx + 2, 0), .7); }
   oval(g, cx, y + h, rx, ry); g.lineWidth = 3; g.strokeStyle = '#c8c8c4'; g.save(); g.beginPath(); g.rect(cx - rx - 4, y + h, rx * 2 + 8, ry + 6); g.clip(); oval(g, cx, y + h, rx, ry); g.stroke(); g.restore();
-  oval(g, cx, y, rx, ry); paint(g, rg(g, cx - rx * .3, y - ry * .3, 1, rx, [[0, '#ffffff'], [1, '#d9d6cc']]), 1.6); oval(g, cx, y, rx - 4, ry - 1); g.lineWidth = 3; g.strokeStyle = '#c8c8c4'; g.stroke(); oval(g, cx, y, rx * .3, ry * .3); paint(g, null, .8, 'rgba(11,11,12,.25)');
+  oval(g, cx, y, rx, ry); paint(g, rg(g, cx - rx * .3, y - ry * .3, 1, rx, [[0, '#ffffff'], [1, '#d9d6cc']]), 1.6); oval(g, cx, y, rx - 4, ry - 1); g.lineWidth = 3.4; g.strokeStyle = CHROME(g, cx - rx, y, cx + rx, y); g.stroke(); oval(g, cx, y, rx + 1, ry + .6); paint(g, null, 1.1, 'rgba(11,11,12,.55)'); for (let i = 0; i < 8; i++) { const a = Math.PI * (.08 + i * .84 / 7), tx = cx + Math.cos(a) * (rx + 1), ty = y + Math.sin(a) * (ry + .6); rrect(g, tx - 2, ty - 3.5, 4, 5.5, 1); paint(g, CHROME(g, tx - 2, 0, tx + 2, 0), .6); } oval(g, cx, y + ry * .1, rx * .5, ry * .45); paint(g, null, .7, 'rgba(11,11,12,.12)'); oval(g, cx, y, rx * .3, ry * .3); paint(g, null, .8, 'rgba(11,11,12,.25)');
 }
 function drawKit(g) {
   const K = L.drum;
@@ -314,7 +333,7 @@ function drawKit(g) {
   for (const [dy, c] of [[0, '#c9a940'], [-13 + (hit.hat || 0) * 8, '#e8cd6a']]) { oval(g, K - 215, 500 + dy, 50, 7); paint(g, rg(g, K - 215, 498 + dy, 2, 50, [[0, '#fff1b0'], [1, c]]), 1.4); }
   /* snare, floor tom, rack tom */
   line(g, [[K - 90, 604], [K - 90, 650]], 3, '#5d5d59'); line(g, [[K - 130, 690], [K - 90, 650], [K - 50, 690]], 2.4, '#5d5d59');
-  tomDrum(g, K - 90, 570, 54, 36, 'snare', '#e7e7e3', '#9c9c98', false);
+  tomDrum(g, K - 90, 570, 54, 36, 'snare', '#e7e7e3', '#9c9c98', false); for (let i = 0; i < 9; i++) line(g, [[K - 90 - 34 + i * 8.5, 607 + kick('snare')], [K - 90 - 34 + i * 8.5, 612 + kick('snare')]], .9, '#6d6d72'); rrect(g, K - 90 + 51, 598 + kick('snare'), 9, 12, 2); paint(g, CHROME(g, K + -39, 0, K - 30, 0), .8);
   tomDrum(g, K + 215, 560, 66, 84, 'floor', '#e0122d', '#7d0818', true);
   for (const [dx, k2] of [[-62, 'tom'], [92, 'tom2']]) { line(g, [[K + 30 + dx * .5, 530], [K + dx, 506]], 4, '#5d5d59'); tomDrum(g, K + dx, 458, 46, 48, k2, '#e0122d', '#7d0818', false); }
   /* kick drum, facing us */
@@ -323,8 +342,8 @@ function drawKit(g) {
   oval(g, kx, ky, kr, kr); paint(g, CHROME(g, kx - kr, ky - kr, kx + kr, ky + kr), 2); oval(g, kx, ky, kr - 6, kr - 6); paint(g, '#5a0a16', 1.4);
   for (let i = 0; i < 12; i++) { const a = i * TAU / 12; g.save(); g.translate(kx + Math.cos(a) * (kr - 3), ky + Math.sin(a) * (kr - 3)); g.rotate(a); rrect(g, -4, -2.4, 8, 4.8, 1.5); paint(g, CHROME(g, -4, 0, 4, 0), .7); g.restore(); }
   oval(g, kx, ky, kr - 14, kr - 14); paint(g, rg(g, kx - 20, ky - 24, 4, kr, [[0, '#4d4d53'], [1, '#17171a']]), 1.4); oval(g, kx, ky + 8, 24, 14); g.lineWidth = 0; g.fillStyle = 'rgba(0,0,0,.35)'; g.fill();
-  g.fillStyle = '#f4f2ec'; g.font = '900 21px Archivo'; g.textAlign = 'center'; g.fillText('GRASS', kx, ky - 4); g.fillStyle = RED; g.fillText('FILES', kx, ky + 19); g.textAlign = 'left';
-  rrect(g, kx - 12, ky + kr - 14, 24, 10, 2); paint(g, CHROME(g, kx - 12, 0, kx + 12, 0), 1);
+  g.fillStyle = '#f4f2ec'; g.font = '400 30px Anton'; g.letterSpacing = '3px'; g.textAlign = 'center'; g.fillText('GRASS', kx, ky - 2); g.fillStyle = RED; g.fillText('FILES', kx, ky + 28); g.letterSpacing = '0px'; g.textAlign = 'left';
+  oval(g, kx + 40, ky + 44, 13, 13); paint(g, '#050506', 1.6); oval(g, kx + 40, ky + 44, 13, 13); paint(g, null, 2.4, '#c8c8c4'); g.save(); oval(g, kx, ky, kr, kr); g.clip(); g.fillStyle = lg(g, kx - kr, ky - kr, kx + kr * .2, ky + kr * .2, [[0, 'rgba(255,255,255,.32)'], [1, 'rgba(255,255,255,0)']]); g.fillRect(kx - kr, ky - kr, kr * 2, kr * 2); g.restore(); rrect(g, kx - 12, ky + kr - 14, 24, 10, 2); paint(g, CHROME(g, kx - 12, 0, kx + 12, 0), 1);
   rrect(g, kx - 18, 681, 36, 8, 2); paint(g, '#26262a', 1); line(g, [[kx, 681], [kx + 12, ky + 30]], 3, '#5d5d59');
   for (const k in hit) hit[k] = Math.max(0, hit[k] - .08);
 }
@@ -362,7 +381,7 @@ function layout() {
 }
 function placeAll() {
   const w = L.meH * 2 / 3; place($('me'), meX - w / 2, L.meB - L.meH, w, L.meH);
-  const wd = $('word'); const [wx, wy] = P(L.word.x, L.word.y); Object.assign(wd.style, phone ? { left: '16px', top: '16px', fontSize: '2.1rem' } : { left: wx + 'px', top: wy + 'px', fontSize: L.word.h * .56 * cam.s + 'px' });
+  const wd = $('word'); const [wx, wy] = P(L.word.x, L.word.y); Object.assign(wd.style, phone ? { left: '16px', top: '16px', fontSize: '3.2rem' } : { left: wx + 'px', top: wy + 'px', fontSize: L.word.h * .74 * cam.s + 'px' });
   place($('boomBtn'), L.box.x, L.box.y - 70, L.box.w, L.box.h + 70); place($('ampBtn'), L.amp.x, L.amp.y - 20, L.amp.w, L.amp.h + 20); place($('guitarBtn'), L.guitar - 70, 255, 140, 440); $('guitarBtn').hidden = guitarOut; place($('danceBtn'), L.dance.x - 10, 650, 230, 70); place($('drumBtn'), L.drum - 270, 300, 620, 400);
   if (!phone) { const { x0, x1, y } = L.shelf, [rx, ry] = P(x0 + 10, y), rw = (x1 - x0 - 20) * cam.s; Object.assign($('rack').style, { left: rx + 'px', width: rw + 'px', top: ry - rw * .186 * 1.0 * 1.58 / 1.58 + 'px' }); $('rack').style.top = ''; $('rack').style.bottom = ''; const h = rw * .186 / 1.58 * 1; $('rack').style.top = ry - h - 2 + 'px'; }
   else { const r = $('rack').style; r.left = r.top = r.width = ''; }
