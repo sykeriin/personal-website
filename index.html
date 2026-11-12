@@ -124,7 +124,17 @@ pre.art{flex:none;margin:0;padding:.5rem .55rem;border-radius:6px;background:var
   .card.work .body>.shot{order:5}
   .card.cols .body{display:flex;columns:auto}
   pre.art{font-size:.27rem;line-height:.27rem}
-  .mp{gap:.6rem}
+  .card.lis{max-height:44vh}
+  .mp{display:grid;grid-template-columns:auto 1fr;column-gap:.8rem;row-gap:.5rem;align-items:center}
+  .mi{display:contents}
+  .mp>pre.art{grid-column:1;grid-row:1 / span 2;font-size:.15rem;line-height:.15rem;padding:.35rem}
+  .mi b{grid-column:2;grid-row:1;align-self:end;font-size:1rem}
+  .mi span{grid-column:2;grid-row:2;align-self:start}
+  .eq{display:none}
+  .bar{grid-column:1 / -1;height:8px;margin-top:.2rem}
+  .tm{grid-column:1 / -1}
+  .ctl{grid-column:1 / -1;margin-top:.1rem}
+  .ctl button{flex:1;min-height:2.6rem;font-size:.9rem}
   .shot pre{font-size:.5rem}
 }
 @media (prefers-reduced-motion:reduce){#disc,#arm{transition:none}.eq.on i{animation:none;transform:scaleY(.5)}}
