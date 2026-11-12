@@ -18,18 +18,20 @@ a{color:inherit}
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 :focus-visible{outline:3px solid var(--red);outline-offset:3px}
 .bar{position:absolute;top:0;left:0;right:0;z-index:40;display:flex;justify-content:space-between;align-items:baseline;gap:1.5rem;padding:1.1rem clamp(1rem,2.4vw,2rem);pointer-events:none}
-.bar a{pointer-events:auto;font-weight:600;font-size:.95rem;text-decoration:none;border-bottom:2px solid currentColor}
+.bar a{pointer-events:auto;font-weight:700;font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;padding-bottom:.25rem;border-bottom:1px solid currentColor}
 .bar a:hover{color:var(--red)}
-.intro{position:absolute;z-index:40;left:clamp(1rem,2.4vw,2rem);top:3.3rem;font-size:1rem;line-height:1.4;font-weight:500;max-width:24rem}
+.intro{position:absolute;z-index:40;left:clamp(1rem,2.4vw,2rem);top:3.6rem;font-size:1.02rem;line-height:1.5;font-weight:450;color:#3b3b38;max-width:21rem;text-wrap:balance}
+.intro .kick{display:block;margin-bottom:.5rem;font-size:.7rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--red)}
 
 /* the room */
 .stage{position:relative;height:100svh;min-height:560px;overflow:hidden}
 .stage::after{content:'';position:absolute;inset:0;z-index:5;pointer-events:none;background:radial-gradient(120% 90% at 50% 45%,transparent 55%,rgba(11,11,12,.13) 100%)}
 .stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
 #fx{pointer-events:none;z-index:6}
-.word{position:absolute;z-index:3;font-weight:900;font-stretch:112%;text-transform:uppercase;letter-spacing:-.06em;line-height:.82;color:var(--red);pointer-events:none}
+.word{position:absolute;z-index:3;font-weight:900;font-stretch:100%;text-transform:uppercase;letter-spacing:-.045em;line-height:.86;color:var(--red);pointer-events:none;font-kerning:normal}
+.word i{font-style:normal;color:var(--ink)}
 .me{position:absolute;z-index:4;transform-origin:50% 100%}
-.me img{display:none;width:100%;height:100%;image-rendering:pixelated;pointer-events:none;filter:drop-shadow(0 6px 6px rgba(11,11,12,.28)) contrast(1.04) saturate(.92)}
+.me img{display:block;width:100%;height:100%;image-rendering:pixelated;pointer-events:none;filter:drop-shadow(0 6px 6px rgba(11,11,12,.28)) contrast(1.04) saturate(.92)}
 .stage::before{content:'';position:absolute;inset:0;z-index:5;pointer-events:none;opacity:.35;mix-blend-mode:multiply;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .5 0 0 0 0 .5 0 0 0 .45 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
 .me button{position:absolute;inset:8% 24% 0}
 .me::after{content:'';position:absolute;left:12%;right:12%;bottom:-1%;height:5%;background:rgba(11,11,12,.2);border-radius:50%;z-index:-1}
@@ -39,7 +41,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 @keyframes hop{40%{transform:translateY(-6%)}75%{transform:translateY(0) scaleY(.96)}}
 @keyframes strum{50%{transform:translateY(1.5%) rotate(-1deg)}}
 @keyframes dance{25%{transform:translateY(-4%) rotate(-3deg)}75%{transform:translateY(-4%) rotate(3deg)}}
-.bubble{position:absolute;z-index:30;width:max-content;max-width:16rem;background:#fff;color:var(--ink);border-radius:12px;padding:.6rem .85rem;font-weight:600;font-size:.95rem;line-height:1.35;box-shadow:0 1px 0 rgba(11,11,12,.08),0 8px 24px rgba(11,11,12,.16);pointer-events:none}
+.bubble{position:absolute;z-index:30;width:max-content;max-width:16rem;background:#fff;color:var(--ink);border-radius:12px;padding:.65rem .9rem;font-family:var(--px);font-weight:500;font-size:1.02rem;line-height:1.3;letter-spacing:.01em;box-shadow:0 1px 0 rgba(11,11,12,.08),0 8px 24px rgba(11,11,12,.16);pointer-events:none}
 .bubble::after{content:"";position:absolute;left:22px;bottom:-6px;width:12px;height:12px;background:#fff;transform:rotate(45deg);border-radius:0 0 3px 0}
 .bubble.pop{animation:pop .25s cubic-bezier(.3,1.4,.5,1)}
 @keyframes pop{from{transform:scale(.6);opacity:0}}
@@ -51,7 +53,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .tape{position:relative;flex:0 0 18.6%;min-width:0;aspect-ratio:1.58;background:var(--ink);border-radius:7%/11%;color:var(--ink);display:block;transform:rotate(var(--r,0deg));transition:transform .25s cubic-bezier(.3,1.3,.5,1);text-align:left}
 .tape .lbl{position:absolute;left:7%;right:7%;top:9%;height:44%;background:var(--paper);border-radius:3px;padding:0 6% 4%;overflow:hidden;display:flex;align-items:flex-end}
 .tape .lbl::before{content:"";position:absolute;left:0;right:0;top:0;height:26%;background:var(--red)}
-.tape .lbl b{position:relative;display:block;font-weight:800;font-stretch:80%;font-size:var(--tf,.72rem);line-height:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tape .lbl b{position:relative;display:block;font-weight:800;font-stretch:75%;text-transform:uppercase;letter-spacing:.02em;font-size:var(--tf,.72rem);line-height:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tape .win{position:absolute;left:24%;right:24%;bottom:14%;height:24%;background:#3a3a3f;border-radius:99px;display:flex;justify-content:space-between;align-items:center;padding:0 8%}
 .tape .win i{width:26%;aspect-ratio:1;border-radius:50%;background:var(--paper);border:2px dotted var(--ink)}
 .tape.soon .lbl{background:#d8d8d3}
@@ -70,28 +72,28 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .jc{padding:clamp(1.4rem,3vw,2.4rem)}
 .jc .reels{display:flex;gap:1.2rem;align-items:center;background:var(--ink);border-radius:12px;padding:.8rem 1.2rem;width:max-content;margin-bottom:1.8rem}
 .jc .reels svg{width:2.8rem;height:2.8rem;animation:spin 2.4s linear infinite}
-.jc .reels span{color:var(--paper);font-weight:600;font-size:.9rem}
+.jc .reels span{color:var(--paper);font-weight:800;font-size:.7rem;letter-spacing:.18em;text-transform:uppercase}
 @keyframes spin{to{transform:rotate(360deg)}}
-.jc h2{font-weight:900;font-stretch:88%;font-size:clamp(2rem,3.6vw,3.2rem);line-height:.98;letter-spacing:-.035em}
-.jc .meta{margin:.9rem 0 1.6rem;font-weight:600;color:var(--red)}
+.jc h2{font-weight:900;font-stretch:90%;font-size:clamp(2rem,3.6vw,3.2rem);line-height:1;letter-spacing:-.03em;text-wrap:balance}
+.jc .meta{margin:1rem 0 1.8rem;font-weight:800;font-size:.74rem;letter-spacing:.16em;text-transform:uppercase;color:var(--red)}
 .jc .body p{font-size:1.1rem;line-height:1.6;max-width:34rem;margin-bottom:1em}
 .jc .body p:first-child{font-weight:700;font-size:1.25rem;line-height:1.4}
 .jc .ctl{display:flex;gap:.7rem;flex-wrap:wrap;margin-top:2rem}
-.jc .ctl button,.jc .ctl a{background:var(--ink);color:var(--paper);padding:.7rem 1.2rem;font-weight:700;text-decoration:none;transition:background .2s}
+.jc .ctl button,.jc .ctl a{background:var(--ink);color:var(--paper);padding:.75rem 1.3rem;font-weight:800;font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;transition:background .2s}
 .jc .ctl button:hover,.jc .ctl a:hover{background:var(--red)}
-.foot{position:absolute;z-index:40;right:clamp(1rem,2.4vw,2rem);bottom:1rem;font-weight:600;font-size:.9rem;color:#5b5b57}
+.foot{position:absolute;z-index:40;right:clamp(1rem,2.4vw,2rem);bottom:1rem;font-weight:700;font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:#5b5b57}
 
 @media (max-width:760px){
-  .chips{display:flex;gap:.6rem;padding:1rem 1rem 0}.chips button{flex:1;background:var(--ink);color:var(--paper);padding:.8rem 0;font-weight:700;font-size:1rem}.chips button:active{background:var(--red)}
+  .chips{display:flex;gap:.6rem;padding:1rem 1rem 0}.chips button{flex:1;background:var(--ink);color:var(--paper);padding:.85rem 0;font-weight:800;font-size:.74rem;letter-spacing:.14em;text-transform:uppercase}.chips button:active{background:var(--red)}
   .stage{height:auto;min-height:0}
-  .intro{position:static;padding:4rem 1rem 0;font-size:1rem;max-width:none}
+  .intro{position:static;padding:3.6rem 1rem 0;font-size:1rem;max-width:none}
   .rack{position:static;display:grid;justify-content:stretch;grid-template-columns:1fr 1fr;gap:1.6rem 1rem;padding:1rem 1rem 3rem}
   .tape{--tf:.95rem;width:100%}
   .tape .cap{display:block;position:absolute;top:104%;left:0;right:0;font-weight:700;font-size:.85rem;line-height:1.2}
   .rack .tape{margin-bottom:2.2rem}
-  .tapes-h{display:block;padding:1.4rem 1rem 0;font-weight:900;font-stretch:88%;font-size:1.8rem;letter-spacing:-.03em}
+  .tapes-h{display:block;padding:1.4rem 1rem 0;font-weight:900;font-stretch:90%;font-size:1.8rem;letter-spacing:-.03em}
   .deck{width:100%;grid-template-columns:2rem 1fr}
-  .bubble{font-size:.84rem;max-width:11rem}
+  .bubble{font-size:.9rem;max-width:11rem}
   .foot{position:static;display:block;padding:0 1rem 2rem}
 }
 @media (min-width:761px){.chips{display:none}.tapes-h{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}.tape .cap{display:none}}
@@ -100,11 +102,11 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 </head>
 <body>
 <nav class="bar"><a href="/">← Back to the record</a><a href="/blog.html">Quiet version</a></nav>
-<p class="intro">Notes on builds, security, shoots and poems. Put a tape in the boombox, or hit the drums.</p>
+<p class="intro"><span class="kick">The band room</span>Notes on builds, security, shoots and poems. Put a tape in the boombox, or hit the drums.</p>
 
 <section class="stage" id="stage" aria-label="Band room">
   <canvas id="back" aria-hidden="true"></canvas>
-  <div class="word" id="word">Grass<br>Files</div>
+  <div class="word" id="word">Grass<br><i>Files</i></div>
   <div class="me" id="me"><img id="sprite" src="/char/durva-idle.png" alt="Durva, drawn as a pixel character"><button id="poke" aria-label="Poke Durva"></button></div>
   <canvas id="fx" aria-hidden="true"></canvas>
   <button class="spot" id="ampBtn" aria-label="The amp: turn it up"></button>
@@ -142,7 +144,7 @@ const POSTS = [
 ];
 const HELLO = 'Hi. Put a tape in the boombox, grab the guitar, hit the drums, or dance.';
 const POKES = [['wave', 'Hey.'], ['point', 'The tapes are on the shelf. Up there.'], ['walk', 'I also shoot, direct and write poems. It’s a lot.'], ['wave', 'Poke me again. I dare you.']];
-
+['idle','idle2','walk1','walk2','wave1','wave2','point','headphones','guard','guitar1','guitar2','dL','dR','dK','dance1','dance2','dance3','sit'].forEach(p => { const im = new Image(); im.src = SPR(p); });
 const live = POSTS.filter(p => !p.soon);
 $('foot').textContent = `${live.length} tape recorded, ${POSTS.length - live.length} still blank.`;
 
@@ -183,7 +185,6 @@ function drawGuitar(g, gx) {
     g.beginPath(); g.moveTo(gx - 30, 508); g.bezierCurveTo(gx - 48, 508, gx - 54, 548, gx - 42, 572); g.bezierCurveTo(gx - 32, 592, gx - 64, 604, gx - 64, 638); g.bezierCurveTo(gx - 64, 682, gx + 64, 682, gx + 64, 638); g.bezierCurveTo(gx + 64, 604, gx + 32, 592, gx + 42, 572); g.bezierCurveTo(gx + 54, 548, gx + 48, 508, gx + 30, 508); g.closePath(); g.lineWidth = 1.2; g.strokeStyle = 'rgba(255,200,205,.5)'; g.stroke();
     g.beginPath(); g.moveTo(gx - 6, 590); g.bezierCurveTo(gx - 40, 596, gx - 52, 640, gx - 24, 664); g.bezierCurveTo(gx + 6, 672, gx + 30, 640, gx + 16, 606); g.closePath(); paint(g, '#f4f2ec', 1.2);
     rrect(g, gx - 22, 556, 44, 9, 2); paint(g, '#151518', 1); rrect(g, gx - 22, 580, 44, 9, 2); paint(g, '#151518', 1); rrect(g, gx - 22, 650, 44, 6, 2); paint(g, CHROME(g, gx - 22, 0, gx + 22, 0), 1); for (const [kx, ky] of [[gx + 26, 628], [gx + 36, 644]]) { oval(g, kx, ky, 6, 6); paint(g, '#151518', 1); }
-    /* strings: nut to bridge, wound ones thicker, with a dark shadow so they read on the red */
     rrect(g, gx - 8, 298, 16, 4, 1); g.fillStyle = '#efeadb'; g.fill();
     for (let i = 0; i < 6; i++) { const xa = gx - 5.5 + i * 2.2, xb = gx - 12 + i * 4.8, w = 2 - i * .22; line(g, [[xa + 1, 302], [xb + 1, 654]], w + .6, 'rgba(11,11,12,.45)'); line(g, [[xa, 302], [xb, 654]], w, i < 3 ? '#d9b26a' : '#f4f4ef'); }
     rrect(g, gx - 14, 651, 28, 4, 1); paint(g, '#f4f4ef', .8);
@@ -236,6 +237,11 @@ function drawBack() {
   /* guitar stand, and the guitar on it unless Durva is playing it */
   const gx = L.guitar; line(g, [[gx - 44, 690], [gx, 600], [gx + 44, 690]], 3, '#4b4b48'); line(g, [[gx - 20, 650], [gx + 20, 650]], 2.6, '#4b4b48');
   if (!guitarOut) drawGuitar(g, gx);
+  /* tour poster, string lights, plant, records */
+  { const px = 1330, py = 110, pw = 118, ph = 168; g.fillStyle = 'rgba(11,11,12,.14)'; g.fillRect(px + 5, py + 6, pw, ph); g.fillStyle = INK; g.fillRect(px, py, pw, ph); g.fillStyle = RED; g.beginPath(); g.arc(px + pw / 2, py + 62, 38, 0, TAU); g.fill(); g.fillStyle = INK; g.beginPath(); g.arc(px + pw / 2 + 12, py + 62, 38, 0, TAU); g.fill(); g.fillStyle = PAPER; g.font = '900 15px Archivo'; g.letterSpacing = '3px'; g.textAlign = 'center'; g.fillText('GRASS FILES', px + pw / 2, py + 130); g.font = '700 8px Archivo'; g.letterSpacing = '2px'; g.fillStyle = '#b9b9b5'; g.fillText('LIVE IN THE ROOM', px + pw / 2, py + 148); g.textAlign = 'left'; g.letterSpacing = '0px'; g.strokeStyle = 'rgba(255,255,255,.35)'; g.lineWidth = 1; g.strokeRect(px + 6, py + 6, pw - 12, ph - 12); for (const tx of [px + 8, px + pw - 8]) { g.fillStyle = 'rgba(244,242,236,.8)'; g.fillRect(tx - 7, py - 3, 14, 7); } }
+  { const yy = -10; g.beginPath(); g.moveTo(x0, 34); for (let k = 0; k <= 12; k++) { const xx = x0 + (x1 - x0) * k / 12; g.lineTo(xx, 34 + Math.sin(k * Math.PI) * 0 + (k % 2 ? 22 : 8)); } g.strokeStyle = 'rgba(11,11,12,.55)'; g.lineWidth = 1.4; g.stroke(); for (let k = 1; k < 12; k += 1) { const xx = x0 + (x1 - x0) * k / 12, yb = 34 + (k % 2 ? 22 : 8) + 6; g.fillStyle = rg(g, xx, yb, 0, 26, [[0, 'rgba(255,236,170,.55)'], [1, 'rgba(255,236,170,0)']]); g.fillRect(xx - 26, yb - 26, 52, 52); oval(g, xx, yb, 4, 5.5); paint(g, '#fff4c8', .8); } }
+  { const pxx = 972, base = FL - 2; g.fillStyle = lg(g, pxx - 30, 0, pxx + 30, 0, [[0, '#8a8a85'], [.5, '#b9b9b5'], [1, '#6f6f6a']]); g.beginPath(); g.moveTo(pxx - 26, base - 52); g.lineTo(pxx + 26, base - 52); g.lineTo(pxx + 20, base); g.lineTo(pxx - 20, base); g.closePath(); paint(g, g.fillStyle, 1.8); for (let k = 0; k < 9; k++) { const a = -2.6 + k * .42, len = 60 + (k % 3) * 24; g.beginPath(); g.moveTo(pxx, base - 52); g.quadraticCurveTo(pxx + Math.cos(a) * len * .5, base - 52 - Math.abs(Math.sin(a)) * len * .9, pxx + Math.cos(a) * len, base - 52 - Math.abs(Math.sin(a)) * len * .7 + 14); g.lineTo(pxx + Math.cos(a) * len * .55 + 6, base - 52 - Math.abs(Math.sin(a)) * len * .3); g.closePath(); paint(g, k % 2 ? '#2b2b30' : '#4b4b50', 1.2); } }
+  { const rxx = 640; for (let k = 0; k < 5; k++) { rrect(g, rxx - 4 + (k % 2) * 3, L.floor - 8 - k * 9, 70, 8, 1); paint(g, ['#0b0b0c', RED, '#26262a', '#f4f2ec', '#0b0b0c'][k], 1.2); } oval(g, rxx + 33, L.floor - 49, 31, 5); paint(g, '#101012', 1.2); oval(g, rxx + 33, L.floor - 49, 9, 1.6); paint(g, RED, .6); }
   /* guitar lead */
   g.beginPath(); g.moveTo(gx - 64, 640); g.bezierCurveTo(gx - 120, 720, L.amp.x + L.amp.w + 90, 730, L.amp.x + L.amp.w - 6, 668); g.lineWidth = 2.4; g.strokeStyle = '#26262a'; g.stroke();
 }
@@ -260,7 +266,7 @@ function drawAmp(g, t) {
   g.save(); rrect(g, gx, gy, gw, gh, 3); g.clip(); g.strokeStyle = 'rgba(11,11,12,.3)'; g.lineWidth = .8; for (let k = 0; k < gw + gh; k += 5) { line(g, [[gx + k, gy], [gx + k - gh, gy + gh]], .8, 'rgba(11,11,12,.28)'); line(g, [[gx + k - gh, gy], [gx + k, gy + gh]], .8, 'rgba(11,11,12,.28)'); }
   const cx = gx + gw / 2, cy = gy + gh / 2; g.strokeStyle = `rgba(11,11,12,${.18 + pulse * .12})`; g.lineWidth = 1.4; for (const r of [20, 31, 41]) { oval(g, cx, cy, r + pulse * 2.4, r + pulse * 2.4); g.stroke(); } g.restore();
   rrect(g, gx + 2, gy + 2, gw - 4, gh - 4, 2); paint(g, null, 2.6, RED);
-  rrect(g, a.x + a.w - 62, a.y + a.h - 12, 50, 8, 2); paint(g, CHROME(g, a.x, 0, a.x + a.w, 0), .8); g.fillStyle = '#151518'; g.font = '900 6.5px Archivo'; g.fillText('GRASS 30', a.x + a.w - 58, a.y + a.h - 6);
+  rrect(g, a.x + a.w - 62, a.y + a.h - 12, 50, 8, 2); paint(g, CHROME(g, a.x, 0, a.x + a.w, 0), .8); g.fillStyle = '#151518'; g.font = '800 6.5px Archivo'; g.letterSpacing = '1.2px'; g.fillText('GRASS 30', a.x + a.w - 58, a.y + a.h - 6); g.letterSpacing = '0px';
   for (const fx2 of [a.x + 12, a.x + a.w - 24]) { rrect(g, fx2, a.y + a.h, 12, 6, 2); paint(g, '#101012', 1); }
 }
 
@@ -279,7 +285,7 @@ function drawBoombox(g, t) {
   if (!inserted) { rrect(g, px + 4, b.y + 32, pw - 8, 30, 2); g.fillStyle = '#0b0b0c'; g.fill(); }
   for (let k = 0; k < 4; k++) { rrect(g, px + k * 17, b.y + 82, 14, 12, 2); paint(g, CHROME(g, px + k * 17, 0, px + k * 17 + 14, 0), 1); } g.fillStyle = RED; g.beginPath(); g.moveTo(px + 36, b.y + 85); g.lineTo(px + 44, b.y + 88); g.lineTo(px + 36, b.y + 91); g.fill();
   for (let k = 0; k < 4; k++) { const on = play && Math.sin(t * 9 + k * 1.7) > k * .35 - .7; oval(g, px + 8 + k * 16, b.y + 112, 4.2, 4.2); paint(g, on ? '#ff3b55' : '#4b4b50', .8); if (on) { g.fillStyle = 'rgba(224,18,45,.25)'; oval(g, px + 8 + k * 16, b.y + 112, 9, 9); g.fill(); } }
-  g.fillStyle = '#d9d9d4'; g.font = '900 12px Archivo'; g.textAlign = 'center'; g.fillText('GRASS FILES', b.x + b.w / 2, b.y + b.h - 9); g.textAlign = 'left';
+  g.fillStyle = '#d9d9d4'; g.font = '800 11px Archivo'; g.letterSpacing = '3px'; g.textAlign = 'center'; g.fillText('GRASS FILES', b.x + b.w / 2, b.y + b.h - 9); g.textAlign = 'left'; g.letterSpacing = '0px';
 }
 
 function cymbal(g, x, y, r, k, tilt = 0) {
@@ -323,80 +329,12 @@ function drawKit(g) {
   for (const k in hit) hit[k] = Math.max(0, hit[k] - .08);
 }
 
-/* ---------- Durva, drawn: a small skeleton with two-bone arms and legs, so he can really hold the guitar and hit the kit ---------- */
-const SKIN = '#c99f7b', TEE = '#f3f0e9', JKT = '#1c1c20', PANTS = '#1a1a1e';
-const strikes = { l: { p: null, t: -9 }, r: { p: null, t: -9 }, k: { t: -9 } }; let hopT = -9, walking = false;
-const pieceAt = p => { const K = L.drum; return ({ snare: [K - 90, 566], hat: [K - 215, 494], tom: [K - 62, 452], crash: [K - 110, 346], floor: [K + 215, 556], tom2: [K + 92, 452], ride: [K + 280, 412] })[p]; };
-function ik(ax, ay, tx, ty, l1, l2, side, wx, wy) {
-  let dx = tx - ax, dy = ty - ay, d = Math.hypot(dx, dy) || 1; const mx = l1 + l2 - .5; if (d > mx) { dx *= mx / d; dy *= mx / d; d = mx; }
-  const a = (l1 * l1 - l2 * l2 + d * d) / (2 * d), h = Math.sqrt(Math.max(0, l1 * l1 - a * a)), bx = ax + dx * a / d, by = ay + dy * a / d, px = -dy / d * h, py = dx / d * h;
-  const e1 = [bx + px, by + py], e2 = [bx - px, by - py], sc = e => side * e[0] * wx + e[1] * wy;
-  return { e: sc(e1) < sc(e2) ? e2 : e1, h: [ax + dx, ay + dy] };
-}
-function limb(g, pts, w, col) { g.lineCap = g.lineJoin = 'round'; g.beginPath(); pts.forEach((p, i) => i ? g.lineTo(p[0], p[1]) : g.moveTo(p[0], p[1])); g.strokeStyle = LINE; g.lineWidth = w + 3.4; g.stroke(); g.strokeStyle = col; g.lineWidth = w; g.stroke(); }
-function figurePose(t) {
-  const s = state, now = performance.now(), q = { hip: -270, lh: [-57, -242], rh: [57, -242], lf: [-27, 0], rf: [27, 0], lk: null, rk: null, tilt: 0, ph: false, lean: 0, lift: 0, fist: false };
-  const hop = (now - hopT) / 420; if (hop >= 0 && hop < 1) q.lift = -Math.sin(hop * Math.PI) * 34;
-  if (s === 'guitar') { const pl = playing && !reduce ? Math.sin(t * 17) : 0; q.lh = [-166, -362]; q.rh = [40, -279 + pl * 13]; q.lf = [-40, 0]; q.rf = [40, 0]; q.tilt = reduce ? 0 : Math.sin(t * 5) * .035; }
-  else if (s === 'drums') {
-    q.hip = -80; q.lf = [-58, -2]; q.rf = [54, -2 - (now - strikes.k.t < 140 ? 16 : 0)]; q.lk = [-58, -128]; q.rk = [58, -128];
-    for (const side of ['l', 'r']) { const st = strikes[side], rest = side === 'l' ? [-92, -170] : [90, -176], age = now - st.t; let tg = rest; if (st.p) { const pc = pieceAt(st.p), tx = pc[0] - L.me.drum, ty = pc[1] - L.meB, u = Math.min(1, age / 260); tg = [tx + (rest[0] - tx) * Math.max(0, u - .35) * .8, ty + (rest[1] - ty) * Math.max(0, u - .2) * .55 - (u > .2 ? 0 : 0)]; } q[side + 'h'] = tg; }
-    q.tilt = reduce ? 0 : Math.sin(t * 7) * .03;
-  } else if (s === 'dance') {
-    const k = reduce ? 0 : t * 5.2, sw = Math.sin(k), cs = Math.cos(k);
-    q.hip = -270 + Math.abs(sw) * 14; q.lh = [-96 - cs * 24, -500 + sw * 70]; q.rh = [96 + cs * 24, -500 - sw * 70]; q.lf = [-34 + sw * 10, -Math.max(0, sw) * 22]; q.rf = [34 + sw * 10, -Math.max(0, -sw) * 22]; q.tilt = sw * .06; q.lean = sw * 14;
-  } else if (s === 'reading') { q.ph = true; q.rh = [40, -468]; q.tilt = reduce || !playing ? 0 : Math.sin(t * 3.4) * .05; q.hip = -270 + (reduce || !playing ? 0 : Math.abs(Math.sin(t * 3.4)) * 4); }
-  else {
-    if (curPose === 'wave') q.rh = [104 + (reduce ? 0 : Math.sin(t * 9) * 14), -548];
-    else if (curPose === 'point') q.lh = [-152, -496];
-    else if (curPose === 'headphones') { q.ph = true; q.rh = [40, -468]; }
-    else if (curPose === 'guard') { q.lh = [-34, -444]; q.rh = [34, -444]; q.fist = true; }
-  }
-  if (walking && !reduce) { const w = Math.sin(t * 13); q.lf = [-27, -Math.max(0, w) * 24]; q.rf = [27, -Math.max(0, -w) * 24]; q.lh = [-60 + w * 12, -246]; q.rh = [60 - w * 12, -246]; q.hip += -Math.abs(w) * 6; }
-  return q;
-}
-function drawFigure(g, t, part) {
-  const q = figurePose(t), X = meX + q.lean, Y = L.meB + q.lift, at = ([x, y]) => [X + x - q.lean * 0 * 1, Y + y], hipY = q.hip, shY = hipY - 152;
-  const sh = { l: [X - 52, Y + shY], r: [X + 52, Y + shY] }, hp = { l: [X - 21, Y + hipY], r: [X + 21, Y + hipY] };
-  if (part !== 'arms') {
-    soft(g, meX, L.meB + 6, 92, 13, .3);
-    /* legs */
-    for (const sd of ['l', 'r']) { const side = sd === 'l' ? -1 : 1, ft = at(q[sd + 'f']), kn = q[sd + 'k'] ? at(q[sd + 'k']) : (() => { const d = Math.hypot(ft[0] - hp[sd][0], ft[1] - 12 - hp[sd][1]); return ik(hp[sd][0], hp[sd][1], ft[0], ft[1] - 12, d * .505, d * .505, side, 1, 0).e; })();
-      limb(g, [hp[sd], kn, [ft[0], ft[1] - 12]], 40, PANTS); limb(g, [kn, [ft[0], ft[1] - 12]], 5, '#2d2d33');
-      g.save(); g.translate(ft[0] + side * 4, ft[1]); rrect(g, -25, -22, 50, 22, 11); paint(g, lg(g, 0, -22, 0, 0, [[0, '#ffffff'], [1, '#d6d3ca']]), 1.8); rrect(g, -25, -5, 50, 6, 3); paint(g, RED, 1.2); line(g, [[-8, -18], [8, -18]], 1.4, '#9a9a96'); g.restore(); }
-    /* torso: jacket, tee, belt */
-    g.beginPath(); g.moveTo(sh.l[0] - 8, sh.l[1] - 4); g.quadraticCurveTo(X, sh.l[1] - 14, sh.r[0] + 8, sh.r[1] - 4); g.lineTo(X + 44, Y + hipY + 8); g.quadraticCurveTo(X, Y + hipY + 18, X - 44, Y + hipY + 8); g.closePath(); paint(g, lg(g, X - 56, 0, X + 56, 0, [[0, '#35353b'], [.35, JKT], [1, '#101013']]), 2);
-    g.beginPath(); g.moveTo(X - 17, sh.l[1] - 6); g.lineTo(X + 17, sh.l[1] - 6); g.lineTo(X + 13, Y + hipY + 12); g.lineTo(X - 13, Y + hipY + 12); g.closePath(); paint(g, lg(g, 0, sh.l[1], 0, Y + hipY, [[0, '#ffffff'], [1, '#dcd8cc']]), 1.4);
-    line(g, [[X - 17, sh.l[1] - 6], [X, sh.l[1] + 30], [X + 17, sh.l[1] - 6]], 2, '#b7b3a8'); rrect(g, X - 44, Y + hipY - 4, 88, 12, 3); paint(g, '#0d0d0f', 1.4); rrect(g, X - 8, Y + hipY - 3, 16, 10, 2); paint(g, CHROME(g, X - 8, 0, X + 8, 0), .8);
-    /* neck and head */
-    g.save(); g.translate(X, Y + shY - 6); g.rotate(q.tilt);
-    rrect(g, -13, -28, 26, 30, 8); paint(g, lg(g, -13, 0, 13, 0, [[0, '#a98160'], [.5, SKIN], [1, '#a98160']]), 1.6);
-    g.translate(0, -62);
-    if (q.ph) { g.beginPath(); g.arc(0, -2, 38, Math.PI * 1.02, Math.PI * 1.98); g.lineWidth = 7; g.strokeStyle = '#17171a'; g.stroke(); }
-    oval(g, -31, 4, 6, 11); paint(g, SKIN, 1.4); oval(g, 31, 4, 6, 11); paint(g, SKIN, 1.4);
-    oval(g, 0, 0, 29, 36); paint(g, lg(g, -29, -10, 29, 20, [[0, '#dcb48f'], [.55, SKIN], [1, '#a37b59']]), 2);
-    g.beginPath(); g.moveTo(-26, 12); g.quadraticCurveTo(0, 44, 26, 12); g.quadraticCurveTo(0, 30, -26, 12); g.fillStyle = 'rgba(40,28,20,.32)'; g.fill();
-    g.beginPath(); g.moveTo(-31, -8); g.quadraticCurveTo(-34, -48, 0, -48); g.quadraticCurveTo(34, -48, 31, -8); g.quadraticCurveTo(26, -26, 12, -27); g.quadraticCurveTo(0, -20, -12, -27); g.quadraticCurveTo(-26, -26, -31, -8); g.closePath(); paint(g, '#15110f', 1.6);
-    for (const [hx, hy, hw, hh] of [[-22, -40, 6, 14], [-10, -48, 7, 16], [4, -50, 7, 17], [16, -46, 7, 15], [25, -37, 6, 12]]) { g.beginPath(); g.moveTo(hx - hw, hy + 6); g.lineTo(hx + 1, hy - hh); g.lineTo(hx + hw, hy + 6); g.closePath(); paint(g, '#15110f', 1.4); g.beginPath(); g.moveTo(hx - 2.5, hy - hh + 7); g.lineTo(hx + 1, hy - hh); g.lineTo(hx + 3.5, hy - hh + 7); g.closePath(); g.fillStyle = '#c9a940'; g.fill(); }
-    for (const sx of [-1, 1]) { line(g, [[sx * 7, -9], [sx * 19, -11]], 2.8, '#15110f'); oval(g, sx * 12.5, -2, 4.2, 2.8); g.fillStyle = '#15110f'; g.fill(); oval(g, sx * 13.5, -3, 1.1, 1); g.fillStyle = '#fff'; g.fill(); }
-    line(g, [[0, 1], [-2.4, 11], [2.2, 12]], 1.4, 'rgba(60,40,28,.6)'); line(g, [[-8, 22], [0, 24.5], [8, 22]], 2, '#6d3b2c');
-    if (q.ph) { for (const sx of [-1, 1]) { rrect(g, sx * 37 - 8, -10, 16, 30, 7); paint(g, lg(g, 0, -10, 0, 20, [[0, '#2b2b31'], [1, '#101013']]), 1.6); rrect(g, sx * 37 - 5, -4, 10, 18, 4); g.fillStyle = RED; g.fill(); } }
-    g.restore();
-  }
-  if (part !== 'body') {
-    for (const sd of ['l', 'r']) { const side = sd === 'l' ? -1 : 1, hd = at(q[sd + 'h']), r = ik(sh[sd][0] + side * 2, sh[sd][1] + 6, hd[0], hd[1], 95, 88, side, 1, 1.4), el = r.e, hh = r.h;
-      limb(g, [sh[sd], el, hh], 25, SKIN); const mid = [sh[sd][0] + (el[0] - sh[sd][0]) * .5, sh[sd][1] + (el[1] - sh[sd][1]) * .5]; limb(g, [sh[sd], mid], 31, TEE);
-      oval(g, hh[0], hh[1], q.fist ? 13 : 12, q.fist ? 13 : 11); paint(g, SKIN, 1.6); if (!q.fist) for (let k = -1; k <= 1; k++) line(g, [[hh[0] + k * 4, hh[1] + 3], [hh[0] + k * 4, hh[1] + 9]], 1, 'rgba(40,28,20,.5)'); }
-    if (state === 'drums') for (const sd of ['l', 'r']) { const st = strikes[sd], rest = sd === 'l' ? [-92, -170] : [90, -176], pc = st.p ? pieceAt(st.p) : null, age = performance.now() - st.t, u = Math.min(1, age / 260); const hx = meX + q[sd + 'h'][0], hy = L.meB + q[sd + 'h'][1]; line(g, [[hx, hy], [hx + (sd === 'l' ? 26 : -26), hy - 62 + (pc && u < .2 ? 30 : 0)]], 3.4, '#d9b27a'); line(g, [[hx, hy], [hx + (sd === 'l' ? 26 : -26), hy - 62 + (pc && u < .2 ? 30 : 0)]], 1.2, '#f4e4c4'); }
-  }
-}
-
 function drawFx(t) {
+  showFrame(t);
   const g = fg; g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, W, H); camTransform(g);
-  drawAmp(g, t); drawBoombox(g, t);
-  if (state === 'drums') { drawFigure(g, t, 'body'); drawKit(g); drawFigure(g, t, 'arms'); } else { drawKit(g); drawFigure(g, t, 'body'); if (state !== 'guitar') drawFigure(g, t, 'arms'); }
+  drawAmp(g, t); drawBoombox(g, t); drawKit(g);
   if (playing && !reduce) { g.fillStyle = INK; g.font = '800 26px Archivo'; for (let k = 0; k < 4; k++) { const a = ((t * .55 + k / 4) % 1), x = L.box.x + 70 + k * 80 + Math.sin(a * 6 + k) * 14, y = L.box.y - 30 - a * 150; g.globalAlpha = 1 - a; g.fillText(k % 2 ? '♫' : '♪', x, y); } g.globalAlpha = 1; }
-  if (state === 'guitar') { const bob = reduce ? 0 : Math.sin(t * 9) * .035; g.save(); g.translate(meX + 22, L.meB - L.meH * .55); g.rotate(-1.18 + bob); g.scale(.95, .95); g.translate(-L.guitar, -592); drawGuitar(g, L.guitar); g.restore(); drawFigure(g, t, 'arms'); }
+  if (state === 'guitar') { const bob = reduce ? 0 : Math.sin(t * 9) * .035; g.save(); g.translate(meX + 22, L.meB - L.meH * .47); g.rotate(-1.18 + bob); g.scale(.95, .95); g.translate(-L.guitar, -592); drawGuitar(g, L.guitar); g.restore(); }
   if (state === 'guitar' && !reduce) { const cx = L.me.guitar + 70, cy = 560; g.strokeStyle = RED; g.lineWidth = 3; g.lineCap = 'round'; for (let k = 0; k < 3; k++) { const a = ((t * 1.2 + k / 3) % 1); g.globalAlpha = 1 - a; g.beginPath(); g.arc(cx, cy, 30 + a * 90, -.7, .7); g.stroke(); } g.globalAlpha = 1; }
   if (state === 'dance' || discoOn) {
     const bx = L.me.dance, by = 190, sp = t * 1.4; line(g, [[bx, -20], [bx, by - 40]], 2, '#4b4b50'); oval(g, bx, by, 40, 40); paint(g, rg(g, bx - 12, by - 14, 3, 44, [[0, '#ffffff'], [.5, '#cfcfca'], [1, '#6d6d72']]), 1.8);
@@ -439,7 +377,20 @@ function moveCam(t2, ms) {
   const step = now => { const u = Math.min(1, (now - t0) / ms), e = u < .5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2; ['s', 'ox', 'oy'].forEach(k => cam[k] = from[k] + (t2[k] - from[k]) * e); drawBack(); placeAll(); if (u < 1) tween = requestAnimationFrame(step); }; tween = requestAnimationFrame(step);
 }
 const sprite = $('sprite'), me = $('me'), bubble = $('bubble'); let sayTimer = 0;
-const setPose = p => { curPose = p; startLoop(true); };
+let drumF = 'dL', shown = '', walking = false;
+const frameFor = t => { const k = reduce ? 0 : t;
+  if (walking) return Math.floor(k * 8) % 2 ? 'walk1' : 'walk2';
+  if (state === 'dance') return ['dance1', 'dance2', 'dance3', 'dance2'][Math.floor(k * 6) % 4];
+  if (state === 'guitar') return playing ? (Math.floor(k * 9) % 2 ? 'guitar1' : 'guitar2') : 'guitar1';
+  if (state === 'drums') return drumF;
+  if (state === 'reading') return 'headphones';
+  if (curPose === 'wave') return Math.floor(k * 4) % 2 ? 'wave1' : 'wave2';
+  if (curPose === 'walk') return 'walk1';
+  if (curPose === 'sit') return 'sit';
+  if (['point', 'headphones', 'guard'].includes(curPose)) return curPose;
+  return k % 4.2 < .14 ? 'idle2' : 'idle'; };
+const setPose = p => { curPose = p; showFrame(performance.now() / 1000); };
+const showFrame = t => { const f = frameFor(t); if (f !== shown) { shown = f; sprite.src = SPR(f); } };
 function say(text, pose, ms = 3200) { bubble.textContent = text; bubble.classList.remove('pop'); void bubble.offsetWidth; bubble.classList.add('pop'); bubble.style.opacity = 1; if (pose) setPose(pose); placeBubble(); clearTimeout(sayTimer); if (ms) sayTimer = setTimeout(() => { if (state === 'idle') { bubble.style.opacity = 0; setPose('idle'); } }, ms); }
 let walk = 0; const moveMe = x => { cancelAnimationFrame(walk); const x0 = meX, t0 = performance.now(); if (reduce) { meX = x; placeAll(); return; } walking = true; const step = now => { const u = Math.min(1, (now - t0) / 650), e = u < .5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2; meX = x0 + (x - x0) * e; placeAll(); if (u < 1) walk = requestAnimationFrame(step); else { walking = false; placeAll(); } }; walk = requestAnimationFrame(step); };
 
@@ -484,7 +435,7 @@ addEventListener('keydown', e => { if (e.key === 'Escape') closeDeck(); });
 
 /* ---------- poke, guitar, dance, boombox ---------- */
 let pk = 0;
-$('poke').addEventListener('click', () => { if (state !== 'idle') return; const [pose, line] = POKES[pk++ % POKES.length]; hopT = performance.now(); startLoop(true); say(line, pose, 2800); });
+$('poke').addEventListener('click', () => { if (state !== 'idle') return; const [pose, line] = POKES[pk++ % POKES.length]; me.classList.remove('hop'); void me.offsetWidth; me.classList.add('hop'); say(line, pose, 2800); });
 $('guitarBtn').addEventListener('click', async () => {
   if (state !== 'idle') return; state = 'guitar'; guitarOut = true; drawBack(); $('guitarBtn').hidden = true; moveMe(L.me.guitar + 90); say('Okay. Listen.', 'guitar', 0); startLoop();
   await sleep(reduce ? 0 : 700); me.classList.add('strum'); playing = true; await sleep(reduce ? 0 : 5200); me.classList.remove('strum');
@@ -493,12 +444,12 @@ $('guitarBtn').addEventListener('click', async () => {
 const PIECES = ['snare', 'hat', 'kick', 'tom', 'crash', 'floor', 'tom2', 'ride'];
 $('drumBtn').addEventListener('click', async () => {
   if (state !== 'idle') return; state = 'drums'; moveMe(L.me.drum); say('Okay. One fill.', 'sit', 0); startLoop(); await sleep(reduce ? 0 : 600);
-  const LP = ['snare', 'hat', 'tom', 'crash'], RP = ['tom2', 'floor', 'ride', 'snare']; for (let n = 0; n < (reduce ? 0 : 20); n++) { const side = n % 2 ? 'r' : 'l', pc = (side === 'l' ? LP : RP)[(n >> 1) % 4]; strikes[side] = { p: pc, t: performance.now() }; hit[pc] = 1; if (n % 4 === 1) { hit.kick = 1; strikes.k.t = performance.now(); } await sleep(230); }
-  await sleep(reduce ? 0 : 500); state = 'idle'; moveMe(L.me.idle); pan(690); say('Right. The tapes.', 'point', 2400); startLoop(true);
+  for (let n = 0; n < (reduce ? 0 : 16); n++) { drumF = n % 4 === 3 ? 'dK' : n % 2 ? 'dR' : 'dL'; if (n % 2) { hit[PIECES[(n >> 1) % PIECES.length]] = 1; if (n % 4 === 1) hit.kick = 1; } await sleep(240); }
+  drumF = 'dL'; await sleep(reduce ? 0 : 500); state = 'idle'; moveMe(L.me.idle); pan(690); say('Right. The tapes.', 'point', 2400); startLoop(true);
 });
 $('danceBtn').addEventListener('click', async () => {
   if (state !== 'idle') return; state = 'dance'; moveMe(L.me.dance); say('Okay. One song.', 'wave', 0); playing = true; discoOn = true; startLoop(); await sleep(reduce ? 0 : 500); me.classList.add('dance');
-  await sleep(reduce ? 0 : 6000);
+  const poses = ['wave', 'walk', 'point', 'headphones', 'wave', 'guard']; for (let n = 0; n < (reduce ? 0 : 20); n++) { setPose(poses[n % poses.length]); await sleep(300); }
   me.classList.remove('dance'); playing = false; discoOn = false; state = 'idle'; moveMe(L.me.idle); pan(690); say('Okay, that’s enough.', 'idle', 2400); startLoop(true);
 });
 $('ampBtn').addEventListener('click', () => { if (state !== 'idle') return; playing = !playing; say(playing ? 'Turned up. Hum only, sorry.' : 'Turned it down.', 'point', 2400); startLoop(!playing); });
