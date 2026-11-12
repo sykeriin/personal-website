@@ -139,7 +139,7 @@ $('foot').textContent = `${live.length} tape recorded, ${POSTS.length - live.len
 /* ---------- the scene, in a 1600 x 900 room scaled to the screen ---------- */
 const back = $('back'), front = $('front'), bg = back.getContext('2d'), fg = front.getContext('2d');
 let W = 0, H = 0, s = 1, ox = 0, oy = 0, dpr = 1, phone = false;
-const L = { floor: 690, me: { x: 800, b: 702, h: 470 }, drum: { x: 1335, b: 652, h: 400 }, read: { x: 590, b: 702, h: 470 }, shelf: { x0: 50, x1: 610, y: 404 },
+const L = { floor: 690, me: { x: 800, b: 702, h: 470 }, drum: { x: 1335, b: 650, h: 440 }, read: { x: 590, b: 702, h: 470 }, shelf: { x0: 50, x1: 610, y: 404 },
   kick: { x: 1270, y: 598, r: 96 }, guitar: { x: 420 }, plant: { x: 236 } };
 let state = 'idle', guitarOut = false;
 
@@ -272,7 +272,7 @@ function placeBubble() { const m = spot(), b = $('bubble'), [a, t] = P(m.x + (st
 function layout() {
   phone = innerWidth <= 760; dpr = Math.min(2, devicePixelRatio || 1); W = innerWidth;
   if (phone) { s = W / 960; H = Math.round(860 * s); ox = -580 * s; oy = H - 820 * s; $('stage').style.height = H + 'px'; }
-  else { $('stage').style.height = ''; H = $('stage').clientHeight; s = Math.min(W / 1600, H / 860); ox = (W - 1600 * s) / 2; oy = H - 860 * s; }
+  else { $('stage').style.height = ''; H = $('stage').clientHeight; s = Math.min(W / 1700, H / 860); ox = (W - 1600 * s) / 2 + 12 * s - 0; oy = H - 860 * s; }
   for (const c of [back, front]) { c.width = W * dpr; c.height = H * dpr; }
   placeMe();
   const k = L.kick; place($('head'), k.x - k.r, k.y - k.r, k.r * 2, k.r * 2); $('h1').style.fontSize = 40 * s + 'px';
