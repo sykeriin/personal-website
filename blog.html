@@ -87,7 +87,7 @@ html{overflow-x:clip;max-width:100%}body{max-width:100%}/*noscrollx*/
 </head>
 <body>
 <div class="wrap">
-  <nav class="top mono"><a href="/">← durva</a><a href="/blog-band.html">band room version →</a><span id="count"></span></nav>
+  <nav class="top mono"><a href="/">← durva</a><a href="/blog-band.html">band room version →</a></nav>
 
   <section id="home">
     <header>
@@ -112,7 +112,6 @@ html{overflow-x:clip;max-width:100%}body{max-width:100%}/*noscrollx*/
     </header>
 
     <ul class="list" id="list"></ul>
-    <div class="foot mono"><span id="tally"></span><span>written slowly, on purpose</span></div>
   </section>
 
   <article id="post" aria-live="polite"></article>
@@ -255,12 +254,10 @@ const POSTS = [
   { slug: 'runway', title: 'Clean frames from three runway cameras', tag: 'Vision', soon: true, art: 7 }
 ];
 const live = POSTS.filter(p => !p.soon);
-$('count').textContent = `${live.length} note${live.length === 1 ? '' : 's'}`;
-$('tally').textContent = `${live.length} written · ${POSTS.length - live.length} brewing`;
 const dots = '<span class="dots"><i></i><i></i><i></i></span>';
 $('list').innerHTML = POSTS.map((p, i) => p.soon
   ? `<li><div class="row soon" data-i="${i}"><span class="mono">soon</span><span class="t">${esc(p.title)}</span><span class="tag">brewing${dots}</span></div></li>`
-  : `<li><a class="row" href="#/${p.slug}" data-i="${i}"><span class="mono">${esc(p.date)}</span><span class="t">${esc(p.title)}</span><span class="tag">${esc(p.tag)}</span></a></li>`).join('');
+  : `<li><a class="row" href="#/${p.slug}" data-i="${i}"><span class="mono">${esc(p.date)}</span><span class="t">${esc(p.title)}</span></a></li>`).join('');
 
 /* buddy hops when poked */
 $('buddy').addEventListener('click', e => { const b = e.currentTarget; b.classList.remove('hop'); void b.getBBox(); b.classList.add('hop'); });
