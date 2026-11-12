@@ -24,6 +24,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 
 /* the room */
 .stage{position:relative;height:100svh;min-height:560px;overflow:hidden}
+.stage::after{content:'';position:absolute;inset:0;z-index:5;pointer-events:none;background:radial-gradient(120% 90% at 50% 45%,transparent 55%,rgba(11,11,12,.13) 100%)}
 .stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
 #fx{pointer-events:none;z-index:6}
 .word{position:absolute;z-index:3;font-weight:900;font-stretch:112%;text-transform:uppercase;letter-spacing:-.06em;line-height:.82;color:var(--red);pointer-events:none}
@@ -150,7 +151,7 @@ let focus = 690; let W = 0, H = 0, dpr = 1, phone = false, state = 'idle', playi
 const cam = { s: 1, ox: 0, oy: 0 }, WORLD = 1600, WH = 860;
 const L = { floor: 690, shelf: { x0: 24, x1: 540, y: 318 }, crate: { x: 70, y: 580, w: 290, h: 110 }, box: { x: 40, y: 430, w: 350, h: 150 }, deckC: [215, 492],
   amp: { x: 420, y: 505, w: 180, h: 185 }, guitar: 668, drum: 1290, word: { x: 36, y: 120, h: 150 },
-  me: { idle: 885, guitar: 850, dance: 885, read: 885, drum: 1295 }, meH: 470, meB: 702, dance: { x: 775, y: 650 } };
+  me: { idle: 885, guitar: 850, dance: 885, read: 885, drum: 1295 }, meH: 520, meB: 704, dance: { x: 775, y: 650 } };
 
 /* clean vector drawing: soft gradients, thin dark outlines, no wobble */
 const TAU = Math.PI * 2, LINE = '#0b0b0c';
@@ -165,6 +166,15 @@ const shadow = (g, cx, w, a = .22) => { g.fillStyle = `rgba(11,11,12,${a})`; ova
 const hatch = (g, x, y, w, h, step, col, ang = 1) => { g.save(); g.beginPath(); g.rect(x, y, w, h); g.clip(); g.strokeStyle = col; g.lineWidth = 1; for (let k = -h; k < w + h; k += step) { g.beginPath(); g.moveTo(x + k, y + (ang > 0 ? h : 0)); g.lineTo(x + k + h * ang, y + (ang > 0 ? 0 : h)); g.stroke(); } g.restore(); };
 
 function camTransform(g) { g.setTransform(dpr * cam.s, 0, 0, dpr * cam.s, dpr * cam.ox, dpr * cam.oy); }
+
+function drawGuitar(g, gx) {
+    rrect(g, gx - 8, 296, 16, 224, 2); paint(g, lg(g, gx - 8, 0, gx + 8, 0, [[0, '#6b4a33'], [.5, '#8a6445'], [1, '#5a3d29']]), 1.6); for (let k = 0; k < 14; k++) line(g, [[gx - 8, 330 + k * 14], [gx + 8, 330 + k * 14]], .8, '#c8c4b8');
+    rrect(g, gx - 13, 250, 26, 52, 4); paint(g, '#151518', 1.6); for (let k = 0; k < 3; k++) { oval(g, gx - 18, 262 + k * 14, 4, 4); paint(g, CHROME(g, gx - 22, 0, gx - 14, 0), .8); oval(g, gx + 18, 262 + k * 14, 4, 4); paint(g, CHROME(g, gx + 14, 0, gx + 22, 0), .8); }
+    g.beginPath(); g.moveTo(gx - 30, 508); g.bezierCurveTo(gx - 48, 508, gx - 54, 548, gx - 42, 572); g.bezierCurveTo(gx - 32, 592, gx - 64, 604, gx - 64, 638); g.bezierCurveTo(gx - 64, 682, gx + 64, 682, gx + 64, 638); g.bezierCurveTo(gx + 64, 604, gx + 32, 592, gx + 42, 572); g.bezierCurveTo(gx + 54, 548, gx + 48, 508, gx + 30, 508); g.closePath();
+    paint(g, rg(g, gx - 22, 560, 6, 120, [[0, '#ff4a60'], [.45, '#e0122d'], [1, '#8d0a1d']]), 2);
+    g.beginPath(); g.moveTo(gx - 6, 590); g.bezierCurveTo(gx - 40, 596, gx - 52, 640, gx - 24, 664); g.bezierCurveTo(gx + 6, 672, gx + 30, 640, gx + 16, 606); g.closePath(); paint(g, '#f4f2ec', 1.2);
+    rrect(g, gx - 22, 556, 44, 9, 2); paint(g, '#151518', 1); rrect(g, gx - 22, 580, 44, 9, 2); paint(g, '#151518', 1); rrect(g, gx - 22, 650, 44, 6, 2); paint(g, CHROME(g, gx - 22, 0, gx + 22, 0), 1); for (const [kx, ky] of [[gx + 26, 628], [gx + 36, 644]]) { oval(g, kx, ky, 6, 6); paint(g, '#151518', 1); }
+}
 
 /* the still room: wall, floor, window light, shelf, crate, stand, rug, floor tiles */
 function drawBack() {
@@ -200,14 +210,7 @@ function drawBack() {
   const tx2 = L.me.drum; line(g, [[tx2, 640], [tx2, 684]], 5, '#4b4b48'); line(g, [[tx2 - 40, 690], [tx2, 668], [tx2 + 40, 690]], 3, '#4b4b48'); oval(g, tx2, 632, 52, 14); paint(g, lg(g, tx2 - 52, 0, tx2 + 52, 0, [[0, '#232327'], [.5, '#47474d'], [1, '#232327']]), 1.8);
   /* guitar stand, and the guitar on it unless Durva is playing it */
   const gx = L.guitar; line(g, [[gx - 44, 690], [gx, 600], [gx + 44, 690]], 3, '#4b4b48'); line(g, [[gx - 20, 650], [gx + 20, 650]], 2.6, '#4b4b48');
-  if (!guitarOut) {
-    rrect(g, gx - 8, 296, 16, 224, 2); paint(g, lg(g, gx - 8, 0, gx + 8, 0, [[0, '#6b4a33'], [.5, '#8a6445'], [1, '#5a3d29']]), 1.6); for (let k = 0; k < 14; k++) line(g, [[gx - 8, 330 + k * 14], [gx + 8, 330 + k * 14]], .8, '#c8c4b8');
-    rrect(g, gx - 13, 250, 26, 52, 4); paint(g, '#151518', 1.6); for (let k = 0; k < 3; k++) { oval(g, gx - 18, 262 + k * 14, 4, 4); paint(g, CHROME(g, gx - 22, 0, gx - 14, 0), .8); oval(g, gx + 18, 262 + k * 14, 4, 4); paint(g, CHROME(g, gx + 14, 0, gx + 22, 0), .8); }
-    g.beginPath(); g.moveTo(gx - 30, 508); g.bezierCurveTo(gx - 48, 508, gx - 54, 548, gx - 42, 572); g.bezierCurveTo(gx - 32, 592, gx - 64, 604, gx - 64, 638); g.bezierCurveTo(gx - 64, 682, gx + 64, 682, gx + 64, 638); g.bezierCurveTo(gx + 64, 604, gx + 32, 592, gx + 42, 572); g.bezierCurveTo(gx + 54, 548, gx + 48, 508, gx + 30, 508); g.closePath();
-    paint(g, rg(g, gx - 22, 560, 6, 120, [[0, '#ff4a60'], [.45, '#e0122d'], [1, '#8d0a1d']]), 2);
-    g.beginPath(); g.moveTo(gx - 6, 590); g.bezierCurveTo(gx - 40, 596, gx - 52, 640, gx - 24, 664); g.bezierCurveTo(gx + 6, 672, gx + 30, 640, gx + 16, 606); g.closePath(); paint(g, '#f4f2ec', 1.2);
-    rrect(g, gx - 22, 556, 44, 9, 2); paint(g, '#151518', 1); rrect(g, gx - 22, 580, 44, 9, 2); paint(g, '#151518', 1); rrect(g, gx - 22, 650, 44, 6, 2); paint(g, CHROME(g, gx - 22, 0, gx + 22, 0), 1); for (const [kx, ky] of [[gx + 26, 628], [gx + 36, 644]]) { oval(g, kx, ky, 6, 6); paint(g, '#151518', 1); }
-  }
+  if (!guitarOut) drawGuitar(g, gx);
   /* guitar lead */
   g.beginPath(); g.moveTo(gx - 64, 640); g.bezierCurveTo(gx - 120, 720, L.amp.x + L.amp.w + 90, 730, L.amp.x + L.amp.w - 6, 668); g.lineWidth = 2.4; g.strokeStyle = '#26262a'; g.stroke();
 }
@@ -278,8 +281,7 @@ function drawKit(g) {
   line(g, [[K - 90, 604], [K - 90, 650]], 3, '#5d5d59'); line(g, [[K - 130, 690], [K - 90, 650], [K - 50, 690]], 2.4, '#5d5d59');
   tomDrum(g, K - 90, 570, 54, 36, 'snare', '#e7e7e3', '#9c9c98', false);
   tomDrum(g, K + 215, 560, 66, 84, 'floor', '#e0122d', '#7d0818', true);
-  line(g, [[K + 10, 530], [K + 10, 472]], 4, '#5d5d59');
-  tomDrum(g, K + 10, 424, 54, 56, 'tom', '#e0122d', '#7d0818', false);
+  for (const [dx, k2] of [[-62, 'tom'], [92, 'tom2']]) { line(g, [[K + 30 + dx * .5, 530], [K + dx, 506]], 4, '#5d5d59'); tomDrum(g, K + dx, 458, 46, 48, k2, '#e0122d', '#7d0818', false); }
   /* kick drum, facing us */
   const kx = K + 30, ky = 612, kr = 88 + (hit.kick || 0) * 3;
   line(g, [[kx - kr + 6, ky + kr * .6], [kx - kr - 24, 690]], 3, '#5d5d59'); line(g, [[kx + kr - 6, ky + kr * .6], [kx + kr + 24, 690]], 3, '#5d5d59');
@@ -296,6 +298,7 @@ function drawFx(t) {
   const g = fg; g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, W, H); camTransform(g);
   drawAmp(g, t); drawBoombox(g, t); drawKit(g);
   if (playing && !reduce) { g.fillStyle = INK; g.font = '800 26px Archivo'; for (let k = 0; k < 4; k++) { const a = ((t * .55 + k / 4) % 1), x = L.box.x + 70 + k * 80 + Math.sin(a * 6 + k) * 14, y = L.box.y - 30 - a * 150; g.globalAlpha = 1 - a; g.fillText(k % 2 ? '♫' : '♪', x, y); } g.globalAlpha = 1; }
+  if (state === 'guitar') { const bob = reduce ? 0 : Math.sin(t * 9) * .035; g.save(); g.translate(meX + 22, L.meB - L.meH * .47); g.rotate(-1.18 + bob); g.scale(.95, .95); g.translate(-L.guitar, -592); drawGuitar(g, L.guitar); g.restore(); }
   if (state === 'guitar' && !reduce) { const cx = L.me.guitar + 70, cy = 560; g.strokeStyle = RED; g.lineWidth = 3; g.lineCap = 'round'; for (let k = 0; k < 3; k++) { const a = ((t * 1.2 + k / 3) % 1); g.globalAlpha = 1 - a; g.beginPath(); g.arc(cx, cy, 30 + a * 90, -.7, .7); g.stroke(); } g.globalAlpha = 1; }
   if (state === 'dance' || discoOn) {
     const bx = L.me.dance, by = 190, sp = t * 1.4; line(g, [[bx, -20], [bx, by - 40]], 2, '#4b4b50'); oval(g, bx, by, 40, 40); paint(g, rg(g, bx - 12, by - 14, 3, 44, [[0, '#ffffff'], [.5, '#cfcfca'], [1, '#6d6d72']]), 1.8);
@@ -389,7 +392,7 @@ $('guitarBtn').addEventListener('click', async () => {
   await sleep(reduce ? 0 : 700); me.classList.add('strum'); playing = true; await sleep(reduce ? 0 : 5200); me.classList.remove('strum');
   guitarOut = false; playing = false; state = 'idle'; drawBack(); placeAll(); moveMe(L.me.idle); pan(690); say('That’s the one I know.', 'wave', 2600); startLoop(true);
 });
-const PIECES = ['snare', 'hat', 'kick', 'tom', 'crash', 'floor', 'snare', 'ride'];
+const PIECES = ['snare', 'hat', 'kick', 'tom', 'crash', 'floor', 'tom2', 'ride'];
 $('drumBtn').addEventListener('click', async () => {
   if (state !== 'idle') return; state = 'drums'; moveMe(L.me.drum); say('Okay. One fill.', 'sit', 0); startLoop(); await sleep(reduce ? 0 : 600);
   for (let n = 0; n < (reduce ? 0 : 16); n++) { setPose(n % 2 ? 'drums2' : 'drums'); if (n % 2) { hit[PIECES[(n >> 1) % PIECES.length]] = 1; if (n % 4 === 1) hit.kick = 1; } await sleep(240); }
