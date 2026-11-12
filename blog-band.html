@@ -30,6 +30,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .me{position:absolute;z-index:4;transform-origin:50% 100%}
 .me img{display:block;width:100%;height:100%;image-rendering:pixelated;pointer-events:none}
 .me button{position:absolute;inset:8% 24% 0}
+.me::after{content:'';position:absolute;left:12%;right:12%;bottom:-1%;height:5%;background:rgba(11,11,12,.2);border-radius:50%;z-index:-1}
 .me.hop img{animation:hop .4s cubic-bezier(.3,.7,.3,1)}
 .me.strum img{animation:strum .32s ease-in-out infinite}
 .me.dance img{animation:dance .62s ease-in-out infinite}
@@ -79,6 +80,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .foot{position:absolute;z-index:40;right:clamp(1rem,2.4vw,2rem);bottom:1rem;font-weight:600;font-size:.9rem;color:#5b5b57}
 
 @media (max-width:760px){
+  .chips{display:flex;gap:.6rem;padding:1rem 1rem 0}.chips button{flex:1;background:var(--ink);color:var(--paper);padding:.8rem 0;font-weight:700;font-size:1rem}.chips button:active{background:var(--red)}
   .stage{height:auto;min-height:0}
   .intro{position:static;padding:4rem 1rem 0;font-size:1rem;max-width:none}
   .rack{position:static;display:grid;justify-content:stretch;grid-template-columns:1fr 1fr;gap:1.6rem 1rem;padding:1rem 1rem 3rem}
@@ -90,7 +92,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   .bubble{font-size:.84rem;max-width:11rem}
   .foot{position:static;display:block;padding:0 1rem 2rem}
 }
-@media (min-width:761px){.tapes-h{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}.tape .cap{display:none}}
+@media (min-width:761px){.chips{display:none}.tapes-h{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}.tape .cap{display:none}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -109,6 +111,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   <button class="spot" id="drumBtn" aria-label="Play the drums"></button>
   <div class="bubble" id="bubble" aria-live="polite"></div>
 </section>
+<div class="chips" id="chips"><button data-go="guitar">Guitar</button><button data-go="drum">Drums</button><button data-go="dance">Dance</button></div>
 <h2 class="tapes-h" id="tapesH">Tapes</h2>
 <div class="rack" id="rack" aria-labelledby="tapesH"></div>
 <p class="foot" id="foot"></p>
@@ -142,7 +145,7 @@ $('foot').textContent = `${live.length} tape recorded, ${POSTS.length - live.len
 
 /* ---------- the room: 1100 x 860 units, scaled to the screen ---------- */
 const back = $('back'), fx = $('fx'), bg = back.getContext('2d'), fg = fx.getContext('2d');
-let W = 0, H = 0, dpr = 1, phone = false, state = 'idle', playing = false, guitarOut = false, reading = null;
+let focus = 500; let W = 0, H = 0, dpr = 1, phone = false, state = 'idle', playing = false, guitarOut = false, reading = null;
 const cam = { s: 1, ox: 0, oy: 0 }, WORLD = 1500, WH = 860;
 const L = { floor: 690, shelf: { x0: 24, x1: 540, y: 318 }, crate: { x: 70, y: 580, w: 290, h: 110 }, box: { x: 40, y: 430, w: 350, h: 150 }, deckC: [215, 492], guitar: 560, drum: 1170, disco: [990, 0], word: { x: 36, y: 120, h: 150 },
   me: { idle: 760, guitar: 725, dance: 760, read: 760, drum: 1175 }, meH: 470, meB: 702, dance: { x: 650, y: 650, w: 190, h: 40 } };
@@ -168,12 +171,27 @@ function camTransform(g) { g.setTransform(dpr * cam.s, 0, 0, dpr * cam.s, dpr * 
 function drawBack() {
   const g = bg; seed = 11; g.setTransform(dpr, 0, 0, dpr, 0, 0); g.fillStyle = WALL; g.fillRect(0, 0, W, H); camTransform(g);
   const x0 = -cam.ox / cam.s - 10, x1 = (W - cam.ox) / cam.s + 10, yB = (H - cam.oy) / cam.s + 10;
-  fill(g, box(x0, L.floor, x1 - x0, yB - L.floor), FLOOR); ink(g, [[x0, L.floor], [x1, L.floor]], 3);
-  for (const y of [748, 816]) ink(g, [[x0, y], [x1, y]], 1, 'rgba(11,11,12,.2)');
+  const wg = g.createLinearGradient(0, -200, 0, L.floor); wg.addColorStop(0, '#efefeb'); wg.addColorStop(1, '#dcdcd7'); g.fillStyle = wg; g.fillRect(x0, -400, x1 - x0, L.floor + 400);
+  /* wainscot, rail and baseboard */
+  fill(g, box(x0, 540, x1 - x0, L.floor - 540), '#d5d5d0'); ink(g, [[x0, 540], [x1, 540]], 2.4); ink(g, [[x0, 548], [x1, 548]], 1, 'rgba(11,11,12,.25)'); fill(g, box(x0, 664, x1 - x0, 26), '#c6c6c1'); ink(g, [[x0, 664], [x1, 664]], 1.6);
+  for (let x = Math.floor(x0 / 120) * 120; x < x1; x += 120) ink(g, [[x, 548], [x, 664]], 1, 'rgba(11,11,12,.18)');
+  /* floor: boards with staggered joints and a soft shadow where it meets the wall */
+  const fg2 = g.createLinearGradient(0, L.floor, 0, yB); fg2.addColorStop(0, '#bdbdb8'); fg2.addColorStop(1, '#d9d9d4'); g.fillStyle = fg2; g.fillRect(x0, L.floor, x1 - x0, yB - L.floor); ink(g, [[x0, L.floor], [x1, L.floor]], 3);
+  for (const y of [722, 760, 808]) ink(g, [[x0, y], [x1, y]], 1, 'rgba(11,11,12,.22)');
+  for (let r = 0; r < 3; r++) { const y0 = [L.floor, 722, 760][r], y1 = [722, 760, 808][r]; for (let x = Math.floor(x0 / 150) * 150 + (r * 53) % 150; x < x1; x += 150) ink(g, [[x, y0], [x - 6 * (r + 1), y1]], 1, 'rgba(11,11,12,.16)'); }
+  /* window with daylight falling across the floor */
+  const wx = 860, wy = 90, ww = 230, wh = 280; g.fillStyle = 'rgba(255,255,255,.55)'; g.beginPath(); g.moveTo(wx, wy + wh); g.lineTo(wx + ww, wy + wh); g.lineTo(wx + ww - 330, 790); g.lineTo(wx - 360, 790); g.closePath(); g.fill();
+  fill(g, box(wx, wy, ww, wh), '#f7f7f4'); ink(g, box(wx, wy, ww, wh), 3.4); ink(g, [[wx + ww / 2, wy], [wx + ww / 2, wy + wh]], 3); ink(g, [[wx, wy + wh * .5], [wx + ww, wy + wh * .5]], 3); fill(g, box(wx - 12, wy + wh, ww + 24, 12), '#bdbdb8'); ink(g, box(wx - 12, wy + wh, ww + 24, 12), 2.2);
+  for (let k = 0; k < 6; k++) ink(g, [[wx + 14 + k * 8, wy + 20 + k * 8], [wx + 70 + k * 8, wy + 8 + k * 8]], 1.2, 'rgba(11,11,12,.18)');
+  /* framed spider lily above the shelf */
+  fill(g, box(560, 96, 120, 150), PAPER); ink(g, box(560, 96, 120, 150), 4); ink(g, box(570, 106, 100, 130), 1.4, 'rgba(11,11,12,.4)'); ink(g, [[620, 226], [620, 160]], 2.2); for (let k = -3; k <= 3; k++) ink(g, curve([620, 160], [620 + k * 16, 118], [620 + k * 26, 132 + Math.abs(k) * 5]), 2.4, RED);
+  /* contact shadows */
+  const sdw = (cx, w) => { g.fillStyle = 'rgba(11,11,12,.2)'; g.beginPath(); g.ellipse(cx, L.floor + 14, w, 12, 0, 0, 7); g.fill(); }; sdw(L.crate.x + L.crate.w / 2, 190); sdw(L.guitar, 70); sdw(L.drum + 60, 280); sdw(L.me.idle, 150);
   /* shelf */
   if (!phone) { const { x0: a, x1: b, y } = L.shelf; fill(g, box(a, y, b - a, 14), '#8a8a85'); ink(g, box(a, y, b - a, 14), 2.4); for (const bx of [a + 40, b - 40]) ink(g, [[bx, y + 14], [bx, y + 52], [bx - 30, y + 14]], 2.2); }
   /* crate under the boombox */
   const c = L.crate; fill(g, box(c.x, c.y, c.w, c.h), '#9a9a95'); ink(g, box(c.x, c.y, c.w, c.h), 2.8); for (let k = 1; k < 4; k++) ink(g, [[c.x, c.y + k * c.h / 4], [c.x + c.w, c.y + k * c.h / 4]], 1.4, 'rgba(11,11,12,.45)'); ink(g, [[c.x + c.w * .5, c.y], [c.x + c.w * .5, c.y + c.h]], 1.4, 'rgba(11,11,12,.3)');
+  for (let k = 0; k < 7; k++) ink(g, [[c.x + c.w - 6 - k * 9, c.y + 4], [c.x + c.w - 22 - k * 9, c.y + c.h - 4]], 1, 'rgba(11,11,12,.3)');
   /* rug and dance floor */
   fill(g, ell(L.me.idle, 706, 230, 30), RED); ink(g, ell(L.me.idle, 706, 230, 30), 2.4); for (let k = -5; k <= 5; k++) ink(g, [[L.me.idle + k * 41, 735], [L.me.idle + k * 41 + 3, 743]], 1.4);
   const d = L.dance; for (let i = 0; i < 4; i++) for (let j = 0; j < 2; j++) { const tx = d.x + i * 48, ty = d.y + 20 + j * 26; fill(g, [[tx + 12, ty], [tx + 56, ty], [tx + 44, ty + 24], [tx, ty + 24]], (i + j) % 2 ? PAPER : '#c9c9c4'); ink(g, [[tx + 12, ty], [tx + 56, ty], [tx + 44, ty + 24], [tx, ty + 24], [tx + 12, ty]], 1.6); }
@@ -239,7 +257,7 @@ const P = (x, y) => [cam.ox + x * cam.s, cam.oy + y * cam.s];
 const place = (el, x, y, w, h) => { const [px, py] = P(x, y); Object.assign(el.style, { left: px + 'px', top: py + 'px', width: w * cam.s + 'px', height: h * cam.s + 'px' }); };
 function target(readingNow) {
   W = $('stage').clientWidth; phone = W <= 760;
-  if (phone) { const s = W / WORLD; H = Math.round(WH * s) + 110; return { s, ox: 0, oy: H - WH * s }; }
+  if (phone) { const s = W / 860; H = Math.round(WH * s) + 110; return { s, ox: W / 2 - focus * s, oy: H - WH * s }; }
   H = $('stage').clientHeight; const avail = readingNow ? W - Math.min(36 * 16, W * .42) : W, s = Math.min(avail / WORLD, H / WH) * (readingNow ? .96 : 1);
   return { s, ox: (avail - WORLD * s) / 2, oy: H - WH * s };
 }
@@ -268,12 +286,14 @@ function moveCam(t2, ms) {
 const sprite = $('sprite'), me = $('me'), bubble = $('bubble'); let sayTimer = 0;
 const setPose = p => { curPose = p; sprite.src = SPR(p); };
 function say(text, pose, ms = 3200) { bubble.textContent = text; bubble.classList.remove('pop'); void bubble.offsetWidth; bubble.classList.add('pop'); bubble.style.opacity = 1; if (pose) setPose(pose); placeBubble(); clearTimeout(sayTimer); if (ms) sayTimer = setTimeout(() => { if (state === 'idle') { bubble.style.opacity = 0; setPose('idle'); } }, ms); }
-const moveMe = x => { meX = x; me.style.transition = reduce ? 'none' : 'left .5s cubic-bezier(.5,0,.2,1), top .5s'; placeAll(); };
+let walk = 0; const moveMe = x => { cancelAnimationFrame(walk); const x0 = meX, t0 = performance.now(); if (reduce) { meX = x; placeAll(); return; } const step = now => { const u = Math.min(1, (now - t0) / 650), e = u < .5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2; meX = x0 + (x - x0) * e; placeAll(); if (u < 1) walk = requestAnimationFrame(step); }; walk = requestAnimationFrame(step); };
 
 /* ---------- the tapes ---------- */
 const rack = $('rack'); let flyer = null;
 rack.innerHTML = POSTS.map((p, i) => `<button class="tape${p.soon ? ' soon' : ''}" data-i="${i}" style="--r:${[-2.5, 1.5, -1, 2, -1.5][i % 5]}deg" aria-label="${esc(p.title)}${p.soon ? ' (not recorded yet)' : ''}"><span class="lbl"><b>${esc(p.short)}</b></span><span class="win"><i></i><i></i></span><span class="cap">${esc(p.title)}</span></button>`).join('');
 const tapes = [...rack.children];
+const pan = x => { focus = x; if (phone) moveCam(target(false), reduce ? 0 : 600); };
+$('chips').addEventListener('click', async e => { const go = e.target.dataset.go; if (!go || state !== 'idle') return; pan(go === 'drum' ? 1090 : go === 'guitar' ? 520 : 600); await sleep(phone && !reduce ? 650 : 0); $(go + 'Btn').click(); });
 tapes.forEach((el, i) => { const p = POSTS[i];
   el.addEventListener('mouseenter', () => { if (state === 'idle' && !phone) say(p.say, 'point', 0); });
   el.addEventListener('mouseleave', () => { if (state === 'idle') { bubble.style.opacity = 0; setPose('idle'); } });
@@ -313,18 +333,18 @@ $('poke').addEventListener('click', () => { if (state !== 'idle') return; const 
 $('guitarBtn').addEventListener('click', async () => {
   if (state !== 'idle') return; state = 'guitar'; guitarOut = true; drawBack(); $('guitarBtn').hidden = true; moveMe(L.me.guitar + 90); say('Okay. Listen.', 'guitar', 0); startLoop();
   await sleep(reduce ? 0 : 700); me.classList.add('strum'); playing = true; await sleep(reduce ? 0 : 5200); me.classList.remove('strum');
-  guitarOut = false; playing = false; state = 'idle'; drawBack(); placeAll(); moveMe(L.me.idle); say('That’s the one I know.', 'wave', 2600); startLoop(true);
+  guitarOut = false; playing = false; state = 'idle'; drawBack(); placeAll(); moveMe(L.me.idle); pan(500); say('That’s the one I know.', 'wave', 2600); startLoop(true);
 });
 const PIECES = ['snare', 'hat', 'kick', 'tom', 'crash', 'floor', 'snare', 'ride'];
 $('drumBtn').addEventListener('click', async () => {
   if (state !== 'idle') return; state = 'drums'; moveMe(L.me.drum); say('Okay. One fill.', 'sit', 0); startLoop(); await sleep(reduce ? 0 : 600);
   for (let n = 0; n < (reduce ? 0 : 16); n++) { setPose(n % 2 ? 'drums2' : 'drums'); if (n % 2) { hit[PIECES[(n >> 1) % PIECES.length]] = 1; if (n % 4 === 1) hit.kick = 1; } await sleep(240); }
-  setPose('drums'); await sleep(reduce ? 0 : 500); state = 'idle'; moveMe(L.me.idle); say('Right. The tapes.', 'point', 2400); startLoop(true);
+  setPose('drums'); await sleep(reduce ? 0 : 500); state = 'idle'; moveMe(L.me.idle); pan(500); say('Right. The tapes.', 'point', 2400); startLoop(true);
 });
 $('danceBtn').addEventListener('click', async () => {
   if (state !== 'idle') return; state = 'dance'; moveMe(L.me.dance); say('Okay. One song.', 'wave', 0); playing = true; discoOn = true; startLoop(); await sleep(reduce ? 0 : 500); me.classList.add('dance');
   const poses = ['wave', 'walk', 'point', 'headphones', 'wave', 'guard']; for (let n = 0; n < (reduce ? 0 : 20); n++) { setPose(poses[n % poses.length]); await sleep(300); }
-  me.classList.remove('dance'); playing = false; discoOn = false; state = 'idle'; moveMe(L.me.idle); say('Okay, that’s enough.', 'idle', 2400); startLoop(true);
+  me.classList.remove('dance'); playing = false; discoOn = false; state = 'idle'; moveMe(L.me.idle); pan(500); say('Okay, that’s enough.', 'idle', 2400); startLoop(true);
 });
 $('boomBtn').addEventListener('click', () => { if (state !== 'idle') return; playing = !playing; say(playing ? 'Nothing in it yet. Pick a tape.' : 'Off.', 'point', 2400); startLoop(!playing); });
 
