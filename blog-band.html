@@ -22,8 +22,8 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .intro{position:absolute;z-index:40;left:clamp(1rem,2.4vw,2rem);top:3.6rem;font-size:1.05rem;line-height:1.5;font-weight:500;color:#3b3b38;max-width:21rem;text-wrap:balance}
 .intro .kick{display:block;margin-bottom:.5rem;font-size:.7rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--red)}
 
-/* the opening: a dead TV tunes in, squeezes to a line, then snaps open on the room */
-#tv{position:fixed;inset:0;width:100%;height:100%;z-index:100;display:block;background:#0b0b0c}
+/* the opening: one of three, drawn on a canvas over the room (?open=pixel | lights | tape) */
+#tv{position:fixed;inset:0;width:100%;height:100%;z-index:100;display:block}
 
 .stage{position:relative;height:100svh;min-height:560px;overflow:hidden}
 .stage::after{content:'';position:absolute;inset:0;z-index:5;pointer-events:none;background:radial-gradient(120% 90% at 50% 45%,transparent 55%,rgba(11,11,12,.13) 100%)}
@@ -104,7 +104,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 html{overflow-x:clip;max-width:100%}body{max-width:100%}/*noscrollx*/
 </style>
-<script>try{if(sessionStorage.getItem('bandTV')||location.hash.length>2){var st=document.createElement('style');st.textContent='#tv{display:none}';document.head.appendChild(st)}}catch(e){}</script>
+<script>try{if(sessionStorage.getItem('bandTV')&&!/open=/.test(location.search)||location.hash.length>2){var st=document.createElement('style');st.textContent='#tv{display:none}';document.head.appendChild(st)}}catch(e){}</script>
 </head>
 <body>
 <canvas id="tv" aria-hidden="true"></canvas>
@@ -499,51 +499,79 @@ function boot() { Object.assign(cam, target(state === 'reading')); layout(); }
 let lastW = 0, lastH = 0; new ResizeObserver(() => { const st = $('stage'); if (st.clientWidth === lastW && st.clientHeight === lastH) return; lastW = st.clientWidth; lastH = st.clientHeight; boot(); }).observe($('stage')); addEventListener('resize', boot); boot();
 (document.fonts ? document.fonts.ready : Promise.resolve()).then(() => { layout(); });
 sprite.addEventListener('load', () => placeAll());
-function tvOpening(after) {
-  const root = document.documentElement, cv = $('tv'); let cued = false;
+function runOpening(after) {
+  const root = document.documentElement, cv = $('tv'); let cued = false, skipped = false;
   const cue = () => { if (!cued) { cued = true; after(); } };
   const done = () => { cv.remove(); root.style.overflow = ''; cue(); };
-  try { if (sessionStorage.getItem('bandTV')) return done(); sessionStorage.setItem('bandTV', '1'); } catch (e) { /* storage blocked: just play it */ }
-  let gl = null; try { gl = cv.getContext('webgl', { premultipliedAlpha: true, alpha: true }); } catch (e) { gl = null; }
-  if (!gl) return done();
+  const qs = new URLSearchParams(location.search).get('open');
+  try { if (!qs) { if (sessionStorage.getItem('bandTV')) return done(); sessionStorage.setItem('bandTV', '1'); } } catch (e) { /* storage blocked: just play it */ }
+  const g = cv.getContext('2d'); if (!g) return done();
   root.style.overflow = 'hidden';
-  const vs = 'attribute vec2 a;void main(){gl_Position=vec4(a,0.,1.);}';
-  const fs = `precision highp float;uniform vec2 r;uniform float t;uniform float k;
-float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
-vec3 bars(float x){float i=floor(x*7.);vec3 c=vec3(.92);if(i==1.)c=vec3(.92,.92,0.);else if(i==2.)c=vec3(0.,.92,.92);else if(i==3.)c=vec3(0.,.85,.1);else if(i==4.)c=vec3(.9,0.,.85);else if(i==5.)c=vec3(.9,.05,.1);else if(i==6.)c=vec3(.1,.1,.95);return c;}
-void main(){vec2 uv=gl_FragCoord.xy/r;float c=uv.y-.5;
-float hh;if(t<.3)hh=.5;else if(t<.42)hh=mix(.5,.003,pow((t-.3)/.12,2.));else if(t<.5)hh=.003;else hh=mix(.003,.62,1.-pow(1.-(t-.5)/.5,4.));
-float d=abs(abs(c)-hh);bool inside=abs(c)<hh;
-vec2 sp=floor(uv*r/vec2(3.,3.));float sn=h(sp+floor(k*30.));
-float roll=fract(k*.7);float tr=smoothstep(.0,.06,abs(uv.y-roll));
-float wob=(h(vec2(floor(uv.y*60.),floor(k*20.)))-.5)*.05*(1.-tr+.15)*step(t,.42);
-vec3 tv=bars(uv.x+wob)*(uv.y>.3?1.:.0);tv+=vec3(.05)*(uv.y<=.3?1.:0.);
-tv=mix(tv,vec3(sn),.45+.4*(1.-tr));tv*=.82+.18*sin(gl_FragCoord.y*3.1416);
-float line=smoothstep(.36,.46,t);tv=mix(tv,vec3(1.),line);
-float tvA=1.-smoothstep(.5,.56,t);
-vec3 gc=mix(vec3(1.,.2,.8),vec3(.1,.9,1.),step(0.,c));
-float g=exp(-d*14.)*smoothstep(.3,.45,t);vec3 glow=mix(gc,vec3(1.),exp(-d*160.));
-if(inside){gl_FragColor=vec4(mix(tv*tvA,glow*g,.0)+glow*g*.9,max(tvA,g*.9));}
-else{float e=step(.55,sn)*exp(-d*7.)*.55;vec3 col=glow*g+vec3(e);gl_FragColor=vec4(col,1.);}}`;
-  const sh = (type, src) => { const x = gl.createShader(type); gl.shaderSource(x, src); gl.compileShader(x); return gl.getShaderParameter(x, gl.COMPILE_STATUS) ? x : null; };
-  const v = sh(gl.VERTEX_SHADER, vs), f = sh(gl.FRAGMENT_SHADER, fs); if (!v || !f) return done();
-  const pr = gl.createProgram(); gl.attachShader(pr, v); gl.attachShader(pr, f); gl.linkProgram(pr); if (!gl.getProgramParameter(pr, gl.LINK_STATUS)) return done(); gl.useProgram(pr);
-  const buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
-  const la = gl.getAttribLocation(pr, 'a'); gl.enableVertexAttribArray(la); gl.vertexAttribPointer(la, 2, gl.FLOAT, false, 0, 0);
-  const ur = gl.getUniformLocation(pr, 'r'), ut = gl.getUniformLocation(pr, 't'), uk = gl.getUniformLocation(pr, 'k');
-  const size = () => { const q = 0.7; cv.width = Math.max(2, Math.round(innerWidth * q)); cv.height = Math.max(2, Math.round(innerHeight * q)); gl.viewport(0, 0, cv.width, cv.height); gl.uniform2f(ur, cv.width, cv.height); };
+  const KINDS = ['pixel', 'lights', 'tape'], kind = KINDS.includes(qs) ? qs : KINDS[Math.floor(Math.random() * KINDS.length)];
+  let W = 0, H = 0; const dpr = Math.min(devicePixelRatio || 1, 1.5);
+  const size = () => { W = innerWidth; H = innerHeight; cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); g.setTransform(dpr, 0, 0, dpr, 0, 0); };
   size(); addEventListener('resize', size);
-  let skipped = false; const skip = () => { skipped = true; }; addEventListener('pointerdown', skip, { once: true }); addEventListener('keydown', skip, { once: true });
-  const T0 = performance.now(), DUR = 3.6;
-  (function frame(now) { const el = (now - T0) / 1000, t = Math.min(1, el / DUR);
-    if (t > .5 && !cued) cue();
+  const skip = () => { skipped = true; }; addEventListener('pointerdown', skip, { once: true }); addEventListener('keydown', skip, { once: true });
+  const ease = u => u < .5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2, cl = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+  let draw, DUR;
+
+  if (kind === 'pixel') {
+    /* the room assembles: a wall of big coloured pixels shrinks away from the middle outwards */
+    DUR = 3.1; const PAL = ['#e0122d', '#e0122d', '#0b0b0c', '#0b0b0c', '#f4f2ec', '#c9c9c6', '#8f0a1f', '#ff5a36', '#ffc21a', '#22c3d6', '#7a2fd0'];
+    let cs = 0, cols = 0, rows = 0, cells = [];
+    const build = () => { cs = Math.max(14, Math.round(Math.max(W, H) / 26)); cols = Math.ceil(W / cs); rows = Math.ceil(H / cs); cells = [];
+      const mx = cols / 2, my = rows / 2, md = Math.hypot(mx, my);
+      for (let y = 0; y < rows; y++) for (let x = 0; x < cols; x++) cells.push({ x, y, c: PAL[Math.floor(Math.random() * PAL.length)], rt: .12 + (Math.hypot(x - mx, y - my) / md) * .5 + Math.random() * .3 }); };
+    build(); addEventListener('resize', build);
+    draw = t => { g.clearRect(0, 0, W, H);
+      for (const q of cells) { const k = cl((q.rt - t) / .12, 0, 1); if (k <= 0) continue; const flash = (q.rt - t) < .035; g.fillStyle = flash ? '#fff' : q.c; const sz = cs * k, o = (cs - sz) / 2; g.fillRect(q.x * cs + o, q.y * cs + o, sz + .5, sz + .5); }
+      return t > .35; };
+  }
+
+  if (kind === 'lights') {
+    /* pitch black, then the room lights up piece by piece */
+    DUR = 3.4; const S = Math.min(W, H) || 600;
+    const spots = []; for (let i = 0; i < 7; i++) spots.push({ x: (i + 1) / 8, y: .1 + Math.sin((i + .5) / 7 * Math.PI) * .03, r: .17, t0: .08 + i * .055 });
+    spots.push({ x: .2, y: .62, r: .34, t0: .52 }, { x: .84, y: .62, r: .34, t0: .6 }, { x: .5, y: .55, r: .5, t0: .72 });
+    draw = t => { g.globalCompositeOperation = 'source-over'; g.globalAlpha = 1; g.clearRect(0, 0, W, H); g.fillStyle = '#0b0b0c'; g.fillRect(0, 0, W, H);
+      g.globalCompositeOperation = 'destination-out';
+      for (const p of spots) { const u = cl((t - p.t0) / .1, 0, 1); if (u <= 0) continue; const flick = u < .5 ? (Math.sin(t * 90 + p.x * 40) > -.2 ? 1 : .15) : 1; const r = (p.r * S * 2.4) * ease(u), x = p.x * W, y = p.y * H;
+        const gr = g.createRadialGradient(x, y, 0, x, y, r); gr.addColorStop(0, 'rgba(0,0,0,' + flick + ')'); gr.addColorStop(.55, 'rgba(0,0,0,' + .7 * flick + ')'); gr.addColorStop(1, 'rgba(0,0,0,0)'); g.fillStyle = gr; g.beginPath(); g.arc(x, y, r, 0, 6.283); g.fill(); }
+      g.globalCompositeOperation = 'source-over'; const f = cl((t - .82) / .18, 0, 1); if (f > 0) { g.globalCompositeOperation = 'destination-out'; g.fillStyle = 'rgba(0,0,0,' + f + ')'; g.fillRect(0, 0, W, H); g.globalCompositeOperation = 'source-over'; }
+      return t > .5; };
+  }
+
+  if (kind === 'tape') {
+    /* a giant cassette slides in, the reels turn, then the shell splits open on the room */
+    DUR = 3.2;
+    const cassette = (cx, cy, w, ang) => { const h = w * .63; g.save(); g.translate(cx, cy);
+      g.fillStyle = '#0b0b0c'; g.beginPath(); g.roundRect(-w / 2, -h / 2, w, h, w * .04); g.fill();
+      g.fillStyle = '#f4f2ec'; g.beginPath(); g.roundRect(-w * .42, -h * .4, w * .84, h * .5, w * .02); g.fill();
+      g.fillStyle = '#e0122d'; g.fillRect(-w * .42, -h * .4, w * .84, h * .11);
+      g.fillStyle = '#0b0b0c'; g.fillRect(-w * .36, -h * .22, w * .5, w * .012); g.fillRect(-w * .36, -h * .17, w * .36, w * .012);
+      g.fillStyle = '#1b1b1d'; g.beginPath(); g.roundRect(-w * .3, -h * .14, w * .6, h * .22, h * .11); g.fill();
+      for (const sx of [-1, 1]) { const rx = sx * w * .17, ry = -h * .03, rr = h * .085; g.fillStyle = '#f4f2ec'; g.beginPath(); g.arc(rx, ry, rr, 0, 6.283); g.fill(); g.save(); g.translate(rx, ry); g.rotate(ang * sx); g.fillStyle = '#0b0b0c'; for (let i = 0; i < 6; i++) { g.rotate(1.0472); g.fillRect(rr * .38, -rr * .09, rr * .5, rr * .18); } g.restore(); }
+      g.fillStyle = '#3a3a3c'; g.beginPath(); g.moveTo(-w * .3, h * .5); g.lineTo(-w * .22, h * .24); g.lineTo(w * .22, h * .24); g.lineTo(w * .3, h * .5); g.closePath(); g.fill();
+      g.fillStyle = '#0b0b0c'; for (const sx of [-.2, -.07, .07, .2]) { g.beginPath(); g.arc(sx * w, h * .38, w * .014, 0, 6.283); g.fill(); }
+      g.restore(); };
+    draw = t => { g.clearRect(0, 0, W, H);
+      const w = Math.min(W * .88, 560), rise = (1 - ease(cl(t / .3, 0, 1))) * H * .8, ang = t * 24, off = ease(cl((t - .62) / .38, 0, 1)) * H * .56, bump = t > .3 && t < .38 ? Math.sin((t - .3) / .08 * Math.PI) * 5 : 0;
+      const scene = () => { g.fillStyle = '#f4f2ec'; g.fillRect(0, -H, W, H * 3); cassette(W / 2, H / 2 + rise + bump, w, ang); };
+      g.save(); g.beginPath(); g.rect(0, 0, W, H / 2); g.clip(); g.translate(0, -off); scene(); g.restore();
+      g.save(); g.beginPath(); g.rect(0, H / 2, W, H / 2); g.clip(); g.translate(0, off); scene(); g.restore();
+      if (off > 0) { g.fillStyle = '#e0122d'; g.fillRect(0, H / 2 - off - 3, W, 3); g.fillRect(0, H / 2 + off, W, 3); }
+      return t > .62; };
+  }
+
+  const T0 = performance.now();
+  (function frame(now) { const t = Math.min(1, (now - T0) / 1000 / DUR);
     if (skipped || t >= 1) { removeEventListener('resize', size); return done(); }
-    gl.uniform1f(ut, t); gl.uniform1f(uk, el); gl.drawArrays(gl.TRIANGLES, 0, 3); requestAnimationFrame(frame); })(T0);
+    if (draw(t)) cue(); requestAnimationFrame(frame); })(T0);
 }
 const greetNow = () => say(HELLO, 'wave', 5600);
 const afterOpen = () => { playing = true; startLoop(); setTimeout(() => { playing = false; startLoop(true); }, 2800); setTimeout(greetNow, 700); };
 if (location.hash.length > 2 || reduce) { $('tv').remove(); setTimeout(greetNow, 500); startLoop(true); }
-else { tvOpening(afterOpen); startLoop(true); }
+else { runOpening(afterOpen); startLoop(true); }
 
 const hash = location.hash.replace(/^#\/?/, ''); if (hash) { const i = POSTS.findIndex(p => p.slug === hash && !p.soon); if (i >= 0) setTimeout(() => playTape(tapes[i], POSTS[i]), 900); }
 })();
