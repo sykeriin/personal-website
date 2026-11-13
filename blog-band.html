@@ -22,7 +22,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .intro{position:absolute;z-index:40;left:clamp(1rem,2.4vw,2rem);top:3.6rem;font-size:1.05rem;line-height:1.5;font-weight:500;color:#3b3b38;max-width:21rem;text-wrap:balance}
 .intro .kick{display:block;margin-bottom:.5rem;font-size:.7rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--red)}
 
-/* the opening: one of three, drawn on a canvas over the room (?open=pixel | lights | tape) */
+/* the opening: a wall of big pixels breaks into smaller ones and shrinks away, revealing the room */
 #tv{position:fixed;inset:0;width:100%;height:100%;z-index:100;display:block}
 
 .stage{position:relative;height:100svh;min-height:560px;overflow:hidden}
@@ -104,7 +104,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 html{overflow-x:clip;max-width:100%}body{max-width:100%}/*noscrollx*/
 </style>
-<script>try{if(sessionStorage.getItem('bandTV')&&!/open=/.test(location.search)||location.hash.length>2){var st=document.createElement('style');st.textContent='#tv{display:none}';document.head.appendChild(st)}}catch(e){}</script>
+<script>try{if(sessionStorage.getItem('bandTV')||location.hash.length>2){var st=document.createElement('style');st.textContent='#tv{display:none}';document.head.appendChild(st)}}catch(e){}</script>
 </head>
 <body>
 <canvas id="tv" aria-hidden="true"></canvas>
@@ -503,70 +503,31 @@ function runOpening(after) {
   const root = document.documentElement, cv = $('tv'); let cued = false, skipped = false;
   const cue = () => { if (!cued) { cued = true; after(); } };
   const done = () => { cv.remove(); root.style.overflow = ''; cue(); };
-  const qs = new URLSearchParams(location.search).get('open');
-  try { if (!qs) { if (sessionStorage.getItem('bandTV')) return done(); sessionStorage.setItem('bandTV', '1'); } } catch (e) { /* storage blocked: just play it */ }
+  try { if (sessionStorage.getItem('bandTV')) return done(); sessionStorage.setItem('bandTV', '1'); } catch (e) { /* storage blocked: just play it */ }
   const g = cv.getContext('2d'); if (!g) return done();
   root.style.overflow = 'hidden';
-  const KINDS = ['pixel', 'lights', 'tape'], kind = KINDS.includes(qs) ? qs : KINDS[Math.floor(Math.random() * KINDS.length)];
   let W = 0, H = 0; const dpr = Math.min(devicePixelRatio || 1, 1.5);
   const size = () => { W = innerWidth; H = innerHeight; cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); g.setTransform(dpr, 0, 0, dpr, 0, 0); };
-  size(); addEventListener('resize', size);
+  size();
   const skip = () => { skipped = true; }; addEventListener('pointerdown', skip, { once: true }); addEventListener('keydown', skip, { once: true });
-  const ease = u => u < .5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2, cl = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
-  let draw, DUR;
-
-  if (kind === 'pixel') {
-    /* the room assembles: a wall of big coloured pixels shrinks away from the middle outwards */
-    DUR = 3.1; const PAL = ['#e0122d', '#e0122d', '#0b0b0c', '#0b0b0c', '#f4f2ec', '#c9c9c6', '#8f0a1f', '#ff5a36', '#ffc21a', '#22c3d6', '#7a2fd0'];
-    let cs = 0, cols = 0, rows = 0, cells = [];
-    const build = () => { cs = Math.max(14, Math.round(Math.max(W, H) / 26)); cols = Math.ceil(W / cs); rows = Math.ceil(H / cs); cells = [];
-      const mx = cols / 2, my = rows / 2, md = Math.hypot(mx, my);
-      for (let y = 0; y < rows; y++) for (let x = 0; x < cols; x++) cells.push({ x, y, c: PAL[Math.floor(Math.random() * PAL.length)], rt: .12 + (Math.hypot(x - mx, y - my) / md) * .5 + Math.random() * .3 }); };
-    build(); addEventListener('resize', build);
-    draw = t => { g.clearRect(0, 0, W, H);
-      for (const q of cells) { const k = cl((q.rt - t) / .12, 0, 1); if (k <= 0) continue; const flash = (q.rt - t) < .035; g.fillStyle = flash ? '#fff' : q.c; const sz = cs * k, o = (cs - sz) / 2; g.fillRect(q.x * cs + o, q.y * cs + o, sz + .5, sz + .5); }
-      return t > .35; };
-  }
-
-  if (kind === 'lights') {
-    /* pitch black, then the room lights up piece by piece */
-    DUR = 3.4; const S = Math.min(W, H) || 600;
-    const spots = []; for (let i = 0; i < 7; i++) spots.push({ x: (i + 1) / 8, y: .1 + Math.sin((i + .5) / 7 * Math.PI) * .03, r: .17, t0: .08 + i * .055 });
-    spots.push({ x: .2, y: .62, r: .34, t0: .52 }, { x: .84, y: .62, r: .34, t0: .6 }, { x: .5, y: .55, r: .5, t0: .72 });
-    draw = t => { g.globalCompositeOperation = 'source-over'; g.globalAlpha = 1; g.clearRect(0, 0, W, H); g.fillStyle = '#0b0b0c'; g.fillRect(0, 0, W, H);
-      g.globalCompositeOperation = 'destination-out';
-      for (const p of spots) { const u = cl((t - p.t0) / .1, 0, 1); if (u <= 0) continue; const flick = u < .5 ? (Math.sin(t * 90 + p.x * 40) > -.2 ? 1 : .15) : 1; const r = (p.r * S * 2.4) * ease(u), x = p.x * W, y = p.y * H;
-        const gr = g.createRadialGradient(x, y, 0, x, y, r); gr.addColorStop(0, 'rgba(0,0,0,' + flick + ')'); gr.addColorStop(.55, 'rgba(0,0,0,' + .7 * flick + ')'); gr.addColorStop(1, 'rgba(0,0,0,0)'); g.fillStyle = gr; g.beginPath(); g.arc(x, y, r, 0, 6.283); g.fill(); }
-      g.globalCompositeOperation = 'source-over'; const f = cl((t - .82) / .18, 0, 1); if (f > 0) { g.globalCompositeOperation = 'destination-out'; g.fillStyle = 'rgba(0,0,0,' + f + ')'; g.fillRect(0, 0, W, H); g.globalCompositeOperation = 'source-over'; }
-      return t > .5; };
-  }
-
-  if (kind === 'tape') {
-    /* a giant cassette slides in, the reels turn, then the shell splits open on the room */
-    DUR = 3.2;
-    const cassette = (cx, cy, w, ang) => { const h = w * .63; g.save(); g.translate(cx, cy);
-      g.fillStyle = '#0b0b0c'; g.beginPath(); g.roundRect(-w / 2, -h / 2, w, h, w * .04); g.fill();
-      g.fillStyle = '#f4f2ec'; g.beginPath(); g.roundRect(-w * .42, -h * .4, w * .84, h * .5, w * .02); g.fill();
-      g.fillStyle = '#e0122d'; g.fillRect(-w * .42, -h * .4, w * .84, h * .11);
-      g.fillStyle = '#0b0b0c'; g.fillRect(-w * .36, -h * .22, w * .5, w * .012); g.fillRect(-w * .36, -h * .17, w * .36, w * .012);
-      g.fillStyle = '#1b1b1d'; g.beginPath(); g.roundRect(-w * .3, -h * .14, w * .6, h * .22, h * .11); g.fill();
-      for (const sx of [-1, 1]) { const rx = sx * w * .17, ry = -h * .03, rr = h * .085; g.fillStyle = '#f4f2ec'; g.beginPath(); g.arc(rx, ry, rr, 0, 6.283); g.fill(); g.save(); g.translate(rx, ry); g.rotate(ang * sx); g.fillStyle = '#0b0b0c'; for (let i = 0; i < 6; i++) { g.rotate(1.0472); g.fillRect(rr * .38, -rr * .09, rr * .5, rr * .18); } g.restore(); }
-      g.fillStyle = '#3a3a3c'; g.beginPath(); g.moveTo(-w * .3, h * .5); g.lineTo(-w * .22, h * .24); g.lineTo(w * .22, h * .24); g.lineTo(w * .3, h * .5); g.closePath(); g.fill();
-      g.fillStyle = '#0b0b0c'; for (const sx of [-.2, -.07, .07, .2]) { g.beginPath(); g.arc(sx * w, h * .38, w * .014, 0, 6.283); g.fill(); }
-      g.restore(); };
-    draw = t => { g.clearRect(0, 0, W, H);
-      const w = Math.min(W * .88, 560), rise = (1 - ease(cl(t / .3, 0, 1))) * H * .8, ang = t * 24, off = ease(cl((t - .62) / .38, 0, 1)) * H * .56, bump = t > .3 && t < .38 ? Math.sin((t - .3) / .08 * Math.PI) * 5 : 0;
-      const scene = () => { g.fillStyle = '#f4f2ec'; g.fillRect(0, -H, W, H * 3); cassette(W / 2, H / 2 + rise + bump, w, ang); };
-      g.save(); g.beginPath(); g.rect(0, 0, W, H / 2); g.clip(); g.translate(0, -off); scene(); g.restore();
-      g.save(); g.beginPath(); g.rect(0, H / 2, W, H / 2); g.clip(); g.translate(0, off); scene(); g.restore();
-      if (off > 0) { g.fillStyle = '#e0122d'; g.fillRect(0, H / 2 - off - 3, W, 3); g.fillRect(0, H / 2 + off, W, 3); }
-      return t > .62; };
-  }
-
+  const cl = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+  /* big blocks, each one splits into four small ones that wink out, a wave of colour running through the wall */
+  const DUR = 3.6, PAL = ['#e0122d', '#0b0b0c', '#f4f2ec', '#ff5a36', '#ffc21a', '#22c3d6', '#7a2fd0', '#e0122d', '#8f0a1f', '#c9c9c6'];
+  let cs = 0, cells = [];
+  const build = () => { cs = Math.max(28, Math.round(Math.max(W, H) / 15)); const cols = Math.ceil(W / cs), rows = Math.ceil(H / cs), mx = cols / 2, my = rows * .55, md = Math.hypot(mx, my); cells = [];
+    for (let y = 0; y < rows; y++) for (let x = 0; x < cols; x++) {
+      const d = Math.hypot(x + .5 - mx, y + .5 - my) / md, rt = .1 + d * .5 + Math.random() * .12, wave = Math.floor(d * 7 + Math.random() * 2.4);
+      const subs = []; for (let i = 0; i < 4; i++) subs.push({ c: PAL[(wave + i + Math.floor(Math.random() * 3)) % PAL.length], rt: rt + .06 + Math.random() * .2 });
+      cells.push({ x, y, c: PAL[wave % PAL.length], rt, subs }); } };
+  build(); addEventListener('resize', () => { size(); build(); });
   const T0 = performance.now();
   (function frame(now) { const t = Math.min(1, (now - T0) / 1000 / DUR);
-    if (skipped || t >= 1) { removeEventListener('resize', size); return done(); }
-    if (draw(t)) cue(); requestAnimationFrame(frame); })(T0);
+    if (skipped || t >= 1) return done();
+    g.clearRect(0, 0, W, H); const h = cs / 2;
+    for (const q of cells) { const px = q.x * cs, py = q.y * cs;
+      if (t < q.rt) { g.fillStyle = q.c; g.fillRect(px, py, cs + .5, cs + .5); continue; }
+      for (let i = 0; i < 4; i++) { const sb = q.subs[i], k = cl((sb.rt - t) / .1, 0, 1); if (k <= 0) continue; const sz = h * k, ox = (i % 2) * h + (h - sz) / 2, oy = (i >> 1) * h + (h - sz) / 2; g.fillStyle = (sb.rt - t) < .03 ? '#fff' : sb.c; g.fillRect(px + ox, py + oy, sz + .5, sz + .5); } }
+    if (t > .4) cue(); requestAnimationFrame(frame); })(T0);
 }
 const greetNow = () => say(HELLO, 'wave', 5600);
 const afterOpen = () => { playing = true; startLoop(); setTimeout(() => { playing = false; startLoop(true); }, 2800); setTimeout(greetNow, 700); };
