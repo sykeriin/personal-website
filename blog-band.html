@@ -22,23 +22,8 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .intro{position:absolute;z-index:40;left:clamp(1rem,2.4vw,2rem);top:3.6rem;font-size:1.05rem;line-height:1.5;font-weight:500;color:#3b3b38;max-width:21rem;text-wrap:balance}
 .intro .kick{display:block;margin-bottom:.5rem;font-size:.7rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--red)}
 
-/* the opening: stage curtains part on the room */
-.open{position:fixed;inset:0;z-index:100;overflow:hidden;pointer-events:all;background:#0b0b0c}
-.open.out{background:transparent;pointer-events:none}
-.open .cur{position:absolute;top:0;bottom:0;width:51%;background:
-  linear-gradient(180deg,rgba(0,0,0,.55),rgba(0,0,0,0) 22%,rgba(0,0,0,0) 70%,rgba(0,0,0,.5)),
-  repeating-linear-gradient(90deg,#6e0716 0,#c4102a 4.5%,#e8344a 6.5%,#a30c20 9%,#5a0511 12%);
-  box-shadow:0 0 60px rgba(0,0,0,.6);transition:transform 2.1s cubic-bezier(.65,0,.25,1)}
-.open .cur.l{left:0;transform-origin:0 50%}
-.open .cur.r{right:0;transform-origin:100% 50%}
-.open .cur::after{content:"";position:absolute;left:0;right:0;bottom:0;height:.9rem;background:repeating-linear-gradient(90deg,#d9b24a 0 3px,#8a6a1c 3px 6px)}
-.open.go .cur{transform:scaleX(.14)}
-.open .val{position:absolute;left:0;right:0;top:0;height:clamp(4rem,11vh,7rem);background:
-  radial-gradient(circle at 50% 100%,#c4102a 0 62%,transparent 63%) 0 100%/6rem 3.4rem repeat-x,
-  linear-gradient(180deg,#4a040d,#8f0a1f);z-index:2;transition:transform 1.2s cubic-bezier(.6,0,.3,1) .5s}
-.open.go .val{transform:translateY(-105%)}
-.open .spot{position:absolute;inset:0;background:radial-gradient(ellipse 60% 70% at 50% 62%,rgba(255,244,214,.22),transparent 70%);opacity:0;transition:opacity 1.6s}
-.open.go .spot{opacity:1}
+/* the opening: a dead TV tunes in, squeezes to a line, then snaps open on the room */
+#tv{position:fixed;inset:0;width:100%;height:100%;z-index:100;display:block;background:#0b0b0c}
 
 .stage{position:relative;height:100svh;min-height:560px;overflow:hidden}
 .stage::after{content:'';position:absolute;inset:0;z-index:5;pointer-events:none;background:radial-gradient(120% 90% at 50% 45%,transparent 55%,rgba(11,11,12,.13) 100%)}
@@ -119,10 +104,10 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 html{overflow-x:clip;max-width:100%}body{max-width:100%}/*noscrollx*/
 </style>
-<script>try{if(sessionStorage.getItem('bandCurtain')||location.hash.length>2){var st=document.createElement('style');st.textContent='#open{display:none}';document.head.appendChild(st)}}catch(e){}</script>
+<script>try{if(sessionStorage.getItem('bandTV')||location.hash.length>2){var st=document.createElement('style');st.textContent='#tv{display:none}';document.head.appendChild(st)}}catch(e){}</script>
 </head>
 <body>
-<div class="open" id="open" aria-hidden="true"><i class="spot"></i><i class="cur l"></i><i class="cur r"></i><i class="val"></i></div>
+<canvas id="tv" aria-hidden="true"></canvas>
 <nav class="bar"><a href="/">← Back to the record</a><a href="/blog.html">Quiet version</a></nav>
 
 <section class="stage" id="stage" aria-label="Band room">
@@ -514,22 +499,51 @@ function boot() { Object.assign(cam, target(state === 'reading')); layout(); }
 let lastW = 0, lastH = 0; new ResizeObserver(() => { const st = $('stage'); if (st.clientWidth === lastW && st.clientHeight === lastH) return; lastW = st.clientWidth; lastH = st.clientHeight; boot(); }).observe($('stage')); addEventListener('resize', boot); boot();
 (document.fonts ? document.fonts.ready : Promise.resolve()).then(() => { layout(); });
 sprite.addEventListener('load', () => placeAll());
-function curtainOpening(after) {
-  const root = document.documentElement, el = $('open'); let cued = false, ended = false;
+function tvOpening(after) {
+  const root = document.documentElement, cv = $('tv'); let cued = false;
   const cue = () => { if (!cued) { cued = true; after(); } };
-  const end = () => { if (ended) return; ended = true; el.classList.add('out'); setTimeout(() => { el.remove(); root.style.overflow = ''; }, 500); cue(); };
-  try { if (sessionStorage.getItem('bandCurtain')) { el.remove(); cue(); return; } sessionStorage.setItem('bandCurtain', '1'); } catch (e) { /* storage blocked: just play it */ }
+  const done = () => { cv.remove(); root.style.overflow = ''; cue(); };
+  try { if (sessionStorage.getItem('bandTV')) return done(); sessionStorage.setItem('bandTV', '1'); } catch (e) { /* storage blocked: just play it */ }
+  let gl = null; try { gl = cv.getContext('webgl', { premultipliedAlpha: true, alpha: true }); } catch (e) { gl = null; }
+  if (!gl) return done();
   root.style.overflow = 'hidden';
-  const skip = () => { el.querySelectorAll('.cur,.val').forEach(n => { n.style.transitionDuration = '.35s'; n.style.transitionDelay = '0s'; }); el.classList.add('go'); setTimeout(end, 380); };
-  addEventListener('pointerdown', skip, { once: true }); addEventListener('keydown', skip, { once: true });
-  setTimeout(() => el.classList.add('go'), 650);
-  setTimeout(cue, 1500);
-  setTimeout(end, 3000);
+  const vs = 'attribute vec2 a;void main(){gl_Position=vec4(a,0.,1.);}';
+  const fs = `precision highp float;uniform vec2 r;uniform float t;uniform float k;
+float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+vec3 bars(float x){float i=floor(x*7.);vec3 c=vec3(.92);if(i==1.)c=vec3(.92,.92,0.);else if(i==2.)c=vec3(0.,.92,.92);else if(i==3.)c=vec3(0.,.85,.1);else if(i==4.)c=vec3(.9,0.,.85);else if(i==5.)c=vec3(.9,.05,.1);else if(i==6.)c=vec3(.1,.1,.95);return c;}
+void main(){vec2 uv=gl_FragCoord.xy/r;float c=uv.y-.5;
+float hh;if(t<.3)hh=.5;else if(t<.42)hh=mix(.5,.003,pow((t-.3)/.12,2.));else if(t<.5)hh=.003;else hh=mix(.003,.62,1.-pow(1.-(t-.5)/.5,4.));
+float d=abs(abs(c)-hh);bool inside=abs(c)<hh;
+vec2 sp=floor(uv*r/vec2(3.,3.));float sn=h(sp+floor(k*30.));
+float roll=fract(k*.7);float tr=smoothstep(.0,.06,abs(uv.y-roll));
+float wob=(h(vec2(floor(uv.y*60.),floor(k*20.)))-.5)*.05*(1.-tr+.15)*step(t,.42);
+vec3 tv=bars(uv.x+wob)*(uv.y>.3?1.:.0);tv+=vec3(.05)*(uv.y<=.3?1.:0.);
+tv=mix(tv,vec3(sn),.45+.4*(1.-tr));tv*=.82+.18*sin(gl_FragCoord.y*3.1416);
+float line=smoothstep(.36,.46,t);tv=mix(tv,vec3(1.),line);
+float tvA=1.-smoothstep(.5,.56,t);
+vec3 gc=mix(vec3(1.,.2,.8),vec3(.1,.9,1.),step(0.,c));
+float g=exp(-d*14.)*smoothstep(.3,.45,t);vec3 glow=mix(gc,vec3(1.),exp(-d*160.));
+if(inside){gl_FragColor=vec4(mix(tv*tvA,glow*g,.0)+glow*g*.9,max(tvA,g*.9));}
+else{float e=step(.55,sn)*exp(-d*7.)*.55;vec3 col=glow*g+vec3(e);gl_FragColor=vec4(col,1.);}}`;
+  const sh = (type, src) => { const x = gl.createShader(type); gl.shaderSource(x, src); gl.compileShader(x); return gl.getShaderParameter(x, gl.COMPILE_STATUS) ? x : null; };
+  const v = sh(gl.VERTEX_SHADER, vs), f = sh(gl.FRAGMENT_SHADER, fs); if (!v || !f) return done();
+  const pr = gl.createProgram(); gl.attachShader(pr, v); gl.attachShader(pr, f); gl.linkProgram(pr); if (!gl.getProgramParameter(pr, gl.LINK_STATUS)) return done(); gl.useProgram(pr);
+  const buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+  const la = gl.getAttribLocation(pr, 'a'); gl.enableVertexAttribArray(la); gl.vertexAttribPointer(la, 2, gl.FLOAT, false, 0, 0);
+  const ur = gl.getUniformLocation(pr, 'r'), ut = gl.getUniformLocation(pr, 't'), uk = gl.getUniformLocation(pr, 'k');
+  const size = () => { const q = 0.7; cv.width = Math.max(2, Math.round(innerWidth * q)); cv.height = Math.max(2, Math.round(innerHeight * q)); gl.viewport(0, 0, cv.width, cv.height); gl.uniform2f(ur, cv.width, cv.height); };
+  size(); addEventListener('resize', size);
+  let skipped = false; const skip = () => { skipped = true; }; addEventListener('pointerdown', skip, { once: true }); addEventListener('keydown', skip, { once: true });
+  const T0 = performance.now(), DUR = 3.6;
+  (function frame(now) { const el = (now - T0) / 1000, t = Math.min(1, el / DUR);
+    if (t > .5 && !cued) cue();
+    if (skipped || t >= 1) { removeEventListener('resize', size); return done(); }
+    gl.uniform1f(ut, t); gl.uniform1f(uk, el); gl.drawArrays(gl.TRIANGLES, 0, 3); requestAnimationFrame(frame); })(T0);
 }
 const greetNow = () => say(HELLO, 'wave', 5600);
 const afterOpen = () => { playing = true; startLoop(); setTimeout(() => { playing = false; startLoop(true); }, 2800); setTimeout(greetNow, 700); };
-if (location.hash.length > 2 || reduce) { $('open').remove(); setTimeout(greetNow, 500); startLoop(true); }
-else { curtainOpening(afterOpen); startLoop(true); }
+if (location.hash.length > 2 || reduce) { $('tv').remove(); setTimeout(greetNow, 500); startLoop(true); }
+else { tvOpening(afterOpen); startLoop(true); }
 
 const hash = location.hash.replace(/^#\/?/, ''); if (hash) { const i = POSTS.findIndex(p => p.slug === hash && !p.soon); if (i >= 0) setTimeout(() => playTape(tapes[i], POSTS[i]), 900); }
 })();
